@@ -102,6 +102,14 @@ wins on a concurrent edit.**
 - A readout **slide deck** is maintained as a Claude artifact by a peer session and is
   derived from `GOALS.md`. Changing a recommendation here makes their slides stale —
   send them the new wording.
+- **One session owns the deck at a time.** Artifact publishes made through the API do
+  *not* raise a conflict the way a page edit does: a publish whose `appliedOver` differs
+  from the base you read is the only signal that someone else landed first, and it
+  arrives after the fact. Two sessions editing the same slides will silently overwrite
+  each other. If the user asks you to change a slide, either send the wording to the
+  owning session, or claim the slides explicitly and wait for an acknowledgement before
+  publishing — a stand-down message sent mid-flight arrives too late.
+- `get_artifact` and `read_file` are safe at any time. Only publishing races.
 
 ## Git
 
