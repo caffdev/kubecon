@@ -81,6 +81,39 @@ awkwardness. It isn't:
 hand-upgrading, and the companies naming real numbers are our peers in regulated
 industries — Mastercard, Coinbase, GEICO, Hertz — not just the hyperscalers.
 
+
+### 0.2 Who the week was built for — and it wasn't the person at the terminal
+
+Sessions that treat the **human** developer's experience as the open problem:
+**17 of 501 (3%)**. Sessions naming agents or MCP anywhere: **129 (26%)**. And four of
+those seventeen are themselves about serving agents — OpenChoreo's *Both Humans and
+Agents*, the identity-aware agent golden path, *Backstage's Role in AI-Assisted
+Development* — so the genuinely human-centred count is closer to a dozen talks out of
+five hundred.
+
+The reading is **not** that developer experience stopped mattering. It is that the
+industry has stopped treating it as the **open** problem. The portal, the catalog, the
+golden path, the self-service template — all considered solved, or solved enough that
+nobody spent a conference slot arguing about them. The consumer being designed for now
+is a machine: an agent calling an API, a controller reading a label, a policy engine
+asserting on a manifest.
+
+**The exception proves it.** *N Clusters, One kubectl* (NVIDIA, Salesforce) stood out
+precisely because it was one of the few talks about human workflow *breaking* — their own
+abstract: "Multi-cluster Kubernetes solves a real platform problem. It also breaks every
+developer workflow that used to work." That observation was presented as a surprise.
+
+**Why this matters to us rather than just being an observation:** it is §5.5's argument
+arriving from the other direction. If the consumer is an agent or a controller, then **an
+interface a human finds tolerable is no longer the bar.** The bar is an interface a
+machine can select on — labels and constraints, not cluster names and a runbook in
+Confluence. It also means §6 stage 1's output has two audiences, and the
+accept/modify/reject log is the half a machine reads.
+
+⚠️ Counts are regex over 501 titles and abstracts — relative signal, not measurement.
+The 3% figure is robust to reasonable changes in the pattern; the 26% is not, because
+"agent" appears in passing in many abstracts.
+
 The conference-wide framing, if we want to borrow it: *let agents propose, let
 progressive delivery and policy decide.*
 
