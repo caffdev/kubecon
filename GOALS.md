@@ -40,7 +40,8 @@ authored it. Everything below is either building that spine, or using it.
 ### 0.1 The scale evidence behind claim 1
 
 Claim 1 above needs numbers or it's an assertion. These are the fleet sizes companies
-disclosed from the stage this year — **in their own titles, abstracts or decks**:
+disclosed from the stage this year — all but one traceable to **their own titles,
+abstracts or decks**:
 
 | Company | Fleet | Where it came from | Shape |
 |---|---|---|---|
@@ -53,11 +54,13 @@ disclosed from the stage this year — **in their own titles, abstracts or decks
 | **Nutanix** | **39 workload clusters** — all deleted by one commit | Session title | Hybrid |
 | **Mastercard** | **30 EKS clusters** driven by an LLM, no RAG | Session title | AWS |
 | **Verkada** | **9 prod clusters**, 4,700 alerts/month at $0.33 each | Session title + abstract | Cloud |
-| **Hertz** | Multi-cluster EKS fleet — **⚠️ "80 clusters" heard from the stage, not in the abstract** | Abstract says only "fleet scale" | AWS |
+| **Hertz** | **80 clusters** | ⚠️ From the talk itself — the published abstract gives no count | AWS |
 
-⚠️ **Check the Hertz number before it goes on a slide.** The abstract gives no count, and
-**Coinbase's 79** is close enough that the two are easy to conflate. If we can't confirm
-80, say "fleet-scale multi-cluster EKS" and lose nothing.
+⚠️ **On the Hertz number:** confirmed by us from the room, not from the published
+abstract, which says only "fleet scale." Keep the provenance in the speaker notes — it is
+the one figure on the slide a reader cannot check for themselves, and **Coinbase's 79**
+sits close enough to invite the question. Everything else on this table traces to a
+public title, abstract or deck.
 
 **Hybrid and multi-cloud is the norm at this scale, not the exception** — which matters
 because §5's on-prem + EKS split is sometimes treated internally as a transitional
