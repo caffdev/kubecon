@@ -36,6 +36,48 @@ Both converge on one control plane: **GitOps + policy + progressive delivery**.
 That spine is what makes a change safe regardless of whether a person or an agent
 authored it. Everything below is either building that spine, or using it.
 
+
+### 0.1 The scale evidence behind claim 1
+
+Claim 1 above needs numbers or it's an assertion. These are the fleet sizes companies
+disclosed from the stage this year — **in their own titles, abstracts or decks**:
+
+| Company | Fleet | Where it came from | Shape |
+|---|---|---|---|
+| **Salesforce** | **1,000 clusters** under agentic AIOps | Session title | Cloud |
+| **LinkedIn** | **300 clusters, ~300,000 nodes** | Abstract, skip-level upgrades talk | Bare-metal / on-prem |
+| **Ford** | **Hundreds of clusters** | Abstract, *Robust CI as a Safety Net* | — |
+| **NVIDIA** | **Hundreds of GPU clusters**; 5,600 nodes converged in 30 min | Abstract + 📎 deck | On-prem |
+| **Meta** | **~100 clusters run by ~15 engineers** (AI research + inference) | Keynote abstract | On-prem |
+| **Coinbase** | **79 prod clusters**, 4k+ services, 500k+ RPS | 📄 their deck, slide 5 | Cloud + non-K8s legacy |
+| **Nutanix** | **39 workload clusters** — all deleted by one commit | Session title | Hybrid |
+| **Mastercard** | **30 EKS clusters** driven by an LLM, no RAG | Session title | AWS |
+| **Verkada** | **9 prod clusters**, 4,700 alerts/month at $0.33 each | Session title + abstract | Cloud |
+| **Hertz** | Multi-cluster EKS fleet — **⚠️ "80 clusters" heard from the stage, not in the abstract** | Abstract says only "fleet scale" | AWS |
+
+⚠️ **Check the Hertz number before it goes on a slide.** The abstract gives no count, and
+**Coinbase's 79** is close enough that the two are easy to conflate. If we can't confirm
+80, say "fleet-scale multi-cluster EKS" and lose nothing.
+
+**Hybrid and multi-cloud is the norm at this scale, not the exception** — which matters
+because §5's on-prem + EKS split is sometimes treated internally as a transitional
+awkwardness. It isn't:
+
+- **GEICO** — *Follow the GPUs: How a Regulated Fortune 100 Serves Customers When No
+  Single Cloud Has Enough.* They run a **"Hybrid Cloud Fabric": multi-provider
+  Kubernetes plus zero trust**, and the stated reason is that no single provider had the
+  GPU capacity. That is the clearest statement at the show of *why* a regulated
+  enterprise ends up multi-cloud — not strategy, supply. It is also the scenario that
+  would force our hand.
+- **Uber** — Michelangelo AI, open-sourced at the show, explicitly "designed to run
+  across on-premises and public cloud environments."
+- **Meta, LinkedIn, NVIDIA, The Trade Desk** — all operating serious on-prem fleets
+  alongside cloud, all presenting on utilization and upgrade toil rather than migration.
+
+**The point for the deck:** nobody at this scale is single-cluster, single-cloud, or
+hand-upgrading, and the companies naming real numbers are our peers in regulated
+industries — Mastercard, Coinbase, GEICO, Hertz — not just the hyperscalers.
+
 The conference-wide framing, if we want to borrow it: *let agents propose, let
 progressive delivery and policy decide.*
 
