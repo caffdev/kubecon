@@ -96,7 +96,8 @@ Treat it as a prerequisite experiment for §1.2, not a parallel one.
 ApplicationSets are how one definition fans out to many clusters; **progressive sync**
 is what stops that fan-out from hitting all of them at once. This is the mechanism
 that makes §5 (fleet management) safe: roll a platform component to wave 1, check
-health, then wave 2.
+health, then wave 2. **It is delivery, not scheduling** — see §5.1 for what that
+means when a cluster goes away.
 
 Pair with *Ship Faster, Ship Safer: A K8s-Native Canary Pipeline for Critical Cluster
 Services* (LinkedIn) — canarying the cluster services themselves, not just apps.
@@ -243,7 +244,7 @@ That checklist *is* a slide. The conference-wide version of the same idea:
 Two things from it to put on slides verbatim:
 
 - **"Models produce evidence. Code decides authority."** (with the footnote *a rule can be
-  wrong too*). That is the cleanest statement of the gate we need between §6 stage 2 and 3.
+  wrong too*). That is the cleanest statement of the gate we need between §6 stage 3 and 4.
 - **Four roles, four responsibilities** — proposer (the agent, *can't approve its own PR*),
   tester (runs in one namespace, only while it exists), approver/armer (writes the ticket
   first or doesn't act), merger (the forge enforces the rulesets). Kubernetes RBAC governs
@@ -397,7 +398,7 @@ workload identity with short-lived credentials, plus fine-grained authz (Cedar, 
 ### 3.7 Durable execution ⚪ Watch
 Agents fail halfway through multi-step work and leave infrastructure in a partial
 state. The named answer is durable workflow engines — Uber is pushing **Cadence** for
-this. Relevant the moment we do §6 stage 3 (long-running agents), not before.
+this. Relevant the moment we do §6 stage 4 (long-running agents that act), not before.
 📎 `2026-11-12_agents-fail-workflows-recover-durable-agent-orchestration-with-cadence.pdf`
 
 ---
@@ -455,35 +456,173 @@ never looked at.
 ### 4.5 Don't let the monitoring stack become the attack surface ⚪ Watch
 📎 *Zero-Trust Telemetry: Stopping AI-Powered Poisoning Attacks on Observability
 Pipelines* — `2026-11-11_zero-trust-telemetry-stopping-ai-powered-poisoning-attacks-on-observab.pdf`.
-Relevant once agents *act* on telemetry (§6 stage 3): poisoned telemetry becomes a
+Relevant once agents *act* on telemetry (§6 stage 4): poisoned telemetry becomes a
 remote-control channel for an agent with cluster credentials.
 
 ---
 
-## 5. Managing clusters at scale (on-prem + EKS)
+## 5. Managing multiple clusters (on-prem + EKS)
 
-**Goal:** upgrades and fleet-wide changes stop being a project each time.
+**Goal:** two things, and they are **not** the same problem —
 
-This is the item from `Key lessons` with the most organizational weight:
-*upgrade and maintenance toil will be unsustainable.*
+1. **Fleet toil stops.** Upgrades and fleet-wide changes stop being a project each time.
+2. **Live-live survives a region.** Our public apps run active/active across two EKS
+   regions, and a region failure is invisible to end users.
 
-### 5.1 Multi-cluster control plane 🔵 Decide
-- **Karmada** — multi-cluster orchestration and propagation; Bloomberg and Huawei
-  presented updates and use cases. The answer if we want one place to express
-  "this workload runs across these clusters."
-- **Cluster API (+ CAREN)** — declarative cluster *lifecycle*. Nutanix's CAREN work
-  made the keynote. The answer for "clusters themselves are GitOps objects."
-- These are **complementary, not alternatives** — CAPI provisions and upgrades the
-  clusters, Karmada (or ApplicationSets, §1.4) places workloads on them. The real
-  decision is whether we need Karmada at all, or whether ApplicationSets + progressive
-  sync covers our placement needs at our cluster count. **Start by assuming it does**
-  and only add Karmada when we can name the thing ApplicationSets can't do.
+(1) is the item from `Key lessons` with the most organizational weight: *upgrade and
+maintenance toil will be unsustainable.* (2) is the one with the most customer exposure.
+
+### 5.1 Two multi-cluster problems that need different answers 🔵 Decide
+
+Everything in this section goes wrong if we try to solve both with one tool.
+
+| | **A. Fleet management** | **B. Live-live region pair** |
+|---|---|---|
+| **The question** | How does the same thing get to N clusters? | How does traffic stop hitting a dead region? |
+| **Shape** | Many clusters, on-prem + EKS, one definition | Two EKS clusters, two regions, both serving prod |
+| **Layer that solves it** | Delivery (ApplicationSets) + lifecycle (CAPI) | Traffic (DNS / anycast / mesh) + data replication |
+| **Unit of failure** | A cluster falls behind | A region goes away mid-request |
+| **Measured by** | Time to roll a change fleet-wide | RTO/RPO, and whether a user saw a 5xx |
+| **What a multi-cluster scheduler adds** | Placement, *if* placement is dynamic | **Nothing** — both regions already run the app |
+
+The trap is buying a multi-cluster control plane to solve B. B is a traffic and state
+problem, and a scheduler sits at the wrong layer to solve it.
+
+#### A. Fleet management — one definition, N clusters
+
+- **Cluster API (+ CAREN)** — declarative cluster *lifecycle*; Nutanix's CAREN work made
+  the keynote. The answer for "clusters themselves are GitOps objects," and what §5.2
+  upgrades hang off.
+- **ApplicationSets + progressive sync (§1.4)** — the delivery half. Generators fan one
+  definition out to every cluster; `rollingSync` stops the fan-out hitting all of them
+  at once.
+- **Shortcoming to state out loud:** ApplicationSet is a *templating controller, not a
+  scheduler*. Placement is whatever the generator evaluates to at reconcile time. There
+  is no health input and no rescheduling loop — when a cluster dies, its Applications go
+  Degraded and **nothing moves**. Dropping the cluster from the generator *deletes* those
+  Applications, it doesn't relocate them. It also has no fleet-wide replica concept: you
+  cannot express "20 replicas spread across 3 clusters, rebalance on failure."
+- That is fine for A, where placement is static and the answer to a dead cluster is CAPI
+  rebuilding it. It is **not** a DR mechanism, and the earlier draft of this section was
+  wrong to imply it could be.
 
 📎 *N Clusters, One kubectl: Multi-Cluster That Just Works* (NVIDIA, Salesforce) —
 `2026-11-10_n-clusters-one-kubectl-multi-cluster-that-just-works.pdf`
-No decks: *SIG-Multicluster Intro and Deep Dive*, *Multicluster AMA: The Community
-Answers*, *Karmada Updates and Use Cases*, *Beyond Stateless vs Stateful: A Unified
-Workload API for Multi-Cluster* (LinkedIn).
+🖼 `deck-assets/11-multicluster-one-kubectl/` — also names the tax nobody budgets for:
+multi-cluster breaks `kubectl`, and developers pay that cost daily.
+
+#### B. Live-live: two EKS regions, no user-visible downtime
+
+Four layers. **Every one has to clear the same RTO, or the fastest layer is wasted.**
+
+**1. Delivery — already solved, and not by a scheduler.**
+ApplicationSets fan the app to both regions. Both always run it, both always take
+traffic. Nothing has to be *moved* during an outage because nothing was ever in one
+place. This is the case where ApplicationSets are exactly the right tool — and the
+reason the Karmada question is largely orthogonal to our DR requirement.
+
+**2. Traffic — where failover actually happens.**
+
+| Option | How failover happens | Shortcoming |
+|---|---|---|
+| **Route 53 health checks** + failover / latency / weighted records | Health check fails → record withdrawn | **DNS TTL is a floor on RTO, and clients lie.** Browsers, JVMs and connection pools cache past TTL. A 60s TTL is not 60s recovery ⚠️ |
+| **AWS Global Accelerator** | Anycast IPs stay constant; AWS reroutes at the edge, no DNS change involved | Per-accelerator + data-transfer cost; AWS-only, nothing for on-prem. Get the real failover number from AWS docs before it goes on a slide ⚠️ |
+| **k8gb** — CNCF **Incubating** as of this show | Kubernetes-native global load balancing: declarative CRDs, health-aware, cross-cluster DNS | Still DNS, so it inherits the TTL/caching problem. Vendor-neutral, which is the reason to care — it covers on-prem too |
+| **Istio multicluster + locality failover** | East-west gateways; locality-aware LB sheds to the remote region on outlier detection | Only triggers if `DestinationRule` outlier detection is actually configured. Cross-region mesh traffic is an inter-region data-transfer line item |
+| **MCS API** (`ServiceExport` / `ServiceImport`) | The upstream direction for cross-cluster service discovery | A direction, not a product. Watch |
+
+**Recommendation:** **Global Accelerator at the public edge** — it is the only option
+here that keeps client-side DNS caching off our RTO — with Route 53 behind it, plus
+**Istio locality failover** east-west, since the company direction commits us to Istio
+anyway (see `ISTIO-VS-GATEWAY-API.md`). Evaluate **k8gb** if we want one mechanism that
+also covers on-prem rather than two.
+
+**Three things we inherit by routing region-to-region through the mesh**, none of which
+are reasons not to, but all of which are costs to name:
+
+1. **Mesh telemetry cardinality is a budget line, not a footnote.** Yahoo's numbers:
+   86% fewer series and ≈**$140K/yr saved on one cluster** after two-stage OTel
+   aggregation 🖼 `deck-assets/08-otel-cardinality/`. A second region doubles the
+   surface. **The trap on their p42:** moving to delta temporality **silently breaks
+   every `rate()` query** — if we go there, it is a dashboard migration, not a config
+   flag. Ties to §4.2.
+2. **Sidecar vs ambient is still open and live-live is a reason it matters** —
+   `ISTIO-VS-GATEWAY-API.md` D3 never settled it. The useful datapoint: **Coinbase**
+   runs 79 production clusters, 4,000+ services and 500K+ RPS on SPIFFE/SPIRE identity
+   and has stated **ambient** as their direction. That is the closest thing at this show
+   to a large-multi-cluster-shop verdict. 📄 outline in
+   `deck-assets/00-pptx-outlines/2026-11-12_from-bearer-tokens-to-mesh-native-mtls….txt`
+3. **Istio multicluster service discovery is O(n²)** — each istiod watches every remote
+   API server. Fine at two clusters, which is our case; the reason to know it is that it
+   caps how far this pattern extends into fleet A. *Breaking the O(n²) Wall* (Microsoft)
+   is the fix in flight.
+
+**Don't restate §10.5** — EKS Container Network Observability / CloudWatch Network Flow
+Monitor already covers the cross-AZ and inter-region flow data this section needs, with
+its limits and its ~5,000-node ceiling written down there.
+
+**3. State — the layer that actually sets our RTO.**
+Traffic moves in seconds; data does not. Aurora Global Database promotion, DynamoDB
+global tables, replication lag, and what happens to writes that landed in the dead
+region *are* the DR design, and none of it is a Kubernetes problem. **We cannot fail
+traffic over faster than we can fail data over, and doing it in that order is how you
+get split-brain writes.** Belongs with §8; needs a named owner.
+
+**4. Capacity — the one everyone forgets.**
+Live-live at 50/50 means a region failure sends 100% of traffic to a cluster sized for
+50%. Either both regions run at ≤50% utilization permanently — expensive, and directly
+against the utilization goals in §5.3 and §10.3 — or **Karpenter scale-up time is part
+of our RTO**, including image pull and app warm-up. Decide which, then test it, or the
+failover succeeds and the surviving region browns out under the traffic it just
+inherited.
+
+**The budget to write down**, because "no user-visible downtime" is the sum of these and
+not a single number: detection + propagation + client DNS caching + in-flight connection
+draining + surviving-region scale-up + data convergence.
+
+#### Where Karmada actually enters
+
+Karmada is a genuine scheduler: ordered `clusterAffinities` as a primary/DR primitive,
+cluster taints on NotReady driving rescheduling, application-level failover with a
+toleration window and limited state preservation, and `Divided` replica scheduling that
+redistributes replica counts across survivors. Bloomberg runs their streaming platform
+on it for precisely these reasons.
+
+None of that is needed for B, because live-live never relocates anything. It becomes
+necessary only for workloads that **cannot** be live-live: singletons, leader-elected
+services, sharded stateful systems, and streaming or batch jobs that can run in exactly
+one place at a time. So the decision is not "Karmada or ApplicationSets," it is:
+
+> **Do we have production workloads that can't run active/active?**
+> **No** → ApplicationSets + traffic-layer failover; Karmada stays ⚪ Watch.
+> **Yes** → name them and count them, then price Karmada against running just those
+> active/passive with a runbook.
+
+⚠️ **This supersedes the earlier wording** — "start by assuming ApplicationSets cover us
+and add Karmada only when we can name the thing ApplicationSets can't do." Same instinct,
+but that version left the trigger undefined, so it could never actually fire. The rule
+above names the trigger. **Anything quoting the old line needs updating**, including the
+readout deck.
+
+Two lighter rungs before the Karmada step (also in `GOALS-GAPS.md` §5.1): **Sveltos**,
+for add-on distribution by cluster *classification* rather than static lists; and **Open
+Cluster Management**, whose Placement API has cluster taints with toleration seconds and
+which ApplicationSet can consume via its `clusterDecisionResource` generator — giving
+failover-aware placement while Argo CD stays the delivery mechanism. Real path, lightly
+travelled ⚠️: spike it, don't assume it.
+
+**Sessions.** 📎 *From Load Balancer Sprawl to Multicluster Service Discovery*
+(Databricks) — `2026-11-12_from-load-balancer-sprawl-to-multicluster-service-discovery.pdf`
+— xDS-based cross-cluster discovery instead of a cloud load balancer per cluster pair;
+the direct answer to how our two regions find each other without LB sprawl.
+No decks: *k8gb Is Growing up* (Veritas Automata), *From Cloud Outages to AI Security
+Challenges: Building Resilient DNS Infrastructure at Scale* (Google, Ivanti — the failure
+modes of the layer our traffic plan depends on), *Breaking the O(n²) Wall: Pub/Sub
+Federation for Istio Multicluster Service Discovery* (Microsoft), *SIG-Multicluster Intro
+and Deep Dive*, *Multicluster AMA: The Community Answers*, *Karmada Updates and Use
+Cases* (Bloomberg, Huawei), *Beyond Stateless vs Stateful: A Unified Workload API for
+Multi-Cluster* (LinkedIn — its workload-attributes framing is how to decide which of our
+apps can be live-live), *TAG Operational Resilience*.
 
 ### 5.2 Upgrades without a war room 🟢 Adopt
 - 📎 *Binary Version Is Not Behavior: Skip-Level Control Plane Upgrades with KEP-4330*
@@ -519,41 +658,138 @@ The highest transfer-value talks at the whole show:
   `2026-11-11_green-dashboards-broken-clusters-taming-stale-watches-in-kubernetes-op.pdf`
 - 📎 *Welcome to Health Check Hell: CRDs, Statuses and Missing Standards* —
   `2026-11-10_welcome-to-health-check-hell-crds-statuses-and-missing-standards.pdf`
+### 5.5 The point of all this: developers never learn a cluster name 🟡 Trial
+
+**BackstageCon and Platform Engineering Day were both full co-located days**, and
+Backstage alone had 12 sessions. The trend is not "portals are back" — it is that the
+industry has converged on *abstracting the fleet away from developers*, and this year
+the framing sharpened from **portal** to **intent**: the developer declares what the
+workload needs, and the platform decides where it runs. Syntasso's talk title says it
+outright — *Why IDPs Must Become Intent-Driven*.
+
+**The concrete version of that for us: no developer should ever write a cluster name.**
+They declare constraints —
+
+```yaml
+placement:
+  regions:     [us-east-1, us-west-2]
+  compliance:  pci
+  capability:  gpu
+  residency:   us
+```
+
+— and the platform resolves them to clusters. A cluster name in an app repo is a bug:
+it hard-codes exactly the decision §5.1 spends four layers keeping fluid. We cannot do
+live-live failover, and we cannot drain a cluster for an upgrade (§5.2), if 200 repos
+name the cluster they expect to be in.
+
+**This is already how every layer in §5 works** — they all select on labels, not names,
+which is why it's a vocabulary problem more than a tooling problem:
+
+- **ApplicationSet cluster generator** matches clusters by **label selector**. We have
+  this today, it costs nothing, and it is the cheapest first step.
+- **OCM Placement** and **Karmada PropagationPolicy** both select on cluster labels and
+  taints — if we ever get to §5.1's "can't run active/active" list, the vocabulary we
+  build now is the input they'd consume.
+- **ClusterProfile** (SIG-Multicluster) is the upstream attempt to standardize how a
+  cluster *advertises* its own properties ⚠️ verify status before quoting — the missing
+  half, because constraint-based placement is only as good as the cluster-side labels.
+- **Score** (CNCF) is the same idea one layer up: a workload spec that declares
+  dependencies and requirements and lets the platform bind them.
+
+**The prerequisite nobody budgets for: cluster labels become an API.** The moment a
+developer selects on `compliance: pci`, that label is a contract — it needs an owner, a
+schema, and §2 policy that stops a cluster joining the fleet without it. Ungoverned
+labels are how constraint-based placement quietly lands a regulated workload in the
+wrong place, and the failure is silent because everything still reports Healthy.
+
+**Honest caution on Backstage.** 12 sessions and a co-located day is a real signal, but
+Backstage is a TypeScript application we would own, upgrade and staff — not something we
+install. The portal is the most visible part of an IDP and the least load-bearing; the
+catalog and the placement abstraction carry the value, and both can exist before any
+portal does. **Recommendation: build the constraint vocabulary first** (ApplicationSet
+label selectors + governed, policy-enforced cluster labels) **and keep the portal a
+separate, later decision.** That ordering also gets §6's agent work the machine-readable
+catalog it needs (`GOALS-GAPS.md` A10) without putting a portal project on the critical
+path.
+
+📎 *So You Want to Build a Platform? You Probably Already Have One* (ŌURA) —
+`2026-11-10_so-you-want-to-build-a-platform-you-probably-already-have-one.pdf`
+📎 *From Platform Catalog to Conversational Agent: Wiring AI Into Your Internal Developer
+Platform* (Stone Payments) — `.pptx`; text outline already extracted to
+`deck-assets/00-pptx-outlines/`
+📎 *From Curious to Contributor: Ship Your First Backstage PR* (AT&T, Red Hat, Spotify)
+No decks: *Platform Engineering after the AI Hype: Why IDPs Must Become Intent-Driven*
+(Syntasso), *Built for What's Next: Backstage's Role in AI-Assisted Development*
+(DoorDash, Spotify), *TAG DevEx State of the Union*, *OpenChoreo: Developer Platform for
+Both Humans and Agents* (WSO2), *RBAC as a Platform Capability* (Sony Interactive
+Entertainment), *Salesforce Runs on Heroku* — the maximal-abstraction end of the
+spectrum, useful as the contrast slide.
+
 
 ---
 
 ## 6. Our AI rollout journey
 
-**Goal:** a maturity ladder we can place ourselves on, and a gate for each rung.
-This was the most original part of the brainstorm — it deserves to be the backbone
-of the deck's second half.
+**Goal:** a maturity ladder we can place ourselves on, a gate for each rung, and a date
+on the two rungs we are actually committing to. This was the most original part of the
+brainstorm — it deserves to be the backbone of the deck's second half.
 
-| Stage | What it is | What has to be true first | Evidence from the show |
-|---|---|---|---|
-| **0 — Local prompts** | Engineers using agents on their own machines, human applies every change | Nothing. We are here. | *Lima as the Universal AI Sandbox* 📎 |
-| **1 — Background agents on cron or webhook** | Reactive whack-a-mole: an event fires, an agent proposes a fix as a PR | §1.9 traceability + §2 policy in CI. The agent proposes; progressive delivery decides | *Robust CI as a Safety Net* (Ford) 📎; Podium ships **30% of PRs** with autonomous K8s coding agents |
-| **2 — Always-on analysis** | Agents continuously analyse, triage alerts, set severity, silence noise — but don't act | §4 instrumentation; §3.6 identity; hallucination handling | Verkada: **4,700 alerts/month at $0.33 each**; 📎 *The SRE Is Not Dead* (Best Buy); *Catching Ghosts in the Machine: Hallucination Detection* (Apple, no deck) |
-| **3 — Agents that fix** | Automated remediation inside a blast radius we defined | §3.1 sandbox, §3.7 durable execution, §1.7 automated rollback, §2.3 change windows | 📎 *1000 Clusters, 1 Smarter Brain: AIOps at Salesforce*; 📎 *No RAG, No Regrets: Letting an LLM Drive 30 EKS Clusters* (Mastercard) |
-| **4 — Teams write agents that reason like them** | A DBA agent, an SRE agent and a dev agent fired at the same incident, their conclusions compared | Everything above, plus an agent platform (§3.3) teams can publish to | 📎 *The Seams Are the Trap: Agent Fleets from CNCF Parts You Already Have* (IBM); 📎 *Governing and Scaling Agents in Heterogeneous Environments* (Google) |
+**Committed targets:** 🎯 **Stage 1 (alert triage) by Q2 2027.** 🎯 **Stage 2 (agents
+opening PRs) by end of 2027.** Stages 3+ are unscheduled and gated on §1 and §2 landing.
+
+| Stage | What it is | What has to be true first | Target | Evidence from the show |
+|---|---|---|---|---|
+| **0 — Local prompts** | Engineers using agents on their own machines, human applies every change | Nothing. **We are here.** | — | *Lima as the Universal AI Sandbox* 📎 |
+| **1 — Alert triage: explain, never act** | For every alert, the agent posts a breakdown: **is this real or noise, how serious and why, what changed recently, where to go to learn more** (runbook, dashboard, the last three times this fired) **and a suggested action.** A human decides; a human acts | §4 instrumentation + §7 read-only data surface. **No policy gate required, because it has no write path** — which is exactly why it goes first | 🎯 **Q2 2027** | Verkada: **4,700 alerts/month at $0.33 each, 139s median time-to-summary**, 87.5% prompt-cache read ratio; 📎 *The SRE Is Not Dead: What AI Taught Us about Missing Context in K8s Incident Response* (Best Buy); **k8sgpt** and **HolmesGPT** — both OSS, both read-only, both exactly this rung |
+| **2 — Background agents propose PRs** | An event fires and the agent proposes a fix **as a PR**. Reactive whack-a-mole, but every change still enters through review and progressive delivery | §1.9 traceability + §2 policy in CI. The agent proposes; progressive delivery decides | 🎯 **end of 2027** | *Robust CI as a Safety Net* (Ford) 📎; Podium ships **30% of PRs** with autonomous K8s coding agents |
+| **3 — Always-on analysis** | The agent now **owns** alert severity and noise — continuously triaging, setting severity, silencing. Write access to the *alerting system*, still not to clusters | Stage 1 running long enough to have a measured track record; §3.6 identity; hallucination handling | unscheduled | Verkada (same deployment, further along); *Catching Ghosts in the Machine: Hallucination Detection* (Apple, no deck) |
+| **4 — Agents that fix** | Automated remediation inside a blast radius we defined | §3.1 sandbox, §3.7 durable execution, §1.7 automated rollback, §2.3 change windows | unscheduled | 📎 *1000 Clusters, 1 Smarter Brain: AIOps at Salesforce*; 📎 *No RAG, No Regrets: Letting an LLM Drive 30 EKS Clusters* (Mastercard) |
+| **5 — Teams write agents that reason like them** | A DBA agent, an SRE agent and a dev agent fired at the same incident, their conclusions compared | Everything above, plus an agent platform (§3.3) teams can publish to | unscheduled | 📎 *The Seams Are the Trap: Agent Fleets from CNCF Parts You Already Have* (IBM); 📎 *Governing and Scaling Agents in Heterogeneous Environments* (Google) |
+
+**Why stage 1 is new, and why it sits below the PR rung.** The earlier draft of this
+ladder had agents opening PRs *before* agents analysing anything — which is backwards.
+Writing a PR is a write action with a blast radius; explaining an alert is not. Stage 1
+is the only rung on this ladder with **no write path anywhere**, which means it needs no
+policy gate, no sandbox and no rollback story to be safe. That is what makes Q2 2027
+realistic: the gating work is §4 and §7, not §1 and §2.
+
+**What stage 1 has to produce to count as done** — if the output is a summary nobody
+acts on, we built a chatbot:
+- A **relevance call** (real / noise / duplicate of an open incident) with the reasoning
+  visible, not just a label.
+- A **severity assessment with its basis** — what makes this page-worthy or not, stated
+  in terms a responder can disagree with.
+- **Links out**: the runbook, the dashboard, the deploy that correlates, prior firings.
+  This is the half that makes it trustworthy, and the half that depends on §7.
+- **A suggested action** the human can accept, modify or reject — and we log which, because
+  **that log is the track record stage 2 and stage 3 are gated on.** Instrument it from
+  day one or we arrive at the stage 2 gate with no evidence.
 
 **The gate principle, borrowed from the Transfix talk (§1.9):** *models produce evidence,
 code decides authority.* An agent never promotes itself; it accumulates a track record
-that a deterministic, reviewed policy reads.
+that a deterministic, reviewed policy reads. Stage 1's accept/modify/reject log **is**
+that evidence.
 
 **The honest counterweight, from Salesforce's AIOps talk (🖼 `deck-assets/15-aiops-salesforce/`):**
 their first agentic attempt landed at **25% accuracy**. What fixed it was not a better
 model — it was knowledge management (a continuously curated base of runbooks and design
 docs, with Slack threads weighted *down*) and an evaluation harness (LLM-as-judge against
 a rubric, plus stratified human sampling). Budget for both or expect the same 25%.
+**This lands hardest on stage 1**, where a confidently wrong severity call is worse than
+no call at all — a responder who learns to distrust the summary will not read it again.
 
-**The honest framing for the deck:** stage 2 is where the measurable ROI is and it is
-reachable this quarter. Stage 3 is where the risk is, and the gate between 2 and 3 is
-precisely the GitOps/policy spine in §1 and §2. That is the argument for doing the
-boring work first.
+**The honest framing for the deck:** stage 1 is where the measurable ROI is, it carries
+almost no risk because it cannot act, and Verkada has already priced it at **$0.33 an
+alert**. Stage 2 adds a write path, which is why it is a year out rather than two
+quarters: the gate between 1 and 2 is the GitOps/policy spine in §1 and §2. That is the
+argument for doing the boring work first — the Q2 2027 date is safe, the end-of-2027
+date is a bet on §1 and §2 landing.
 
 Useful reality check to show alongside:
 📎 *How Far Are Open-Source LLMs from Running Real Kubernetes Operations? A 10-Scenario
 Benchmark* — `2026-11-10_how-far-are-open-source-llms-from-running-real-kubernetes-operations-a.pdf`
+
 
 ---
 
@@ -759,10 +995,11 @@ A 20-minute internal readout, three acts:
 | 13 | **AI gateway: one place for models and tools** | `05-composing-inference/p12` + `p17` (ecosystem map) |
 | 14 | **What is AI costing us** | `09-opencost-llmd/p10`–`p11` + Verkada's $0.33/alert |
 | 15 | **Observability: OTel, cardinality, egress** | `08-otel-cardinality/p02` ($140K/yr) + `10-network-cost-attribution/p18` |
-| 16 | **Our AI rollout ladder, stages 0–4** | Our own (§6) — **the centrepiece slide**. Gate principle from `03-agents-earn-merge/p09`; reality check from `15-aiops-salesforce/p06` |
+| 16 | **Our AI rollout ladder, stages 0–5, with two dated commitments** | Our own (§6) — **the centrepiece slide**. Lead with stage 1 (alert triage, Q2 2027) and stage 2 (PRs, end of 2027); Verkada's $0.33/alert is the ROI number. Gate principle from `03-agents-earn-merge/p09`; reality check from `15-aiops-salesforce/p06` |
 | 17 | **Where we are and the next gate** | Our own |
-| 18 | **Fleet: CAPI + ApplicationSets, Karmada only if needed** | `11-multicluster-one-kubectl/p10` (choose where complexity lives) |
+| 18 | **Multi-cluster is two problems: fleet toil vs. surviving a region** | `11-multicluster-one-kubectl/p10` (choose where complexity lives) + our own §5.1 table. The live-live stack (traffic / state / capacity) is a second slide if there's room |
 | 19 | **The boring slide that saves us** | `14-etcd-blast-radius/p16` + `01-gitops-meltdown/p19` + `p24` |
+| 18b | **Developers never learn a cluster name** | Our own (§5.5) — the constraints-not-names YAML block, over `11-multicluster-one-kubectl/p10`. Backstage/IDP trend is the setup; the cluster-label-as-API prerequisite is the punchline |
 | 20 | **Decisions we need from this room** | The table below |
 
 ### The extracted assets — already done
@@ -805,11 +1042,14 @@ pdftoppm -r 150 -png -f 12 -l 14 deck.pdf out/slide
 | # | Decision | Section | Needs |
 |---|---|---|---|
 | 1 | Kargo or GitOps Promoter | §1.2 | Owner + a 2-week spike on one app |
-| 2 | Do we need Karmada, or do ApplicationSets cover us? | §5.1 | Current cluster count + placement requirements written down |
+| 2 | Do we have prod workloads that **can't** run active/active? | §5.1 | The list, named and counted. If it's empty, Karmada is ⚪ Watch and this decision closes |
+| 2a | Public-edge failover: Global Accelerator, Route 53 alone, or k8gb? | §5.1B | Recommend Global Accelerator — it's the only one that keeps client DNS caching off our RTO. Needs a cost number |
+| 2b | Live-live capacity: permanent 2× headroom, or Karpenter scale-up inside our RTO? | §5.1B | A tested number for region-failure scale-up time, and the RTO we're actually promising |
+| 2c | Constraint vocabulary before portal, or a Backstage project? | §5.5 | Recommend vocabulary first — ApplicationSet label selectors + policy-enforced cluster labels. Needs an owner for the cluster-label schema |
 | 3 | Where CDK hands off to Crossplane | §10.2 | A diagram with the seam marked |
 | 4 | Secret store choice — and whether it's the right question | §9 | Inventory of long-lived secrets first |
 | 5 | Change-record integration: API call or CRD projection? | §2.3 | Recommend CRD projection; needs ITSM owner |
-| 6 | Which stage of the AI ladder we're committing to this quarter | §6 | Recommend stage 2; stage 3 gated on §1 + §2 |
+| 6 | Are we committing to stage 1 by Q2 2027 and stage 2 by end of 2027? | §6 | Stage 1 needs §4 + §7 only — that date is safe. Stage 2 is a bet on §1 + §2 landing. Stages 3+ stay unscheduled |
 | 7 | Canary pattern per workload class — namespace-scoped vs traffic-weighted | §1.7 | Recommend both: namespace-scoped for platform services, Rollouts for HTTP apps. Pick one pilot service of each |
 | 8 | NFM vs eBPF for network cost attribution | §10.4, §10.5 | Don't run both. NFM is lower effort on EKS; eBPF covers on-prem too |
 
