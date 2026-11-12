@@ -1052,7 +1052,30 @@ maps each file back to its session, speakers, companies, room, track and source 
 Only ~29% of sessions posted slides; recordings for the rest land on the CNCF YouTube
 channel a few weeks after the event.
 
-### Proposed narrative
+### Two decks, not one (decided 2026-11-12)
+
+The readout is now **two presentations**, both Claude artifacts:
+
+1. **Running Our Clusters Better** — humans and today's ecosystem: §0.1, §1, §2, §5, §8,
+   §9, §10, plus a Backstage-and-alternatives slide (we have **no IDP today**).
+   https://claude.ai/artifact/1butYtBFaaseRvXbKLQojg
+2. **Getting AI onto Kubernetes Safely** — §0.2, §3, §4, §6, §7.
+   https://claude.ai/artifact/EBs3hu2sbUc3C3DcKwggbU
+
+The single-deck "KubeCon NA 2026 Readout" artifact is superseded; the table below is the
+history of how it was planned, not the live plan.
+
+**Editorial rules for both decks (and for new text here):**
+- **Scope AI to running Claude** — Claude Code, the API or Bedrock, MCP. We do not train or
+  host a model, so GPU scheduling, DRA, quota and llm-d / vLLM / KServe are out of scope.
+- **Voice:** first person, from Evan and Kyle's experience at the show — not a neutral
+  summary of other people's slides.
+- **No failure-case references** (the 39-cluster cascade, "melted" clusters, the 25%
+  accuracy story). Keep the lesson, state it as a best practice we adopt.
+- **Every tool named gets a tool-index slide:** what it is, what sets it apart, where we stand.
+- **Promotion:** we lean GitOps Promoter over Kargo; both stay on the slide and in the spike.
+
+### Proposed narrative (original single-deck plan)
 
 A 20-minute internal readout, three acts:
 
