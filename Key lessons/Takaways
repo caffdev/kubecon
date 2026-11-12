@@ -1,0 +1,22 @@
+We need to get better at managing clusters at scale.  Upgrade and maintence toil will be unsustainable
+
+AI isnt going anywhere, 2024 it was a dream, 2026 is mainline
+
+90% of ai runs on k8s
+
+Tools are coming out for supporting this, major innovations this year
+
+
+Lots of companies are running 100s of clusters, we cant keep doing manual upgrades
+
+Agent substrate
+KAgent
+Obot (open source, mcp/skill management)
+
+Multi cluster management
+- karmada 
+- cluster-api
+
+Kyverno as policy
+-
+AWS dev

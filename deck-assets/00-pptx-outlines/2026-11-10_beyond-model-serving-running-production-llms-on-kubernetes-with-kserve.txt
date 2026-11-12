@@ -1,0 +1,35 @@
+# 2026-11-10_beyond-model-serving-running-production-llms-on-kubernetes-with-kserve.pptx
+
+Per-slide text, extracted from the OOXML. Open the .pptx itself to copy slides with formatting.
+
+  s1   #KubeCon #CloudNativeCon BEYOND MODEL SERVING Running Production LLMs on Kubernetes with KServe Johnu George Technical Director, Nutanix · KServe maintainer Jooho Lee Principal Software Engi
+  s2   Predictive AI with KServe
+  s3   Evolution of AI Serving Paradigm: Predictive vs Generative AI
+  s4   LLM-D llm-d is a high-performance distributed inference serving stack optimized for production deployments on Kubernetes.
+  s5   llm-d v1.0: State-of-the-art inference Version Release Date Memo v0.4.0 2025.11.26 v0.5.0 2026.02.03 Autoscaling, benchmarking CNCF Sandbox Project v0.6.0 2026.04.03 v0.7.0 2026.05.12 CUDA 1
+  s6   Generative AI with KServe
+  s7   InferenceService LLMInferenceService
+  s8   KServe Predictive + Generative
+  s9   Day 0: The Demo $ kubectl apply -f llama.yaml llminferenceservice/llama-8b created $ curl $URL/v1/chat/completions -d @hello.json {&quot;content&quot;: &quot;Hello! How can I help you today?
+  s10  One Resource for the Whole Stack apiVersion: serving.kserve.io/ v1alph 2 kind: LLMInferenceService metadata: name: llama-70b spec: model: uri: hf://meta-llama/Llama-3.1-70B-Instruct replicas
+  s11  High Level Network Flow with Kserve(P/D)
+  s12  Network Flow Through the Gateway API
+  s13  01 Traffic Management Gateways, request scheduling, streaming
+  s14  Scheduling on Model State INCOMING REQUEST system: &quot;You are the support agent for…&quot; (2,400 tokens) user: &quot;Reset my password&quot; Router (EPP) Scores every endpoint on prefix 
+  s15  Streaming Through Every Hop Client read timeout Load balancer idle timeout AI gateway route timeout, buffering Router queue wait vLLM max_tokens Route timeouts above your longest generation 
+  s16  02 Distributed Serving Prefill/decode split, multi-node models
+  s17  Prefill and Decode on Separate Pools Prefill pool compute-bound GPU GPU Reads the prompt, builds the KV cache KV cache NIXL over RDMA Decode pool memory-bound GPU GPU GPU GPU Generates token
+  s18  Models Larger Than a Node 810 GB of weights for Llama 3.1 405B at FP16 One 8 × 80 GB node holds 640 GB. The model has to span nodes. LeaderWorkerSet · one unit Node 1 · leader · layers 1–63 
+  s19  03 Autoscaling Scaling signals, cold starts
+  s20  Choosing the Scaling Signal Requests waiting vllm:num_requests_waiting Scale out on this KV cache usage vllm:kv_cache_usage_perc Shows remaining headroom GPU utilization DCGM_FI_DEV_GPU_UTIL
+  s21  Where a Cold Start Goes Default GPU node Image Weight download Load Warm-up Prepared Cache Load Warm-up Warm GPU node pool capacity is already in the cluster Pre-pulled runtime image no mult
+  s22  04 Model Updates Progressive rollouts, LoRA adapters
+  s23  Rolling Out a New Model Version Canary 90 / 10 v1 v2 Ramp 50 / 50 v1 v2 Promote 0 / 100 v2 HTTPRoute backendRefs weights GATE EACH STEP ON TTFT and ITL at p95 Error and truncation rate Outpu
+  s24  Adapters Instead of Redeploys support-v3 sql code-review + next Llama 3.1 8B base shared GPU weights spec.model.lora.adapters[] ~16 GB base model weights MBs per adapter, loaded from HF or S
+  s25  05 Lessons Learned Design decisions, deployment patterns
+  s26  Design Decisions 1 A separate CRD for LLMs InferenceService stays simple for predictive models; LLM topologies get their own shape. 2 Gateway API, not a custom router Standard routing resour
+  s27  Three Deployment Patterns Steady service One model, predictable traffic Gateway + scheduler LLMInferenceService KEDA on waiting requests LocalModelCache Long-context RAG and agents, strict T
+  s28  What We Learned Operating It 01 Measure TTFT and inter-token latency, not request latency. 02 GPU utilization says a GPU is busy, not that it is useful. 03 Every hop needs streaming-aware ti
+  s29  What's Next for KServe Agentic workloads Serving paths for agent-to-model and agent-to-agent traffic Semantic routing Pick the model by what the request needs Workload-aware autoscaling Scal
+  s30  #KubeCon #CloudNativeCon Thank you. Questions? GitHub github.com/kserve/kserve Meetings Biweekly, Thursdays 9 AM PST Slack #kserve on CNCF Slack
+  [media: 31 files]

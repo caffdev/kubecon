@@ -1,0 +1,27 @@
+# 2026-11-12_from-bearer-tokens-to-mesh-native-mtls-modernizing-service-identity-at.pptx
+
+Per-slide text, extracted from the OOXML. Open the .pptx itself to copy slides with formatting.
+
+  s1   From Bearer Tokens to Mesh-Native mTLS: Modernizing Service Identity at Coinbase Yair Temkin, Software Engineer II , Coinbase Zachary Schwartz, Senior Software Engineer, Coinbase November 12
+  s2   Agenda Kubernetes at Coinbase Legacy Service Auth SPIFFE/SPIRE Challenges and Lessons Learned Future of Coinbase in the Ambient Mesh Q&A
+  s3   Presenters Zachary Schwartz Senior Software Engineer, Coinbase https://www.linkedin.com/in/zachary-schwartz-cb/ Yair Temkin Software Engineer II, Coinbase https://www.linkedin.com/in/yair-te
+  s4   Kubernetes at Coinbase
+  s5   Kubernetes at Coinbase 79 prod clusters 4k+ services 500k+ RPS Primarily use Go + gRPC Service mesh Ingress Gateway Ambient
+  s6   Legacy Service Auth
+  s7   Legacy Service Auth Overview Introduced as a homegrown way for services to authenticate and authorize calls to each other W idely used, but was tightly coupled to AWS and costly to evolve Ti
+  s8   SPIFFE / SPIRE
+  s9   SPIFFE/SPIRE Why we chose SPIFFE/SPIRE: Industry Standard : SPIFFE-compatible SVIDs + CNCF compatibility Compatibility: for both Kubernetes & legacy EC2 services Isolation: Regional and envi
+  s10  Implementation Core Services SPIRE Server SPIRE Agent Service Auth Sidecar
+  s11  Day in the life of a JWT Client authentication delegated to a service auth sidecar injected into workloads Request flow gRPC interceptors Service A uth S idecar delegation SPIRE A gent SPIRE
+  s12  Adoption and Dev Experience Observability Sidecar benefits Centrally managed migrations Easier to push out changes Grpc interceptor -&gt; extremely minimal SDK 100% adoption
+  s13  Challenges and Lessons Learned
+  s14  Challenges Supporting non-standard SDK services on Ruby, Python, Java, and Node.js Need for centralized migration support Long tail of adoption Lambda deprecation Decoupling service auth and
+  s15  Lessons Learned Centrally managing migration helped us move faster Contain edge cases to stop the bleed early Container startup ordering Reducing bursts of requests from sidecars
+  s16  Future of Coinbase in the Ambient Mesh
+  s17  Ambient Mesh Further Improvements mTLS X.509s Language agnostic Opt-in by default Fine-grained authorization Use Cases Ingress Pod-to-pod Egress
+  s18  Use Case: Ingress Objective Remove JWT validation requirement per workload, reclaiming CPU Implementation Centralized JWT validation at the Ingress Gateway (IGW) Adopt Ambient Mesh across al
+  s19  Authz Policy Example Ingress Gateway Authz Policy Service level Authz Policy
+  s20  Use Case: Pod to Pod Implementation Enforce Ambient Mesh standard between pods Expand Service level Authz Policy to support x.509 format Abstraction through CRDs Objective Utilize Ztunnel fe
+  s21  Future Use Case: Egress Objective Remove JWT creation requirement per workload, reclaiming CPU Implementation Investigate tooling for a multi-cluster Egress layer, such as: Egress Gateway Ea
+  s22  Thank you!
+  [media: 22 files]

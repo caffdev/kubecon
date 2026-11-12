@@ -1,0 +1,12 @@
+# Conference slide downloads — 541 MB of PDFs/PPTX from sessionize.
+# Never edited, so versioning them adds nothing but bloat. They stay on disk;
+# MANIFEST.csv (tracked) carries the source URL for every one of them.
+kubecon-overview/slides/*
+!kubecon-overview/slides/MANIFEST.csv
+
+# Separate upstream git repos, not ours to version here.
+function-lifecycle/
+crossplane-contribfest-slc/
+
+.DS_Store
+*.swp

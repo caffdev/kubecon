@@ -1,0 +1,54 @@
+Goals 
+# Argo promotion
+    ## Everyone auto syncs
+    ## Kargo versus git promoter
+    ## Source hydrator?
+    ## App sets -> Progressive sync?
+    ## 3.6 resources tab plus appset
+    ## Skater reloader config server config maps
+    ## Canary strategies?
+        ## argo rollouts 
+        ## canary namespaces
+    ## Drift detection
+# Kyverno as policy
+    ## CEL policies, limit users plus agents
+    ## Shift left, add to CI
+    ## CHREC windows with argo sync blocking
+# AI running in k8s
+    ## Kata secures containers
+    ## Agent substrate for session management
+    ## Kagent
+    ## Agent gateway
+    ## OBOT for AD managed MCP permissions
+# OTEL 
+    ## Jaeger - how to better leverage
+    ## we need to figure out what we are using AI for
+    ## How to measure cost vs productivity, right model per usecase
+    ## MCP tracking, who calls what
+    ## See what web calls are going out, Kyverno as policy to secure
+# Solve managing clusters at scale
+    ## on prem plus eks
+# AI rollout journey
+    ## User prompts on local
+    ## Background agents on cron or webhook
+      ## Whackamole/reactive
+    ## Long running always on
+        ## Analysis
+        ## Fixes
+        ## Alert severity/silence
+    ## Teams write agents to analyze like them, cooridnate/fire off DBA agent + dev + sre and compare
+
+## Get data out of prod for AI to analyze
+    ## Dump cluster state to db
+    ## Prom metrics
+
+## PVC reclaim, backups, ensure we cant lose any data we care about.
+## Vault alternatives, infisical
+
+## AWS strategies
+    ## Crossplane for s3 as starting point, aim for app layer
+    ## LZA -> cdk -> crossplane writes K8s
+    ## Karpenter doesnt move quick for dynamic resizing, VPA balance
+    ## Fin ops, track everything to teams
+    ## Network monitor plugin
+    ## DevOps agent

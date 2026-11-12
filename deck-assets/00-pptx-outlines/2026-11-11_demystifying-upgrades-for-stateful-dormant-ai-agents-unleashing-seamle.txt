@@ -1,0 +1,24 @@
+# 2026-11-11_demystifying-upgrades-for-stateful-dormant-ai-agents-unleashing-seamle.pptx
+
+Per-slide text, extracted from the OOXML. Open the .pptx itself to copy slides with formatting.
+
+  s1   MAINTAINER TRACK · OPENKRUISE AGENTS Demystifying Upgrades for Stateful, Dormant AI Agents Unleashing Seamless Updates in Dynamic Sandboxes KUBECON + CLOUDNATIVECON NORTH AMERICA 2026 SALT L
+  s2   ABOUT THE SPEAKER About Me Zhen Zhang OpenKruise Maintainer authors of Kruise, OpenKruise Rollout, OpenKruise Agents Alibaba Cloud Container Service 02
+  s3   WHY THIS TALK Fix bugs and cve for Cloud based agents is hard 02 State is lost on restart · session context · skills · installed tools 01 (Insanely) Frequent update · harness feature updates
+  s4   PART 0 · FOUNDATIONS The Sandbox Lifecycle: Claim, Hibernate, Wake , Release WARM POOL Ready unclaimed · pre-warmed CLAIMED Running user session attached 1% PAUSED Hibernated compute release
+  s5   PART 0 · FOUNDATIONS OpenKruise Agents: K8s Native Sandbox Operator CORE RESOURCES The control objects Sandbox SandboxSet SandboxClaim PoolAutoscaler SandboxUpdateOps Checkpoint Upgrade-rele
+  s6   PART 0 · FOUNDATIONS Sandbox Storage: Static Mounts and On-Demand Mounts STATIC — DECLARED IN THE TEMPLATE Persistent volumes per sandbox · PV / PVC workspace and durable state declared in s
+  s7   PART 1 · UPGRADE PATH 1 — WARM POOL Warm Pool Refresh: SandboxSet Rollout WHY IT IS SAFE Pool members hold no user state · maxUnavailable default 20% — bounded pool shrink during rollout · C
+  s8   PART 1 · UPGRADE PATH 2 — AT CLAIM Upgrading at Claim Time: In-Place Specialization WHY IT MATTERS One pool, many profiles · One warm pool serves multiple runtime profiles · Pre-warm small e
+  s9   PART 1 · UPGRADE PATH 3 — CLAIMED · BEFORE THE UPGRADE Detecting Idle Sandboxes: Timer or Probe, Then Pause A TIMER-BASED · spec.pauseTime Fixed pause deadline (RFC3339); simple, may cut act
+  s10  PART 1 · UPGRADE PATH 3 — CLAIMED Upgrading Dormant Sandboxes: Wake, Patch, Re-sleep STATE Paused fully hibernated, by stateFilter ACTION Wake up controller resumes the sandbox first ACTION 
+  s11  PART 2 · THE STATE PROBLEM overlayfs: The Rootfs Is Two Things at Once CONTAINER ROOTFS = OVERLAY MOUNT Two very different layers merged view / what the sandbox sees upperdir ( rw ) writable
+  s12  PART 2 · CLAIMED UPGRADES — STRATEGY 1 Recreate + Lifecycle Hooks: Explicit State Handoff PHASE 1 PreUpgrade quiesce sessions, flush workspace, archive selected paths PHASE 2 UpgradePod recr
+  s13  PART 2 · CLAIMED UPGRADES — STRATEGY 2 · PROPOSED · PR #726 InplaceUpdate: Patch the Pod, Keep It Running PHASE 1 PreUpgrade quiesce sessions and flush state PHASE 2 UpgradePod in-place pod 
+  s14  PART 2 · CLAIMED UPGRADES — STRATEGY 3 CheckpointRestore: Preserve the Rootfs, Not Everything STEP 1 Checkpoint capture container writable layer STEP 2 Recreate pod apply the non-image chang
+  s15  PART 2 · CLAIMED UPGRADES — STRATEGY 4 · PROPOSED · PR #1140 · TARGETING v0.7.0 InstallerUpdate: Change the Harness, Not the Pod STEP 1 Inject ephemeral installer container joins the pod STE
+  s16  PART 3 · BEYOND SINGLE SANDBOXES · DESIGN PROPOSAL SandboxService: Deployment Semantics for Agent Fleets STABLE ENDPOINT + SESSION AFFINITY Like a Service, but for sandboxes Sandbox Gateway 
+  s17  PART 3 · BEYOND SINGLE SANDBOXES · DESIGN PROPOSAL Rolling a SandboxService: Create First, Delete After STEP 1 Update template saved as ControllerRevision R2 STEP 2 Create new new replicas c
+  s18  SUMMARY · UPGRADE STRATEGIES Key Takeaways: Match the Strategy to the State STRATEGY SCOPE USE CASE SandboxSet rollout unclaimed pool Update the image of future sandbox SandboxClaim new clai
+  s19  GET INVOLVED REPOSITORY github.com/openkruise/agents · issues, proposals and design reviews welcome DOCUMENTATION openkruise.io/kruiseagents · introduction, best practices, API reference REL
+  [media: 5 files]

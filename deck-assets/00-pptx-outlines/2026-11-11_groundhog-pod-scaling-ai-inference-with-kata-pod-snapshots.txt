@@ -1,0 +1,31 @@
+# 2026-11-11_groundhog-pod-scaling-ai-inference-with-kata-pod-snapshots.pptx
+
+Per-slide text, extracted from the OOXML. Open the .pptx itself to copy slides with formatting.
+
+  s1   Groundhog Pod Scaling AI inference with Kata pod snapshots David Justice + Roaa Sakr Scale faster without keeping every GPU warm. Microsoft R&D → upstream Kata + VMMs
+  s2   Every new AI pod makes users wait 2 The problem: new AI inference pods can't answer the moment they're needed 01 Slow to start A new pod must load software and the model before it can answer
+  s3   What happens before the first response ? 3 Pod startup, before it can do work 01 Start the pod Placement, image, device 02 Load software Python, PyTorch , CUDA 03 Load the model Read weights
+  s4   Save the state and continue later 4 Save memory + execution position. Continue from that point. RUN Do the work WAIT Save + stop RESUME Restore + continue WAIT Save + stop Continue one workl
+  s5   Protect the SLO while capacity catches up 5 SLO: response-time + success target Fresh startup Queue builds Time → Restore prepared state Queue Time → Demand Ready capacity Less time short of
+  s6   What are we taking a snapshot of? 6 Shared-kernel pod VM-isolated pod (Kata) CRIU • process checkpoint Application containers VMM • VM snapshot Application containers Guest Linux kernel Host
+  s7   More CPU choices, compatible GPUs 7 One CPU profile, set before boot host A Sapphire Rapids host B Cascade Lake host C Ice Lake More eligible CPU hosts; GPU compatibility still applies.
+  s8   A Kata snapshot needs both CPU and GPU state 8 Physical machine Kata pod VM Application + driver System memory GPU Model data CUDA state CPU + GPU saved together CUDA checkpoint state goes i
+  s9   Kubernetes Node Coordinate the GPU, then save the pod VM k8s /containerd Kata VM – Pod Sandbox Inference Workload Kata Runtime/ VMM PyTorch Model CUDA runtime Guest NVIDIA Driver Physical GP
+  s10  Kubernetes Node Coordinate the GPU, then save the pod VM k8s /containerd Kata VM – Pod Sandbox Inference Workload Kata Runtime/ VMM PyTorch Model CUDA runtime Guest NVIDIA Driver Physical GP
+  s11  Kubernetes Node Coordinate the GPU, then save the pod VM k8s /containerd Kata VM – Pod Sandbox Inference Workload Kata Runtime/ VMM PyTorch Model CUDA runtime Guest NVIDIA Driver Physical GP
+  s12  Kubernetes Node Coordinate the GPU, then save the pod VM k8s /containerd Kata VM – Pod Sandbox Inference Workload Kata Runtime/ VMM PyTorch Model CUDA runtime Guest NVIDIA Driver Physical GP
+  s13  Kubernetes Node Coordinate the GPU, then save the pod VM k8s /containerd Kata VM – Pod Sandbox Inference Workload Kata Runtime/ VMM PyTorch Model CUDA runtime Guest NVIDIA Driver Physical GP
+  s14  Kubernetes Node Coordinate the GPU, then save the pod VM k8s /containerd Kata Runtime/ VMM Physical GPU snapshot storage
+  s15  Kubernetes Node Coordinate the GPU, then save the pod VM k8s /containerd Kata Runtime/ VMM Physical GPU Kata Pod Restore snapshot storage VM snapshot create (annotations)
+  s16  Kubernetes Node Coordinate the GPU, then save the pod VM k8s /containerd Kata VM – Pod Sandbox Inference Workload Kata Runtime/ VMM PyTorch Model CUDA runtime Guest NVIDIA Driver Physical GP
+  s17  Kubernetes Node Coordinate the GPU, then save the pod VM k8s /containerd Kata VM – Pod Sandbox Inference Workload Kata Runtime/ VMM PyTorch Model CUDA runtime Guest NVIDIA Driver Physical GP
+  s18  New pod, same saved CPU and GPU work 18
+  s19  What happens now ? 19 01 Start the pod Placement, image, device 02 Load software Python, PyTorch , CUDA 03 Load the model Read weights; copy to GPU 04 Prepare to serve Memory setup and warmu
+  s20  React sooner to spikes and failures 20 Restore prepared state Queue Time → Traffic spike Add useful capacity sooner Worker failure Replace lost capacity sooner Quiet period Hold fewer worker
+  s21  
+  s22  Same snapshot idea, beyond serving 22 Goal: less lost work, less idle capacity. Candidate use cases beyond serving ML training Resume after failure Fine-tuning Keep hours of progress Batch j
+  s23  Resume ML training 23 Loss curve – Continue where you left off
+  s24  Future Work: Portable, Faster, Confidential Inference 24 Restore across GPUs Resume checkpointed workloads on another compatible GPU. Restore faster Profile VM memory loading and CUDA recove
+  s25  Bring the capability upstream 25 Microsoft R&D Contribution direction Kata Cloud Hypervisor Goal: faster scaling, fewer warm spares. Where the work stands Snapshot/Restore Kata Upstream in p
+  s26  Q&A
+  [media: 14 files]

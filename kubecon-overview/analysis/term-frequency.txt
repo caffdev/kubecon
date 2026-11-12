@@ -1,0 +1,108 @@
+  94  Agents / agentic
+  91  Open source sustainability / maintainers
+  74  GPU
+  63  Operators / CRDs
+  55  Inference / serving
+  50  Scheduling
+  38  OpenTelemetry
+  37  Autoscaling/HPA/VPA
+  34  Model Context Protocol (MCP)
+  32  Metrics/logs/traces
+  31  Platform engineering
+  28  Migration / modernization
+  27  GitOps
+  26  Service mesh
+  25  Edge / IoT
+  25  Policy as code
+  25  Upgrades / lifecycle
+  24  Multi-tenancy
+  23  Vulnerability / CVE
+  21  Incident / on-call
+  19  Karmada / multicluster
+  19  Cilium / eBPF
+  18  Gateway API
+  18  Scale / large clusters
+  17  llm-d
+  17  Ingress / load balancing
+  17  Prometheus
+  17  Developer tooling: kubectl/k9s
+  16  Helm
+  16  Envoy
+  16  AI security / prompt injection
+  16  Testing / chaos
+  15  Fine-tuning / training
+  15  Golden paths / self-service
+  15  Virtualization / KubeVirt
+  15  Stateful / storage / CSI
+  14  Dynamic Resource Allocation (DRA)
+  14  Perses / dashboards
+  13  Kubeflow
+  13  SPIFFE/SPIRE / workload identity
+  13  CI/CD
+  12  vLLM
+  12  Kueue
+  12  Argo CD
+  12  Supply chain security
+  12  Zero trust / mTLS
+  11  Capacity / utilization
+  11  SLSA / provenance
+  10  Bare metal
+  10  SLO / SRE
+  10  RBAC / least privilege
+  10  Admission control
+   9  Cluster API
+   9  Karpenter
+   9  Kafka / streaming
+   8  AI gateway
+   8  Tokens / KV cache
+   8  Flux
+   8  Containerd / CRI
+   8  Grafana
+   8  Backup / DR
+   7  Ray
+   7  Backstage
+   7  Crossplane
+   7  Developer experience
+   7  KEDA
+   7  Continuous profiling
+   7  Sigstore / cosign
+   7  Compliance / FedRAMP / FIPS
+   7  Sustainability / power
+   6  Volcano
+   6  Spot / preemption
+   6  Kata / gVisor / confidential
+   6  Fluent Bit / Loki
+   6  Databases on K8s
+   5  Gateway API Inference Extension
+   5  KServe
+   5  Model registry / OCI models
+   4  JobSet
+   4  Terraform/OpenTofu
+   4  CNI
+   4  AIOps / LLM troubleshooting
+   4  SBOM
+   4  in-toto
+   4  Secrets management
+   4  Object storage / S3
+   4  Networking: multi-region/global
+   3  AGNTCY / A2A
+   3  RAG
+   3  kro / composition
+   3  Cost / FinOps
+   3  WebAssembly (Wasm)
+   3  OpenCost
+   2  KubeRay
+   2  Kustomize
+   2  Backstage/portal
+   2  Thanos/Mimir/Cortex/VictoriaMetrics
+   2  Vector DB / embeddings
+   1  MLOps
+   1  DNS / CoreDNS
+   1  Falco / runtime security
+   1  Post-quantum
+   0  Kubernetes AI Conformance
+   0  NVIDIA NIM/NeMo
+   0  Score / Humanitec
+   0  vCluster
+   0  eBPF observability
+   0  Postgres operators

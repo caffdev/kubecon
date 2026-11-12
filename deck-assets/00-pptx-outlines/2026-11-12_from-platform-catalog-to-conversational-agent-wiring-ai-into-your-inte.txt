@@ -1,0 +1,50 @@
+# 2026-11-12_from-platform-catalog-to-conversational-agent-wiring-ai-into-your-inte.pptx
+
+Per-slide text, extracted from the OOXML. Open the .pptx itself to copy slides with formatting.
+
+  s1   From Platform Catalog to Conversational Agent: Wiring AI Into Your Internal Developer Platform Eduardo Munari · Group Product Manager, Stone Fabiano Amaral · Senior Engineering Manager, Ston
+  s2   Who we are Eduardo Munari Group Product Manager @ Stone 4+ years working on platform engineering CNCF Golden Kubestronaut /in/emunari Fabiano Amaral Senior Engineering Manager @ Stone Former
+  s3   Our mission is to serve Brazilian entrepreneurs, turning their dreams into results. TPV R$142B in Q2 2026 ACTIVE CLIENTS 4.8M micro, small and medium businesses TECH TEAM 1.6k+ tech people &
+  s4   Today's journey From the platform foundation to agents working inside the SDLC 01 Karavela The foundation: adoption, scale and speed 02 Platform Eng. + AI What AI changes (and what it doesn'
+  s5   01 Karavela Stone's internal developer platform 01 KARAVELA 02 PLATFORM ENG. + AI 03 AI HUB 04 VELA 05 ARMADA
+  s6   &lt;/&gt; 01 · KARAVELA Stone's critical infrastructure runs on Karavela ~3,000 active people per month +2,000 active applications in production ~5,300 active repositories ~6,000 actions per
+  s7   More than 2,400 people use Karavela every month UNIQUE USERS PER WEEK week in progress 510 1,054 1,668 1,597 Jan/26 Feb/26 Mar/26 Apr/26 May/26 Jun/26 Jul/26 Aug/26 Sep/26 2,434 unique users
+  s8   &lt;/&gt; 01 · KARAVELA Running on Karavela makes resilience, security and efficiency easier Lower operational risk Auditable, reversible changes. Fewer errors and always a way back. Standar
+  s9   &lt;/&gt; 01 · KARAVELA What used to take days now takes minutes RESOURCE WITHOUT KARAVELA WITH KARAVELA Kafka topic 15 hours 2 minutes -99% Internal API Gateway route ~3 business days 1 min
+  s10  &lt;/&gt; 01 · KARAVELA Running on Karavela is cheaper ≈20% cheaper per unit Jan-Jul/26 average · 19.3% in Jul $0.011 /unit · Karavela $0.013 /unit · outside cost per compute unit REAL SAVIN
+  s11  &lt;/&gt; 01 · KARAVELA Controls you don't have to reimplement Segregated environments Isolated staging, sandbox and production. Pipeline scans Image, code and dependencies on every build. A
+  s12  &lt;/&gt; 01 · KARAVELA Every new version ships with gradual traffic and automatic validation at each step TRAFFIC RAMP canary stable 0% Step 0 20% Step 1 40% Step 2 80% Step 3 100% Promote 
+  s13  &lt;/&gt; 01 · KARAVELA Vulnerabilities surface in the dev flow with actionable governance, in one unified experience Vulnerability remediation Detected as soon as packages and images are pu
+  s14  02 Platform Eng. + AI What AI changes (and what it doesn't) in platform engineering 01 KARAVELA 02 PLATFORM ENG. + AI 03 AI HUB 04 VELA 05 ARMADA
+  s15  &lt;/&gt; 02 · PLATFORM ENGINEERING HAS ALREADY CHANGED From serving only developers to supporting a diverse ecosystem of builders THE PARADIGM SHIFT Yesterday , platform engineering meant b
+  s16  &lt;/&gt; 02 · THE PARADIGM IS NEW The problems are the same as in the past The Past Reinventing the wheel, silos, no standards Platform Standardization, governance, reuse The Present (AI) D
+  s17  &lt;/&gt; 02 · PLATFORM ENGINEERING + AI AI didn't change the platform's problems. It multiplied their scale. That's why we treat agents, skills and MCPs the way we've always treated applica
+  s18  03 AI Hub Agents, skills and MCPs as a platform product 01 KARAVELA 02 PLATFORM ENG. + AI 03 AI HUB 04 VELA 05 ARMADA
+  s19  AI Hub Turning AI artifacts into a platform +35 MCPs configured +90 Agents in use One hub for Skills, Agents and MCPs We turned AI that evolved through isolated experiments into an execution
+  s20  &lt;/&gt; 03 · AI HUB One catalog for agents, skills and MCPs Discover and reuse Approved agents, skills and MCPs in a single marketplace, instead of isolated experiments. Built-in governanc
+  s21  
+  s22  04 Vela The platform's orchestrator agent 01 KARAVELA 02 PLATFORM ENG. + AI 03 AI HUB 04 VELA 05 ARMADA
+  s23  &lt;/&gt; 04 · VELA Meet Vela The orchestrator agent of the Karavela platform Speaks the user's language Natural language to create apps, provision infra and answer operational questions. Co
+  s24  Vela in the Karavela Portal The unified entry point for developers. No friction, focused on productivity. Natural language Create applications, provision infrastructure and answer operationa
+  s25  
+  s26  Vela Vela Orchestrator Orchestration Governance Security Observability Stone Tokenomics Agentic Layer Karavela AI Gateway Model routing and fallback Budget management and configuration Secur
+  s27  &lt;/&gt; 04 · VELA What Vela already solves today Feature development End-to-end implementation through the Armada agentic flow. Static app creation Citizen developers create, edit and remo
+  s28  
+  s29  &lt;/&gt; 04 · VELA Citizen developers shipping apps, safely +3,000 static apps created since June 2026 100% inside the VPN zero external exposure REAL SECURITY Preventing Shadow AI (e.g., L
+  s30  Connection Manager Users choose which tools are active. Granular control Turn corporate MCPs (Jira, GitHub, Slack) on and off at any time. Smart recommendations The platform suggests relevan
+  s31  Connection Manager Users choose which tools are active. Granular control Turn corporate MCPs (Jira, GitHub, Slack) on and off at any time. Smart recommendations The platform suggests relevan
+  s32  Vela Anywhere Don't want to use the portal? No problem: take the agents to your IDE or terminal. Direct integration Connect Claude Code, Cursor or VS Code to our hub. Governance preserved Ev
+  s33  Connect via CLI Bring Karavela's MCPs to your favorite client, straight from the command line. Profiles per context Create profiles like vela-dev and choose which MCPs each one exposes. Cont
+  s34  Multi-Agent Orchestration Build your team of specialists. Vela orchestrates the interactions. Custom teams Choose exactly which agents join the conversation. Specialized delegation Vela unde
+  s35  Multi-Agent Orchestration Build your team of specialists. Vela orchestrates the interactions. Custom teams Choose exactly which agents join the conversation. Specialized delegation Vela unde
+  s36  Tiered Executor Balance speed and reasoning power: the user picks the AI level, or the platform decides. Intent detection In Automatic mode, the platform assesses the task's complexity. LLM 
+  s37  KLI Github SaaS MCPs Slack Armada Amplitude Vela Opencode LLM Providers Karavela AI Gateway Anthropic OpenAI GLM DeepSeek Model routing Budget management and configuration Internal MCPs Kube
+  s38  &lt;/&gt; Open-weight models slashed Vela's cost −88% in weekly cost −86% in cost per million tokens After introducing open-weight models in the Karavela AI Gateway, with routing and fallbac
+  s39  Vela by the numbers last 90 days DAU 842 MAU 2,325 Stickiness DAU/MAU 35% Conversations 32,237 Turns 667,965 Total tokens 59B
+  s40  05 Armada The agentic development framework 01 KARAVELA 02 PLATFORM ENG. + AI 03 AI HUB 04 VELA 05 ARMADA
+  s41  &lt;/&gt; 05 · ARMADA Armada: the agentic development framework Turning expertise into agents inside the SDLC TODAY · 4 AGENTS Vela Coder Implementation Business Reviewer PRD and business ru
+  s42  Input Vela starts the pipeline execution from user acceptance. Orchestration and Parallelism Kubernetes Jobs isolated for implementation, review and fixes. Reviewers work in parallel on ephe
+  s43  Armada by the numbers last 90 days Reviews 4689 Impl. + fixes implementations and fixes 1836 PRs 6525 Via Vela 2861 Auto + self-service 3664
+  s44  &lt;/&gt; WRAPPING UP What we take from this journey 01 Platform first AI scaled fast because Karavela already had standards, a catalog and governance. 02 AI is a platform product Agents, sk
+  s45  Thank you! Questions? Let's talk. Eduardo Munari in /in/emunari Fabiano Amaral in /in/fabiano-af
+  [media: 108 files]
