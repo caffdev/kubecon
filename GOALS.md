@@ -1075,6 +1075,37 @@ history of how it was planned, not the live plan.
 - **Every tool named gets a tool-index slide:** what it is, what sets it apart, where we stand.
 - **Promotion:** we lean GitOps Promoter over Kargo; both stay on the slide and in the spike.
 
+### Deck 1 structure: four beats per topic (2026-11-12)
+
+Deck 1 ("Running Our Clusters Better") is restructured so **every topic slide runs the same
+four beats, in reading order**:
+
+1. **The problem we have** — the `h2` states it as a problem, not a topic. One grammar across
+   all topic slides.
+2. **The landscape** — the options for it, including the one we are on today, each with its
+   honest limit (ApplicationSets is not a scheduler; Promoter has no cross-app dependencies).
+3. **Who we saw running it** — named companies, from their own talk or abstract, in a
+   `Who we saw running it` table column or a `.lab` footer line on each card. Anything that
+   came from the room rather than a published source keeps its ⚠️.
+4. **Our lean** — a `.note` headed "Our lean", plus the one question that would flip it.
+
+Two new slides carry the structure: `pattern` (the four beats, right before the first
+workstream) and `tree` (**every open question in the deck as one question each**, with our
+side marked — the slide to leave up during discussion). `decisions` keeps the three asks and
+now says explicitly which items we are starting without a decision.
+
+Evidence for beat 3 is pulled from `kubecon-overview/data/sessions.json`, not from memory:
+Meta (~100 clusters / ~15 engineers, Terraform → Argo CD + Kargo), LinkedIn (canary pipeline,
+KEP-4330, unified workload API), NVIDIA (5,000+ nodes, N-clusters-one-kubectl with
+Salesforce), Bloomberg + Huawei (Karmada), Mirantis / Nutanix / Ericsson / Microsoft (CAPI),
+Google (CEL), AT&T + Nirmata and JPMorganChase (Kyverno), Agility Robotics (admission on live
+hardware state), American Family Insurance and Upbound (Crossplane), AWS / Microsoft /
+Red Hat / Uber (kro), Veritas Automata (k8gb), Red Hat (Velero 1.18–1.19), Hertz and
+The Trade Desk (scaling).
+
+Slides whose claim is ours and not from the show say so inline: Reloader, the CI policy gate,
+AWS Global Accelerator, and where the CDK → Crossplane seam goes.
+
 ### Proposed narrative (original single-deck plan)
 
 A 20-minute internal readout, three acts:
