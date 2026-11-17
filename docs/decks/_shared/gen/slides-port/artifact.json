@@ -1,0 +1,13 @@
+{
+ "note": "The Slides artifact this port publishes to, and the uploaded image layers (name → /_blob url). bind.mjs reads blobs.",
+ "slug": "4f3d5ab9-54c5-4bcd-b900-eaf2c3ae2e89",
+ "url": "https://claude.ai/artifact/AnXEzPeqGE1rfMzUCAKV5r",
+ "deck": "takeaways-v3",
+ "blobs": {
+  "overrun--chart-labels.png": "/_blob/a79b0219f2ba9bdd73832fa915279c37",
+  "overrun--chart-step1.png": "/_blob/431fb47f518fa1ce6f1f5354109bf701",
+  "gates--rings-step1.png": "/_blob/f9662e8d493417dabc67300c565a3a0c",
+  "gates--rings-step2.png": "/_blob/47374bf15f14479e934ce3f9580532d0",
+  "gates--rings-step3.png": "/_blob/1b2b211844c64290d14f9246b2f7661e"
+ }
+}
