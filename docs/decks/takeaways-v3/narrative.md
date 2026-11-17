@@ -10,13 +10,21 @@ user's direction:
   AWS clusters in chunks; multi-region resilience adds a second AWS region; and,
   "fingers crossed for no AWS outage", a second cloud.
 - **No agents in the first half.** AI arrives only after the fleet problems are solved.
-- **Multi-cloud placement and Karmada** get their own act: four demo apps, then twenty,
-  with the numbers side by side.
+- **Twenty tools, and Karmada** get their own act: the four platform tools were a demo;
+  the real platform runs twenty self-hosted tools (ceph, rook, vault-operator, external
+  secrets, grafana, thanos, istio/ALB, kafka-ui, file-viewer and more), with the numbers
+  side by side. Then Karmada as the option that lets developers think only in
+  constraints, routing work between clusters and regions as they change. Then the point:
+  a developer knows no cluster, and a merged PR plus a change record handle the rest.
 - **A second half on AI:** AI lands on the on-prem dev clusters, then AWS; autonomous
   agents on elastic compute; sandboxing (gVisor, Kata); building infra through MCP tools
   (Obot, ToolHive, or our own); credentials kept out of the agent; Kyverno as a
-  cross-cutting policy layer for people and agents alike; OTel and the lake; and the AI
-  rollout phases with realistic dates.
+  cross-cutting policy layer for people and agents alike; one view from OTel, logs,
+  Prometheus and state dumps; the lake; AI resizing pods from the lake's signals; and the
+  AI rollout phases.
+- **North star over practice.** This deck may go further than GOALS (Karmada, aggressive
+  AI resizing, the upper camps of the AI ladder). That's deliberate: it shows where we're
+  heading, not only what we've decided. Facts still carry ⚠️ until checked.
 
 Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2, §6, §7, §9;
 `GOALS-GAPS.md` §1.1 + §2.3, §3.5; `EKS-VS-ECS.md` §4; `CLAUDE-AGENT-PLATFORM.md`.
@@ -25,22 +33,23 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 
 - **Audience:** engineering, leads included: the people who run the clusters, the people
   who will run agents, and the people who decide what both teams work on.
-- **Setting:** live, about 30 minutes in two halves (fleet, then agents), then sent round.
+- **Setting:** live, about 32 minutes in two halves (fleet, then agents), then sent round.
   The notes carry the full argument for readers.
 - **They believe now:** upgrades are routine work one experienced person handles. Putting
   apps across clouds is a deployment detail. AI is a separate initiative, and its risks
   are mostly about the model.
 - **They believe after:** the fleet's work grows faster than the fleet, so clusters and
   platform tools roll out like software (in waves, behind gates, inside windows), and
-  apps are placed by policy across clouds. Agents are a new kind of user that spawns on
+  work is placed by constraints across clusters, regions and clouds, so developers never
+  pick a cluster. Agents are a new kind of user that spawns on
   demand, so they arrive sandboxed, with short-lived identity, through one tool gateway,
   under the same policy and telemetry as people. We climb the AI ladder one camp at a time.
 - **The one sentence:** the fleet will outgrow one person with a runbook, and agents will
   outgrow trust by default, so clusters, tools, apps and agents all go through one
   automated path with gates, policy and telemetry.
 - **The ask:** (1) no new hand-built clusters; (2) splunk-otel-collector through the wave
-  pipeline this quarter; (3) name the apps that can't run active/active across clouds, and
-  trial Karmada on those; (4) agents get a sandbox, a gateway, short-lived identity and
+  pipeline this quarter; (3) a Karmada spike: one app placed by constraints across both
+  regions and the second cloud; (4) agents get a sandbox, a gateway, short-lived identity and
   Kyverno before stage 1; (5) alert triage (AI stage 1) by Q2 2027.
 
 ## Shape
@@ -53,15 +62,17 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   - I: *watch it grow* (6): four clusters → three clouds, still one person.
   - II: *add it up* (3): the runbook, the tools, the overrun.
   - III: *stop doing it by hand* (4): kubeadm's place, waves, gates, windows.
-  - IV: *place apps by policy* (3): four demo apps, twenty, Karmada.
+  - IV: *at real size* (4): twenty tools, Karmada constraints, Karmada failover, no
+    cluster names.
   - V: *the agents arrive* (6): AI on the map, elastic agents, sandbox, MCP tools,
     credentials, policy.
-  - VI: *see it, then climb* (3): OTel, the lake, the AI phases.
+  - VI: *see it, then climb* (4): one view, the lake, AI resizing, the AI phases.
   - Close (2): the same person; the ask.
-- **The peak:** `karmada`, slide 16 of 27 (59%). Slide 6 says "fingers crossed for no AWS
-  outage". Here AWS goes dark, and the apps that can't run active/active move to the
-  second cloud by policy, without a person. It pays off the setup and closes the first
-  half. `gates` (12) and `ai-phases` (25) are the secondary highs.
+- **The peak:** `karmada`, slide 16 of 29 (55%). Slide 6 says "fingers crossed for no AWS
+  outage". Here a region fails and the work shifts to the other region, then AWS fails and
+  it shifts to the second cloud, by the developer's constraints, without a person. It pays
+  off the setup; `no-cluster-names` is the release after it, closing the first half.
+  `gates` (12) and `ai-phases` (27) are the secondary highs, with `twenty-tools` (14) the run-up to the peak.
 - **The close:** the deck opens on four clusters and one person. It closes on the same map,
   seven times the size, with agents on it. The same person approves waves, while the
   pipeline, the policy layer and the telemetry do the rest.
@@ -74,17 +85,22 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   850 h of one person's year). By stage: 240 → 366 → 606 → 858 → 1,110 → 1,362; one
   person is overrun at the migration. A second person holds until AI arrives (2,256 with
   three AI clusters and four more tools: AI gateway, MCP gateway, sandbox runtime, agent
-  controller). Placement model: 6 placements, 2 provider variants and 1.5 outage moves
-  per app, so 4 apps → 24 / 8 / 6 and 20 apps → 120 / 40 / 30. **Replace with real numbers
-  before this goes beyond the team.**
-- **Karmada: this deck goes further than GOALS §5.1 and the path3 tool card (⚪ Watch).**
-  §5.1's rule is that Karmada earns its place only for workloads that can't run
-  active/active, and that's the trigger here: the second cloud exists for an AWS outage,
-  and some apps (singletons, leader-elected, streaming, exchange-adjacent batch) can only
-  run in one place at a time. The slide says so, and recommends a trial on the named set,
-  not a fleet-wide adoption. **GOALS §5.1, the decisions table and path3's Karmada card
-  need reconciling** if this wording is adopted. ⚠️ The PropagationPolicy snippet
-  (`placement.clusterAffinities` with `affinityName` and `labelSelector`) must be checked
+  controller). **Twenty tools** (same rollout inputs): 12 on every cluster (argo-cd,
+  prometheus, splunk-otel, external-secrets, thanos, istio/ALB, cert-manager, kyverno,
+  velero, reloader, argo-rollouts, keda), ceph and rook on the 8 on-prem clusters,
+  karpenter and external-dns on the 21 cloud clusters, and vault-operator, grafana,
+  kafka-ui and file-viewer on 3 each. 4 tools → 116 installs, 464 rollouts a year, 696 h
+  (0.8 people); 20 tools → 418, 1,672, 2,508 h (2.95 people). Through the pipeline, 20
+  tools × 4 releases = 80 wave approvals a year. The eight tools after the user's list
+  are our fill-in from GOALS; swap in the real list. **Replace with real numbers before
+  this goes beyond the team.**
+- **Karmada is shown as the north-star option,** not reconciled with GOALS §5.1 (where it
+  is ⚪ Watch and reserved for workloads that can't run active/active). The slides present
+  it as the option that lets developers think only in constraints and that routes work
+  between clusters, regions and clouds as they change. The practical caveat (static
+  placement is already ApplicationSet label selectors; Karmada is one more control plane
+  to run) lives in the notes, not the headline. ⚠️ Check the PropagationPolicy snippet
+  (`placement.clusterAffinities`, `affinityName`, `labelSelector`, `spreadConstraints`)
   against the Karmada docs before it goes on a shared slide.
 - **MCP gateway:** GOALS-GAPS §3.5's line stands: decide the enforcement point first.
   Obot is open-core with directory-managed permissions; ToolHive (Stacklok) is OSS and
@@ -93,9 +109,14 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 - **Credentials:** the patterns come from GOALS §3.6 and §9. No vendor is recommended
   for the secret store (§9 is still 🔵 Decide).
 - **AI phases:** the dates are GOALS §6's committed targets (stage 1 by Q2 2027, stage 2
-  by end of 2027). Stages 3+ carry no date, deliberately.
-- Series rule: **no failure-case references.** The AWS outage on `karmada` and the failed
-  canary on `gates` are our own illustrations.
+  by end of 2027). Stages 3+ are the north star: undated, described as where we're
+  heading, each with the safety gate it needs.
+- **AI resizing:** the chart is illustrative. ⚠️ In-place pod resize: the Solo.io
+  abstract says GA in 1.33, which conflicts with our memory of a later GA. The slide
+  says "in-place resize, no restart" and names no version until checked. Hertz's results
+  are a vendor demo (CAST AI).
+- Series rule: **no failure-case references.** The region and AWS outages on `karmada`
+  and the failed canary on `gates` are our own illustrations.
 - kubeadm, stated honestly (from v2): Cluster API still runs kubeadm underneath; the
   hands go, not the tool. EKS Auto Mode runs Karpenter itself.
 - ⚠️ `tools-too` release cadences are approximate (see v2's note).
@@ -115,19 +136,20 @@ What v3 adds:
 - **A second cross-cutting layer: the fence line.** Policy (Kyverno) is drawn as a fence
   with gate posts along the foot of all three peaks: every trail passes the same gate,
   whoever walks it. Survey lines (OTel) measure the range; the fence line guards it. They
-  appear together on `policy-layer` (fence only), `otel-common-layer` and `the-lake`
-  (survey only), and on `same-person` and `the-ask` (both).
+  appear together on `policy-layer` (fence only), `one-view` and `the-lake` (survey
+  only), and on `same-person` and `the-ask` (both).
 - **The map, re-cut for our estate.** On-prem holds four columns (dev, staging, ny4, ch4,
   with ny4–ch4 tied in lockstep; the second exchange's four below, with its own tie). AWS
   splits into region 1 and region 2 with a dashed divider from `multi-region` on. The
   second cloud keeps its own zone. Named clusters keep their labels throughout: these are
   our clusters, not cattle yet.
-- **Apps as chips.** In Act IV the four demo apps are coloured chips (A–D) placed on the
-  clusters they run on. Twenty apps become 120 small ticks, which is the point.
-- **Karmada peak motion:** three clicks. The apps sit on AWS (primary affinity). AWS goes
-  dark, with its zone dimmed and an alpenglow outage mark. The apps that can't run
-  active/active slide to the second cloud (fallback affinity). The policy snippet stays
-  still beside it.
+- **Twenty tools as rows.** `twenty-tools` grows the four tool rows of `tools-too` to
+  twenty, with the two sets of numbers side by side.
+- **Karmada as routing.** A developer's constraints on the left; on the right the map,
+  with the app's replicas as mint chips that Karmada spreads over the clusters that match.
+  Peak motion, three clicks: replicas spread across both AWS regions; region 1 fails (its
+  half of the zone dims, alpenglow mark) and the chips slide to region 2; AWS fails and
+  they slide to the second cloud. The constraints never change.
 - **AI on the map:** teal, as before. First the on-prem dev cluster turns teal (click),
   then AWS dev and three new AWS AI clusters.
 - **Agents as diamonds** (teal), now only in the second half: spawning and vanishing on
@@ -217,7 +239,8 @@ What v3 adds:
 - **Job:** the multiplication nobody budgets
 - **Headline:** Each cluster also carries four platform tools, each on its own release train.
 - **Visual:** as v2, re-cut for this fleet: 29 clusters across the top in three zones,
-  Argo CD, Prometheus, splunk-otel and Karpenter down the side, version skew in the cells
+  Argo CD, Prometheus, splunk-otel and Karpenter down the side, version skew in the cells.
+  Four tools for now, to keep the picture readable; the real list comes back in Act IV
 - **Energy:** 3
 - **Into next:** add the clusters and the tools together, against one person's year.
 
@@ -278,47 +301,67 @@ What v3 adds:
 - **Into next:** that's the clusters and the tools. Now the apps on them.
 - **Source:** GOALS §2.3; NVIDIA; Agility Robotics
 
-### four-apps
+### twenty-tools
 
 - **Act:** IV
-- **Job:** a breather that sets up the placement problem at a size you can hold in your head
-- **Headline:** With four apps, you can still place every one by hand.
-- **Visual:** the full map from `second-cloud`, quiet, with four coloured chips (A–D)
-  on the clusters each app runs on: A on ny4 and ch4 (exchange-facing), B and D across
-  both AWS regions with a standby in the second cloud, C in AWS only. Beside it: 24
-  placements, 8 per-cloud variants, 6 moves if AWS goes down
-- **Energy:** 2
-- **Into next:** four is a demo. We run twenty.
-- **Data:** placement model, see Editorial notes
-
-### twenty-apps
-
-- **Act:** IV
-- **Job:** the numbers at real size, side by side
-- **Headline:** At twenty apps, hand placement means 120 deployments and 30 moves in an outage.
-- **Visual:** the same map, now with 120 small ticks across the clusters. Beside it, the
-  two columns of numbers next to each other: 4 apps → 24 / 8 / 6; 20 apps → 120 / 40 /
-  30. Marked illustrative
+- **Job:** four tools was the demo; at the real twenty, hand rollouts are three people's work
+- **Headline:** Four tools was the demo: the platform really runs twenty, and the numbers follow.
+- **Visual:** the four tool rows from `tools-too` grow to twenty: argo-cd, prometheus,
+  splunk-otel, karpenter, then ceph, rook, vault-operator, external-secrets, grafana,
+  thanos, istio / ALB, kafka-ui, file-viewer, cert-manager, external-dns, kyverno,
+  velero, keda, reloader, argo-rollouts, each with a mark for where it runs (everywhere,
+  on-prem only, cloud only, a few). Beside it, the numbers side by side: 4 tools → 116
+  installs, 464 rollouts a year, 696 h; 20 tools → 418, 1,672, 2,508 h (three people).
+  Through the pipeline: 80 approvals a year
 - **Energy:** 4
-- **Into next:** and the 30 is the number that matters on the worst day.
-- **Data:** placement model
+- **Into next:** and those twenty don't land the same way everywhere, which is the
+  developers' problem too.
+- **Data:** twenty-tools model, see Editorial notes
+
+### karmada-constraints
+
+- **Act:** IV
+- **Job:** Karmada as the option that lets developers think only in constraints
+- **Headline:** With Karmada, developers state constraints, and it picks the clusters and regions.
+- **Visual:** left, what a developer writes: constraints (regions, compliance, capability,
+  residency) and asks (replicas, spread across two regions, a fallback cloud). Right, the
+  map: Karmada matches the constraints against cluster labels and capacity and spreads the
+  app's replicas, as mint chips, over the clusters that fit. Nothing on the left names a
+  cluster
+- **Energy:** 3
+- **Into next:** and the constraints keep holding when the clusters underneath them don't.
+- **Source:** path1 `no-cluster-names` and path3 `thirty-first` (the constraint
+  vocabulary); GOALS §5.1 (clusterAffinities, Divided replica scheduling); *Karmada
+  Updates and Use Cases* (Bloomberg, Huawei; no deck)
 
 ### karmada
 
 - **Act:** IV
-- **Job:** the peak: policy-driven placement and failover across clouds, with its limits stated
-- **Headline:** Karmada places apps by policy, and moves them when a cloud goes down.
-- **Visual:** left: a PropagationPolicy, primary affinity AWS, fallback the second
-  cloud. Right: the map. Click: apps sit on AWS. Click: AWS goes dark. Click: the apps
-  that can't run active/active move to the second cloud on their own. One honest line
-  underneath: only for those apps, since live-live apps never move (their traffic does),
-  and Karmada is one more control plane that goes through the same pipeline
+- **Job:** the peak: dynamic routing between clusters, regions and clouds, paying off "fingers crossed"
+- **Headline:** Lose a region or a cloud, and Karmada moves the work wherever the constraints still hold.
+- **Visual:** the same map and constraints. Click: replicas spread across both AWS
+  regions. Click: region 1 fails (dimmed, alpenglow mark); its replicas slide to region
+  2. Click: AWS fails; the replicas slide to the second cloud. The constraints on the left
+  never change
 - **Energy:** 5
-- **Into next:** that's the first half solved, on paper. Now look at the map again,
-  because something new is arriving on it.
-- **Source:** GOALS §5.1 (ordered clusterAffinities, taint-driven rescheduling,
-  application failover, Divided replicas; Bloomberg runs its streaming platform on it);
-  *Karmada Updates and Use Cases* (Bloomberg, Huawei; no deck)
+- **Into next:** so what does a developer actually have to know now?
+- **Source:** GOALS §5.1 (cluster taints on NotReady drive rescheduling; application
+  failover with a toleration window; Bloomberg's streaming platform)
+
+### no-cluster-names
+
+- **Act:** IV
+- **Job:** close the first half: the developer's whole job is a PR and a change record
+- **Headline:** A developer now knows no cluster: a merged PR and a change record do the rest.
+- **Visual:** a short path, left to right: PR with constraints and asks → merged → change
+  record approved → window opens → placed by constraints → waves and gates → running.
+  Beneath it, the pack from the path decks, now empty: never learned a cluster name,
+  never clicked sync, never read the policy list, never rolled back by hand
+- **Energy:** 3
+- **Into next:** that's the first half solved. Now look at the map again, because
+  something new is arriving on it.
+- **Source:** path1 `stage-e` (the empty pack) and `freeze-windows` (change record →
+  CRD → policy)
 
 ### ai-arrives
 
@@ -405,14 +448,21 @@ What v3 adds:
 - **Source:** GOALS §2.1–§2.4 ("write policies against the action, not the actor");
   AT&T + Nirmata, W.W. Grainger, Nirmata + Nutanix sessions
 
-### otel-common-layer
+### one-view
 
 - **Act:** VI
-- **Job:** OTel as the layer classic and AI workloads share
-- **Headline:** OTel isn't beating Prometheus; it's the one layer our classic and AI workloads share.
-- **Visual:** as v2
+- **Job:** OTel, logs, Prometheus and state dumps become one view for whoever is debugging
+- **Headline:** OTel, logs, Prometheus and state dumps give one view to anyone debugging, person or agent.
+- **Visual:** four sources on the left (OTel traces, logs, Prometheus metrics, cluster
+  state dumps), classic and AI workloads alike, all stamped with the same cluster,
+  namespace, team and trace id by the collector layer; one correlated view in the middle;
+  two consumers on the right: a person debugging and an agent debugging, reading the same
+  thing. Prometheus stays, as a source and a backend
 - **Energy:** 3
-- **Into next:** and everything it collects lands somewhere the agents can read.
+- **Into next:** and the agents read it from a lake, not from production.
+- **Source:** GOALS §4.2, §7; *The Race to Standardize AI Observability* (Google,
+  Microsoft); *Seeing Inside LLM Inference* (IBM, JPMorgan Chase); *Beyond Dashboards*
+  (NVIDIA, Workday)
 
 ### the-lake
 
@@ -421,17 +471,36 @@ What v3 adds:
 - **Headline:** Agents decide from a read-only lake, not from credentials to production.
 - **Visual:** as v2
 - **Energy:** 3
-- **Into next:** with all of that in place, here's how far we let them climb, and when.
+- **Into next:** and one of the first things worth deciding from it is how big every pod
+  should be.
+
+### ai-resize
+
+- **Act:** VI
+- **Job:** AI reads the lake's signals and resizes pods more aggressively than VPA alone, for cost
+- **Headline:** With the lake's signals, AI resizes pods more aggressively than VPA alone, and cuts the bill.
+- **Visual:** one workload across a trading week (illustrative): actual usage, the flat
+  request VPA's recommender settles on, and an AI-shaped request that follows the week:
+  tight overnight and at weekends, raised ahead of the open. The shaded gap between the
+  two requests is the saving. Under it, how: VPA's recommender as the floor, in-place
+  resize so nothing restarts, KEDA for fast signals, Karpenter consolidating the freed
+  nodes. And the guardrail: it proposes first (stage 2), then acts inside min/max bounds
+  that policy enforces, with rollback (stage 4)
+- **Energy:** 3
+- **Into next:** which is a good example of how far we let agents climb, and when.
+- **Source:** GOALS §10.3; *The New Scaling Matrix* (Solo.io); *In-Place Pod Resizing
+  Like I'm 5* (AWS); Hertz + CAST AI (vendor demo); *Agentic Karpenter* (PerfectScale:
+  kagent + Claude proposes, a human approves)
 
 ### ai-phases
 
 - **Act:** VI
 - **Job:** the AI rollout ladder with realistic dates and the safety gate for each camp
-- **Headline:** Climb one camp at a time: alert triage by Q2 2027, agent PRs by end of 2027.
+- **Headline:** Climb a camp at a time: alert triage by Q2 2027, agent PRs by end of 2027.
 - **Visual:** an expedition profile. Camp 0 (local prompts, we are here), camp 1 (alert
   triage: explain, never act; Q2 2027), camp 2 (agents propose PRs; end of 2027) on a
-  surveyed, dated slope; camps 3–5 (always-on analysis, agents that fix, teams' own
-  agents) pale and dashed, undated. Under each camp, the safety gate it needs: the lake
+  surveyed, dated slope; camps 3–5 (always-on analysis, agents that fix inside a blast
+  radius we drew, teams' own agents) pale and dashed, undated: the north star. Under each camp, the safety gate it needs: the lake
   and OTel for 1; policy in CI and traceability for 2; identity and a track record for 3;
   sandbox, rollback and windows for 4
 - **Energy:** 4
@@ -443,8 +512,8 @@ What v3 adds:
 - **Act:** Close
 - **Job:** echo the opening, changed
 - **Headline:** Same person, seven times the clusters: he approves the waves, and the pipeline runs them.
-- **Visual:** the full map with AI, every cluster lit; the one person at his gate; behind
-  it, all three peaks with survey lines and the fence line
+- **Visual:** the full map with AI and agents, every cluster lit; the one person at his
+  gate; behind it, all three peaks with survey lines and the fence line
 - **Energy:** 4
 - **Into next:** five things get us there.
 
@@ -454,8 +523,8 @@ What v3 adds:
 - **Job:** the ask
 - **Headline:** Stop building clusters by hand, pipeline one tool this quarter, and gate agents before they scale.
 - **Visual:** five numbered lines in path colours: no new hand-built clusters; splunk-otel
-  through the pipeline this quarter; name the cross-cloud singletons and trial Karmada on
-  them; sandbox + gateway + short-lived identity + Kyverno before stage 1; alert triage by
+  through the pipeline this quarter; a Karmada spike placing one app by constraints;
+  sandbox + gateway + short-lived identity + Kyverno before stage 1; alert triage by
   Q2 2027
 - **Energy:** 3
 - **Into next:** end
