@@ -3,23 +3,62 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stage E: a team onboards an app with no platform ticket.</title>
+  <title>Stage E</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1440px; }
+    .when { margin-top: 18px; }
+    .pack { position: absolute; left: var(--margin); top: 330px; width: 820px; display: grid; gap: 12px; }
+    .pack-head { font: 600 30px/1 var(--font-display); color: var(--muted); margin-bottom: 4px; }
+    .item { display: grid; grid-template-columns: 1fr 56px; align-items: center; gap: 18px; padding: 14px 22px; border-radius: 12px; border: 3px dashed var(--scree); font: 600 34px/1.1 var(--font-display); color: var(--lichen); }
+    .item s { text-decoration-thickness: 3px; text-decoration-color: var(--mint); }
+    .item .camp { width: 52px; height: 52px; font-size: 28px; }
+    .then { position: absolute; left: 1020px; top: 330px; width: 640px; display: grid; gap: 22px; }
+    .then p { font-size: 27px; line-height: 1.3; color: var(--muted); }
+    .then b { display: block; font: 600 32px/1.05 var(--font-display); color: var(--snow); margin-bottom: 4px; }
+    .then .watch b { color: var(--lichen); }
+    .meant { position: absolute; left: var(--margin); bottom: 72px; width: 1560px; font: 600 38px/1.18 var(--font-display); color: var(--mint); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Stage E: a team onboards an app with no platform ticket.</h1>
+    <h2>Stage E: a team onboards an app with no platform ticket.</h2>
+    <p class="when">Decide, 2028</p>
+
+    <div class="pack">
+      <p class="pack-head">The pack from day one, now empty</p>
+      <p class="item"><s>Which cluster their app runs in</s><span class="camp done" style="--c: var(--haze)">1</span></p>
+      <p class="item"><s>When to click sync, and whether to</s><span class="camp done">A</span></p>
+      <p class="item"><s>Whether a change freeze is on</s><span class="camp done">B</span></p>
+      <p class="item"><s>Which of our rules the manifest breaks</s><span class="camp done">B</span></p>
+      <p class="item"><s>How to roll back</s><span class="camp done">D</span></p>
+    </div>
+
+    <div class="then">
+      <p><b>Constraints, not cluster names</b>the label vocabulary, from Path 3</p>
+      <p><b>Cost and ownership labels, enforced</b>at the same admission gate, or every cost tool draws the same unattributable pie</p>
+      <p><b>Right-sizing is a PR, not a project</b>KEDA for the signal, VPA and in-place resize for the size</p>
+      <p class="watch"><b>Watch, don't build</b>OpenCost in the Argo CD UI: cost at the point of deploy</p>
+    </div>
+
+    <p class="meant">That's what "day one" meant: a developer who never learned a cluster name, never clicked sync, never read the policy list, and never rolled anything back by hand.</p>
+
+    <div class="route-strip" aria-label="Stages A to E, stage E current">
+      <span class="camp done">A</span><span class="camp done">B</span><span class="camp done">C</span><span class="camp done">D</span><span class="camp lit">E</span>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Stage E is the summit, and it's a 2028 decision, not a 2027 commitment: a team onboards an app with no platform ticket.
+
+    On the left is the pack from the start of the talk, and every item is crossed off, with the stage that took it. Which cluster: gone, Path 3's labels. When to click sync: gone, stage A. Whether there's a freeze, and which rules apply: gone, stage B. How to roll back: gone, stage D.
+
+    On the right, what the summit adds. Constraints instead of cluster names. Cost and ownership labels enforced at the same admission gate: unglamorous, and without it every cost tool draws the same pie chart nobody can attribute. Right-sizing as a pull request rather than a project, with KEDA for the signal and in-place resizing for the size, while watching the thrash where HPA, VPA and Karpenter all act on one workload. And one thing to watch rather than build: cost shown in the Argo CD UI at the moment of deploy.
+
+    Land this slowly. That's what day one meant. A developer who never learned a cluster name, never clicked sync, never read the policy list, and never rolled anything back by hand.
+
+    Here's what we need from this room.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

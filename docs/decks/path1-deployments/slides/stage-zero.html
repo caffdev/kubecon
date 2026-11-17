@@ -3,23 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Today Argo CD is a dashboard somebody clicks.</title>
+  <title>Stage zero</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    .button {
+      position: absolute; left: 160px; top: 470px;
+      width: 560px; height: 220px;
+      border: 8px solid var(--mint); border-radius: 34px;
+      display: grid; place-items: center;
+      font: 700 140px/1 var(--font-display); letter-spacing: .05em; color: var(--mint);
+    }
+    .wires path { fill: none; stroke: var(--scree); stroke-width: 3; }
+    .stands { position: absolute; left: 1000px; top: 330px; width: 800px; display: grid; gap: 38px; }
+    .stands p { font-size: 30px; line-height: 1.25; color: var(--muted); }
+    .stands b { display: block; font: 600 38px/1 var(--font-display); color: var(--snow); margin-bottom: 4px; }
+    .is-entered .button { animation: press 1400ms 600ms both; }
+    @keyframes press { 30% { transform: scale(.96); } 60% { transform: scale(1); } }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Today Argo CD is a dashboard somebody clicks.</h1>
+    <h2>Today Argo CD is a dashboard somebody clicks.</h2>
+
+    <svg class="stage-art wires" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path d="M720 520 C 860 520, 860 370, 980 370"/>
+      <path d="M720 550 C 860 550, 860 486, 980 486"/>
+      <path d="M720 580 C 860 580, 860 602, 980 602"/>
+      <path d="M720 610 C 860 610, 860 718, 980 718"/>
+      <path d="M720 640 C 860 640, 860 834, 980 834"/>
+    </svg>
+    <div class="button" aria-hidden="true">SYNC</div>
+
+    <div class="stands">
+      <p><b>Promotion</b>a person edits YAML in another repo</p>
+      <p><b>Policy</b>a reviewer's memory; no engine</p>
+      <p><b>Rollback</b>a person and a Slack thread</p>
+      <p><b>Drift</b>discovered by accident, not alerted on</p>
+      <p><b>Config</b>a change "succeeds" while pods serve the old value</p>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Here's where we are, and let's say it without being defensive. Argo CD is installed in every cluster, on manual sync. That's stage zero, and it's honest.
+
+    But look at what that one button is standing in for. Promotion is a person editing YAML in another repo. Policy is a reviewer's memory; we have no policy engine. Rollback is a person and a Slack thread. Drift is something we discover by accident. And a config change can report success while the pods keep serving the old value.
+
+    A dashboard somebody clicks isn't a deployment platform. It's a deployment interface. Nothing downstream, promotion, canary, agents, has anything to drive until this changes.
+
+    Before we ask to turn that button off, one rule.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

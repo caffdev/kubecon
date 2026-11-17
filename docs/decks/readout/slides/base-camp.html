@@ -3,25 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Base camp today: Argo on manual sync, clusters named by hand, Claude on laptops.</title>
+  <title>Base camp</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1500px; }
+    .band { position: absolute; left: 0; right: 0; top: 860px; bottom: 0; background: #0b1115; border-top: 2px solid var(--scree); }
+    .tent { position: absolute; top: 800px; width: 480px; text-align: center; }
+    .tent p { font: 600 40px/1.05 var(--font-display); color: var(--snow); margin-top: 22px; }
+    .tent small { display: block; margin-top: 8px; font: 400 26px/1.25 var(--font-body); color: var(--muted); }
+    .tent svg { margin: 0 auto; width: 90px; height: 60px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Base camp today: Argo on manual sync, clusters named by hand, Claude on laptops.</h1>
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+    <h2>Base camp today: Argo on manual sync, clusters named by hand, Claude on laptops.</h2>
+    <div class="band" aria-hidden="true"></div>
+
+    <div class="tent p3" style="left: 200px;"><svg viewBox="0 0 90 60" aria-hidden="true"><path d="M0 60 L45 0 L90 60 Z" fill="var(--haze)"/><path d="M45 18 L32 60 H58 Z" fill="#0b1115"/></svg><p>Clusters named by hand</p><small>and upgraded one at a time</small></div>
+    <div class="tent p1" style="left: 720px;"><svg viewBox="0 0 90 60" aria-hidden="true"><path d="M0 60 L45 0 L90 60 Z" fill="var(--mint)"/><path d="M45 18 L32 60 H58 Z" fill="#0b1115"/></svg><p>Argo CD on manual sync</p><small>a dashboard somebody clicks</small></div>
+    <div class="tent p2" style="left: 1240px;"><svg viewBox="0 0 90 60" aria-hidden="true"><path d="M0 60 L45 0 L90 60 Z" fill="var(--teal)"/><path d="M45 18 L32 60 H58 Z" fill="#0b1115"/></svg><p>Claude on laptops</p><small>personal keys, skills passed round in Slack</small></div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    So where are we standing? Base camp. Let's say it plainly, without being defensive, because everyone in the room knows it.
+
+    Under the fleet: our clusters have names people know by heart, and we upgrade them one at a time, by hand.
+
+    Under delivery: Argo CD is in every cluster, on manual sync. It's a dashboard somebody clicks.
+
+    Under agents: Claude runs on laptops. Personal logins or keys, and skills and MCP configs passed from person to person in Slack.
+
+    None of that is a failure. It's an honest starting point. From here there are three climbs, each with its own stages.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    Peaks.draw('#range',
+      Peaks.far({ y: 640, amp: 80, n: 12, seed: 9 }),
+      Peaks.peak({ x: 440, top: 380, base: 860, hw: 400, cap: 'var(--haze)' }),
+      Peaks.peak({ x: 960, top: 300, base: 860, hw: 420, cap: 'var(--mint)' }),
+      Peaks.peak({ x: 1480, top: 380, base: 860, hw: 400, cap: 'var(--teal)' })
+    );
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

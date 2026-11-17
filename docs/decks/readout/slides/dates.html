@@ -3,25 +3,77 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Two dates we'll commit to; everything above them is gated, not scheduled.</title>
+  <title>Two dates</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .lane-name { position: absolute; left: var(--margin); width: 220px; font: 600 34px/1.05 var(--font-display); }
+    .lane-name small { display: block; font: 400 24px/1.2 var(--font-body); color: var(--muted); }
+    .bar { stroke: none; }
+    .bar.p1f { fill: var(--mint); } .bar.p2f { fill: var(--teal); } .bar.p3f { fill: var(--haze); }
+    .later { fill: none; stroke-width: 4; stroke-dasharray: 10 9; }
+    .seg-t { font: 600 26px var(--font-display); fill: var(--night); dominant-baseline: central; }
+    .axis { stroke: var(--scree); stroke-width: 3; }
+    .tick { stroke: var(--scree); stroke-width: 2; }
+    .yr { font: 600 30px var(--font-display); fill: var(--lichen); }
+    .today { stroke: var(--snow); stroke-width: 3; stroke-dasharray: 4 6; }
+    .pole { stroke: var(--alpenglow); stroke-width: 4; }
+    .flag { fill: var(--alpenglow); }
+    .flag-t { position: absolute; font: 600 30px/1.1 var(--font-display); color: var(--alpenglow); }
+    .flag-t small { display: block; font: 400 24px/1.2 var(--font-body); color: var(--snow); }
+    .later-t { position: absolute; font-size: 24px; color: var(--muted); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Two dates we'll commit to; everything above them is gated, not scheduled.</h1>
+    <svg class="stage-art" id="tl" viewBox="0 0 1920 1080" aria-label="Timeline from November 2026 to the end of 2028 for the three paths"></svg>
+    <h2>Two dates we'll commit to; everything above them is gated, not scheduled.</h2>
+
+    <p class="lane-name p1" style="top: 384px;">Path 1<small>delivery</small></p>
+    <p class="lane-name p2" style="top: 594px;">Path 2<small>agents</small></p>
+    <p class="lane-name p3" style="top: 804px;">Path 3<small>fleet</small></p>
+
+    <p class="flag-t" style="left: 832px; top: 470px;">Stage 1: alert triage<small>by Q2 2027</small></p>
+    <p class="flag-t" style="left: 1144px; top: 470px;">Stage 2: agents open PRs<small>by the end of 2027</small></p>
+    <p class="later-t" style="left: 1108px; top: 394px;">E: no date yet</p>
+    <p class="later-t" style="left: 1108px; top: 604px;">phase 3: decided with 2027's data</p>
+    <p class="later-t" style="left: 640px; top: 814px;">stages 2 to 4: not dated yet</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Time, drawn to scale, from this month to the end of 2028.
+
+    Path 1 at the top. Stage A by January, stage B in the first quarter, then promotion and fleet waves through 2027. The summit, stage E, has no date yet.
+
+    Path 2 in the middle, and here are the two dates we're asking you to commit to. Stage 1, alert triage, by Q2 2027. That date is safe, because triage never writes anything. Stage 2, agents opening pull requests, by the end of 2027. That one's a bet: it's dated after Path 1's stage B on purpose, because of the rope. Phase 3 gets decided in 2028 with real data.
+
+    Path 3 at the bottom. Stage 1, the label schema, starts now. The rest isn't dated yet, and we'd rather say so than invent dates.
+
+    Everything above those two flags is gated, not scheduled. If the lower stages land early, the rest starts early. If they slip, the rest slips with them, and nobody has to re-argue the order.
+
+    Which brings us back to Meta.
   </aside>
 
+  <script>
+    // 52px per month; November 2026 at x = 360
+    const m = (y, mo) => 360 + ((y - 2026) * 12 + mo - 11) * 52;
+    const bar = (cls, x0, x1, y, t) => `<rect class="bar ${cls}" x="${x0}" y="${y}" width="${x1 - x0 - 4}" height="52" rx="8"/>` + (t ? `<text class="seg-t" x="${x0 + 14}" y="${y + 26}">${t}</text>` : '');
+    const later = (col, x0, x1, y) => `<rect class="later" style="stroke: var(--${col})" x="${x0}" y="${y}" width="${x1 - x0}" height="52" rx="8"/>`;
+    let s = '';
+    s += `<line class="axis" x1="360" y1="960" x2="${m(2029, 1)}" y2="960"/>`;
+    for (let i = 0; i <= 26; i += 3) s += `<line class="tick" x1="${360 + i * 52}" y1="952" x2="${360 + i * 52}" y2="968"/>`;
+    s += `<text class="yr" x="${m(2027, 1) - 10}" y="1010">2027</text><text class="yr" x="${m(2028, 1) - 10}" y="1010">2028</text><text class="yr" x="330" y="1010">now</text>`;
+    s += `<line class="today" x1="360" y1="370" x2="360" y2="960"/>`;
+    // Path 1
+    s += bar('p1f', 360, m(2027, 2), 384, 'A') + bar('p1f', m(2027, 2), m(2027, 4), 384, 'B') + bar('p1f', m(2027, 4), m(2028, 1), 384, 'C, D') + later('mint', m(2028, 1), m(2029, 1), 384);
+    // Path 2
+    s += bar('p2f', 360, m(2027, 2), 594, '0') + bar('p2f', m(2027, 2), m(2027, 7), 594, '1') + bar('p2f', m(2027, 7), m(2028, 1), 594, '2') + later('teal', m(2028, 1), m(2029, 1), 594);
+    for (const x of [m(2027, 7), m(2028, 1)]) s += `<line class="pole" x1="${x - 2}" y1="594" x2="${x - 2}" y2="480"/><path class="flag" d="M${x} 480 L${x + 44} 494 L${x} 508 Z"/>`;
+    // Path 3
+    s += bar('p3f', 360, m(2027, 4), 804, '1') + later('haze', m(2027, 4), m(2029, 1), 804);
+    document.getElementById('tl').innerHTML = s;
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

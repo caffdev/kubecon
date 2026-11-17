@@ -3,23 +3,63 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stages C and D: promotion is a PR, and the fleet rolls in waves with a gate that has failed at least once.</title>
+  <title>Stages C and D</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1440px; }
+    .when { margin-top: 18px; }
+    .cols { position: absolute; left: var(--margin); top: 340px; width: 1560px; display: grid; grid-template-columns: 1fr 1fr; gap: 70px; }
+    .col h3 { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+    .col h3 .camp { width: 58px; height: 58px; font-size: 32px; }
+    .col p { font-size: 27px; line-height: 1.3; margin-bottom: 14px; }
+    .col p b { font-weight: 600; }
+    .tag { display: inline-block; margin-right: 8px; padding: 2px 12px; border-radius: 14px; font: 600 22px/1.3 var(--font-display); background: var(--mint-ink); color: #fff; }
+    .tag.poc { background: #fff; color: var(--mint-ink); border: 2px solid var(--mint-ink); }
+    .gap { margin-top: 10px; padding: 16px 20px; background: #fff; border: 3px solid var(--hairline); border-radius: 12px; }
+    .gate { position: absolute; left: var(--margin); bottom: 72px; width: 1560px; font: 600 32px/1.2 var(--font-display); color: var(--mint-ink); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Stages C and D: promotion is a PR, and the fleet rolls in waves with a gate that has failed at least once.</h1>
+  <main class="slide snow">
+    <h2>Stages C and D: promotion is a PR, and the fleet rolls in waves with a gate that has failed at least once.</h2>
+    <p class="when">Trial, Q2 to the second half of 2027</p>
+
+    <div class="cols">
+      <div class="col">
+        <h3><span class="camp lit">C</span>Promotion is a pull request</h3>
+        <p><span class="tag">commit</span>Hydrator spike, then Promoter on one app: dev to prod with nobody editing YAML.</p>
+        <p><span class="tag">commit</span><b>Agent-or-human attribution:</b> cheap now, expensive to retrofit.</p>
+        <p><span class="tag">commit</span>Separation of duties: a proposer can't approve its own PR; rulesets and RBAC bound each role.</p>
+        <p class="gap"><b>The honest gap:</b> revoking a permission leaves completed merges in place.</p>
+      </div>
+      <div class="col">
+        <h3><span class="camp lit">D</span>The fleet rolls in waves</h3>
+        <p><span class="tag">commit</span>ApplicationSets with rollingSync waves and a health gate.</p>
+        <p><span class="tag poc">POC</span>Canary: two patterns, one pilot service each, time-boxed. "Not yet" is allowed; automated analysis is not optional.</p>
+        <p class="gap"><b>A kill switch is not a rollback.</b> Turning off one behaviour is a feature flag's job; CVS Health uses OpenFeature.</p>
+      </div>
+    </div>
+
+    <p class="gate">Exit gate: a platform component rolls to the whole fleet in waves, and the health gate has failed a bad wave at least once.</p>
+
+    <div class="route-strip" aria-label="Stages A to E, stages C and D current">
+      <span class="camp done">A</span><span class="camp done">B</span><span class="camp lit">C</span><span class="camp lit">D</span><span class="camp">E</span>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Two stages on one slide, because they're one piece of work from a funding point of view. The distinction to hold onto is commitment versus proof of concept.
+
+    Stage C is a commitment. A spike on Argo's source hydrator first, then GitOps Promoter on one app: dev to prod with nobody editing YAML. Agent-or-human attribution goes in the same stage, because it's cheap now and expensive to retrofit. And separation of duties in machinery we already run: whoever proposes a change can't approve its own pull request, the forge enforces the rules, and RBAC bounds each role. The honest gap: revoking a permission doesn't undo merges that already happened. Withdrawal isn't rollback.
+
+    Stage D is one commitment and one proof of concept. The commitment is fleet waves: ApplicationSets with rolling sync and a health gate between waves. The proof of concept is canary: two patterns, one pilot service each, time-boxed, and "neither is worth it yet" is an allowed answer. Even the proof of concept has automated analysis.
+
+    And a kill switch is not a rollback. Progressive delivery reverts a version; it can't turn off one behaviour inside a version. That's a feature flag's job, and CVS Health, the company we opened with, has the answer to that too.
+
+    The exit gate is deliberately brutal: a health gate nobody has watched fail is a health gate nobody should trust.
+
+    And then, the summit.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

@@ -3,25 +3,83 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Percentage ramps assume requests are interchangeable, divisible and single-component.</title>
+  <title>Where ramps break</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .cases { position: absolute; left: var(--margin); top: 330px; width: 1680px; display: grid; grid-template-columns: 1fr 1fr; gap: 50px 90px; }
+    .case { display: grid; grid-template-columns: 300px 1fr; gap: 36px; align-items: center; }
+    .case svg { width: 300px; height: 200px; }
+    .case b { display: block; font: 600 40px/1 var(--font-display); color: var(--alpenglow-ink); margin-bottom: 10px; }
+    .case p { font-size: 28px; line-height: 1.3; }
+    .r { fill: #c6d4d4; } .n { fill: var(--mint-ink); } .crit { fill: none; stroke: var(--alpenglow-ink); stroke-width: 4; }
+    .t1 { fill: #a9c4c8; } .t2 { fill: #c6d4d4; } .t3 { fill: #8fb0b6; }
+    .lbl { font: 600 22px var(--font-display); fill: var(--slate-quiet); }
+    .cut { stroke: var(--alpenglow-ink); stroke-width: 5; stroke-dasharray: 10 8; }
+    .x { stroke: var(--alpenglow-ink); stroke-width: 6; stroke-linecap: round; }
+    .box { fill: none; stroke: var(--slate); stroke-width: 4; }
+    .arrow { stroke: var(--slate-quiet); stroke-width: 4; fill: none; }
+    .src { max-width: 1600px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Percentage ramps assume requests are interchangeable, divisible and single-component.</h1>
+  <main class="slide snow">
+    <h2>Percentage ramps assume requests are interchangeable, divisible and single-component.</h2>
+
+    <div class="cases">
+      <div class="case">
+        <svg id="c1" viewBox="0 0 300 200" aria-label="A grid of requests; the new-version slice lands on two critical jobs"></svg>
+        <div><b>Not interchangeable</b><p>A random slice of users' <em>critical</em> jobs lands on a version nobody validated.</p></div>
+      </div>
+      <div class="case">
+        <svg viewBox="0 0 300 200" aria-label="Three job types; the 10% slice contains none of the third type">
+          <rect class="t1" x="0" y="40" width="150" height="70"/><rect class="t2" x="150" y="40" width="110" height="70"/><rect class="t3" x="260" y="40" width="40" height="70"/>
+          <rect class="n" x="0" y="130" width="30" height="40"/><text class="lbl" x="40" y="158">the 10% slice</text>
+          <text class="lbl" x="250" y="30">type C</text>
+        </svg>
+        <div><b>Not balanced</b><p>A percentage can't balance job types; some types miss the ramp window entirely.</p></div>
+      </div>
+      <div class="case">
+        <svg viewBox="0 0 300 200" aria-label="One schema migration that cannot be split">
+          <rect class="box" x="40" y="30" width="220" height="140" rx="10"/><text class="lbl" x="66" y="108">schema migration</text>
+          <path class="cut" d="M100 10 V190"/>
+        </svg>
+        <div><b>Not divisible</b><p>An all-or-nothing change, like a schema migration, can't apply to a share of requests.</p></div>
+      </div>
+      <div class="case">
+        <svg viewBox="0 0 300 200" aria-label="One request crossing a new component and an old one">
+          <circle cx="24" cy="100" r="14" fill="var(--slate)"/>
+          <path class="arrow" d="M40 100 H92 M188 100 H228"/>
+          <rect class="n" x="96" y="66" width="88" height="68" rx="10"/><text class="lbl" x="116" y="160">new</text>
+          <rect class="t1" x="232" y="66" width="68" height="68" rx="10"/><text class="lbl" x="242" y="160">old</text>
+        </svg>
+        <div><b>Not pinnable</b><p>In a multi-component change, one request hits one new and one old component.</p></div>
+      </div>
+    </div>
+    <p class="src">LinkedIn, canary namespaces for cluster-critical services, KubeCon NA 2026</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    This is LinkedIn's articulation, and it's the best one we heard.
+
+    Percentage ramps quietly assume three things about requests. That they're interchangeable: but a random ten percent means some users' critical jobs land on a version nobody validated. That they're balanced: but a percentage can't balance job types, and some types miss the ramp window entirely. That the change is divisible: but a schema migration is all or nothing. And that it's one component: but in a multi-component change, one request hits the new version of one service and the old version of the next.
+
+    This is why our canary answer is per workload class rather than one pattern for everything. If we're running long, this slide is the one to cut.
+
+    LinkedIn's answer for those cases needs no mesh at all.
   </aside>
 
+  <script>
+    let s = '';
+    const crit = new Set([14, 33]), newer = new Set([3, 14, 22, 33, 47]);
+    for (let i = 0; i < 60; i++) {
+      const x = 4 + (i % 12) * 25, y = 18 + Math.floor(i / 12) * 34;
+      s += `<rect class="${newer.has(i) ? 'n' : 'r'}" x="${x}" y="${y}" width="20" height="26" rx="3"/>`;
+      if (crit.has(i)) s += `<rect class="crit" x="${x - 4}" y="${y - 4}" width="28" height="34" rx="5"/>`;
+    }
+    document.getElementById('c1').innerHTML = s;
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

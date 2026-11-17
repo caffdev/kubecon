@@ -3,23 +3,56 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Auto-sync ships with its guardrails in the same change, never as a follow-up ticket.</title>
+  <title>Guardrails in the same change</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1500px; }
+    .pr {
+      position: absolute; left: var(--margin); top: 330px; width: 1180px;
+      background: #fff; border: 3px solid var(--hairline); border-radius: 18px; overflow: hidden;
+    }
+    .pr-head { padding: 26px 34px; border-bottom: 3px solid var(--hairline); }
+    .pr-head b { display: block; font: 600 40px/1.1 var(--font-display); }
+    .pr-head small { font-size: 24px; color: var(--muted); }
+    .pr-head .open { display: inline-block; margin-right: 12px; padding: 4px 14px; border-radius: 20px; background: var(--mint-ink); color: #fff; font: 600 22px/1.2 var(--font-display); }
+    .line { display: grid; grid-template-columns: 50px 1fr; padding: 16px 34px; border-bottom: 2px solid #eef3f2; font-size: 28px; line-height: 1.3; }
+    .line:last-child { border-bottom: 0; }
+    .line .plus { font: 500 30px/1.3 var(--font-code); color: var(--mint-ink); }
+    .line code { font: 400 25px/1.3 var(--font-code); color: var(--slate); }
+    .line.main { background: #f2f8f6; }
+    .line small { display: block; font-size: 24px; color: var(--muted); }
+    .side { position: absolute; left: 1380px; top: 380px; width: 420px; }
+    .side p { font: 600 46px/1.08 var(--font-display); color: var(--mint-ink); }
+    .side small { display: block; margin-top: 20px; font: 400 28px/1.3 var(--font-body); color: var(--muted); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Auto-sync ships with its guardrails in the same change, never as a follow-up ticket.</h1>
+  <main class="slide snow">
+    <h2>Auto-sync ships with its guardrails in the same change, never as a follow-up ticket.</h2>
+
+    <div class="pr">
+      <div class="pr-head"><b>Turn on auto-sync for non-prod, with guardrails</b><small><span class="open">Open</span>one pull request, five changes</small></div>
+      <div class="line main"><span class="plus">+</span><span><code>automated: {prune: true, selfHeal: true}</code><small>auto-sync with self-heal, non-prod only</small></span></div>
+      <div class="line" data-step><span class="plus">+</span><span><code>Prune=false</code> on stateful and cluster-critical resources<small>prune can never reach them</small></span></div>
+      <div class="line" data-step><span class="plus">+</span><span><code>PruneLast=true</code><small>deletions go last, after everything else is healthy</small></span></div>
+      <div class="line" data-step><span class="plus">+</span><span>a sync window on prod<small>prod stays manual until stage B</small></span></div>
+      <div class="line" data-step><span class="plus">+</span><span><code>reclaimPolicy: Retain</code> audit<small>Delete is the default, and the wrong one for stateful data</small></span></div>
+    </div>
+
+    <div class="side"><p>The guardrails are part of the feature, not overhead.</p><small>Every team at the show running GitOps at scale treated them as a named practice with a checklist.</small></div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Before we ask anyone to turn off the sync button, one rule, and it's a practice we're adopting, not a scare story.
+
+    Auto-sync ships with its guardrails in the same pull request. Not a follow-up ticket. One change.
+
+    The first line is the feature: auto-sync with self-heal, in non-prod only. Click. Prune can never reach stateful or cluster-critical resources. Click. Deletions go last, after everything else is healthy. Click. Prod keeps a sync window, and stays manual until stage B. Click. And we audit storage reclaim policy, because Delete is the default and it's the wrong default for data we care about.
+
+    The teams at the show who run GitOps at scale talked about these as a named practice with a checklist. It's what makes the guardrails look like part of the feature rather than overhead.
+
+    Now, what our peers run that we don't.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

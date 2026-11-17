@@ -3,23 +3,52 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Confirm five leans and protect stage B's headcount.</title>
+  <title>The ask</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1500px; }
+    .leans { position: absolute; left: var(--margin); top: 290px; width: 1000px; display: grid; }
+    .lean { display: grid; grid-template-columns: 1fr 420px; gap: 30px; padding: 18px 0; border-top: 2px solid var(--scree); align-items: baseline; }
+    .lean:last-child { border-bottom: 2px solid var(--scree); }
+    .lean p { font: 600 32px/1.12 var(--font-display); }
+    .lean.new { margin-top: 26px; border-top-style: dashed; }
+    .lean.new p { color: var(--lichen); }
+    .lean span { font-size: 26px; line-height: 1.25; color: var(--mint); }
+    .protect { position: absolute; left: 1220px; top: 290px; width: 580px; padding: 34px 36px; border-radius: 20px; background: var(--mint); color: var(--night); }
+    .protect .camp { --c: var(--night); width: 80px; height: 80px; font-size: 44px; border-width: 5px; margin-bottom: 20px; }
+    .protect p { font-size: 29px; line-height: 1.3; }
+    .protect b { display: block; margin-top: 20px; font: 700 52px/1.02 var(--font-display); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Confirm five leans and protect stage B's headcount.</h1>
+    <h2>Confirm five leans and protect stage B's headcount.</h2>
+
+    <div class="leans">
+      <div class="lean"><p>Prod auto-sync before or after change-window gating?</p><span>After: the gating is what buys the permission</span></div>
+      <div class="lean"><p>Promoter or Kargo?</p><span>Promoter first, Kargo as fallback; a two-week spike on one app</span></div>
+      <div class="lean"><p>Change records: an API call from policy, or a CRD?</p><span>A CRD: admission can't depend on an outside service</span></div>
+      <div class="lean"><p>Is canary worth it, and which pattern?</p><span>A POC per workload class; "not yet" is allowed</span></div>
+      <div class="lean"><p>Drift: silent self-heal or alert first?</p><span>Both, split by resource class</span></div>
+      <div class="lean new"><p>And one new question: does any app's config need in-place refresh?</p><span>We lean no; if none does, that refresh path retires</span></div>
+    </div>
+
+    <div class="protect">
+      <span class="camp">B</span>
+      <p>The one ask that isn't a decision. Stage B is the least visible work on this path and the easiest to drop. It gates stage C <em>and</em> the agent path's pull requests.</p>
+      <b>If one thing gets protected headcount, it's this.</b>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Five decisions, and four of them already have a lean, so this is about confirming, not deliberating. Take the objections, but let's not reopen promotion: the spike is how we test it.
+
+    Prod auto-sync comes after change-window gating, because the gating is what buys the permission. Promoter first, Kargo as the fallback, two-week spike. Change records projected as a CRD, because admission can't depend on an outside service. Canary as a proof of concept per workload class, where "not yet" is an allowed answer. Drift handled both ways, split by resource class. And one new question: does any app's config genuinely need in-place refresh? We lean no, and if so, the config-server refresh path retires.
+
+    The card on the right is the thing to repeat at the end. Stage B has no demo and no dashboard. A room that buys the trade and then funds only stage A has made things worse, because auto-sync without the policy layer is exactly the risk the guardrails exist for. It also gates the agent path's pull requests.
+
+    If we leave with one owner named, make it stage B's.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

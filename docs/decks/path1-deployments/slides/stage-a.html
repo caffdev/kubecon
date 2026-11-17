@@ -3,23 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stage A, by January: Argo becomes a control loop in non-prod.</title>
+  <title>Stage A</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1440px; }
+    .when { margin-top: 18px; }
+    .items { position: absolute; left: var(--margin); top: 330px; width: 860px; display: grid; gap: 22px; }
+    .it { padding-left: 30px; border-left: 6px solid var(--mint-ink); font-size: 27px; line-height: 1.28; color: var(--muted); }
+    .it b { display: block; font: 600 34px/1.05 var(--font-display); color: var(--slate); margin-bottom: 4px; }
+    .it code { font: 400 24px var(--font-code); color: var(--slate); }
+    .card { position: absolute; left: 1060px; width: 600px; padding: 28px 32px; border-radius: 16px; font-size: 28px; line-height: 1.3; }
+    .card b { display: block; font: 600 36px/1.05 var(--font-display); margin-bottom: 10px; }
+    .card.gate { top: 330px; background: var(--mint-ink); color: #fff; }
+    .card.first { top: 650px; background: #fff; border: 3px solid var(--hairline); }
+    .card.first b { color: var(--mint-ink); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Stage A, by January: Argo becomes a control loop in non-prod.</h1>
+  <main class="slide snow">
+    <h2>Stage A, by January: Argo becomes a control loop in non-prod.</h2>
+    <p class="when">Adopt, now to January 2027</p>
+
+    <div class="items">
+      <p class="it"><b>Auto-sync, self-heal and prune, non-prod only</b>prod stays manual until stage B</p>
+      <p class="it"><b>Guardrails in the same change</b><code>Prune=false</code>, <code>PruneLast</code>, a sync window on prod</p>
+      <p class="it"><b>Stakater Reloader</b>the trust prerequisite: next slide</p>
+      <p class="it"><b>Drift policy by resource class</b>silent self-heal for cluster-critical; alert first where someone may have hot-fixed</p>
+      <p class="it"><b>Argo CD upgrade</b>resources explorer, ApplicationSet views, controller memory</p>
+      <p class="it"><b>StorageClass reclaimPolicy audit</b>Delete is the default, and the wrong one</p>
+    </div>
+
+    <div class="card gate"><b>Exit gate</b>Zero manual syncs in non-prod for four weeks. Drift alerts reach a named owner. A ConfigMap change visibly rolls the pods that use it.</div>
+    <div class="card first"><b>The first two weeks</b>One non-prod app: auto-sync on, exclusions in, Reloader installed, and a written list of everything that drifted.</div>
+
+    <div class="route-strip" aria-label="Stages A to E, stage A current">
+      <span class="camp lit">A</span><span class="camp">B</span><span class="camp">C</span><span class="camp">D</span><span class="camp">E</span>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Here's the trade made concrete, starting with stage A, by January: Argo becomes a control loop, in non-prod.
+
+    Six items. Auto-sync with self-heal and prune, non-prod only; prod stays manual until stage B. The guardrails ship in the same change, which is the rule from earlier. Stakater Reloader, which gets its own slide next because it's the trust prerequisite. A drift policy by resource class: silent self-heal for cluster-critical things, alert first where a human may have hot-fixed something. An Argo CD upgrade. And a reclaim-policy audit on our storage classes.
+
+    The exit gate is how we know the stage is done rather than declared done: zero manual syncs in non-prod for four weeks, drift alerts going to a named owner, and a config change that demonstrably rolls the pods that use it.
+
+    And the first two weeks are deliberately small: one app, and the real deliverable is the list of everything that drifted. Nobody argues with a list of things that were already wrong.
+
+    One of those six items deserves its own slide.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

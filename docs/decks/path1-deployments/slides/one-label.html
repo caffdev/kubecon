@@ -3,23 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>For services with no traffic to split, one namespace label is the switch.</title>
+  <title>One label is the switch</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1500px; }
+    .moves { position: absolute; left: var(--margin); top: 320px; width: 860px; display: grid; gap: 22px; }
+    .moves::before { content: ""; position: absolute; left: 30px; top: 30px; bottom: 30px; width: 4px; background: var(--mint); opacity: .5; }
+    .move { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 26px; align-items: center; font-size: 28px; line-height: 1.25; }
+    .move .camp { background: var(--night); }
+    .move b { font: 600 36px/1 var(--font-display); color: var(--mint); margin-right: 10px; }
+    .quiet-fail { position: absolute; left: 1100px; top: 330px; width: 700px; }
+    .quiet-fail h3 { color: var(--snow); }
+    .tbar { height: 40px; border-radius: 6px; margin-top: 34px; }
+    .tbar.loud { width: 8px; background: var(--mint); }
+    .tbar.silent { width: 700px; background: var(--lichen); }
+    .tlab { margin-top: 10px; font-size: 26px; color: var(--muted); }
+    .tlab b { color: var(--snow); font-weight: 600; }
+    .scale { margin-top: 40px; font-size: 26px; color: var(--muted); }
+    .scale b { font: 600 44px/1 var(--font-display); color: var(--snow); margin-right: 8px; }
+    .src { max-width: 1600px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>For services with no traffic to split, one namespace label is the switch.</h1>
+    <h2>For services with no traffic to split, one namespace label is the switch.</h2>
+
+    <div class="moves">
+      <p class="move"><span class="camp">1</span><span><b>Isolate</b>a canary instance beside prod, with its own DB schema and DB user</span></p>
+      <p class="move"><span class="camp">2</span><span><b>Route</b>only a <code style="font: 24px var(--font-code)">canary-test</code> namespace reaches it, by namespaceSelector</span></p>
+      <p class="move"><span class="camp">3</span><span><b>Validate</b>20+ real workflows on real nodes, real data</span></p>
+      <p class="move"><span class="camp">4</span><span><b>Gate</b>a PostSync hook Job: exit 0 advances, exit 1 fails the sync</span></p>
+      <p class="move"><span class="camp">5</span><span><b>Promote</b>cluster by cluster, triggered on pass</span></p>
+    </div>
+
+    <div class="quiet-fail">
+      <h3>Why build a gate, not a dashboard: the quieter the failure, the longer it lasted.</h3>
+      <div class="tbar loud"></div><p class="tlab"><b>~30 minutes</b>: a webhook outage, loud, caught fast</p>
+      <div class="tbar silent"></div><p class="tlab"><b>~2 days</b>: a silent webhook change stripping GPUs from jobs</p>
+      <p class="scale"><b>820</b>executions <b style="margin-left: 30px;">110</b>workflows</p>
+    </div>
+    <p class="src">LinkedIn, "Ship Faster, Ship Safer: A K8s-Native Canary Pipeline for Critical Cluster Services"</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    This is the only canary pattern that works for things with no user traffic to split: admission webhooks, controllers, credential services. Which is most of what a platform team owns.
+
+    Five moves. Isolate: run a canary instance beside production with its own deployment, service, config, and its own database schema and user. Route: only one dedicated canary-test namespace can reach it, using a namespace selector. No proxy, no mesh; the API server does the routing. Validate: run twenty-plus real workflows on real nodes against real data. Gate: an Argo CD PostSync hook job; exit zero advances, exit one fails the sync. Promote: cluster by cluster, automatically on pass.
+
+    On the right is why you build the gate rather than a dashboard. A loud webhook outage got caught in about thirty minutes. A silent webhook change that quietly stripped GPUs from job specs lasted about two days. That's the bars, to scale. No human watching a graph catches the quiet ones.
+
+    That pattern selects on labels. So should everything else.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

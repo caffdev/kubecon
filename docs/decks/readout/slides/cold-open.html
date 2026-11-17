@@ -3,25 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Meta runs about a hundred clusters with fifteen engineers.</title>
+  <title>100 clusters, 15 engineers</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h1 { font-size: 108px; max-width: 1500px; line-height: .98; }
+    .field { position: absolute; left: 120px; top: 380px; }
+    .person { fill: var(--mint); }
+    .count { position: absolute; font: 600 40px/1.05 var(--font-display); }
+    .count small { display: block; font: 400 26px/1.2 var(--font-body); color: var(--muted); }
+    .src { bottom: 52px; }
+    .is-entered .person { animation: pop 400ms var(--step-ease) both; animation-delay: calc(var(--i) * 40ms + 400ms); transform-box: fill-box; transform-origin: 50% 100%; }
+    @keyframes pop { from { transform: scale(0); } }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
     <h1>Meta runs about a hundred clusters with fifteen engineers.</h1>
+    <svg class="field" id="field" width="1680" height="580" viewBox="0 0 1680 580" aria-label="100 small peaks, one per cluster, and 15 people beneath them"></svg>
+    <p class="count" style="left: 1500px; top: 880px; width: 300px; text-align: right;">~100 clusters<small>AI research and inference</small></p>
+    <p class="count" style="left: 990px; top: 880px; width: 460px; color: var(--mint);">~15 engineers<small>no one clicking anything</small></p>
+    <p class="src">"We Have GitOps at Home", Meta keynote abstract, KubeCon NA 2026</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    A hundred clusters, and fifteen people running them. That's Meta, from their keynote this week, for the clusters behind their AI research and inference.
+
+    Every little peak on the screen is a cluster. The fifteen figures underneath are the whole team.
+
+    Pause. That ratio only works if nobody is clicking anything. No hand-run upgrades, no manual syncs, no runbook in a wiki. Here's what we think it means for us.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    let out = '';
+    for (let i = 0; i < 100; i++) {
+      const c = i % 20, r = Math.floor(i / 20);
+      out += Peaks.glyph({ x: 40 + c * 84, y: 34 + r * 74, w: 58, h: 50 });
+    }
+    for (let i = 0; i < 15; i++) {
+      const x = 40 + i * 52, y = 500;
+      out += `<g class="person" style="--i:${i}"><circle cx="${x}" cy="${y}" r="11"/><path d="M${x - 15} ${y + 52} Q${x - 15} ${y + 16} ${x} ${y + 16} Q${x + 15} ${y + 16} ${x + 15} ${y + 52} Z"/></g>`;
+    }
+    Peaks.draw('#field', out);
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

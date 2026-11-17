@@ -3,25 +3,75 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Path 3: clusters become cattle, and developers never write a cluster name.</title>
+  <title>Path 3</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { font-size: 72px; max-width: 800px; }
+    .idea { position: absolute; left: var(--margin); top: 470px; width: 720px; }
+    .more { position: absolute; left: var(--margin); bottom: 72px; font-size: 26px; color: var(--muted); }
+    .more b { color: var(--path); font-weight: 500; }
+    .route { fill: none; stroke: var(--path); stroke-width: 4; }
+    .camp-dot { fill: var(--night); stroke: var(--path); stroke-width: 4; }
+    .camp-txt { font: 600 30px var(--font-display); fill: var(--path); text-anchor: middle; dominant-baseline: central; }
+    .stage { position: absolute; width: 420px; font: 600 32px/1.05 var(--font-display); color: var(--snow); }
+    .stage small { display: block; margin-top: 4px; font: 400 24px/1.2 var(--font-body); color: var(--muted); }
+    .stage small.dated { color: var(--alpenglow); }
+    .herd { display: block; }
+    .herd .pk-glyph { fill: var(--scree); }
+    .herd text { font: 500 22px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .yaml { margin-top: 30px; font: 400 26px/1.5 var(--font-code); color: var(--snow); white-space: pre; }
+    .yaml .k { color: var(--haze); }
+    .cap-line { margin-top: 10px; font-size: 26px; color: var(--muted); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Path 3: clusters become cattle, and developers never write a cluster name.</h1>
+  <main class="slide" style="--path: var(--haze);">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Path 3: clusters become cattle, and developers never write a cluster name.</h2>
+    <div class="idea">
+      <svg class="herd" id="herd" width="700" height="240" viewBox="0 0 700 240" aria-label="Twelve identical clusters, numbered"></svg>
+      <p class="cap-line">Built from code, numbered, replaceable.</p>
+      <p class="yaml"><span class="k">placement:</span> {compliance: pci, capability: gpu}</p>
+      <p class="cap-line">Apps name constraints, never a cluster.</p>
+    </div>
+    <p class="stage" style="left: 1220px; top: 934px;">Cluster labels become an API<small class="dated">starts now: a schema and an owner</small></p>
+    <p class="stage" style="left: 1265px; top: 754px;">Fleet delivery in waves<small>with Path 1 stage D</small></p>
+    <p class="stage" style="left: 1310px; top: 574px;">Lifecycle: Auto Mode, upgrade policy<small>EKS as the one orchestrator</small></p>
+    <p class="stage" style="left: 1355px; top: 394px;">Crossplane for app-owned infrastructure<small>S3 first</small></p>
+
+    <p class="more">The detail is in its own deck: <b>Path 3: The fleet is going to get big</b>.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Path 3 is the ground the other two stand on: the fleet itself.
+
+    Two ideas. Clusters become cattle: built from code, numbered, replaceable, nobody's pet. And developers never write a cluster name; an app declares constraints, like PCI and GPU, and the platform resolves them to clusters.
+
+    Four stages. Stage 1 starts now and costs almost nothing: cluster labels become an API, which needs a schema and an owner. Path 1's fleet waves depend on it, which is the second rope. Then fleet delivery in waves, then lifecycle, which is EKS as our one orchestrator with Auto Mode and an upgrade window that's a policy rather than a project, and then Crossplane for the infrastructure app teams own, starting with S3.
+
+    Two of these camps across the three paths get dates. The rest don't, on purpose.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    const camps = [[1170, 960, '1'], [1215, 780, '2'], [1260, 600, '3'], [1305, 420, '4']];
+    const pts = camps.map(c => c[0] + ',' + c[1]).join(' ');
+    Peaks.draw('#range',
+      Peaks.far({ y: 820, amp: 60, n: 9, x0: 820, seed: 5 }),
+      Peaks.peak({ x: 1380, top: 120, base: 1080, hw: 480, cap: 'var(--path)', capScale: 0.5 }),
+      `<polyline class="route" points="${pts}"/>` +
+      camps.map(([x, y, t]) => `<circle class="camp-dot" cx="${x}" cy="${y}" r="30"/><text class="camp-txt" x="${x}" y="${y}">${t}</text>`).join('')
+    );
+  </script>
+  <script>
+    let h = '';
+    for (let i = 0; i < 12; i++) {
+      const c = i % 6, r = Math.floor(i / 6), x = 40 + c * 116, y = 34 + r * 120;
+      h += Peaks.glyph({ x, y, w: 70, h: 58 }) + `<text x="${x}" y="${y + 58}">${String(i + 1).padStart(2, '0')}</text>`;
+    }
+    Peaks.draw('#herd', h);
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

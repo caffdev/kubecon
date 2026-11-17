@@ -3,23 +3,51 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fleet toil and AI agents are one problem: change has to reach a cluster without a human reading every diff.</title>
+  <title>Two forces, one fix</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .route { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+    .r-fleet { stroke: var(--haze); }
+    .r-agents { stroke: var(--teal); }
+    .col { fill: var(--alpenglow); stroke: var(--night); stroke-width: 5; }
+    .force { position: absolute; top: 960px; font: 600 40px/1.05 var(--font-display); }
+    .force small { display: block; font: 400 26px/1.25 var(--font-body); color: var(--snow); opacity: .85; }
+    .col-label { position: absolute; left: 700px; top: 520px; width: 520px; text-align: center; font: 600 36px/1.1 var(--font-display); color: var(--alpenglow); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Fleet toil and AI agents are one problem: change has to reach a cluster without a human reading every diff.</h1>
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="pk-far" d="M0 1080 L0 760 L200 640 L330 700 L520 560 L700 660 L960 600 L1220 660 L1400 560 L1590 700 L1720 640 L1920 760 L1920 1080 Z"/>
+      <path class="pk-body" d="M0 1080 L0 900 L420 470 L960 650 L1500 470 L1920 900 L1920 1080 Z"/>
+      <path class="pk-shadow" d="M420 470 L960 650 L760 1080 L560 1080 L420 560 Z"/>
+      <path class="pk-shadow" d="M1500 470 L1920 900 L1920 1080 L1700 1080 L1500 560 Z"/>
+      <path class="pk-cap" style="--cap: var(--haze)" d="M420 470 L470 520 L440 530 L490 580 L420 560 Z"/>
+      <path class="pk-cap" style="--cap: var(--teal)" d="M1500 470 L1550 520 L1520 530 L1570 580 L1500 560 Z"/>
+      <polyline class="route r-fleet" points="200,960 380,880 330,820 560,760 520,720 760,700 960,650" pathLength="1" data-step="1" data-effect="draw"/>
+      <polyline class="route r-agents" points="1720,960 1540,880 1590,820 1360,760 1400,720 1160,700 960,650" pathLength="1" data-step="1" data-effect="draw"/>
+      <circle class="col" cx="960" cy="650" r="20"/>
+    </svg>
+
+    <h2>Fleet toil and AI agents are one problem: change has to reach a cluster without a human reading every diff.</h2>
+
+    <p class="col-label">One control plane: GitOps, policy, progressive delivery</p>
+    <p class="force" style="left: 120px; color: var(--haze);">More clusters than hands<small>hundreds of clusters, still upgraded by hand</small></p>
+    <p class="force" style="right: 120px; text-align: right; color: var(--teal);">Agents that change infrastructure<small>a workload class and a user class</small></p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Two things got loud this week, from two different directions.
+
+    On the left, fleets. Companies running hundreds of clusters and still upgrading them by hand. Ninety percent of AI runs on Kubernetes, so the fleet is growing, not shrinking.
+
+    On the right, agents. They're a new kind of workload that needs sandboxing, identity and egress control. And they're a new kind of user: they want to change our infrastructure, which means they need a path to production that doesn't depend on a human reading every diff.
+
+    Click. Follow both routes up and they arrive at the same place. A change has to reach a cluster safely without a person reviewing every line, whether there are too many clusters for people to keep up, or the author isn't a person at all. The answer to both is one control plane: GitOps, policy, and progressive delivery. That's what makes a change safe regardless of who or what wrote it.
+
+    First force first: the fleets.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

@@ -3,23 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>A canary without automated analysis is just a slower outage.</title>
+  <title>Canary with analysis</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1400px; }
+    .rail { stroke: var(--scree); stroke-width: 6; fill: none; }
+    .rail.fail { stroke: var(--mint); stroke-dasharray: 14 10; }
+    .stn { fill: var(--night); stroke: var(--scree); stroke-width: 5; }
+    .stn.on { fill: var(--mint); stroke: var(--mint); }
+    .st { position: absolute; top: 640px; width: 360px; }
+    .st b { display: block; font: 600 42px/1.05 var(--font-display); }
+    .st code { display: block; margin: 8px 0 10px; font: 400 24px/1.2 var(--font-code); color: var(--lichen); }
+    .st p { font-size: 28px; line-height: 1.3; color: var(--muted); }
+    .st.on b { color: var(--mint); }
+    .st.on p { color: var(--snow); }
+    .fails { position: absolute; left: 1270px; top: 470px; font: 600 30px/1 var(--font-display); color: var(--mint); }
+    .caveat { position: absolute; left: var(--margin); bottom: 72px; max-width: 1500px; font-size: 26px; line-height: 1.35; color: var(--muted); }
+    .caveat b { color: var(--snow); font-weight: 600; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>A canary without automated analysis is just a slower outage.</h1>
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="rail" d="M260 560 H1140"/>
+      <path class="rail fail" d="M1140 560 H1560" pathLength="1" data-step="1" data-effect="draw" style="stroke-dasharray: 1;"/>
+      <circle class="stn" cx="260" cy="560" r="34"/>
+      <circle class="stn" cx="700" cy="560" r="34"/>
+      <circle class="stn" cx="1140" cy="560" r="34"/>
+      <circle class="stn on" cx="1580" cy="560" r="40"/>
+      <path d="M1562 540 L1546 560 L1562 580 M1546 560 H1612" stroke="var(--night)" stroke-width="7" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <h2>A canary without automated analysis is just a slower outage.</h2>
+
+    <div class="st" style="left: 120px;"><b>Rollout</b><code>kind: Rollout</code><p>The workload's spec, versioned in Git</p></div>
+    <div class="st" style="left: 560px;"><b>A share of traffic</b><code>setWeight, pause</code><p>A slice of requests reaches the new version</p></div>
+    <div class="st" style="left: 1000px;"><b>Analysis</b><code>AnalysisRun</code><p>A template queries the metric and judges it</p></div>
+    <p class="fails" data-step="1">fails</p>
+    <div class="st on" data-step="1" style="left: 1440px;"><b>Reverts itself</b><code>abort, rollback</code><p>The version goes back with no human in the path</p></div>
+
+    <p class="caveat"><b>The honest caveat:</b> traffic-weighted canary needs a traffic router: a mesh, an ingress controller, ALB or VPC Lattice, or the Gateway API plugin ⚠️. The networking thread chooses it, not this path.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    If you remember one mechanism from this deck, make it this one.
+
+    A Rollout is the workload's spec, in Git. It sends a share of traffic to the new version and pauses. An AnalysisRun queries a metric, error rate or latency, and judges it against a threshold we wrote down in advance.
+
+    Click. When the analysis fails, the version reverts itself. Nobody is paged to make the call, nobody has to notice the graph. That automatic fail-back is the whole ask on this slide. A canary that waits for a human to look at a dashboard is just a slower outage.
+
+    The honest caveat: traffic-weighted canary needs a traffic router. A mesh, an ingress controller, ALB or VPC Lattice, or the Gateway API plugin, whose maturity we still need to check against the Argo Rollouts docs. Which router we get comes out of the networking work, not this path. Better to say that now than have someone discover it in Q&A.
+
+    And percentage ramps don't fit everything we run.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

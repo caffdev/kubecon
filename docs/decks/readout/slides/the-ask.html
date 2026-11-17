@@ -3,25 +3,71 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Name three owners today, protect stage B, and commit to the two dates.</title>
+  <title>The ask</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1600px; }
+    .cols { position: absolute; left: var(--margin); top: 330px; width: 1680px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; }
+    .col svg { width: 220px; height: 150px; }
+    .col h3 { margin-top: 14px; color: var(--path); }
+    .owner { margin-top: 18px; display: flex; align-items: flex-end; gap: 14px; font: 600 30px/1 var(--font-display); color: var(--muted); }
+    .owner span { flex: 1; border-bottom: 3px solid var(--scree); height: 30px; }
+    .ask { margin-top: 26px; font-size: 32px; line-height: 1.3; }
+    .ask b { font-weight: 600; color: var(--alpenglow); }
+    .ring { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 4px solid var(--alpenglow); color: var(--alpenglow); font: 600 30px/1 var(--font-display); vertical-align: middle; margin-right: 6px; }
+    .foot { position: absolute; left: var(--margin); bottom: 64px; max-width: 1600px; font-size: 26px; color: var(--muted); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Name three owners today, protect stage B, and commit to the two dates.</h1>
+    <h2>Name three owners today, protect stage B, and commit to the two dates.</h2>
+
+    <div class="cols">
+      <div class="col" style="--path: var(--mint);">
+        <svg id="pk1" viewBox="0 0 220 150" aria-hidden="true"></svg>
+        <h3>Path 1: Deployments</h3>
+        <p class="owner">Owner<span></span></p>
+        <p class="ask"><span class="ring">B</span><b>Protect stage B.</b> One policy set in CI and at admission. It gates Path 1's stage C and Path 2's agent PRs.</p>
+      </div>
+      <div class="col" style="--path: var(--teal);">
+        <svg id="pk2" viewBox="0 0 220 150" aria-hidden="true"></svg>
+        <h3>Path 2: Claude agents</h3>
+        <p class="owner">Owner<span></span></p>
+        <p class="ask"><b>Commit to two dates.</b> Alert triage by Q2 2027. Agents open PRs by the end of 2027.</p>
+      </div>
+      <div class="col" style="--path: var(--haze);">
+        <svg id="pk3" viewBox="0 0 220 150" aria-hidden="true"></svg>
+        <h3>Path 3: The fleet</h3>
+        <p class="owner">Owner<span></span></p>
+        <p class="ask"><b>Start stage 1 now.</b> Someone owns the cluster-label schema. EKS is the one orchestrator.</p>
+      </div>
+    </div>
+
+    <p class="foot">On no path, but on a clock: Gateway API, because Ingress NGINX is retired; and an inventory of our long-lived secrets.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Here's what we need from this room, and it's small enough to say yes to today.
+
+    Three owners, one per path. A name each, not a team.
+
+    For Path 1, protect stage B. It's one policy set, run in CI and at admission. Nobody demos it, so it's the easiest thing to deprioritise, and it gates both Path 1's next stage and Path 2's agent pull requests. If one thing gets protected headcount, it's this.
+
+    For Path 2, commit to the two dates: alert triage by Q2 2027, agents opening pull requests by the end of 2027.
+
+    For Path 3, start stage 1 now: someone owns the cluster-label schema, and we agree EKS is our one orchestrator.
+
+    Two things are on no path but do have a clock: Gateway API, because Ingress NGINX is retired, and an inventory of our long-lived secrets.
+
+    We'll leave this up for the discussion. Each path has its own deck with the detail.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    [['#pk1', 'var(--mint)'], ['#pk2', 'var(--teal)'], ['#pk3', 'var(--haze)']].forEach(([id, cap]) =>
+      Peaks.draw(id, Peaks.peak({ x: 110, top: 10, base: 150, hw: 110, cap })));
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

@@ -3,25 +3,73 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Our peers already made the deploy path invisible.</title>
+  <title>Our peers</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    .rows { position: absolute; left: var(--margin); top: 290px; width: 1680px; display: grid; gap: 70px; }
+    .row { display: grid; grid-template-columns: 300px 1fr; column-gap: 40px; align-items: center; }
+    .who { font: 600 44px/1 var(--font-display); }
+    .who small { display: block; margin-top: 8px; font: 400 24px/1.25 var(--font-body); color: var(--muted); }
+    .bar { height: 44px; border-radius: 8px; }
+    .bar.week { width: 1300px; background: var(--scree); }
+    .bar.hour { width: 10px; background: var(--mint); }
+    .bar-t { font-size: 28px; color: var(--muted); margin: 8px 0 14px; }
+    .bar-t b { color: var(--snow); font-weight: 600; }
+    .bar-t.now b { color: var(--mint); }
+    .day1 { display: flex; gap: 10px; align-items: center; }
+    .day1 span { width: 56px; height: 56px; border-radius: 8px; border: 3px solid var(--scree); }
+    .day1 span:first-child { background: var(--mint); border-color: var(--mint); }
+    .day1 p { margin-left: 24px; font-size: 30px; }
+    .day1 p b { color: var(--mint); font-weight: 600; }
+    .ratio p { font-size: 30px; margin-top: 10px; }
+    .ratio p b { color: var(--mint); font-weight: 600; }
+    .src { max-width: 1600px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Our peers already made the deploy path invisible.</h1>
+    <h2>Our peers already made the deploy path invisible.</h2>
+
+    <div class="rows">
+      <div class="row">
+        <p class="who">CVS Health<small>two-year DevEx program</small></p>
+        <div class="day1"><span></span><span></span><span></span><span></span><span></span><p><b>Day one:</b> a new hire ships a new app</p></div>
+      </div>
+      <div class="row">
+        <p class="who">LinkedIn<small>cluster-critical services</small></p>
+        <div>
+          <div class="bar week"></div><p class="bar-t"><b>About a week</b> per release, before</p>
+          <div class="bar hour"></div><p class="bar-t now"><b>About an hour</b>, validated automatically; 10+ incidents caught before prod</p>
+        </div>
+      </div>
+      <div class="row ratio">
+        <p class="who">Meta<small>AI research and inference</small></p>
+        <div><svg id="ratio" width="1300" height="120" viewBox="0 0 1300 120" aria-label="100 clusters and 15 engineers"></svg><p><b>~15 engineers</b> run ~100 clusters</p></div>
+      </div>
+    </div>
+    <p class="src">CVS Health keynote · LinkedIn, "Ship Faster, Ship Safer: A K8s-Native Canary Pipeline" · Meta, "We Have GitOps at Home" keynote abstract</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Three companies, three measures, and none of them is "we bought a tool".
+
+    CVS Health set the goal as developer onboarding time: a new hire ships a new app on day one. Two years of work, and a control plane they're open-sourcing.
+
+    LinkedIn's canary pipeline for their cluster-critical services took a release from about a week to about an hour, validated automatically. Look at the bars: the hour is that sliver. And it caught more than ten incidents before they reached production.
+
+    Meta: about fifteen engineers run about a hundred clusters. That ratio is only possible if nobody is clicking anything.
+
+    And here is where we are.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    let s = '';
+    for (let i = 0; i < 100; i++) s += Peaks.glyph({ x: 12 + (i % 50) * 26, y: 14 + Math.floor(i / 50) * 30, w: 20, h: 18 });
+    for (let i = 0; i < 15; i++) s += `<circle cx="${12 + i * 26}" cy="100" r="9" style="fill: var(--mint)"/>`;
+    Peaks.draw('#ratio', s);
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

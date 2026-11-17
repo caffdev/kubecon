@@ -3,23 +3,52 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Day one measures how much of our platform a developer has to understand before they can ship.</title>
+  <title>What day one measures</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    .joke { font-size: 32px; font-style: italic; color: var(--muted); max-width: 760px; }
+    .slide h2 { margin-top: 40px; font-size: 76px; max-width: 760px; }
+    .pack { position: absolute; left: 1000px; top: 200px; width: 800px; display: grid; gap: 14px; }
+    .pack-head { font: 600 30px/1 var(--font-display); color: var(--muted); margin-bottom: 6px; }
+    .item {
+      display: grid; grid-template-columns: 1fr 72px; align-items: center; gap: 20px;
+      min-height: 120px; padding: 18px 26px;
+      background: var(--rock); border-radius: 14px; border-left: 8px solid var(--mint);
+      font: 600 38px/1.1 var(--font-display);
+    }
+    .item small { display: block; margin-top: 6px; font: 400 24px/1.2 var(--font-body); color: var(--muted); }
+    .item .camp { width: 64px; height: 64px; }
+    .item .camp.p3c { --c: var(--haze); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Day one measures how much of our platform a developer has to understand before they can ship.</h1>
+    <p class="joke">"We are never going to let someone deploy to prod on day one. Day one, they can't find the bathroom."</p>
+    <h2>Day one measures how much of our platform a developer has to understand before they can ship.</h2>
+
+    <div class="pack">
+      <p class="pack-head">What a developer has to carry today, and the stage that takes it off</p>
+      <p class="item" data-step><span>Which cluster their app runs in<small>a name they had to learn; Path 3 takes this one</small></span><span class="camp p3c">1</span></p>
+      <p class="item" data-step><span>When to click sync, and whether to<small>the button is the change control</small></span><span class="camp">A</span></p>
+      <p class="item" data-step><span>Whether a change freeze is on<small>someone tells them, or doesn't</small></span><span class="camp">B</span></p>
+      <p class="item" data-step><span>Which of our rules the manifest breaks<small>a reviewer's memory</small></span><span class="camp">B</span></p>
+      <p class="item" data-step><span>How to roll back<small>a person and a Slack thread</small></span><span class="camp">D</span></p>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Our first reaction, when we heard that quote, was this one. We are never going to let someone deploy to prod on day one. Day one, they can't find the bathroom.
+
+    Get the laugh. Then: that's not what they meant, and it's not what we're asking for.
+
+    "Day one" doesn't measure trust in new hires. It measures how much of our platform a person has to understand before they can ship. CVS didn't make production safer by trusting people more. They made the path so constrained that trust stopped being the variable.
+
+    So here's what a developer has to carry today. Click. Which cluster their app runs in. Click. When to click sync, and whether to. Click. Whether there's a change freeze on. Click. Which of our rules their manifest breaks. Click. How to roll back.
+
+    Every one of those has an owner later in this deck: the letter on the right is the stage that takes it off the pack. The first one belongs to Path 3, the fleet.
+
+    And our peers have already taken those off the pack.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

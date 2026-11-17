@@ -3,23 +3,68 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Promotion becomes a pull request: GitOps Promoter first, Kargo as the fallback.</title>
+  <title>Promotion as a PR</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1500px; }
+    .model { position: absolute; top: 320px; width: 800px; }
+    .model h3 { margin-bottom: 8px; }
+    .model .fit { font-size: 28px; line-height: 1.3; color: var(--muted); margin-top: 22px; }
+    .ours h3 { color: var(--mint); }
+    .theirs h3 { color: var(--lichen); }
+    .tag { display: inline-block; margin-left: 12px; padding: 4px 14px; border-radius: 20px; background: var(--mint); color: var(--night); font: 600 24px/1.2 var(--font-display); vertical-align: middle; }
+    .art { width: 800px; height: 280px; margin-top: 10px; }
+    .cp { fill: none; stroke: var(--lichen); stroke-width: 3; stroke-dasharray: 8 7; }
+    .stagebox { fill: var(--rock); stroke: var(--scree); stroke-width: 3; }
+    .lab { font: 600 26px var(--font-display); fill: var(--lichen); }
+    .lab.m { fill: var(--snow); }
+    .branch { stroke: var(--mint); stroke-width: 5; fill: none; }
+    .pr { fill: var(--mint); }
+    .flip { position: absolute; left: var(--margin); bottom: 64px; width: 1680px; padding-top: 22px; border-top: 2px solid var(--scree); font-size: 27px; line-height: 1.35; color: var(--muted); }
+    .flip b { color: var(--snow); font-weight: 600; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Promotion becomes a pull request: GitOps Promoter first, Kargo as the fallback.</h1>
+    <h2>Promotion becomes a pull request: GitOps Promoter first, Kargo as the fallback.</h2>
+
+    <div class="model ours" style="left: 120px;">
+      <h3>GitOps Promoter <span class="tag">our call</span></h3>
+      <svg class="art" viewBox="0 0 800 280" aria-label="Three environment branches, each promotion a pull request">
+        <path class="branch" d="M20 60 H780 M20 140 H780 M20 220 H780"/>
+        <text class="lab m" x="20" y="44">env/dev</text><text class="lab m" x="20" y="124">env/stage</text><text class="lab m" x="20" y="204">env/prod</text>
+        <path class="pr" d="M300 60 m-14 0 a14 14 0 1 0 28 0 a14 14 0 1 0 -28 0"/><path class="branch" d="M300 74 C 300 110, 420 110, 420 140"/><circle class="pr" cx="420" cy="140" r="14"/>
+        <path class="branch" d="M420 154 C 420 190, 560 190, 560 220"/><circle class="pr" cx="560" cy="220" r="14"/>
+        <text class="lab" x="440" y="110">PR + commit status</text>
+      </svg>
+      <p class="fit">The promotion <em>is</em> a branch, a commit and a PR. No state outside Git: one record a reviewer, an agent and an auditor all read.</p>
+    </div>
+    <div class="model theirs" style="left: 1000px;">
+      <h3>Kargo</h3>
+      <svg class="art" viewBox="0 0 800 280" aria-label="A separate control plane holding Warehouses, Freight and Stages">
+        <rect class="cp" x="10" y="20" width="780" height="240" rx="18"/>
+        <text class="lab" x="34" y="60">its own control plane and UI</text>
+        <rect class="stagebox" x="40" y="100" width="200" height="110" rx="12"/><text class="lab m" x="66" y="164">Warehouse</text>
+        <rect class="stagebox" x="300" y="100" width="200" height="110" rx="12"/><text class="lab m" x="350" y="164">Freight</text>
+        <rect class="stagebox" x="560" y="100" width="200" height="110" rx="12"/><text class="lab m" x="610" y="164">Stages</text>
+      </svg>
+      <p class="fit">Fits complex multi-stage pipelines and release managers who live in a UI. Meta ships ~100 clusters this way.</p>
+    </div>
+
+    <p class="flip"><b>What would flip it:</b> per-environment CommitStatus is hand-wired for auto-rollback; Promoter has no cross-app dependency ordering; it's younger, with less adoption data. The answer is a two-week spike on one real app.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Last mechanism: how a version moves from dev to stage to prod. Promotion is becoming a pull request.
+
+    On the left, GitOps Promoter, which is our call. Each environment is a branch. A promotion is a commit and a pull request, with a commit status per environment. There's no state outside Git, so the PR is the audit record: the one artifact a human reviewer, an agent and an auditor all read. It composes with Argo's source hydrator, so Git holds what actually runs, with diffs a person can read.
+
+    On the right, Kargo: Warehouses, Freight and Stages, with its own control plane and UI. It fits complex pipelines and release managers who live in a UI, and Meta runs about a hundred clusters with it. It would be a second control plane for us.
+
+    What would flip it, stated so the decision looks as reversible as it is: per-environment commit status needs hand-wiring for auto-rollback; Promoter doesn't order across apps; and it's younger. Nearly every published comparison is written by someone with a stake, Akuity maintains both Argo CD and Kargo, so the answer is a two-week spike on one real app, not more reading. And the Kargo adoption figure in our notes came from a vendor post; we don't quote it.
+
+    So why haven't teams asked for any of this?
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

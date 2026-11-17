@@ -3,25 +3,67 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>A cluster name in an app repo is a bug.</title>
+  <title>No cluster names</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    .slide h2 { font-size: 120px; max-width: 1200px; }
+    .yaml-card { position: absolute; left: var(--margin); top: 430px; width: 720px; padding: 30px 36px; background: #fff; border: 3px solid var(--hairline); border-radius: 18px; }
+    .yaml-card p.h { font: 600 28px/1 var(--font-display); color: var(--muted); margin-bottom: 16px; }
+    .yaml-card .code { font-size: 26px; line-height: 1.5; color: var(--slate); }
+    .yaml-card .k { color: var(--mint-ink); }
+    .yaml-card .gone { color: #b6c3c3; text-decoration: line-through; }
+    .sel { position: absolute; left: 862px; top: 520px; width: 190px; text-align: center; font: 600 26px/1.15 var(--font-display); color: var(--mint-ink); }
+    .fleet { position: absolute; left: 1080px; top: 400px; }
+    .cl { fill: #c2d1d2; } .cl.on { fill: var(--mint-ink); }
+    .ct { font: 500 22px var(--font-code); fill: var(--slate-quiet); }
+    .ct.on { fill: var(--mint-ink); }
+    .dep { position: absolute; left: var(--margin); bottom: 80px; max-width: 1600px; font: 600 34px/1.2 var(--font-display); color: var(--mint-ink); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>A cluster name in an app repo is a bug.</h1>
+  <main class="slide snow">
+    <h2>A cluster name in an app repo is a bug.</h2>
+
+    <div class="yaml-card">
+      <p class="h">What a developer writes</p>
+      <p class="code"><span class="gone">cluster: prod-use1-07</span>
+<span class="k">placement:</span>
+  regions:    [us-east-1, us-west-2]
+  compliance: pci
+  capability: gpu</p>
+    </div>
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true"><path d="M856 610 H1060" stroke="var(--mint-ink)" stroke-width="5"/><path d="M1060 610 l-16 -10 v20z" fill="var(--mint-ink)"/></svg>
+    <p class="sel">ApplicationSet label selector</p>
+    <svg class="fleet" id="fleet" width="720" height="420" viewBox="0 0 720 420" aria-label="Eight clusters with labels; three match and are lit"></svg>
+
+    <p class="dep">The label vocabulary is Path 3's first stage, and it is stage D's entry gate here.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    A cluster name in an app repo is a bug. It hard-codes the one thing that live-live regions and rolling upgrades need to keep fluid.
+
+    So the developer stops writing a cluster name, the crossed-out line, and declares constraints instead: regions, compliance, capability. The platform resolves those to clusters.
+
+    And we already have the cheap first step. The ApplicationSet cluster generator matches clusters by label selector. It's in Argo CD today and costs nothing. Add rolling sync and that fan-out becomes waves: wave one, check health, wave two. OCM, Karmada and the cluster-inventory ClusterProfile work would all consume the same vocabulary if we ever needed them; we've seen ClusterProfile as a capability, not something we've run.
+
+    So this is a vocabulary problem more than a tooling problem. The vocabulary is Path 3's first stage, and it's the entry gate for stage D on this path.
+
+    Last mechanism: how a version moves between environments.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    const cl = [['use1', 'pci', 'gpu', 1], ['use1', '-', 'gpu', 0], ['usw2', 'pci', 'gpu', 1], ['usw2', 'pci', '-', 0],
+                ['euw1', 'pci', 'gpu', 0], ['use1', 'pci', 'gpu', 1], ['usw2', '-', '-', 0], ['euc1', '-', 'gpu', 0]];
+    let s = '';
+    cl.forEach(([r, c, g, on], i) => {
+      const x = 90 + (i % 4) * 180, y = 70 + Math.floor(i / 4) * 210;
+      s += Peaks.glyph({ x, y, w: 96, h: 80, cls: 'cl' + (on ? ' on' : '') });
+      [r, c, g].forEach((t, j) => s += `<text class="ct${on ? ' on' : ''}" x="${x - 44}" y="${y + 72 + j * 28}">${t}</text>`);
+    });
+    Peaks.draw('#fleet', s);
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

@@ -3,23 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reloader makes "Git is the state of the world" true for config too.</title>
+  <title>Reloader</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1440px; }
+    .lanes { position: absolute; left: var(--margin); top: 330px; width: 1560px; display: grid; gap: 30px; }
+    .lane { display: grid; grid-template-columns: 400px 60px 520px 60px 1fr; align-items: center; }
+    .lane .src-box, .lane .mech { padding: 20px 24px; border-radius: 14px; background: var(--rock); font-size: 27px; line-height: 1.25; }
+    .lane b { display: block; font: 600 32px/1.05 var(--font-display); margin-bottom: 4px; }
+    .lane .arr { text-align: center; font: 600 40px/1 var(--font-display); color: var(--scree); }
+    .lane .out { font-size: 28px; line-height: 1.25; color: var(--snow); }
+    .lane .out b { color: var(--mint); }
+    .lane.trap .src-box, .lane.trap .mech { outline: 4px solid var(--alpenglow); }
+    .lane.trap .out b { color: var(--alpenglow); }
+    .lane.off { opacity: .62; }
+    .lean { position: absolute; left: var(--margin); bottom: 80px; width: 1540px; padding: 24px 30px; border-left: 8px solid var(--mint); background: #0e1a1c; font-size: 30px; line-height: 1.3; }
+    .lean b { color: var(--mint); font-weight: 600; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Reloader makes "Git is the state of the world" true for config too.</h1>
+    <h2>Reloader makes "Git is the state of the world" true for config too.</h2>
+
+    <div class="lanes">
+      <div class="lane"><p class="src-box"><b>ConfigMap or Secret in Git</b>our own repo</p><span class="arr">→</span><p class="mech"><b>Reloader rolls the Deployments</b>that mount or reference it</p><span class="arr">→</span><p class="out"><b>Commit, sync, roll.</b> One mechanism, auditable.</p></div>
+      <div class="lane trap"><p class="src-box"><b>Config Server's own config</b>its backing repo</p><span class="arr">→</span><p class="mech"><b>Reloader rolls the config server</b>not its clients</p><span class="arr">→</span><p class="out"><b>The trap:</b> clients keep the cached value.</p></div>
+      <div class="lane off"><p class="src-box"><b>Client-side @RefreshScope</b>in each app</p><span class="arr">→</span><p class="mech"><b>/refresh per instance</b>or a bus broadcast</p><span class="arr">→</span><p class="out"><b>Out of band.</b> Git no longer describes what runs.</p></div>
+    </div>
+
+    <p class="lean"><b>Our lean, ours and untested:</b> make the roll the refresh. Git-backed ConfigMaps, Reloader restarts the consumers, /refresh only where a restart is truly impossible.</p>
+
+    <div class="route-strip" aria-label="Stages A to E, inside stage A">
+      <span class="camp lit">A</span><span class="camp">B</span><span class="camp">C</span><span class="camp">D</span><span class="camp">E</span>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Without this one, a GitOps config change reports success while the running pods keep serving the old value. That falsifies "Git is the state of the world" on the very day we say it.
+
+    Three places a config value can live, and they aren't interchangeable. A ConfigMap or Secret in our Git repo: Reloader rolls the deployments that use it, so it's commit, sync, roll. Good.
+
+    The middle row is the trap. When the value lives in Config Server's own backing config, Reloader rolls the config server, and its clients keep the cached value.
+
+    And client-side refresh scope, with an actuator refresh per instance, is out of band: Git no longer describes what's running.
+
+    Our lean, and this is ours, not from the show, and untested: make the roll the refresh mechanism. It needs one Spring-owning team to confirm which beans tolerate a restart. And it opens a question worth asking in the room: does any app's config genuinely need in-place refresh? If not, the config-server refresh path can retire, which is a simplification we'd get for free.
+
+    Stage B is the one that buys the trade.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>
