@@ -8,58 +8,66 @@
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
     .slide { --path: var(--teal); --accent: var(--teal); }
-    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    h2 { font-size: 84px; max-width: 1400px; line-height: 1.02; }
     .scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
-    .src-name { font: 600 36px var(--font-display); text-anchor: middle; }
-    .src-what { font: 400 26px var(--font-body); fill: var(--lichen); text-anchor: middle; }
-    .stream { fill: none; stroke-width: 5; stroke-linecap: round; }
-    .lake { fill: var(--sky); opacity: .55; }
+
+    /* the range, drawn large: same three peaks, same order, same caps */
+    .scene .pk-body { fill: #1d3443; stroke: #34505f; stroke-width: 2.5; stroke-linejoin: round; }
+    .scene .pk-shadow { fill: #172b38; }
+    .scene .pk-cap { opacity: .55; }
+
+    .pl-name { font: 600 40px var(--font-display); fill: var(--snow); }
+    .pl-what { font: 400 26px var(--font-body); fill: var(--lichen); }
+    .src-name { font: 600 34px var(--font-display); }
+    .src-what { font: 400 25px var(--font-body); fill: var(--lichen); }
+
+    .stream { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+    .stream.otel { stroke: var(--snow); }
+    .gather { fill: none; stroke: var(--snow); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 11; opacity: .9; }
+    .fall { fill: none; stroke: var(--snow); stroke-width: 3; stroke-linecap: round; opacity: .7; }
+
+    .lake { fill: var(--sky); opacity: .7; }
     .lake-rim { fill: none; stroke: #6fa8d6; stroke-width: 3; }
     .ripple { fill: none; stroke: #9cc8ea; stroke-width: 2.5; opacity: .6; }
-    .lake-name { font: 600 46px var(--font-display); fill: var(--snow); text-anchor: middle; }
-    .lake-sub { font: 400 28px var(--font-body); fill: var(--snow); text-anchor: middle; opacity: .9; }
+    .lake-name { font: 600 42px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .lake-sub { font: 400 26px var(--font-body); fill: var(--snow); text-anchor: middle; opacity: .9; }
     .agent { fill: var(--teal); }
+    .shore-t { font: 500 25px var(--font-body); fill: var(--snow); text-anchor: middle; }
     .noway { fill: none; stroke: var(--you); stroke-width: 4; stroke-dasharray: 9 8; }
     .noway-x { font: 700 44px var(--font-display); fill: var(--you); text-anchor: middle; }
-    .noway-t { font: 500 26px var(--font-body); fill: var(--you); }
-    .is-entered .stream { animation: flow 1400ms var(--step-ease) both; animation-delay: calc(400ms + var(--i) * 200ms); }
-    .stream { stroke-dasharray: 1; stroke-dashoffset: 0; }
-    @keyframes flow { from { stroke-dashoffset: 1; } }
+    .noway-t { font: 500 25px var(--font-body); fill: var(--you); }
 
-    .decide { position: absolute; left: var(--margin); top: 350px; width: 560px; }
-    .decide h3 { font: 600 32px/1.1 var(--font-display); color: var(--lichen); margin-bottom: 18px; }
-    .decide li { list-style: none; display: grid; grid-template-columns: 40px 1fr; align-items: baseline; margin-bottom: 16px; font: 600 40px/1.1 var(--font-display); color: var(--snow); }
-    .decide li::before { content: ""; width: 20px; height: 20px; background: var(--teal); transform: rotate(45deg) translateY(-4px); }
-    .limit { position: absolute; left: var(--margin); top: 664px; width: 600px; font-size: 28px; line-height: 1.34; color: var(--lichen); padding-left: 20px; border-left: 4px solid var(--scree); }
+    .limit { position: absolute; left: var(--margin); top: 908px; width: 520px; font-size: 26px; line-height: 1.32; color: var(--lichen); padding-left: 20px; border-left: 4px solid var(--scree); }
     .limit b { color: var(--snow); font-weight: 500; }
+
+    /* one motion moment: the mountains' streams run, then OTel gathers and pours */
+    .stream, .gather-run { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    .is-entered .stream { animation: flow 1300ms var(--step-ease) both; animation-delay: calc(500ms + var(--i) * 220ms); }
+    .is-entered .stream.otel { animation-delay: 2100ms; }
+    .is-entered :is(.gather, .fall) { animation: fade-in 700ms 1500ms both; }
+    .is-entered :is(.lake, .lake-rim) { animation: fade-in 900ms 200ms both; }
+    @keyframes flow { from { stroke-dashoffset: 1; } }
   </style>
 </head>
 <body>
-  <main class="slide dusk" data-energy="3">
+  <main class="slide dusk" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <svg class="scene" id="scene" viewBox="0 0 1920 1080" role="img" aria-label="The three peaks, fleet, delivery and agents, pierce one OTel plane at the same altitude. Below it, a lake lies in the valley between delivery and agents. Each peak runs its own stream down into the lake: fleet's cluster state, delivery's syncs and gate results, the agents' tool calls from the gateway. The OTel plane gathers traces, metrics and logs from all three and pours them in as a fourth stream. Agents sit on the shore and read; there is no write path back to production."></svg>
     <h2>Agents decide from a read-only lake, not from credentials to production.</h2>
 
-    <div class="decide">
-      <h3>What agents decide from it</h3>
-      <ul>
-        <li>Triage this alert</li>
-        <li>Judge this canary</li>
-        <li>Pick the quiet hour</li>
-      </ul>
-    </div>
     <p class="limit"><b>A lake is a snapshot.</b> Fine for triage and trends. A gate mid-rollout still reads live metrics through one narrow, audited tool.</p>
-
-    <svg class="scene" id="scene" viewBox="0 0 1920 1080" role="img" aria-label="Three streams, one from each path, flow down into one read-only lake: fleet state and metrics, delivery syncs and gate results, agent traces and tool calls. Agents sit on the shore and read; there is no write path from the shore back to production."></svg>
   </main>
 
   <aside class="notes">
-    Everything that layer collects has to land somewhere the agents can read, and where it lands matters more than which tool it is.
+    Everything the plane measures, and everything the mountains do, has to land somewhere the agents can read. Where it lands matters more than which tool it is.
 
-    Three streams come down, one from each path. From the fleet: cluster state, snapshotted into a database, plus metrics. From delivery: every sync, every rollout, every gate result. From the agents themselves: their traces and tool calls. They all run into one lake.
+    So here's the range again, with OTel drawn as what it is: one plane at one altitude, running through all three peaks. Fleet, delivery and agents all pierce it, and it measures them the same way, stamped with the same cluster, namespace, team and trace id.
+
+    Down in the valley between delivery and agents sits the lake. Every mountain runs its own stream into it. From the fleet: cluster state, snapshotted. From delivery: every sync, every rollout, every gate result. From the agents: their tool calls, as the gateway logged them. And one more stream comes through the plane: OTel gathers traces, metrics and logs from all three and pours them in.
 
     The agents sit on the shore and read. That's how they decide things: is this alert real, did this canary actually get worse, which hour is quiet enough to upgrade this cluster.
 
-    And here's the rule. There's no path from the shore back up to production. Read-only extraction is what lets us say yes to agents analysing prod without saying yes to agents holding prod credentials. That's a security control, not just plumbing.
+    And here's the rule. There's no path from the shore back up the mountain. Read-only extraction is what lets us say yes to agents analysing prod without saying yes to agents holding prod credentials. That's a security control, not just plumbing.
 
     Let me be honest about the limit. Mastercard argued the other side at the show: a lake is a snapshot, and a stale index can mislead a model. They let theirs call live APIs through a narrow, audited tool instead. They're right for live decisions. So: the lake for triage and trends; a gate in the middle of a rollout reads live metrics through one narrow tool. NVIDIA and Workday added the other lesson: raw telemetry confuses models, so put a typed query layer over the lake.
 
@@ -69,37 +77,69 @@
   <script src="../../_shared/peaks.js"></script>
   <script src="../theme/range.js"></script>
   <script>
-    Range.draw('#range', { touch: ['p2'], survey: true });
+    Peaks.draw('#range', Range.star());
     (() => {
-      const LCX = 1270, LCY = 700, LRX = 430, LRY = 96;
-      const SRC = [
-        ['fleet', 'state, metrics', 'var(--haze)', 900],
-        ['delivery', 'syncs, gate results', 'var(--mint)', 1270],
-        ['agents', 'traces, tool calls', 'var(--teal)', 1640],
+      // the range, large; bases run off the bottom of the stage
+      const P = [
+        { word: 'fleet',    x: 500,  top: 470, hw: 470, H: 720, cap: 'var(--haze)', capScale: .55 },
+        { word: 'delivery', x: 1060, top: 350, hw: 540, H: 840, cap: 'var(--mint)', capScale: .5 },
+        { word: 'agents',   x: 1610, top: 490, hw: 400, H: 700, cap: 'var(--teal)', capScale: .55 },
       ];
       let s = '';
-      SRC.forEach(([name, what, col, x], i) => {
-        s += `<text class="src-name" x="${x}" y="370" style="fill:${col}">${name}</text><text class="src-what" x="${x}" y="404">${what}</text>`;
-        const tx = LCX + (i - 1) * 220, ty = LCY - LRY + 22;
-        const mx = (x + tx) / 2, my = (428 + ty) / 2, w = 34;
-        s += `<path class="stream" pathLength="1" style="stroke:${col};--i:${i}" d="M${x} 428C${x - w} 460 ${mx + w} ${my - 30} ${mx} ${my}S${tx - w} ${ty - 40} ${tx} ${ty}"/>`;
+      for (const p of P) s += Peaks.peak({ x: p.x, top: p.top, base: p.top + p.H, hw: p.hw, cap: p.cap, capScale: p.capScale });
+
+      // the lake, in the valley where delivery's right flank meets agents' left (≈ 1394, 869)
+      const LX = 1394, LY = 892, RX = 214, RY = 50;
+      s += `<ellipse class="lake" cx="${LX}" cy="${LY}" rx="${RX}" ry="${RY}"/>`;
+      s += `<ellipse class="lake-rim" cx="${LX}" cy="${LY}" rx="${RX}" ry="${RY}"/>`;
+      s += `<path class="ripple" d="M${LX - 196} ${LY + 18}q26 -8 52 0t52 0"/><path class="ripple" d="M${LX + 88} ${LY + 22}q26 -8 52 0t52 0"/>`;
+
+      // each mountain's own stream, from a spring below the plane down into the lake
+      const SRC = [
+        ['fleet', 'cluster state', 'var(--haze)', 'M590 726C618 780 690 790 742 846S840 990 990 990S1150 960 1186 906', [566, 742, 'end']],
+        ['delivery', 'syncs, gate results', 'var(--mint)', 'M1190 726C1214 776 1252 796 1266 820S1286 846 1300 852', [1166, 742, 'end']],
+        ['agents', 'tool calls, via the gateway', 'var(--teal)', 'M1592 726C1572 776 1530 794 1512 820S1494 844 1484 850', [1618, 742, 'start']],
+      ];
+      SRC.forEach(([name, what, col, d, [tx, ty, anchor]], i) => {
+        s += `<path class="stream" pathLength="1" style="stroke:${col};--i:${i}" d="${d}"/>`;
+        s += `<circle cx="${d.match(/M(\d+) (\d+)/)[1]}" cy="${d.match(/M(\d+) (\d+)/)[2]}" r="8" style="fill:${col}"/>`;
+        s += `<text class="src-name" x="${tx}" y="${ty}" text-anchor="${anchor}" style="fill:${col}">${name}</text>`;
+        s += `<text class="src-what" x="${tx}" y="${ty + 32}" text-anchor="${anchor}">${what}</text>`;
       });
-      // the tarn
-      s += `<ellipse class="lake" cx="${LCX}" cy="${LCY}" rx="${LRX}" ry="${LRY}"/>`;
-      s += `<ellipse class="lake-rim" cx="${LCX}" cy="${LCY}" rx="${LRX}" ry="${LRY}"/>`;
-      s += `<path class="ripple" d="M${LCX - 250} ${LCY + 52}q60 -14 120 0t120 0"/><path class="ripple" d="M${LCX + 120} ${LCY + 58}q50 -12 100 0t100 0"/>`;
-      s += `<text class="lake-name" x="${LCX}" y="${LCY - 2}">one lake</text><text class="lake-sub" x="${LCX}" y="${LCY + 38}">read-only</text>`;
-      // agents on the near shore
-      const shore = LCY + LRY + 34;
+
+      // the OTel plane through all three peaks
+      const yb = 560, yf = 680, ym = (yb + yf) / 2, ry = (yf - yb) * 0.34;
+      s += Range.plane({ peaks: P, yb, yf, x0: 40, x1: 1880, inset: 110, cols: 26, rows: 4, cls: 'big' });
+      s += `<text class="pl-name" x="120" y="496">OTel plane</text>`;
+      s += `<text class="pl-what" x="120" y="532">traces, metrics, logs</text>`;
+
+      // OTel gathers from every collar to one pour point on the front edge, then falls into the lake
+      const PX = LX, PY = yf;
+      const front = (p) => [p.x, ym + ry];
+      const [fx, fy] = front(P[0]), [dx, dy] = front(P[1]), [ax, ay] = front(P[2]);
+      s += `<path class="gather" d="M${fx} ${fy}C${fx + 260} ${PY - 4} ${PX - 600} ${PY - 2} ${PX} ${PY - 2}"/>`;
+      s += `<path class="gather" d="M${dx} ${dy}C${dx + 120} ${PY - 6} ${PX - 140} ${PY - 2} ${PX} ${PY - 2}"/>`;
+      s += `<path class="gather" d="M${ax} ${ay}C${ax - 90} ${PY - 6} ${PX + 90} ${PY - 2} ${PX} ${PY - 2}"/>`;
+      s += `<path class="stream otel" pathLength="1" d="M${PX} ${PY}C${PX - 10} ${PY + 50} ${PX + 12} ${PY + 100} ${PX} ${PY + 140}S${PX - 4} ${LY - RY - 8} ${PX} ${LY - RY + 6}"/>`;
+      s += `<path class="fall" d="M${PX - 16} ${PY + 6}C${PX - 24} ${PY + 60} ${PX - 6} ${PY + 110} ${PX - 18} ${LY - RY}"/>`;
+      s += `<path class="fall" d="M${PX + 16} ${PY + 6}C${PX + 24} ${PY + 60} ${PX + 6} ${PY + 110} ${PX + 18} ${LY - RY}"/>`;
+
+      s += `<text class="lake-name" x="${LX}" y="${LY + 4}">one lake</text><text class="lake-sub" x="${LX}" y="${LY + 36}">read-only</text>`;
+
+      // agents on the near shore, reading
+      const shore = LY + RY + 40;
       for (let i = 0; i < 5; i++) {
-        const x = LCX - 160 + i * 80;
-        s += `<path class="agent" d="M${x} ${shore - 16}l16 16l-16 16l-16 -16z"/>`;
+        const x = LX - 140 + i * 70;
+        s += `<path class="agent" d="M${x} ${shore - 15}l15 15l-15 15l-15 -15z"/>`;
       }
-      // no write path back to prod
-      const nx = LCX + LRX + 60;
-      s += `<path class="noway" d="M${LCX + 240} ${shore}C${nx} ${shore} ${nx + 40} ${LCY} ${nx + 20} 470"/>`;
-      s += `<text class="noway-x" x="${nx + 40}" y="${LCY - 40}">✗</text>`;
-      s += `<text class="noway-t" x="${LCX}" y="${shore + 62}" text-anchor="middle">no write path back to prod</text>`;
+      s += `<text class="shore-t" x="${LX}" y="${shore + 64}">agents read: triage an alert, judge a canary, pick the quiet hour</text>`;
+
+      // no write path back up the mountain
+      const nx = 1690;
+      s += `<path class="noway" d="M${LX + 190} ${shore}C${nx} ${shore} ${nx + 14} ${LY + 10} ${nx} 812"/>`;
+      s += `<text class="noway-x" x="${nx + 26}" y="${LY - 4}">✗</text>`;
+      s += `<text class="noway-t" x="${nx + 58}" y="${LY - 14}">no write path</text><text class="noway-t" x="${nx + 58}" y="${LY + 16}">back to prod</text>`;
+
       Peaks.draw('#scene', s);
     })();
   </script>

@@ -38,7 +38,7 @@
     <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="One workload across a trading week. Usage peaks in market hours and falls overnight and at the weekend. VPA's request is one flat line above the peaks; the AI's request follows the week, tight overnight and at the weekend and raised ahead of the open. The gap between them is the saving. Illustrative."></svg>
 
     <div class="tally"><b class="big" id="pct">0%</b>fewer reserved core-hours for this workload. Illustrative: the pattern Hertz showed, AI agents right-sizing across 80 EKS clusters. The 61% is our model, not their figure.</div>
-    <div class="guard"><b>Proposes first, then acts</b>As a PR at camp 2. Later, on its own inside min and max bounds that policy enforces, with rollback.</div>
+    <div class="guard"><b>Proposes first, then acts</b>As a pull request a person approves. Later, on its own inside min and max bounds that policy enforces, with rollback.</div>
 
     <div class="how">
       <div><b>VPA</b>the recommender sets the floor</div>
@@ -61,7 +61,7 @@
 
     And the guardrail, because this is an agent changing production. It starts by proposing the new sizes as a pull request. Only later does it act on its own, inside minimum and maximum bounds that policy enforces, with automatic rollback. Hertz showed this pattern at the show: AI agents right-sizing every workload and rearranging nodes across their EKS fleet, about eighty clusters, rolled out through Terraform. They didn't post slides, so the sixty-one percent here is our illustration of the pattern, not their number. And the "Agentic Karpenter" demo had Claude propose fixes for a human to approve.
 
-    Which is a good example of how far we let agents climb, and when.
+    And that's the pattern for every agent on this map: read from the lake, propose first, act only inside bounds that policy enforces. So here's the same team, on the same map.
   </aside>
 
   <script src="../../_shared/peaks.js"></script>

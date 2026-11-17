@@ -3,7 +3,7 @@
 
      <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
      Range.draw('#range', { touch: ['p3'] });             // the fleet peak emerges
-     Range.draw('#range', { touch: ['p1','p2','p3'], survey: true });   // OTel: survey lines
+     Range.draw('#range', { touch: ['p1','p2','p3'], survey: true });   // OTel: one plane across the range
      Range.draw('#range', { touch: ['p1','p2','p3'], fence: true });    // policy: the fence line
 
    The three peaks always sit in the same place (fleet left, delivery centre, agents right).
@@ -21,11 +21,6 @@
   };
   const ORDER = ['p3', 'p1', 'p2'];
 
-  function body(p, dy = 0) {
-    const t = p.top + dy, b = t + H;
-    return `M${p.x - p.hw} ${b}L${p.x} ${t}L${p.x + p.hw} ${b}Z`;
-  }
-
   function draw(sel, { touch = [], survey = false, fence = false, words = true, sink = SINK } = {}) {
     let out = '';
     for (const id of ORDER) {
@@ -39,15 +34,11 @@
         : `<g class="rg sunk" id="rg-${id}" transform="translate(0 ${sink})">${inner}</g>`;
     }
     if (survey) {
-      // level lines at the same heights across every risen peak: one measurement for the range
-      const clip = `rg-clip-${Math.random().toString(36).slice(2, 7)}`;
-      out += `<defs><clipPath id="${clip}">${ORDER.filter((id) => touch.includes(id)).map((id) => `<path d="${body(PEAKS[id])}"/>`).join('')}</clipPath></defs>`;
-      out += `<g clip-path="url(#${clip})">`;
-      let i = 0;
-      for (let y = 900; y < 1080; y += 30) {
-        out += `<path class="survey" style="--i:${i++}" d="M0 ${y}H1920"/>`;
-      }
-      out += '</g>';
+      // OTel: one plane at one altitude across the whole range, every risen peak piercing it
+      out += plane({
+        peaks: ORDER.filter((id) => touch.includes(id)).map((id) => ({ ...PEAKS[id], H })),
+        yb: 892, yf: 944, x0: 30, x1: 1890, inset: 90, cols: 24, rows: 3,
+      });
     }
     if (fence) {
       // the policy fence along the foot of the range: one gate on every trail, whoever walks it
@@ -70,6 +61,42 @@
     }
     out += star();
     return Peaks.draw(sel, out);
+  }
+
+  /** The OTel plane: a sheet at one altitude, seen from a little above, running across every
+      peak it is given. Each peak pierces it: the part above the sheet is drawn again on top,
+      ending in a collar where mountain and plane meet. A peak is { x, top, hw, H, cap, capScale }.
+      yb/yf: the sheet's back and front edges; x0/x1: the front edge's ends; inset: how much
+      narrower the back edge is at each end (perspective). */
+  function plane({ peaks, yb, yf, x0 = 40, x1 = 1880, inset = 100, cols = 20, rows = 4, cls = '' }) {
+    const r1 = (n) => Math.round(n * 10) / 10;
+    const bx0 = x0 + inset, bx1 = x1 - inset;
+    const uid = Math.random().toString(36).slice(2, 7);
+    let s = `<g class="otel-plane ${cls}">`;
+    s += `<path class="pl-sheet" d="M${bx0} ${yb}H${bx1}L${x1} ${yf}H${x0}Z"/>`;
+    for (let i = 1; i < cols; i++) {
+      const t = i / cols;
+      s += `<path class="pl-grid" d="M${r1(bx0 + (bx1 - bx0) * t)} ${yb}L${r1(x0 + (x1 - x0) * t)} ${yf}"/>`;
+    }
+    for (let j = 1; j < rows; j++) {
+      const t = Math.pow(j / rows, 1.5);            // rows bunch up toward the back edge
+      const y = yb + (yf - yb) * t;
+      s += `<path class="pl-grid" d="M${r1(bx0 + (x0 - bx0) * t)} ${r1(y)}H${r1(bx1 + (x1 - bx1) * t)}"/>`;
+    }
+    s += `<path class="pl-edge" d="M${bx0} ${yb}H${bx1}L${x1} ${yf}H${x0}Z"/>`;
+    s += '</g>';
+    // the peaks above the sheet, drawn again over it
+    const ym = (yb + yf) / 2, ry = (yf - yb) * 0.34;
+    peaks.forEach((p, k) => {
+      const w = p.hw * (ym - p.top) / p.H;
+      if (w <= 4) return;
+      const id = `pl-${uid}-${k}`;
+      s += `<defs><clipPath id="${id}"><rect x="0" y="0" width="1920" height="${r1(ym)}"/>`
+        + `<ellipse cx="${p.x}" cy="${r1(ym)}" rx="${r1(w)}" ry="${r1(ry)}"/></clipPath></defs>`;
+      s += `<g class="pl-above" clip-path="url(#${id})">${Peaks.peak({ x: p.x, top: p.top, base: p.top + p.H, hw: p.hw, cap: p.cap, capScale: p.capScale || 1 })}</g>`;
+      s += `<path class="pl-collar" d="M${r1(p.x - w)} ${r1(ym)}A${r1(w)} ${r1(ry)} 0 0 0 ${r1(p.x + w)} ${r1(ym)}"/>`;
+    });
+    return s;
   }
 
   /** The north star in the top-right corner. Its brightness follows the slide's energy (1-5),
@@ -101,5 +128,5 @@
     el.insertAdjacentHTML('afterbegin', `<p class="group-tag g-${which}" aria-hidden="true"><span class="g-bars">${bars}</span>${G[which]}</p>`);
   }
 
-  window.Range = { draw, star, group, PEAKS, H, SINK };
+  window.Range = { draw, plane, star, group, PEAKS, H, SINK };
 })();

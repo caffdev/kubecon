@@ -39,7 +39,7 @@
 
     On the left, four sources. OpenTelemetry traces, from classic services and from the AI workloads: the model servers and the agents themselves, with their tool calls and token counts. Logs. Prometheus metrics, which stay exactly where they are; this isn't OTel replacing Prometheus. And state dumps: regular snapshots of what every cluster actually contains.
 
-    The collector layer on every cluster, the Splunk OTel collector we already roll out, stamps the same cluster, namespace, team and trace ID on all of it. That's what turns four piles into one view: you can go from an alert, to the trace, to the log line, to what the cluster looked like at that moment, without changing tools.
+    The collector layer on every cluster, the Splunk OTel collector we already roll out, stamps the same cluster, namespace, team and trace ID on all of it. That's what turns four piles into one view: you can go from an alert, to the trace, to the log line, to what the cluster looked like at that moment, without changing tools. It's the plane along the bottom: one altitude, running through all three peaks, measuring each the same way.
 
     And on the right, two kinds of reader. A person debugging at two in the morning. And an agent debugging the same thing, reading the same view. Same evidence, so when the agent says what it thinks happened, the person can check it in the same place.
 

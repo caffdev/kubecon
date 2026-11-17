@@ -1,7 +1,7 @@
 /* Takeaways v3: the fleet outgrows one person, then the agents arrive: theme.
    Series brand (Three Peaks) plus this deck's pieces:
      the background range (theme/range.js): three peaks that emerge when a topic touches them,
-       plus survey lines for the layer that touches all three (OTel);
+       plus the OTel plane, one sheet across all three peaks;
      the estate map (theme/estate.js): zones of cluster glyphs that grow slide by slide;
      the one person: the climber mark in alpenglow. */
 
@@ -38,12 +38,10 @@
   fill: var(--cap);
   opacity: .9;
 }
-.range .survey { fill: none; stroke: var(--snow); stroke-width: 2.5; opacity: .45; }
 .snow .range .pk-body { fill: #d9e4e3; }
 .snow .range .pk-shadow { fill: #cbd9da; }
 .snow .range .rg.sunk .pk-body { fill: #e1eae9; }
 .snow .range .rg.sunk .pk-shadow { fill: #d8e3e3; }
-.snow .range .survey { stroke: var(--slate); opacity: .3; }
 .snow .range #rg-p3 :is(.pk-cap, .pk-word) { fill: var(--haze-ink); }
 .snow .range #rg-p1 :is(.pk-cap, .pk-word) { fill: var(--mint-ink); }
 .snow .range #rg-p2 :is(.pk-cap, .pk-word) { fill: var(--teal-ink); }
@@ -56,11 +54,21 @@
   animation: emerge 1500ms 250ms var(--step-ease) both;
 }
 .is-entered .range .pk-word { animation: fade-in 600ms 1300ms both; }
-.is-entered .range .survey { animation: survey 1400ms var(--step-ease) both; animation-delay: calc(900ms + var(--i, 0) * 90ms); }
 @keyframes emerge { from { transform: translateY(var(--sink, 190px)); } }
 @keyframes fade-in { from { opacity: 0; } }
-@keyframes survey { from { stroke-dashoffset: 2000; } }
-.range .survey { stroke-dasharray: 2000; stroke-dashoffset: 0; }
+
+/* ---- the OTel plane (range.js Range.plane / { survey: true }) ---- */
+.otel-plane .pl-sheet { fill: var(--snow); opacity: .11; }
+.otel-plane .pl-grid { fill: none; stroke: var(--snow); stroke-width: 1.5; opacity: .22; }
+.otel-plane .pl-edge { fill: none; stroke: var(--snow); stroke-width: 2.5; opacity: .55; stroke-linejoin: round; }
+.pl-collar { fill: none; stroke: var(--snow); stroke-width: 3; opacity: .8; stroke-linecap: round; }
+.range .pl-above .pk-body { fill: #12171a; }
+.range .pl-above .pk-shadow { fill: #0e1c26; }
+.dusk .range .pl-above .pk-body { fill: #172a37; }
+.dusk .range .pl-above .pk-shadow { fill: #13232f; }
+.snow .otel-plane :is(.pl-sheet, .pl-grid, .pl-edge), .snow .pl-collar { fill: none; stroke: var(--slate); }
+.snow .otel-plane .pl-sheet { fill: var(--slate); stroke: none; opacity: .05; }
+.is-entered .range :is(.otel-plane, .pl-above, .pl-collar) { animation: fade-in 900ms 1500ms both; }
 
 /* ---- the estate map ---- */
 .zone-box { fill: none; stroke: var(--scree); stroke-width: 2.5; }

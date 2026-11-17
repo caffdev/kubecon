@@ -20,10 +20,13 @@ user's direction:
   agents on elastic compute; sandboxing (gVisor, Kata); building infra through MCP tools
   (Obot, ToolHive, or our own); credentials kept out of the agent; Kyverno as a
   cross-cutting policy layer for people and agents alike; one view from OTel, logs,
-  Prometheus and state dumps; the lake; AI resizing pods from the lake's signals; and the
-  AI rollout phases.
+  Prometheus and state dumps; the lake; and AI resizing pods from the lake's signals.
+- **No AI ladder (user, 2026-11-17).** The ladder slide (`ai-phases`, camps 0–5) is
+  benched: the user didn't follow it. In its place, OTel is drawn as one plane across all
+  three peaks, and the lake sits low in the valley between delivery and agents, fed by a
+  stream from every mountain and one more through the OTel plane.
 - **North star over practice.** This deck may go further than GOALS (Karmada, aggressive
-  AI resizing, the upper camps of the AI ladder). That's deliberate: it shows where we're
+  AI resizing). That's deliberate: it shows where we're
   heading, not only what we've decided. Facts still carry ⚠️ until checked.
 
 Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2, §6, §7, §9;
@@ -44,14 +47,16 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   work is placed by constraints across clusters, regions and clouds, so developers never
   pick a cluster. Agents are a new kind of user that spawns on
   demand, so they arrive sandboxed, with short-lived identity, through one tool gateway,
-  under the same policy and telemetry as people. We climb the AI ladder one camp at a time.
+  under the same policy and telemetry as people. Every peak feeds one read-only lake,
+  directly and through one OTel plane, and agents decide from the lake, not from production.
 - **The one sentence:** the fleet will outgrow one team with a runbook, and agents will
   outgrow trust by default, so clusters, tools, apps and agents all go through one
   automated path with gates, policy and telemetry.
 - **The ask:** (1) no new hand-built clusters; (2) splunk-otel-collector through the wave
   pipeline this quarter; (3) a Karmada spike: one app placed by constraints across both
   regions and the second cloud; (4) agents get a sandbox, a gateway, short-lived identity and
-  Kyverno before stage 1; (5) alert triage (AI stage 1) by Q2 2027.
+  Kyverno before they triage one alert; (5) explain-only alert triage by Q2 2027, reading
+  the OTel plane and the lake.
 
 ## Shape
 
@@ -71,13 +76,15 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
     (DR patterns), no cluster names.
   - VI: *the agents arrive* (6): AI on the map, elastic agents, sandbox, MCP tools,
     credentials, policy.
-  - VII: *see it, then climb* (4): one view, the lake, lakeside savings, the AI phases.
+  - VII: *see it* (3): one view (the OTel plane), the lake, lakeside savings.
   - Close (2): the same person; the ask.
-- **The peak:** `karmada`, slide 17 of 30 (57%). Slide 6 says "fingers crossed for no AWS
+- **The peak:** `karmada`, slide 17 of 29 (59%). Slide 6 says "fingers crossed for no AWS
   outage". Here a region fails and the work shifts to the other region, then AWS fails and
   it shifts to the second cloud, by the developer's constraints, without a person. It pays
   off the setup; `no-cluster-names` is the release after it, closing the first half.
-  `gates` (12) and `ai-phases` (27) are the secondary highs, with `twenty-tools` (14) the run-up to the peak.
+  `gates` (14) and `the-lake` (26) are the secondary highs, with `twenty-tools` (12) the
+  run-up to the peak. `the-lake` is the second half's one big picture: all three peaks,
+  the plane through them, and every stream running into one lake.
 - **The close:** the deck opens on four clusters and one team. It closes on the same map,
   eight times the size, with agents on it. The same team approves waves, while the
   pipeline, the policy layer and the telemetry do the rest.
@@ -133,9 +140,9 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   they already do. A bake-off, not a default.
 - **Credentials:** the patterns come from GOALS §3.6 and §9. No vendor is recommended
   for the secret store (§9 is still 🔵 Decide).
-- **AI phases:** the dates are GOALS §6's committed targets (stage 1 by Q2 2027, stage 2
-  by end of 2027). Stages 3+ are the north star: undated, described as where we're
-  heading, each with the safety gate it needs.
+- **AI phases are off the slides.** GOALS §6's ladder still holds the dates (stage 1, alert
+  triage, by Q2 2027; stage 2, agent PRs, by end of 2027). The deck keeps only the first
+  date, in plain words on `the-ask`, and never numbers a stage or a camp.
 - **AI resizing:** the chart is illustrative. ⚠️ In-place pod resize: the Solo.io
   abstract says GA in 1.33, which conflicts with our memory of a later GA. The slide
   says "in-place resize, no restart" and names no version until checked.
@@ -155,7 +162,8 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 ## Visual direction
 
 Carried over from `takeaways-v2` (approved there): Three Peaks brand; the background range
-whose peaks emerge per topic, with each path's word at its base; survey lines for OTel;
+whose peaks emerge per topic, with each path's word at its base; survey lines for OTel
+(now the OTel plane, below);
 the estate map that grows; the one team in alpenglow; the tarn for the lake; ripple
 rings for waves and gates. See v2's narrative for the palette, type, layout and
 key-frame notes. Theme files are copied from v2 (`theme.css`, `range.js`, `estate.js`),
@@ -164,9 +172,21 @@ with the estate table rewritten for this deck's clusters.
 What v3 adds:
 - **A second cross-cutting layer: the fence line.** Policy (Kyverno) is drawn as a fence
   with gate posts along the foot of all three peaks: every trail passes the same gate,
-  whoever walks it. Survey lines (OTel) measure the range; the fence line guards it. They
-  appear together on `policy-layer` (fence only), `one-view` and `the-lake` (survey
+  whoever walks it. The OTel plane measures the range; the fence line guards it. They
+  appear together on `policy-layer` (fence only), `one-view` and `the-lake` (plane
   only), and on `same-person` and `the-ask` (both).
+- **The OTel plane** (user, 2026-11-17; replaces the per-peak survey lines, which read as
+  ladder rungs). One sheet at one altitude, seen from a little above, with a perspective
+  survey grid, running across the whole range. Every risen peak pierces it: the part above
+  the sheet is redrawn over it and ends in a white collar where mountain meets plane.
+  `Range.plane()` draws it at any scale; `{ survey: true }` puts it along the footer.
+- **The lake in the valley** (`the-lake`): the range drawn large as the picture, the plane
+  through all three peaks, and the lake low where delivery's right flank meets agents'
+  left. Each mountain runs its own stream from a spring below the plane (fleet: cluster
+  state; delivery: syncs, gate results; agents: tool calls, via the gateway). OTel gathers
+  along the plane's front from every collar to one pour point and falls into the lake.
+  Agents read on the near shore; an alpenglow dashed path back up the mountain is crossed
+  out.
 - **The map, re-cut for our estate.** On-prem holds four columns (dev, staging, ny4, ch4,
   with ny4–ch4 tied in lockstep; the second exchange's four below, with its own tie). AWS
   splits into region 1 and region 2 with a dashed divider from `multi-region` on. The
@@ -195,8 +215,6 @@ What v3 adds:
 - **The team and the apps.** The one person became one team: three alpenglow climbers on
   a rope. The strip beside them is now one lake-blue square per app (`--lake #4f8fd8`,
   shapes only); the tally reads clusters, apps, pods.
-- **AI phases** as an expedition profile (camps 0–5): 0–2 on a surveyed, dated slope, 3–5
-  pale and dashed, with each camp's safety gate written at its foot.
 
 - **As built (2026-11-17):**
   - The corner tally counts clusters, apps and pods (it counted tools and people until the
@@ -209,8 +227,9 @@ What v3 adds:
     replicas are mint chips. On the peak, the outages are dark overlays with an alpenglow
     mark, revealed with the clicks; the finished state shows AWS down and all six chips in
     the second cloud.
-  - Cross-cutting layers as built: the fence on `policy-layer`; survey lines on
-    `one-view` and `the-lake`; both on `same-person` and `the-ask`.
+  - Cross-cutting layers as built: the fence on `policy-layer`; the OTel plane along the
+    footer of `one-view`, large on `the-lake`; plane and fence on `same-person` and
+    `the-ask`.
   - `ai-resize` uses the user's title, "Lakeside savings in practice.", with the
     assertion as a lede under it. Its 61% is computed from the illustrative week in the
     slide's script.
@@ -532,7 +551,8 @@ What v3 adds:
   state dumps), classic and AI workloads alike, all stamped with the same cluster,
   namespace, team and trace id by the collector layer; one correlated view in the middle;
   two consumers on the right: a person debugging and an agent debugging, reading the same
-  thing. Prometheus stays, as a source and a backend
+  thing. Prometheus stays, as a source and a backend. Along the foot, the OTel plane runs
+  through all three peaks: the one view, drawn as one altitude across the range
 - **Energy:** 3
 - **Into next:** and the agents read it from a lake, not from production.
 - **Source:** GOALS §4.2, §7; *The Race to Standardize AI Observability* (Google,
@@ -542,10 +562,16 @@ What v3 adds:
 ### the-lake
 
 - **Act:** VII
-- **Job:** AI decides from data: one read-only lake
+- **Job:** AI decides from data: one read-only lake, fed by every mountain and by OTel
 - **Headline:** Agents decide from a read-only lake, not from credentials to production.
-- **Visual:** as v2
-- **Energy:** 3
+- **Visual:** the range drawn large: fleet, delivery and agents pierce one OTel plane at
+  the same altitude. The lake lies low in the valley between delivery and agents. A
+  stream runs from each mountain into it (fleet: cluster state; delivery: syncs, gate
+  results; agents: tool calls, via the gateway), and OTel gathers traces, metrics and logs
+  from all three along the plane and pours them in as a fourth stream. Agents read on the
+  shore (triage an alert, judge a canary, pick the quiet hour); the path back up to prod
+  is crossed out. The snapshot caveat sits bottom left
+- **Energy:** 4
 - **Into next:** and one of the first things worth deciding from it is how big every pod
   should be.
 
@@ -562,15 +588,42 @@ What v3 adds:
   tight overnight and at weekends, raised ahead of the open. The shaded gap between the
   two requests is the saving. Under it, how: VPA's recommender as the floor, in-place
   resize so nothing restarts, KEDA for fast signals, Karpenter consolidating the freed
-  nodes. And the guardrail: it proposes first (stage 2), then acts inside min/max bounds
-  that policy enforces, with rollback (stage 4)
+  nodes. And the guardrail: it proposes first, as a pull request a person approves, then
+  acts inside min/max bounds that policy enforces, with rollback
 - **Energy:** 3
-- **Into next:** which is a good example of how far we let agents climb, and when.
+- **Into next:** that's the pattern for every agent on the map: read the lake, propose
+  first, act inside bounds. So here's the same team, on the same map.
 - **Source:** GOALS §10.3; *The New Scaling Matrix* (Solo.io); *In-Place Pod Resizing
   Like I'm 5* (AWS); Hertz + CAST AI (vendor demo); *Agentic Karpenter* (PerfectScale:
   kagent + Claude proposes, a human approves)
 
-### ai-phases
+### same-person
+
+- **Act:** Close
+- **Job:** echo the opening, changed
+- **Headline:** Same team, eight times the clusters: it approves the waves, and the pipeline runs them.
+- **Visual:** the full map with AI and agents, every cluster lit; the one team at its
+  gate; behind it, all three peaks with the OTel plane and the fence line
+- **Energy:** 4
+- **Into next:** five things get us there.
+
+### the-ask
+
+- **Act:** Close
+- **Job:** the ask
+- **Headline:** Stop building clusters by hand, pipeline one tool this quarter, and gate agents before they scale.
+- **Visual:** five numbered lines in path colours: no new hand-built clusters; splunk-otel
+  through the pipeline this quarter; a Karmada spike placing one app by constraints;
+  sandbox + gateway + short-lived identity + Kyverno before they triage one alert; alert triage by
+  Q2 2027
+- **Energy:** 3
+- **Into next:** end
+
+## Bench
+
+Slides kept in `slides/` but out of the draft. Restore with `deck move` and a beat above.
+
+**ai-phases** (benched 2026-11-17: the user didn't follow the ladder; the OTel plane and the valley lake replaced it)
 
 - **Act:** VII
 - **Job:** the AI rollout ladder with realistic dates and the safety gate for each camp
@@ -584,25 +637,3 @@ What v3 adds:
 - **Energy:** 4
 - **Into next:** so here's the same person, with the same map.
 - **Source:** GOALS §6; Verkada ($0.33 an alert); Salesforce's honest 25% first try
-
-### same-person
-
-- **Act:** Close
-- **Job:** echo the opening, changed
-- **Headline:** Same team, eight times the clusters: it approves the waves, and the pipeline runs them.
-- **Visual:** the full map with AI and agents, every cluster lit; the one team at its
-  gate; behind it, all three peaks with survey lines and the fence line
-- **Energy:** 4
-- **Into next:** five things get us there.
-
-### the-ask
-
-- **Act:** Close
-- **Job:** the ask
-- **Headline:** Stop building clusters by hand, pipeline one tool this quarter, and gate agents before they scale.
-- **Visual:** five numbered lines in path colours: no new hand-built clusters; splunk-otel
-  through the pipeline this quarter; a Karmada spike placing one app by constraints;
-  sandbox + gateway + short-lived identity + Kyverno before stage 1; alert triage by
-  Q2 2027
-- **Energy:** 3
-- **Into next:** end
