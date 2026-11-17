@@ -23,7 +23,8 @@ what the fleets at KubeCon do instead. Sources: GOALS §0, §1.4, §1.7, §2.3, 
   multiplies kubeadm runs *and* tool rollouts. Hiring buys one stage. What lasts is
   rebuilding clusters from code, and rolling platform tools out like software: in waves,
   behind gates, inside change windows, rolling themselves back. OTel is the layer our
-  classic and AI workloads share, not a replacement for Prometheus.
+  classic and AI workloads share, not a replacement for Prometheus, and what it collects
+  lands in one read-only lake that the agents decide from.
 - **The one sentence:** the fleet will outgrow one person with a runbook, so clusters
   and the tools on them have to roll out like software: in waves, behind gates, inside
   windows, rolling themselves back.
@@ -31,7 +32,8 @@ what the fleets at KubeCon do instead. Sources: GOALS §0, §1.4, §1.7, §2.3, 
   on-prem; (2) put one platform tool (splunk-otel-collector first) through a wave pipeline
   with gates and auto-rollback this quarter, then Argo CD, Prometheus and Karpenter;
   (3) change windows as a policy that Argo CD and Kyverno both read; (4) the OTel collector
-  as the standard telemetry layer on every cluster, AI workloads included.
+  as the standard telemetry layer on every cluster, AI workloads included, feeding one
+  read-only lake the agents read instead of holding production credentials.
 
 ## Shape
 
@@ -42,9 +44,9 @@ what the fleets at KubeCon do instead. Sources: GOALS §0, §1.4, §1.7, §2.3, 
   this room because everyone has lived some of these steps and nobody has added them up.
 - **Acts:** I: *watch it grow* (6 slides, fast, about 3 minutes; one map that gains a
   piece per slide) / II: *add it up* (3 slides: the runbook, the tools, the overrun) /
-  III: *stop doing it by hand* (5 slides: kubeadm's place, waves, gates, windows, OTel),
-  then the close and the ask.
-- **The peak:** `gates`, slide 12 of 16 (75%). A Prometheus upgrade reaches the canary
+  III: *stop doing it by hand* (6 slides: kubeadm's place, waves, gates, windows, OTel,
+  the lake), then the close and the ask.
+- **The peak:** `gates`, slide 12 of 17 (71%). A Prometheus upgrade reaches the canary
   cluster, its gate fails, and it rolls itself back before the prod wave starts. Nobody
   was paged. Everything in Act III builds to that moment. `overrun` (slide 9) is the
   second high point: the problem at its sharpest, followed by two quieter slides.
@@ -74,7 +76,99 @@ what the fleets at KubeCon do instead. Sources: GOALS §0, §1.4, §1.7, §2.3, 
 
 ## Visual direction
 
-Written in phase 3, before theme.css.
+Series brand: **Three Peaks** (`docs/decks/_shared/`; full palette and type in the
+readout's narrative), kept at the user's request. Path colours keep their series meaning:
+mint = delivery (Path 1), teal = agents (Path 2), haze = fleet (Path 3).
+
+- **Subject world:** the estate, meaning where our clusters actually live, drawn as a map:
+  zones for on-prem, AWS and a second cloud, each holding cluster glyphs. Around it, the
+  things the person who runs it handles: a runbook, release trains, version numbers,
+  rollout rings, gates, a week planner with frozen hours.
+- **Palette (brand, with this deck's roles):** night `#070b0e` ground · snow `#e8f4f2` ink ·
+  lichen `#9fb4b6` muted text · haze `#68b6c3` the fleet, which is most of the deck · mint
+  `#9cf0e1` delivery: waves, gates, windows · teal `#36baa2` agents and AI workloads ·
+  **alpenglow `#f4a261`, the one warm accent: the one person, the line where his year runs
+  out, the failed gate, the ask.** Snowfield `#e9f1f0` with slate `#0f1e29` ink for the
+  evidence slides.
+- **Type:** Barlow Condensed 600 for headlines; Barlow 400/500 for body; JetBrains Mono only
+  for literal version strings and commands.
+- **Signature 1, for the series: the range in the background.** The three peaks sit on the
+  horizon in the same place on every slide (fleet left, delivery centre, agents right), in
+  the order the readout uses. A peak **emerges** (rises about 190px and shows its coloured
+  cap) only when the slide's topic touches its path. The others stay sunk as dark
+  silhouettes. Drawn by `theme/range.js`: `Range.draw('#range', {touch: ['p3'], bands})`.
+- **Three peaks plus a survey layer, not four peaks.** The user offered a fourth peak. OTel
+  touches every path, so a fourth summit would make observability a separate climb, which
+  contradicts the slide's claim. Instead it is drawn as **survey lines**: level bands that
+  cross all three peaks at the same heights, one measurement for the whole range. They
+  appear on `otel-common-layer`, `the-lake`, `same-person` and `the-ask`, and nowhere else.
+- **The data lake is a tarn,** a mountain lake at the foot of the range, fed by a stream
+  from each peak (fleet state and metrics, delivery events, agent traces). Agents stand on
+  its shore and read; nothing runs from the shore back up the slopes, because agents hold
+  no production credentials. Added 2026-11-17 at the user's suggestion.
+- **Signature 2, this deck: the estate map that grows.** Drawn by `theme/estate.js` from one
+  table of clusters, so slides 1–6 show the same frame with the same positions, one step
+  later each time. Things new in this step are in colour; earlier ones go grey. The map
+  comes back as rollout rings on `waves` and `gates`, and whole at the close.
+- **Concepts as pictures:** a cluster is a small peak glyph (series convention); a person
+  is the climber mark; **the one person is the climber in alpenglow**; an agent is a teal
+  diamond; lockstep is a tie line between two glyphs; a runbook is a chain of small step
+  blocks, one per node action; version skew is a grid of version cells, with stale ones
+  hollow; work is hours stacked against the line of his year; waves are rings around the
+  test cluster; a gate is a bar across a ring; a change window is shaded hours on a week
+  strip.
+- **Layout:** margins 120 / 96, left-aligned. Headline top-left, at most two lines. The
+  picture fills the band from about y 300 to y 900; the range sits behind it on the bottom
+  edge. Grounds: night for Act I (one map, so one ground), then alternating: dusk
+  `one-runbook`, snowfield `tools-too`, night `overrun`, snowfield `kubeadm-past`, night
+  `waves`, dusk `gates` (the peak gets its own ground), snowfield `change-windows`, night `otel-common-layer`, dusk
+  `the-lake`, night `same-person`, dusk `the-ask`.
+
+  ```
+  opening (two-clusters)            densest (overrun)                 peak (gates)
+  ┌──────────────────────────┐     ┌──────────────────────────┐     ┌──────────────────────────┐
+  │ We started with two      │     │ Keep doing it this way…  │     │ Every wave passes its    │
+  │ clusters…                │     │            ▇ ▇  ── 2 ppl │     │ tool's gate…             │
+  │ ┌on-prem┐                │     │ ── 1 person ▇ ▇          │     │   ◯ prod  ◯ w2  ◯ w1     │
+  │ │▲ ▲    │                │     │      ▃ ▅ ▇ ▇ ▇           │     │   ◯ canary ✗ ← rollback  │
+  │ └───────┘  ☻(runbook)    │     │  ▁ ▂ ▃ ▅ ▇ ▇  illustr.   │     │   ● test ✓    gate list  │
+  │ 2 clusters  3 apps  6 ppl│     │ day1 DR EKS teams AI 2nd │     │                          │
+  │ ___/\haze_________       │     │ ___/\___                 │     │ ________/\mint___        │
+  └──────────────────────────┘     └──────────────────────────┘     └──────────────────────────┘
+  ```
+- **Motion moment:** on `gates`, a new Prometheus version passes the test cluster, reaches
+  the canary ring, fails its gate (the gate turns alpenglow), and travels back by itself.
+  The prod rings never light. Three clicks.
+- **Anti-default check, and what changed:**
+  - *A map of boxes and arrows* is the default way to draw an estate. Changed: no arrows
+    until slide 6 (apps moving), zones as quiet outlines, and the counts are real glyphs,
+    one per cluster and one per person, not numbers in boxes.
+  - *A stat-card for the toil number:* the overrun is a chart whose bars cross a person,
+    not a big "1,620 h" card.
+  - *A logo wall of tools:* the four tools appear as a version grid (their skew is the
+    point) and as gates (their health checks are the point), never as logos.
+  - *A fourth summit for OTel:* replaced by survey lines across all three peaks, as above.
+  - *A database cylinder labelled "Data Lake":* replaced by the tarn, which also says
+    where it sits (downstream of everything) and that it's read from the shore.
+  - No eyebrows, act labels, page numbers or deck title in the chrome; the background
+    range is the only element on every slide.
+
+- **Key-frame notes (2026-11-17):**
+  - The range sits low (peak height 440, summits at y 800–880) with caps at half opacity,
+    and the summits are set right of the text column (fleet x 700, delivery x 1270, agents
+    x 1750). The first version put the fleet cap behind the census line, where it
+    competed with the subject. Slides keep their right-hand copy above y ≈ 790 so the
+    delivery cap stays clear.
+  - `gates` first used full concentric rings with the action crammed in the middle and
+    callouts far from their marks. It now uses half-rings rippling right, a three-line run
+    log that builds with the clicks, and a compact gate list. `waves` should reuse the
+    same ripple geometry, since the two slides are deliberately parallel.
+  - `overrun`: haze (clusters) and mint (tools) fail the dataviz validator's generic
+    lightness and chroma checks, because the brand is soft by design, but pass both
+    separation checks (ΔE 17, normal and CVD). Accepted, with direct labels beside the last
+    bar as the legend. Columns are 76px, not the 24px dashboard cap, for a projected room.
+- **Audit exceptions, accepted:** `gates` (90 words) and `overrun` (110) are the peak and
+  the densest evidence slide; the extra words are the gate list and the model's inputs.
 
 ## Beats
 
@@ -254,11 +348,31 @@ Written in phase 3, before theme.css.
   team on everything. Out the right: Prometheus, Splunk, Jaeger, and agents reading
   through the same layer. Prometheus stays in the picture, as a backend
 - **Energy:** 3
-- **Into next:** so here's the same person, with the same fleet.
+- **Into next:** and everything that layer collects has to land somewhere the agents can read.
 - **Source:** GOALS §4.2; *The Race to Standardize AI Observability* (Google, Microsoft);
   *Seeing Inside LLM Inference* (IBM, JPMorgan Chase: vLLM emits OTel *and* is scraped by
   Prometheus); *Beyond Dashboards* (NVIDIA, Workday: OTel → MCP → agents); *OTel
   Blueprints* (Cisco Splunk, New Relic)
+
+### the-lake
+
+- **Act:** III
+- **Job:** AI makes decisions from data: give it one read-only lake, not credentials to prod
+- **Headline:** Agents decide from a read-only lake, not from credentials to production.
+- **Visual:** the tarn at the foot of the range, fed by three streams: from the fleet peak
+  (cluster state snapshots, metrics), from the delivery peak (syncs, rollouts, gate
+  results), from the agents peak (traces, token and tool-call spans). On the shore, teal
+  agent diamonds, each with the decision it makes from the lake: triage this alert, judge
+  this canary, pick the quiet hour for this upgrade. No line runs from the shore back up a
+  slope. One small honest line underneath: a lake is a snapshot, fine for triage and
+  trends; a gate mid-rollout reads live metrics through a narrow tool
+- **Energy:** 3
+- **Into next:** so here's the same person, with the same fleet.
+- **Source:** GOALS §7 (dump cluster state to a database; read-only extraction is a
+  security control); *One Recipe, Five Clouds, One Query* (NVIDIA, Upbound: a queryable
+  audit layer); *Beyond Dashboards* (NVIDIA, Workday: raw OTel fails with LLMs, so put a
+  typed query layer over it); the counter-argument, *No RAG, No Regrets* (Mastercard: live
+  APIs through narrow audited tools rather than a stale index)
 
 ### same-person
 
@@ -278,6 +392,7 @@ Written in phase 3, before theme.css.
 - **Headline:** Stop building clusters by hand, and put one tool through the pipeline this quarter.
 - **Visual:** four lines, one per decision, each tied to the slide that argued it: no new
   hand-built kubeadm clusters; splunk-otel-collector through waves, gates and rollback
-  first; change windows as policy; the OTel collector on every cluster
+  first; change windows as policy; the OTel collector on every cluster, feeding the
+  read-only lake
 - **Energy:** 3
 - **Into next:** end

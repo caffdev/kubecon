@@ -2,6 +2,24 @@
   "title": "Takeaways v2: the fleet outgrows one person",
   "draft": "main",
   "drafts": {
-    "main": []
+    "main": [
+      "two-clusters",
+      "dr",
+      "eks",
+      "more-of-everything",
+      "ai-users",
+      "second-cloud",
+      "one-runbook",
+      "tools-too",
+      "overrun",
+      "kubeadm-past",
+      "waves",
+      "gates",
+      "change-windows",
+      "otel-common-layer",
+      "the-lake",
+      "same-person",
+      "the-ask"
+    ]
   }
 }

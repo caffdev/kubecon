@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two clusters, one person</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 92px; max-width: 1480px; line-height: 1; }
+    .map { position: absolute; left: var(--margin); top: 330px; width: 1680px; height: 540px; overflow: visible; }
+    .census { top: 916px; }
+    .is-entered .map .pk-glyph.new { animation: drop 700ms var(--step-ease) both; animation-delay: 500ms; transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .map .you { animation: fade-in 700ms 900ms both; }
+    @keyframes drop { from { transform: translateY(-40px); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>We started with two clusters, test and prod, and one person who upgrades them.</h1>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The estate: one on-prem zone with two clusters, test and prod; one person with a runbook; six people using them"></svg>
+    <p class="census" id="census"></p>
+  </main>
+
+  <aside class="notes">
+    Let's start small, because we did.
+
+    A team, a handful of people, and two clusters on our own hardware. One to test on, one to run on. We built them with kubeadm, by hand, and that was the right call at the time.
+
+    And there's one person (that's him, in orange, with the runbook) who knows how to upgrade them. Three times a year, Kubernetes ships a new minor version, and he walks both clusters through it. It takes him a couple of days. Nobody else notices.
+
+    Keep an eye on him. He's in every picture from here on.
+
+    Then prod became important enough to need a twin.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    Estate.draw('#map', 1);
+    document.getElementById('census').innerHTML = Estate.census(1);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

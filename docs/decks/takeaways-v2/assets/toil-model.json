@@ -1,0 +1,19 @@
+{
+  "note": "Illustrative model, not our measurements. Replace the inputs with real numbers before this deck goes beyond the team.",
+  "inputs": {
+    "k8s_minors_per_year": 3,
+    "hours_per_kubeadm_cluster_per_minor": 12,
+    "hours_per_managed_cluster_per_minor": 6,
+    "tool_upgrades_per_tool_per_year": 4,
+    "hours_per_tool_per_cluster_per_upgrade": 1.5,
+    "one_person_upgrade_hours_per_year": 850
+  },
+  "stages": [
+    { "stage": "day one",     "kubeadm": 2, "managed": 0,  "tools": 4, "clusters_h": 72,  "tools_h": 48 },
+    { "stage": "+ DR",        "kubeadm": 3, "managed": 0,  "tools": 4, "clusters_h": 108, "tools_h": 72 },
+    { "stage": "+ EKS",       "kubeadm": 3, "managed": 3,  "tools": 4, "clusters_h": 162, "tools_h": 144 },
+    { "stage": "+ teams",     "kubeadm": 5, "managed": 9,  "tools": 4, "clusters_h": 342, "tools_h": 336 },
+    { "stage": "+ AI",        "kubeadm": 6, "managed": 14, "tools": 6, "clusters_h": 468, "tools_h": 720 },
+    { "stage": "+ 2nd cloud", "kubeadm": 6, "managed": 22, "tools": 6, "clusters_h": 612, "tools_h": 1008 }
+  ]
+}
