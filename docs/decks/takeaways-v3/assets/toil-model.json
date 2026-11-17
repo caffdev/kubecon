@@ -1,0 +1,29 @@
+{
+  "note": "Illustrative model, not our measurements. Replace the inputs with real numbers before this deck goes beyond the team.",
+  "inputs": {
+    "k8s_minors_per_year": 3,
+    "hours_per_kubeadm_cluster_per_minor": 12,
+    "hours_per_managed_cluster_per_minor": 6,
+    "tool_upgrades_per_tool_per_year": 4,
+    "hours_per_tool_per_cluster_per_upgrade": 1.5,
+    "one_person_upgrade_hours_per_year": 850
+  },
+  "stages": [
+    { "stage": "day one",        "kubeadm": 4, "managed": 0,  "tools": 4, "clusters_h": 144, "tools_h": 96 },
+    { "stage": "+ cloud dev",    "kubeadm": 4, "managed": 3,  "tools": 4, "clusters_h": 198, "tools_h": 168 },
+    { "stage": "+ 2nd exchange", "kubeadm": 8, "managed": 3,  "tools": 4, "clusters_h": 342, "tools_h": 264 },
+    { "stage": "+ migration",    "kubeadm": 8, "managed": 9,  "tools": 4, "clusters_h": 450, "tools_h": 408 },
+    { "stage": "+ 2nd region",   "kubeadm": 8, "managed": 15, "tools": 4, "clusters_h": 558, "tools_h": 552 },
+    { "stage": "+ 2nd cloud",    "kubeadm": 8, "managed": 21, "tools": 4, "clusters_h": 666, "tools_h": 696 },
+    { "stage": "+ AI (part 2)",  "kubeadm": 8, "managed": 24, "tools": 8, "clusters_h": 720, "tools_h": 1536 }
+  ],
+  "twenty_tools": {
+    "everywhere_29": ["argo-cd", "prometheus", "splunk-otel", "external-secrets", "thanos", "istio / ALB", "cert-manager", "kyverno", "velero", "reloader", "argo-rollouts", "keda"],
+    "on_prem_8": ["ceph", "rook"],
+    "cloud_21": ["karpenter", "external-dns"],
+    "a_few_3": ["vault-operator", "grafana", "kafka-ui", "file-viewer"],
+    "four_tools": { "installs": 116, "rollouts_per_year": 464, "hours": 696 },
+    "twenty_tools": { "installs": 418, "rollouts_per_year": 1672, "hours": 2508 },
+    "pipeline_approvals_per_year": 80
+  }
+}

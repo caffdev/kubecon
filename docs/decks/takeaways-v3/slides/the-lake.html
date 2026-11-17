@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The read-only lake</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); --accent: var(--teal); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .src-name { font: 600 36px var(--font-display); text-anchor: middle; }
+    .src-what { font: 400 26px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .stream { fill: none; stroke-width: 5; stroke-linecap: round; }
+    .lake { fill: var(--sky); opacity: .55; }
+    .lake-rim { fill: none; stroke: #6fa8d6; stroke-width: 3; }
+    .ripple { fill: none; stroke: #9cc8ea; stroke-width: 2.5; opacity: .6; }
+    .lake-name { font: 600 46px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .lake-sub { font: 400 28px var(--font-body); fill: var(--snow); text-anchor: middle; opacity: .9; }
+    .agent { fill: var(--teal); }
+    .noway { fill: none; stroke: var(--you); stroke-width: 4; stroke-dasharray: 9 8; }
+    .noway-x { font: 700 44px var(--font-display); fill: var(--you); text-anchor: middle; }
+    .noway-t { font: 500 26px var(--font-body); fill: var(--you); }
+    .is-entered .stream { animation: flow 1400ms var(--step-ease) both; animation-delay: calc(400ms + var(--i) * 200ms); }
+    .stream { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    @keyframes flow { from { stroke-dashoffset: 1; } }
+
+    .decide { position: absolute; left: var(--margin); top: 350px; width: 560px; }
+    .decide h3 { font: 600 32px/1.1 var(--font-display); color: var(--lichen); margin-bottom: 18px; }
+    .decide li { list-style: none; display: grid; grid-template-columns: 40px 1fr; align-items: baseline; margin-bottom: 16px; font: 600 40px/1.1 var(--font-display); color: var(--snow); }
+    .decide li::before { content: ""; width: 20px; height: 20px; background: var(--teal); transform: rotate(45deg) translateY(-4px); }
+    .limit { position: absolute; left: var(--margin); top: 664px; width: 600px; font-size: 28px; line-height: 1.34; color: var(--lichen); padding-left: 20px; border-left: 4px solid var(--scree); }
+    .limit b { color: var(--snow); font-weight: 500; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Agents decide from a read-only lake, not from credentials to production.</h2>
+
+    <div class="decide">
+      <h3>What agents decide from it</h3>
+      <ul>
+        <li>Triage this alert</li>
+        <li>Judge this canary</li>
+        <li>Pick the quiet hour</li>
+      </ul>
+    </div>
+    <p class="limit"><b>A lake is a snapshot.</b> Fine for triage and trends. A gate mid-rollout still reads live metrics through one narrow, audited tool.</p>
+
+    <svg class="scene" id="scene" viewBox="0 0 1920 1080" role="img" aria-label="Three streams, one from each path, flow down into one read-only lake: fleet state and metrics, delivery syncs and gate results, agent traces and tool calls. Agents sit on the shore and read; there is no write path from the shore back to production."></svg>
+  </main>
+
+  <aside class="notes">
+    Everything that layer collects has to land somewhere the agents can read, and where it lands matters more than which tool it is.
+
+    Three streams come down, one from each path. From the fleet: cluster state, snapshotted into a database, plus metrics. From delivery: every sync, every rollout, every gate result. From the agents themselves: their traces and tool calls. They all run into one lake.
+
+    The agents sit on the shore and read. That's how they decide things: is this alert real, did this canary actually get worse, which hour is quiet enough to upgrade this cluster.
+
+    And here's the rule. There's no path from the shore back up to production. Read-only extraction is what lets us say yes to agents analysing prod without saying yes to agents holding prod credentials. That's a security control, not just plumbing.
+
+    Let me be honest about the limit. Mastercard argued the other side at the show: a lake is a snapshot, and a stale index can mislead a model. They let theirs call live APIs through a narrow, audited tool instead. They're right for live decisions. So: the lake for triage and trends; a gate in the middle of a rollout reads live metrics through one narrow tool. NVIDIA and Workday added the other lesson: raw telemetry confuses models, so put a typed query layer over the lake.
+
+    And one of the first things worth deciding from it is how big every pod should be.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2'], survey: true });
+    (() => {
+      const LCX = 1270, LCY = 700, LRX = 430, LRY = 96;
+      const SRC = [
+        ['fleet', 'state, metrics', 'var(--haze)', 900],
+        ['delivery', 'syncs, gate results', 'var(--mint)', 1270],
+        ['agents', 'traces, tool calls', 'var(--teal)', 1640],
+      ];
+      let s = '';
+      SRC.forEach(([name, what, col, x], i) => {
+        s += `<text class="src-name" x="${x}" y="370" style="fill:${col}">${name}</text><text class="src-what" x="${x}" y="404">${what}</text>`;
+        const tx = LCX + (i - 1) * 220, ty = LCY - LRY + 22;
+        const mx = (x + tx) / 2, my = (428 + ty) / 2, w = 34;
+        s += `<path class="stream" pathLength="1" style="stroke:${col};--i:${i}" d="M${x} 428C${x - w} 460 ${mx + w} ${my - 30} ${mx} ${my}S${tx - w} ${ty - 40} ${tx} ${ty}"/>`;
+      });
+      // the tarn
+      s += `<ellipse class="lake" cx="${LCX}" cy="${LCY}" rx="${LRX}" ry="${LRY}"/>`;
+      s += `<ellipse class="lake-rim" cx="${LCX}" cy="${LCY}" rx="${LRX}" ry="${LRY}"/>`;
+      s += `<path class="ripple" d="M${LCX - 250} ${LCY + 52}q60 -14 120 0t120 0"/><path class="ripple" d="M${LCX + 120} ${LCY + 58}q50 -12 100 0t100 0"/>`;
+      s += `<text class="lake-name" x="${LCX}" y="${LCY - 2}">one lake</text><text class="lake-sub" x="${LCX}" y="${LCY + 38}">read-only</text>`;
+      // agents on the near shore
+      const shore = LCY + LRY + 34;
+      for (let i = 0; i < 5; i++) {
+        const x = LCX - 160 + i * 80;
+        s += `<path class="agent" d="M${x} ${shore - 16}l16 16l-16 16l-16 -16z"/>`;
+      }
+      // no write path back to prod
+      const nx = LCX + LRX + 60;
+      s += `<path class="noway" d="M${LCX + 240} ${shore}C${nx} ${shore} ${nx + 40} ${LCY} ${nx + 20} 470"/>`;
+      s += `<text class="noway-x" x="${nx + 40}" y="${LCY - 40}">✗</text>`;
+      s += `<text class="noway-t" x="${LCX}" y="${shore + 62}" text-anchor="middle">no write path back to prod</text>`;
+      Peaks.draw('#scene', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Same person, same map</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); }
+    h2 { font-size: 80px; max-width: 1600px; line-height: 1.02; }
+    .map { position: absolute; left: var(--margin); top: 350px; width: 1680px; height: 540px; overflow: visible; }
+    .gate { fill: var(--mint); }
+    .gate-t { font: 700 34px var(--font-display); fill: var(--mint); }
+    .ag { fill: var(--teal); }
+    .is-entered .map .pk-glyph.lit { animation: light 600ms var(--step-ease) both; animation-delay: calc(400ms + var(--d) * 1ms); }
+    @keyframes light { from { fill: #2c3a41; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Same person, seven times the clusters: he approves the waves, and the pipeline runs them.</h2>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The full estate, 32 clusters across on-prem, two AWS regions and a second cloud, all lit: every cluster on the version the pipeline delivered, AI clusters in teal with agents beside them. The same one person, now approving the waves."></svg>
+  </main>
+
+  <aside class="notes">
+    Here's where we started: four clusters and one person with a runbook.
+
+    And here's the same map now. Thirty-two clusters: two exchanges, two AWS regions, a second cloud, AI in teal, and agents working beside it. The same one person.
+
+    What changed is what he does. He doesn't walk each cluster through a runbook. He approves a wave, and the pipeline runs it: test, canary, waves, prod, with a gate between each, inside the window, rolling itself back if a gate fails. Karmada keeps the work where the constraints say. The fence along the bottom checks every change, his, the pipeline's and the agents'. The survey lines see all of it.
+
+    Every cluster is lit because every one is on the version the pipeline delivered, not the version someone got round to.
+
+    Seven times the clusters with the same person. That's the ratio the fleets at KubeCon run at.
+
+    Five things get us there.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1', 'p2'], survey: true, fence: true });
+    Estate.draw('#map', 7, { litAll: true, people: false, youText: ['one person', 'approves the waves'] });
+    document.querySelectorAll('#map .pk-glyph.lit').forEach((g) => g.style.setProperty('--d', Math.round(g.getBBox().x * 0.9)));
+    (() => {
+      const cs = Estate.at().filter((c) => c.ai);
+      let s = `<rect class="gate" x="310" y="486" width="12" height="54" rx="3"/><text class="gate-t" x="336" y="524">✓</text>`;
+      for (const c of cs) s += Estate.agent(c.x + 40, c.y - 26, 18, 'ag');
+      Peaks.draw('#map', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

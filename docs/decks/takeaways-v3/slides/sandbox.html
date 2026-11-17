@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not a cage</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .shells { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .shell { fill: none; stroke-width: 4; }
+    .s0 { stroke: var(--lichen); stroke-dasharray: 6 10; }
+    .s1 { stroke: var(--haze); }
+    .s2 { stroke: var(--teal); stroke-width: 7; }
+    .shell-name { font: 600 30px var(--font-display); }
+    .ag { fill: var(--teal); }
+    .ag-name { font: 500 26px var(--font-body); fill: var(--snow); text-anchor: middle; }
+    .levels { position: absolute; left: 860px; top: 330px; width: 960px; }
+    .levels li { list-style: none; display: grid; grid-template-columns: 220px 1fr; column-gap: 28px; padding: 18px 0; border-top: 2px solid #1d3442; }
+    .levels b { font: 600 40px/1.05 var(--font-display); }
+    .levels p { font-size: 27px; line-height: 1.3; color: var(--lichen); }
+    .levels p em { font-style: normal; color: var(--snow); }
+    .levels .v { display: block; margin-top: 6px; font: 600 28px/1.1 var(--font-display); }
+    .l0 b { color: var(--lichen); } .l0 .v { color: var(--you); }
+    .l1 b { color: var(--haze); } .l1 .v { color: var(--haze); }
+    .l2 b { color: var(--teal); } .l2 .v { color: var(--teal); }
+    .src { max-width: 1680px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>A container is not a cage, so agents run in gVisor or Kata.</h2>
+    <svg class="shells" id="shells" viewBox="0 0 1920 1080" role="img" aria-label="An agent inside three nested shells: a container sharing the host kernel, drawn dashed; gVisor, a user-space kernel in between; and Kata, its own microVM and kernel, drawn heaviest."></svg>
+    <ol class="levels">
+      <li class="l0"><b>Container</b><p>Shares the host’s kernel with every other pod. <em>A namespace, not a wall.</em><span class="v">Not for code an agent wrote</span></p></li>
+      <li class="l1"><b>gVisor</b><p>A user-space kernel answers the agent’s system calls. <em>Most kernel exploits stop there.</em> Starts fast; some syscall overhead.<span class="v">The default for agents</span></p></li>
+      <li class="l2"><b>Kata</b><p>Each pod in its own microVM, with its own kernel. <em>An escape lands in a VM, not on the node.</em> Slower start; snapshots fix most of it.<span class="v">For untrusted code and tools</span></p></li>
+    </ol>
+    <p class="src">“Sandbox Your Agents” keynote (Red Hat); Groundhog Pod: Kata pod snapshots (Microsoft); Agent Sandboxes on Kubernetes (Google). One line picks it: <code>runtimeClassName: gvisor</code>.</p>
+  </main>
+
+  <aside class="notes">
+    Every one of those agents runs code, and often it's code the agent just wrote. So the question is what's around it.
+
+    A container shares the host's kernel with every other pod on the node. It's a namespace, not a wall. That's fine for code a person reviewed. It isn't a cage for code an agent wrote thirty seconds ago. That was a keynote at the show: sandbox your agents.
+
+    The next shell is gVisor: a kernel written in user space that answers the agent's system calls itself, so most kernel exploits stop there. It starts fast, with some overhead on system calls. That's our default for agents.
+
+    The outer shell is Kata: every pod gets its own small virtual machine with its own kernel. If something escapes, it lands in a VM, not on the node. It starts slower, and Microsoft showed how pod snapshots take most of that cost away. That's for untrusted code and for tools that run anything they're handed.
+
+    And picking one is one line in the pod spec: a runtime class.
+
+    Caged, it still has to do things, and it does them through tools.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2'] });
+    (() => {
+      const cx = 450, cy = 590;
+      let s = '';
+      const shell = (w, h, cls, name, col) => `<rect class="shell ${cls}" x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}" rx="${h / 6}"/><text class="shell-name" x="${cx - w / 2 + h / 6 * 0.7 + 14}" y="${cy - h / 2 + 44}" style="fill:${col}">${name}</text>`;
+      s += shell(640, 480, 's2', 'Kata', 'var(--teal)');
+      s += shell(470, 336, 's1', 'gVisor', 'var(--haze)');
+      s += shell(300, 196, 's0', 'container', 'var(--lichen)');
+      s += Estate.agent(cx, cy + 4, 56, 'ag');
+      s += `<text class="ag-name" x="${cx}" y="${cy + 62}">the agent</text>`;
+      Peaks.draw('#shells', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

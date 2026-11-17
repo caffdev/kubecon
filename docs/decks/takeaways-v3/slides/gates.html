@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gates roll back</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); --accent: var(--mint); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+
+    .rings { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ring { fill: none; stroke: var(--scree); stroke-width: 2.5; }
+    .ring-name { font: 600 28px var(--font-display); fill: var(--lichen); paint-order: stroke; stroke: var(--bg); stroke-width: 10px; letter-spacing: .02em; }
+    .ray { stroke: var(--scree); stroke-width: 2; stroke-dasharray: 4 8; }
+    .gate { fill: var(--scree); }
+    .gate.pass { fill: var(--mint); }
+    .gate.fail { fill: var(--you); }
+    .pk-glyph.lit { fill: var(--mint); }
+    .pk-glyph.old { fill: #2f4250; }
+    .mark { font: 700 44px var(--font-display); text-anchor: middle; }
+    .mark.pass { fill: var(--mint); }
+    .mark.fail { fill: var(--you); }
+    .back { fill: none; stroke: var(--you); stroke-width: 5; stroke-linecap: round; }
+    .back-head { fill: var(--you); }
+
+    .log { position: absolute; left: 1010px; top: 318px; width: 800px; }
+    .log li { list-style: none; display: grid; grid-template-columns: 56px 1fr; align-items: baseline; margin-bottom: 14px; font-size: 30px; line-height: 1.3; color: var(--lichen); }
+    .log i { font: 700 40px/1 var(--font-display); font-style: normal; }
+    .log b { font: 600 38px/1.1 var(--font-display); color: var(--ink); }
+    .log .pass i { color: var(--mint); }
+    .log .fail i, .log .fail b { color: var(--you); }
+
+    .gatelist { position: absolute; left: 1010px; top: 548px; width: 800px; }
+    .gatelist h3 { font: 600 30px/1 var(--font-display); color: var(--muted); letter-spacing: .02em; margin-bottom: 14px; }
+    .gatelist li { list-style: none; display: grid; grid-template-columns: 190px 1fr; padding: 6px 0 6px 20px; border-left: 4px solid var(--scree); font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .gatelist li b { font: 600 32px/1.2 var(--font-display); color: var(--ink); }
+    .gatelist li.hot { border-left-color: var(--you); }
+    .src { left: 1440px; width: 380px; max-width: 380px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Every wave passes its tool’s gate, and a failed gate rolls itself back.</h2>
+
+    <svg class="rings" id="rings" viewBox="0 0 1920 1080" role="img" aria-label="Rollout rings rippling out from the test cluster: canary, wave 1, wave 2, prod. A new Prometheus passes the test gate, fails the canary gate and rolls back; the prod rings never see it."></svg>
+
+    <ol class="log">
+      <li class="pass" data-step="1"><i>✓</i><span><b>Test cluster:</b> gate passed, so it moves out</span></li>
+      <li class="fail" data-step="2"><i>✗</i><span><b>Canary:</b> gate failed, targets dropped</span></li>
+      <li class="fail" data-step="3"><i>↺</i><span><b>Rolled back on its own.</b> Nobody paged.</span></li>
+    </ol>
+
+    <div class="gatelist">
+      <h3>Each tool brings its own gate</h3>
+      <ul>
+        <li><b>Argo CD</b><span>apps still Synced and Healthy</span></li>
+        <li class="hot"><b>Prometheus</b><span>targets up, rules evaluating</span></li>
+        <li><b>splunk-otel</b><span>exports succeeding, nothing dropped</span></li>
+        <li><b>Karpenter</b><span>pending pods get nodes</span></li>
+      </ul>
+    </div>
+    <p class="src">Pattern: LinkedIn’s canary pipeline; each gate is an Argo CD PostSync Job. The failure is our example.</p>
+  </main>
+
+  <aside class="notes">
+    This is the slide the whole second half has been building to.
+
+    Read it from the middle out. The middle is the test cluster. Then one canary cluster. Then the prod fleet in waves: wave one, wave two, and the rest of prod. A new version of a platform tool starts in the middle and moves outward one ring at a time, and between every ring there's a gate.
+
+    Click. A new Prometheus goes onto the test cluster. Its gate passes: targets are up, rules are evaluating, nothing's dropped. So it moves out.
+
+    Click. It reaches the canary cluster, which is a real cluster with real workloads. And this time the gate fails: targets dropped after the upgrade.
+
+    Click. And here's the point. Nobody decides anything. The pipeline rolls the canary back to the old version on its own. Wave one never started. The prod rings never saw it. Nobody got paged, and the person from the start of this talk found out from a message in the morning, not a phone call at night.
+
+    On the right: each tool brings its own gate. Argo CD checks every app is still synced and healthy. Prometheus checks its own targets and rules. The OTel collector checks that exports are succeeding. Karpenter checks that pending pods still get nodes. Different checks, same machinery.
+
+    This isn't our invention. LinkedIn showed it for their cluster services: the gate is just an Argo CD PostSync job. Exit zero, the wave advances. Exit one, the sync fails and it rolls back. They took a release from about a week of manual testing to about an hour.
+
+    And the pipeline also needs to know when not to run at all.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p1'] });
+
+    (() => {
+      // half-rings rippling right from the test cluster; the version travels along the ray
+      const cx = 190, cy = 700, A = 42 * Math.PI / 180;
+      const R = { canary: 190, w1: 320, w2: 440, prod: 560 };
+      const COUNT = { w1: 6, w2: 9, prod: 11 };
+      const names = { canary: 'canary', w1: 'wave 1', w2: 'wave 2', prod: 'prod' };
+      const pt = (r, a) => [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+      let s = '';
+      for (const [k, r] of Object.entries(R)) {
+        const [x1, y1] = pt(r, -A), [x2, y2] = pt(r, A);
+        s += `<path class="ring" d="M${x1} ${y1}A${r} ${r} 0 0 1 ${x2} ${y2}"/>`;
+        s += `<text class="ring-name" x="${x1 + 14}" y="${y1 - 6}">${names[k]}</text>`;
+      }
+      s += `<line class="ray" x1="${cx}" y1="${cy}" x2="${cx + R.prod + 30}" y2="${cy}"/>`;
+      // the prod fleet on its rings: grey, because it never sees the bad version
+      for (const k of ['w1', 'w2', 'prod']) {
+        const n = COUNT[k], r = R[k];
+        for (let i = 0; i < n; i++) {
+          const a = -A + 2 * A * (i + 0.5) / n;
+          if (Math.abs(a) < 0.11) continue; // keep the ray clear
+          const [x, y] = pt(r, a);
+          s += Peaks.glyph({ x, y, w: 42, h: 36, cls: 'pk-glyph old' });
+        }
+      }
+      // gates on the ray, between rings
+      const G = [96, 256, 380, 500];
+      const gate = (r, cls) => `<rect class="gate ${cls}" x="${cx + r - 6}" y="${cy - 30}" width="12" height="60" rx="3"/>`;
+      s += G.map((r) => gate(r, '')).join('');
+      // the test cluster and the canary, grey before the build
+      s += Peaks.glyph({ x: cx, y: cy, w: 60, h: 50, cls: 'pk-glyph old' });
+      s += Peaks.glyph({ x: cx + R.canary, y: cy, w: 60, h: 50, cls: 'pk-glyph old' });
+      s += `<text class="ring-name" x="${cx}" y="${cy + 68}" text-anchor="middle">test</text>`;
+      // 1: test takes the new version, its gate passes
+      s += `<g data-step="1">${Peaks.glyph({ x: cx, y: cy, w: 60, h: 50, cls: 'pk-glyph lit' })}${gate(G[0], 'pass')}<text class="mark pass" x="${cx + G[0]}" y="${cy - 46}">✓</text></g>`;
+      // 2: canary takes it, its gate fails
+      s += `<g data-step="2">${Peaks.glyph({ x: cx + R.canary, y: cy, w: 60, h: 50, cls: 'pk-glyph lit' })}${gate(G[1], 'fail')}<text class="mark fail" x="${cx + G[1]}" y="${cy - 46}">✗</text></g>`;
+      // 3: the canary goes back to the old version
+      const bx = cx + R.canary, by = cy + 44;
+      s += `<g data-step="3">${Peaks.glyph({ x: bx, y: cy, w: 60, h: 50, cls: 'pk-glyph old' })}`
+        + `<path class="back" d="M${bx + 6} ${by}Q${bx - 50} ${by + 74} ${cx + 52} ${by + 18}"/>`
+        + `<path class="back-head" d="M${cx + 38} ${by + 8}l28 -4l-10 26z"/></g>`;
+      Peaks.draw('#rings', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

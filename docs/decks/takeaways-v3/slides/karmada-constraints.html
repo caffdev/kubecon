@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Karmada: constraints, not clusters</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .yaml-card { position: absolute; left: var(--margin); top: 330px; width: 600px; padding: 26px 34px; border-radius: 16px; background: #0b1820; border: 2px solid var(--scree); }
+    .yaml-card .code { font-size: 27px; line-height: 1.5; color: var(--snow); }
+    .yaml-card .c { color: var(--lichen); }
+    .yaml-card .k { color: var(--mint); }
+    .yaml-cap { position: absolute; left: var(--margin); top: 762px; width: 600px; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .yaml-cap b { color: var(--snow); font-weight: 500; }
+    .kmap { position: absolute; left: 760px; top: 330px; width: 1060px; height: 341px; overflow: visible; }
+    .kmap .zone-name { font-size: 50px; }
+    .kmap .zone-how { display: none; }
+    .kmap .region-name { font-size: 38px; }
+    .kmap .pk-glyph { fill: #2c3a41; }
+    .kmap .pk-glyph.fits { fill: #3d5a63; }
+    .kmap .chip { stroke-width: 5; }
+    .kmap .fallback { fill: none; stroke: var(--mint); stroke-width: 4; stroke-dasharray: 9 7; }
+    .map-cap { position: absolute; left: 760px; top: 706px; width: 1040px; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .map-cap i { font-style: normal; color: var(--mint); }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>With Karmada, developers state constraints, and it picks the clusters and regions.</h2>
+
+    <div class="yaml-card"><p class="code"><span class="c"># all a developer writes</span>
+<span class="k">constraints:</span>
+  provider:   cloud
+  compliance: pci
+  residency:  us
+<span class="k">asks:</span>
+  replicas:   6
+  spread:     2 regions
+  fallback:   second cloud</p></div>
+    <p class="yaml-cap"><b>No cluster names.</b> Constraints and asks, in the app’s own repo.</p>
+
+    <svg class="kmap" id="kmap" viewBox="0 0 1680 540" role="img" aria-label="The estate map. Karmada matches the constraints against cluster labels and capacity and spreads six replicas over AWS clusters in both regions, with the second cloud held as the fallback."></svg>
+    <p class="map-cap"><i>●</i> replicas, spread by Karmada over clusters whose labels and spare capacity fit. The second cloud, dashed, is the fallback.</p>
+  </main>
+
+  <aside class="notes">
+    So twenty tools and dozens of apps have to land somewhere across three kinds of place. Today, somebody decides which cluster each one goes to, and writes that cluster's name down. Here's the north-star alternative.
+
+    On the left is everything a developer writes. Constraints: it runs in the cloud, it's PCI, it stays in the US. And asks: six replicas, spread across two regions, and fall back to the second cloud if it has to. There isn't a cluster name anywhere.
+
+    On the right, Karmada does the placing. It reads the labels every cluster carries, its provider, its region, its compliance scope, and how much room it has, and it spreads the six replicas over the clusters that fit. Three in region one, three in region two. The second cloud is held as the fallback.
+
+    To be fair about it: for apps whose placement never changes, Argo CD's ApplicationSets can already select clusters by label. Karmada is the option that goes further, because it places by capacity and it keeps placing when things change. And that's the part that matters on a bad day.
+
+    Because the constraints keep holding when the clusters underneath them don't.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1'] });
+    Estate.draw('#kmap', 6, { quiet: true, people: false, you: false, names: false });
+    (() => {
+      const cs = Estate.at();
+      const pick = (zone, col, row) => cs.find((c) => c.zone === zone && c.col === col && c.row === row);
+      // the six replicas: three in each AWS region; the fallback outlined in the second cloud
+      const R = [['aws', 0, 1], ['aws', 1, 1], ['aws', 2, 2], ['aws', 3, 0], ['aws', 4, 1], ['aws', 5, 1]];
+      let s = '';
+      for (const [z, c, r] of R) {
+        const g = pick(z, c, r);
+        s += `<circle class="chip" cx="${g.x + 26}" cy="${g.y - 22}" r="20"/>`;
+      }
+      const f = Estate.slot('cloud2', 1, 0);
+      s += `<circle class="fallback" cx="${f.x}" cy="${f.y + 50}" r="104"/>`;
+      Peaks.draw('#kmap', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

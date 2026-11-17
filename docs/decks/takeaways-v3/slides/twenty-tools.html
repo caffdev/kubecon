@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twenty tools, not four</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .tools { position: absolute; left: var(--margin); top: 330px; width: 820px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-flow: column; grid-template-rows: repeat(10, 52px); column-gap: 48px; }
+    .tools li { list-style: none; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #18222a; font: 600 32px/52px var(--font-display); color: var(--snow); }
+    .tools li i { font: 400 24px var(--font-body); font-style: normal; color: var(--lichen); }
+    .tools li.demo { color: var(--haze); }
+    .nums { position: absolute; left: 1060px; top: 330px; width: 760px; border-collapse: collapse; }
+    .nums th { font: 600 34px/1.1 var(--font-display); color: var(--lichen); text-align: right; padding: 0 0 14px 24px; }
+    .nums th:first-child { text-align: left; padding-left: 0; }
+    .nums td { font-size: 28px; color: var(--lichen); padding: 10px 0 10px 24px; border-top: 2px solid #18222a; text-align: right; }
+    .nums td:first-child { text-align: left; padding-left: 0; }
+    .nums td b { font: 600 52px/1 var(--font-display); color: var(--snow); font-variant-numeric: tabular-nums lining-nums; }
+    .nums .c4 b { color: var(--haze); }
+    .nums .c20 b { color: var(--you); }
+    .pipe { position: absolute; left: 1060px; top: 690px; width: 760px; font-size: 30px; line-height: 1.3; color: var(--lichen); }
+    .pipe b { font: 600 52px/1 var(--font-display); color: var(--mint); margin-right: 8px; }
+    .src { left: 1060px; max-width: 760px; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Four tools was the demo: the platform really runs twenty, and the numbers follow.</h2>
+
+    <ol class="tools" id="tools"></ol>
+
+    <table class="nums">
+      <thead><tr><th>By hand, a year</th><th class="c4">4 tools</th><th data-step="1">20 tools</th></tr></thead>
+      <tbody>
+        <tr><td>installs across 29 clusters</td><td class="c4"><b>116</b></td><td class="c20" data-step="1"><b>418</b></td></tr>
+        <tr><td>rollouts</td><td class="c4"><b>464</b></td><td class="c20" data-step="1"><b>1,672</b></td></tr>
+        <tr><td>hours</td><td class="c4"><b>696</b></td><td class="c20" data-step="1"><b>2,508</b></td></tr>
+        <tr><td>people, doing only this</td><td class="c4"><b>0.8</b></td><td class="c20" data-step="1"><b>3</b></td></tr>
+      </tbody>
+    </table>
+    <p class="pipe" data-step="2"><b>80</b>wave approvals a year, through the pipeline: twenty tools, four releases each.</p>
+    <p class="src">Illustrative model: 4 upgrades a year per tool, 1.5 h per install by hand. Inputs in <code>assets/toil-model.json</code>.</p>
+  </main>
+
+  <aside class="notes">
+    Confession: the four tools so far were a demo, to keep the pictures readable. Here's what the platform actually runs.
+
+    The four in blue are the ones you've seen: Argo CD, Prometheus, the Splunk OTel collector, Karpenter. Click. And the rest: Ceph and Rook for storage on our own hardware, the Vault operator and External Secrets, Grafana and Thanos, Istio or the ALB controller depending on the cloud, the Kafka UI, the file viewer, cert-manager, external-dns, Kyverno, Velero, KEDA, Reloader, Argo Rollouts. Twenty. The tag beside each says where it runs: on every cluster, only on-prem, only in the cloud, or on just a few.
+
+    Now the numbers, side by side. Four tools across twenty-nine clusters by hand is 116 installs, 464 rollouts a year, about 700 hours. Twenty tools is 418 installs, 1,672 rollouts, two and a half thousand hours. Three people doing nothing else.
+
+    Click. Through the pipeline, it's eighty approvals a year. Twenty tools, four releases each. That's the job that's left for a person.
+
+    Same caveat as before: it's a model, not a measurement. But the shape holds.
+
+    And those twenty don't land the same way everywhere, which is the developers' problem too.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1'] });
+    const ALL = 'all 29', ON = 'on-prem', CLOUD = 'cloud', FEW = 'a few';
+    const TOOLS = [
+      ['argo-cd', ALL, 1], ['prometheus', ALL, 1], ['splunk-otel', ALL, 1], ['karpenter', CLOUD, 1],
+      ['ceph', ON], ['rook', ON], ['vault-operator', FEW], ['external-secrets', ALL], ['grafana', FEW], ['thanos', ALL],
+      ['istio / ALB', ALL], ['kafka-ui', FEW], ['file-viewer', FEW], ['cert-manager', ALL], ['external-dns', CLOUD],
+      ['kyverno', ALL], ['velero', ALL], ['keda', ALL], ['reloader', ALL], ['argo-rollouts', ALL],
+    ];
+    document.getElementById('tools').innerHTML = TOOLS.map(([n, w, demo]) =>
+      `<li class="${demo ? 'demo' : ''}"${demo ? '' : ' data-step="1"'}>${n}<i>${w}</i></li>`).join('');
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

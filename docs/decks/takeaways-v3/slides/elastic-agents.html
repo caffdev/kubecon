@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agents on elastic nodes</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .day { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .nodes { fill: var(--haze); opacity: .14; }
+    .nodes-edge { fill: none; stroke: var(--haze); stroke-width: 3; }
+    .nodes-name { font: 500 26px var(--font-body); fill: var(--haze); }
+    .ag { fill: var(--teal); }
+    .axis { stroke: var(--scree); stroke-width: 2; }
+    .hour { font: 400 24px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .trig { font: 600 28px var(--font-display); fill: var(--snow); }
+    .trig-sub { font: 400 24px var(--font-body); fill: var(--lichen); }
+    .lead { stroke: var(--lichen); stroke-width: 2; }
+    .tally { position: absolute; right: var(--margin); top: 316px; text-align: right; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .tally b { display: block; font: 600 64px/1 var(--font-display); color: var(--teal); }
+    .tally b.zero { color: var(--you); }
+    .tally p + p { margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Autonomous agents spawn on elastic nodes on demand, and nobody approves each one.</h2>
+    <div class="tally">
+      <p><b id="n-agents">0</b>agents spawned today</p>
+      <p><b class="zero">0</b>approved one by one</p>
+    </div>
+    <svg class="day" id="day" viewBox="0 0 1920 1080" role="img" aria-label="One day, hour by hour. Elastic node count rises and falls; agents, drawn as diamonds, spawn when something fires: a nightly schedule at 1am, an alert at 3am, pull requests and reviews through the working day. Illustrative."></svg>
+  </main>
+
+  <aside class="notes">
+    Here's the new kind of user.
+
+    This is one day, hour by hour. The pale band is our elastic node count: Karpenter or Auto Mode adding nodes when there's work and taking them away when there isn't. Each teal diamond is one agent, spawned for one job, gone when it's done.
+
+    At one in the morning a schedule fires: the nightly agents that check drift and costs. At three, an alert: a handful of triage agents spin up, look, report and vanish. And through the working day, a steady stream: agents reviewing pull requests, drafting changes, answering questions about the platform.
+
+    Look at the corner. A couple of hundred agents in a day, and not one of them was approved by a person, one by one. That's the point of them. Nobody wants to approve two hundred agents. But it means each one is a user of our platform that nobody looked at before it started.
+
+    The numbers are illustrative; the shape is what our Jenkins-triggered agent pods will look like.
+
+    And every one of them runs code it may have just written.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2'] });
+    (() => {
+      // agents per hour, illustrative: a nightly schedule at 01, an alert at 03, the working day
+      const A = [2, 12, 2, 9, 2, 1, 2, 4, 9, 12, 13, 12, 10, 12, 13, 12, 11, 9, 5, 3, 2, 2, 1, 2];
+      const X0 = 200, W = 66, BASE = 860, DS = 15, DG = 2;
+      let s = '', total = 0;
+      // elastic nodes: a step area that follows the work
+      let d = `M${X0} ${BASE}`;
+      A.forEach((n, h) => { const top = BASE - (60 + n * 16); d += `V${top}H${X0 + (h + 1) * W}`; });
+      d += `V${BASE}Z`;
+      s += `<path class="nodes" d="${d}"/><path class="nodes-edge" d="${d.replace(/V860Z$/, '')}"/>`;
+      s += `<text class="nodes-name" x="${X0 + 19 * W + 8}" y="${BASE - 112}">elastic nodes</text>`;
+      // the agents, one diamond each
+      A.forEach((n, h) => {
+        const cx = X0 + h * W + W / 2;
+        for (let i = 0; i < n; i++) {
+          const cy = BASE - 24 - i * (DS + DG);
+          s += Estate.agent(cx, cy, DS, 'ag');
+        }
+        total += n;
+      });
+      s += `<line class="axis" x1="${X0}" x2="${X0 + 24 * W}" y1="${BASE}" y2="${BASE}"/>`;
+      for (const h of [0, 3, 6, 9, 12, 15, 18, 21]) s += `<text class="hour" x="${X0 + h * W + W / 2}" y="${BASE + 34}">${String(h).padStart(2, '0')}:00</text>`;
+      // what fired
+      const trig = (h, n, name, sub, dx = 0) => {
+        const x = X0 + h * W + W / 2, y = BASE - 24 - n * (DS + DG) - 20;
+        return `<line class="lead" x1="${x}" x2="${x + dx}" y1="${y}" y2="${y - 50}"/><text class="trig" x="${x + dx}" y="${y - 88}">${name}</text><text class="trig-sub" x="${x + dx}" y="${y - 60}">${sub}</text>`;
+      };
+      s += trig(1, 12, 'a schedule', 'nightly checks', -40);
+      s += trig(3, 9, 'an alert', 'triage agents', 40);
+      s += trig(10, 13, 'PRs and reviews', 'all working day', 0);
+      Peaks.draw('#day', s);
+      document.getElementById('n-agents').textContent = total;
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

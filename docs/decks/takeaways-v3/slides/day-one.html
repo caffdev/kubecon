@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four clusters, one person</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 92px; max-width: 1400px; line-height: 1; }
+    .map { position: absolute; left: var(--margin); top: 350px; width: 1680px; height: 540px; overflow: visible; }
+    .is-entered .map .pk-glyph.new { animation: drop 700ms var(--step-ease) both; animation-delay: 500ms; transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .map .you { animation: fade-in 700ms 900ms both; }
+    @keyframes drop { from { transform: translateY(-40px); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>Four clusters, ny4 with ch4 as its DR, and one person who upgrades them.</h1>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The estate on day one: one on-prem zone with dev, staging, ny4 and ch4, ch4 tied to ny4 as its DR; one person with a runbook; a handful of people"></svg>
+    <p class="census" id="census"></p>
+  </main>
+
+  <aside class="notes">
+    Let's start where we started.
+
+    Four clusters on our own hardware, next to the exchange. Dev and staging to build and test on. ny4 for production, and ch4 as its disaster-recovery twin, kept in lockstep with it. We built them with kubeadm, by hand, and that was the right call at the time.
+
+    And there's one person, him in orange with the runbook, who knows how to upgrade them. Kubernetes ships a new minor version three times a year, and he walks all four through it. Nobody else notices.
+
+    Keep an eye on him. He's in every picture from here on. And so are the four platform tools in the corner tally: four for now, to keep the picture readable.
+
+    Then the cloud showed up, for the environments that didn't need to sit next to an exchange.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    Estate.draw('#map', 1);
+    document.getElementById('census').innerHTML = Estate.census(1);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

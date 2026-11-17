@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The AI ladder</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .prof { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .slope { fill: none; stroke: var(--teal); stroke-width: 6; stroke-linecap: round; }
+    .slope.north { stroke: var(--lichen); stroke-dasharray: 3 14; opacity: .8; }
+    .ground { fill: var(--teal); opacity: .1; }
+    .camp-c { fill: var(--bg); stroke: var(--teal); stroke-width: 5; }
+    .camp-c.here { fill: var(--teal); }
+    .camp-c.north { stroke: var(--lichen); stroke-dasharray: 6 6; }
+    .camp-n { font: 600 32px var(--font-display); fill: var(--teal); text-anchor: middle; }
+    .camp-n.here { fill: var(--bg); }
+    .camp-n.north { fill: var(--lichen); }
+    .cols { position: absolute; left: var(--margin); top: 600px; width: 1680px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 26px; }
+    .cols div { font-size: 24px; line-height: 1.3; color: var(--lichen); }
+    .cols b { display: block; font: 600 32px/1.08 var(--font-display); color: var(--snow); min-height: 70px; }
+    .cols .when { display: block; font: 600 28px/1.1 var(--font-display); color: var(--you); margin: 6px 0 6px; }
+    .cols .north b { color: var(--lichen); }
+    .cols .north .when { color: var(--lichen); font-weight: 500; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Climb a camp at a time: alert triage by Q2 2027, agent PRs by end of 2027.</h2>
+    <svg class="prof" id="prof" viewBox="0 0 1920 1080" role="img" aria-label="An expedition profile with six camps. Camp 0, local prompts, is where we are. Camp 1, alert triage, by Q2 2027. Camp 2, agents propose PRs, by end of 2027. Camps 3 to 5, always-on analysis, agents that fix inside a blast radius, and teams' own agents, are the undated north star."></svg>
+    <div class="cols" id="cols">
+      <div><b>Local prompts</b><span class="when">we are here</span>a person applies every change</div>
+      <div><b>Alert triage: explain, never act</b><span class="when">Q2 2027</span>needs the one view and the lake; no write path</div>
+      <div><b>Agents propose PRs</b><span class="when">end of 2027</span>needs policy in CI and traceability</div>
+      <div class="north"><b>Always-on analysis</b><span class="when">north star</span>needs identity and camp 1’s track record</div>
+      <div class="north"><b>Agents that fix, inside a blast radius</b><span class="when">north star</span>needs sandbox, gates, rollback, windows</div>
+      <div class="north"><b>Teams’ own agents</b><span class="when">north star</span>needs a platform teams can publish agents to</div>
+    </div>
+  </main>
+
+  <aside class="notes">
+    With all of that in place, here's how far we let agents climb, and when.
+
+    Six camps. Camp zero is where we are: people using AI on their own machines, and a person applying every change.
+
+    Camp one, by the second quarter of 2027: alert triage. For every alert, an agent explains it: is it real, how serious, what changed, where to look. It explains; it never acts. It needs the one view and the lake we just saw, and nothing else, because it has no write path. That's why it's first, and why the date is safe. Verkada runs this at thirty-three cents an alert.
+
+    Camp two, by the end of 2027: agents propose pull requests. A fix, a resize, a config change, always as a PR, through review, policy in CI and the same pipeline as everyone else. The resize we just saw starts here.
+
+    Camps three to five are the north star, and they're undated on purpose. Always-on analysis, where the agent owns alert severity. Agents that fix things themselves, inside a blast radius we drew, with the sandbox, the gates, rollback and the change windows all in place. And teams writing their own agents, a DBA agent and an SRE agent working the same incident.
+
+    Each camp has a gate, written underneath it, and we don't move up until the gate is real. Salesforce's first attempt at this landed at twenty-five percent accuracy; what fixed it was the boring work, not a better model.
+
+    So here's the same person, with the same map.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2'] });
+    (() => {
+      // camp x positions match the six text columns below
+      const L = 120, W = 1680, G = 26, cw = (W - 5 * G) / 6;
+      const cx = (i) => L + i * (cw + G) + 28;
+      const cy = (i) => 540 - i * 34;
+      let s = '';
+      let solid = `M${L - 40} ${cy(0) + 20}`, north = '';
+      for (let i = 0; i <= 2; i++) solid += `L${cx(i)} ${cy(i)}`;
+      north = `M${cx(2)} ${cy(2)}`;
+      for (let i = 3; i <= 5; i++) north += `L${cx(i)} ${cy(i)}`;
+      s += `<path class="ground" d="${solid}V${cy(0) + 20}Z"/>`;
+      s += `<path class="slope" d="${solid}"/><path class="slope north" d="${north}"/>`;
+      for (let i = 0; i <= 5; i++) {
+        const cls = i === 0 ? ' here' : i > 2 ? ' north' : '';
+        s += `<circle class="camp-c${cls}" cx="${cx(i)}" cy="${cy(i)}" r="30"/><text class="camp-n${cls}" x="${cx(i)}" y="${cy(i) + 11}">${i}</text>`;
+      }
+      Peaks.draw('#prof', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

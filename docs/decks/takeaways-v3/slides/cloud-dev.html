@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EKS for dev, qa, ftb</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 92px; max-width: 1400px; line-height: 1; }
+    .map { position: absolute; left: var(--margin); top: 350px; width: 1680px; height: 540px; overflow: visible; }
+    .is-entered .map .pk-glyph.new { animation: drop 700ms var(--step-ease) both; animation-delay: 500ms; transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .map .you { animation: fade-in 700ms 900ms both; }
+    @keyframes drop { from { transform: translateY(-40px); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>EKS arrived for dev, qa and ftb, so now there are two ways to upgrade.</h1>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The estate: an AWS zone opens beside on-prem with three EKS clusters, dev, qa and ftb; seven clusters, one person"></svg>
+    <p class="census" id="census"></p>
+  </main>
+
+  <aside class="notes">
+    Then AWS. The environments that don't need to be next to an exchange moved to EKS: dev, qa and ftb.
+
+    EKS is a different animal. AWS runs the control plane, but the node groups, the add-ons and the order you do them in are on us, and none of it looks like the kubeadm runbook. So now there are two runbooks, for two kinds of cluster.
+
+    Seven clusters. Still one person.
+
+    Then the business added an exchange.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    Estate.draw('#map', 2);
+    document.getElementById('census').innerHTML = Estate.census(2);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Windows are policy</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint-ink); --accent: var(--mint-ink); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .week { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .open { fill: #d3ebe5; }
+    .frozen { fill: url(#hatch); }
+    .hatch-line { stroke: #9db1b4; stroke-width: 3; }
+    .day-rule { stroke: var(--hairline); stroke-width: 2; }
+    .day { font: 600 30px var(--font-display); fill: var(--slate); }
+    .band-name { font: 500 26px var(--font-body); fill: var(--slate-quiet); }
+    .run { fill: var(--mint-ink); }
+    .wait { fill: none; stroke: var(--mint-ink); stroke-width: 3; stroke-dasharray: 8 7; }
+    .run-name { font: 600 28px var(--font-display); fill: var(--slate); }
+    .pause { font: 500 26px var(--font-body); fill: var(--mint-ink); }
+
+    .locks { position: absolute; left: var(--margin); top: 676px; width: 1100px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .locks h3 { font: 600 38px/1.08 var(--font-display); color: var(--slate); margin-bottom: 8px; }
+    .locks p { font-size: 28px; line-height: 1.32; color: var(--slate-quiet); }
+    .src { max-width: 1100px; }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Nothing rolls during a freeze, because the window is a policy, not a promise.</h2>
+
+    <svg class="week" id="week" viewBox="0 0 1920 1080" role="img" aria-label="One week, Monday to Sunday. Rollouts are allowed in daytime windows Monday to Thursday; Thursday evening to Monday morning is frozen. Wave 1 runs Tuesday, wave 2 Wednesday; the prod wave starts Thursday, pauses when Thursday's window closes, and resumes the next Monday morning."></svg>
+
+    <div class="locks">
+      <div>
+        <h3>Argo CD sync windows</h3>
+        <p>stop the pipeline. Already installed; a cron with allow and deny.</p>
+      </div>
+      <div>
+        <h3>Kyverno, reading the window</h3>
+        <p>stops everything else: kubectl, operators, agents. Approved windows live in the cluster, so admission never waits on the ticket system.</p>
+      </div>
+    </div>
+    <p class="src">NVIDIA schedules fleet maintenance around business-critical windows; Agility Robotics adds an admission gate on top of sync windows.</p>
+  </main>
+
+  <aside class="notes">
+    One more thing the pipeline needs: to know when not to run at all.
+
+    This is a week. The pale bands are when changes are allowed: daytime, Monday to Thursday. The hatched part is frozen: every night, and from Thursday evening through the weekend.
+
+    Wave one runs on Tuesday. Wave two on Wednesday. The prod wave starts Thursday, and when the window closes it stops. Not because someone remembered to stop it: because the window says so. It sits there through the weekend and picks up on its own when the window opens on Monday morning.
+
+    Two locks on the same window. Argo CD already has sync windows, a cron with allow and deny, so the pipeline stops itself. And Kyverno reads the same window and stops everything else: someone with kubectl, an operator, an agent. The approved windows are a resource in the cluster, not a call out to the ticket system, so admission never breaks because Jira is slow.
+
+    This is also what gets teams to let go of manual sync. The control they actually wanted was "nothing goes out during the freeze". Now that's enforced, not negotiated.
+
+    NVIDIA showed the same idea at fleet scale: their maintenance scheduler factors in business-critical windows. Agility Robotics put an admission gate on top of sync windows for the cases a schedule can't see.
+
+    That's how four tools roll out safely. Now the real number.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p1'] });
+    (() => {
+      const X0 = 200, W = 1600, Y = 448, H = 96, HOUR = W / 192;   // eight days: Monday to the next Monday
+      const hx = (d, h) => X0 + (d * 24 + h) * HOUR;
+      const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon'];
+      let s = `<defs><pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="hatch-line" x1="0" y1="0" x2="0" y2="14"/></pattern></defs>`;
+      s += `<rect class="frozen" x="${X0}" y="${Y}" width="${W}" height="${H}"/>`;
+      // allowed: 09:00-17:00 Mon-Thu
+      for (const d of [0, 1, 2, 3, 7]) s += `<rect class="open" x="${hx(d, 9)}" y="${Y}" width="${8 * HOUR}" height="${H}"/>`;
+      for (let d = 0; d <= 8; d++) s += `<line class="day-rule" x1="${hx(d, 0)}" x2="${hx(d, 0)}" y1="${Y - 8}" y2="${Y + H + 8}"/>`;
+      DAYS.forEach((n, d) => { s += `<text class="day" x="${hx(d, 12)}" y="${Y + H + 44}" text-anchor="middle">${n}</text>`; });
+      s += `<text class="band-name" x="${hx(0, 9) + 8}" y="${Y + 36}">open</text>`;
+      s += `<text class="band-name" x="${hx(4, 18)}" y="${Y + 36}">frozen</text>`;
+      // the runs, above the strip
+      const run = (d, h0, h1, y, name) => `<rect class="run" x="${hx(d, h0)}" y="${y}" width="${(h1 - h0) * HOUR}" height="22" rx="4"/><text class="run-name" x="${hx(d, h0)}" y="${y - 12}">${name}</text>`;
+      s += run(1, 10, 14, Y - 76, 'wave 1');
+      s += run(2, 10, 15, Y - 76, 'wave 2');
+      s += run(3, 11, 17, Y - 76, 'prod');
+      // paused across the freeze, resumed when the next window opens
+      s += `<rect class="wait" x="${hx(3, 17)}" y="${Y - 76}" width="${hx(7, 9) - hx(3, 17)}" height="22" rx="4"/>`;
+      s += `<text class="pause" x="${hx(4, 18)}" y="${Y - 88}">paused by the window</text>`;
+      s += `<rect class="run" x="${hx(7, 9)}" y="${Y - 76}" width="${3 * HOUR}" height="22" rx="4"/><text class="run-name" x="${hx(7, 9) + 3 * HOUR}" y="${Y - 88}" text-anchor="end">resumes</text>`;
+      Peaks.draw('#week', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

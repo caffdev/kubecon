@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fingers crossed for AWS</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 92px; max-width: 1400px; line-height: 1; }
+    .map { position: absolute; left: var(--margin); top: 350px; width: 1680px; height: 540px; overflow: visible; }
+    .is-entered .map .pk-glyph.new { animation: drop 700ms var(--step-ease) both; animation-delay: 500ms; transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .map .you { animation: fade-in 700ms 900ms both; }
+    @keyframes drop { from { transform: translateY(-40px); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>Hoping AWS never goes down isn’t a plan, so a second cloud joined.</h1>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The full estate: on-prem across two exchanges, AWS across two regions, and a second cloud; twenty-nine clusters, four tools, still one person"></svg>
+    <p class="census" id="census"></p>
+  </main>
+
+  <aside class="notes">
+    For a while the plan was fingers crossed: hope AWS doesn't have a bad day. That isn't a plan. So a second cloud joins, for the day AWS does.
+
+    That's normal at this scale. Nearly every large fleet at the show was hybrid or multi-cloud.
+
+    Now pull back and look at the whole thing. Twenty-nine clusters. On our hardware at two exchanges, in two AWS regions, and in a second cloud. Three kinds of place, three upgrade procedures.
+
+    Six reasonable steps. Every one of them made sense on the day. And there's still one person in orange.
+
+    Hold on to "fingers crossed". We'll come back to it.
+
+    Now look at what one upgrade costs him.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    Estate.draw('#map', 6);
+    document.getElementById('census').innerHTML = Estate.census(6);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

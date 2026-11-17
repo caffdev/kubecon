@@ -158,6 +158,29 @@ What v3 adds:
 - **AI phases** as an expedition profile (camps 0–5): 0–2 on a surveyed, dated slope, 3–5
   pale and dashed, with each camp's safety gate written at its foot.
 
+- **As built (2026-11-17):**
+  - The corner tally counts clusters, **tools** (the four demo tools) and people. Agents
+    never appear on the map in the first half.
+  - Named clusters keep their labels at every stage. The ny4–ch4 DR label sits above its
+    pair; the second exchange's DR label sits below its own pair, so the two don't read as
+    one.
+  - The Karmada slides draw the map at about 0.63 scale, with no person, no people row and
+    no cluster names, and with zone and region names enlarged so they stay legible. The
+    replicas are mint chips. On the peak, the outages are dark overlays with an alpenglow
+    mark, revealed with the clicks; the finished state shows AWS down and all six chips in
+    the second cloud.
+  - Cross-cutting layers as built: the fence on `policy-layer`; survey lines on
+    `one-view` and `the-lake`; both on `same-person` and `the-ask`.
+  - `ai-resize` uses the user's title, "Lakeside savings in practice.", with the
+    assertion as a lede under it. Its 61% is computed from the illustrative week in the
+    slide's script.
+  - `twenty-tools` builds in two clicks: the sixteen extra tools and the 20-tool column,
+    then the 80 approvals.
+- **Audit exceptions, accepted:** many slides run 72–161 words, the most on `tools-too`
+  (161, nearly all cell labels), `twenty-tools` (129), `sandbox` (118), `overrun` (116) and
+  `the-ask` (111). Each is the evidence its headline needs; the notes carry the argument.
+  The layout audit is otherwise clean: nothing offstage, clipped or overlapping.
+
 ## Beats
 
 ### day-one
@@ -478,7 +501,8 @@ What v3 adds:
 
 - **Act:** VI
 - **Job:** AI reads the lake's signals and resizes pods more aggressively than VPA alone, for cost
-- **Headline:** With the lake's signals, AI resizes pods more aggressively than VPA alone, and cuts the bill.
+- **Headline:** Lakeside savings in practice.
+- **Lede (the assertion, under the title):** with the lake's signals, AI resizes pods more aggressively than VPA alone, and cuts the bill.
 - **Visual:** one workload across a trading week (illustrative): actual usage, the flat
   request VPA's recommender settles on, and an AI-shaped request that follows the week:
   tight overnight and at weekends, raised ahead of the open. The shaded gap between the

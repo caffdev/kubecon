@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A second exchange</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 92px; max-width: 1400px; line-height: 1; }
+    .map { position: absolute; left: var(--margin); top: 350px; width: 1680px; height: 540px; overflow: visible; }
+    .is-entered .map .pk-glyph.new { animation: drop 700ms var(--step-ease) both; animation-delay: 500ms; transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .map .you { animation: fade-in 700ms 900ms both; }
+    @keyframes drop { from { transform: translateY(-40px); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>A second exchange doubled what we run on our own hardware.</h1>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The estate: four more on-prem clusters for the second exchange, its own pair tied as DR; eleven clusters, one person"></svg>
+    <p class="census" id="census"></p>
+  </main>
+
+  <aside class="notes">
+    A second exchange. And a second exchange means everything we built for the first one, again: its own clusters, its own DR pair in lockstep.
+
+    On-prem doubles, from four to eight. Eleven clusters in all. All eight on our hardware are still kubeadm, still by hand.
+
+    Still one person.
+
+    And then the cloud migration started.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    Estate.draw('#map', 3);
+    document.getElementById('census').innerHTML = Estate.census(3);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

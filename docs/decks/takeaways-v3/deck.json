@@ -2,6 +2,36 @@
   "title": "Takeaways v3: the fleet outgrows one person, then the agents arrive",
   "draft": "main",
   "drafts": {
-    "main": []
+    "main": [
+      "day-one",
+      "cloud-dev",
+      "second-exchange",
+      "cloud-migration",
+      "multi-region",
+      "second-cloud",
+      "one-runbook",
+      "tools-too",
+      "overrun",
+      "kubeadm-past",
+      "waves",
+      "gates",
+      "change-windows",
+      "twenty-tools",
+      "karmada-constraints",
+      "karmada",
+      "no-cluster-names",
+      "ai-arrives",
+      "elastic-agents",
+      "sandbox",
+      "mcp-tools",
+      "credentials",
+      "policy-layer",
+      "one-view",
+      "the-lake",
+      "ai-resize",
+      "ai-phases",
+      "same-person",
+      "the-ask"
+    ]
   }
 }

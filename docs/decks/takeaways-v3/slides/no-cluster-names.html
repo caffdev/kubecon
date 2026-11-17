@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A PR and a change record</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint-ink); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .route { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .line { stroke: var(--mint-ink); stroke-width: 5; fill: none; }
+    .line.dev { stroke: var(--slate); }
+    .stn { fill: var(--snowfield); stroke: var(--mint-ink); stroke-width: 5; }
+    .stn.dev { fill: var(--slate); stroke: var(--slate); }
+    .stn-n { font: 600 28px var(--font-display); fill: var(--mint-ink); text-anchor: middle; }
+    .stn-n.dev { fill: var(--snowfield); }
+    .stn-name { font: 600 32px var(--font-display); fill: var(--slate); text-anchor: middle; }
+    .stn-sub { font: 400 24px var(--font-body); fill: var(--slate-quiet); text-anchor: middle; }
+    .who { font: 600 28px var(--font-display); letter-spacing: .02em; }
+    .who.dev { fill: var(--slate); }
+    .who.auto { fill: var(--mint-ink); }
+    .brk { fill: none; stroke-width: 3; }
+    .brk.dev { stroke: var(--slate); }
+    .brk.auto { stroke: var(--mint-ink); }
+    .pack { position: absolute; left: var(--margin); top: 650px; width: 1680px; }
+    .pack h3 { font: 600 32px/1.1 var(--font-display); color: var(--slate-quiet); margin-bottom: 18px; }
+    .pack ul { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+    .pack li { list-style: none; font: 600 38px/1.12 var(--font-display); color: var(--slate); padding-top: 14px; border-top: 4px solid var(--mint-ink); }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>A developer now knows no cluster: a merged PR and a change record do the rest.</h2>
+    <svg class="route" id="route" viewBox="0 0 1920 1080" role="img" aria-label="A route of seven stations: the developer opens a PR with constraints and asks and gets it merged; then the change record is approved, the window opens, the work is placed by constraints, rolls out in waves through gates, and runs. The developer touches only the first two."></svg>
+    <div class="pack">
+      <h3>What a developer never has to do</h3>
+      <ul>
+        <li>learn a cluster name</li>
+        <li>click sync</li>
+        <li>read the policy list</li>
+        <li>roll back by hand</li>
+      </ul>
+    </div>
+  </main>
+
+  <aside class="notes">
+    So what does a developer actually have to know now? Almost nothing about the platform.
+
+    Follow the route. The developer does the first two things: opens a pull request with their constraints and asks, and gets it reviewed and merged. That's their whole job.
+
+    Everything after that is the platform. The change record gets approved; that's the one human sign-off the business needs, and it's projected into the cluster where policy can read it. The window opens. Karmada places the work by its constraints. It rolls out in waves through the gates we saw. And it runs.
+
+    Underneath: the pack from the path decks, now empty. A developer never learns a cluster name, never clicks sync, never reads the policy list, and never rolls back by hand. The platform does all four.
+
+    That's the first half solved, on paper at least. Now look at the map again, because something new is arriving on it.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p1', 'p3'] });
+    (() => {
+      const STN = [
+        ['PR', 'constraints + asks', 1], ['merged', 'reviewed', 1],
+        ['change record', 'approved', 0], ['window', 'opens', 0],
+        ['placed', 'by constraints', 0], ['waves', 'through gates', 0], ['running', '', 0],
+      ];
+      const X0 = 190, DX = 256, Y = 470;
+      let s = '';
+      s += `<path class="line dev" d="M${X0} ${Y}H${X0 + DX}"/>`;
+      s += `<path class="line" d="M${X0 + DX} ${Y}H${X0 + DX * 6}"/>`;
+      STN.forEach(([name, sub, dev], i) => {
+        const x = X0 + i * DX, c = dev ? ' dev' : '';
+        s += `<circle class="stn${c}" cx="${x}" cy="${Y}" r="30"/><text class="stn-n${c}" x="${x}" y="${Y + 10}">${i + 1}</text>`;
+        s += `<text class="stn-name" x="${x}" y="${Y + 76}">${name}</text>`;
+        if (sub) s += `<text class="stn-sub" x="${x}" y="${Y + 110}">${sub}</text>`;
+      });
+      // who does what
+      const brk = (x1, x2, cls, label) => `<path class="brk ${cls}" d="M${x1 - 40} ${Y - 54}V${Y - 70}H${x2 + 40}V${Y - 54}"/><text class="who ${cls}" x="${x1 - 40}" y="${Y - 86}">${label}</text>`;
+      s += brk(X0, X0 + DX, 'dev', 'the developer');
+      s += brk(X0 + DX * 2, X0 + DX * 6, 'auto', 'the platform, by itself');
+      Peaks.draw('#route', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

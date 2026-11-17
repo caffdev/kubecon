@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI lands on the map</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h1 { font-size: 92px; max-width: 1500px; line-height: 1; }
+    .map { position: absolute; left: var(--margin); top: 350px; width: 1680px; height: 540px; overflow: visible; }
+    .map .pk-glyph.lit-ai { fill: var(--teal); }
+    .ring-ai { fill: none; stroke: var(--teal); stroke-width: 3.5; stroke-dasharray: 7 6; }
+    .ai-note { font: 600 30px var(--font-display); fill: var(--teal); }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>AI arrived on the on-prem dev clusters first, then in AWS.</h1>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The full estate again. AI workloads appear first on the on-prem dev cluster, then on AWS dev and three new AI clusters in AWS region 2."></svg>
+  </main>
+
+  <aside class="notes">
+    That's the first half: the fleet, the tools, the placement. Let's go back to the map, because something new is arriving on it.
+
+    AI. And it arrived the sensible way: somewhere it couldn't hurt anything. Click. First on the on-prem dev cluster, close to the data and the people experimenting with it. Teal is AI, from here on.
+
+    Click. Then in AWS: the dev cluster first, then three clusters built for it in region two, where the GPUs and the elastic capacity are.
+
+    Thirty-two clusters now. Same one person. And three more kinds of thing for him to upgrade, which is where the dashed bar on the overrun chart came from.
+
+    And with AI come users that aren't people.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p2'] });
+    Estate.draw('#map', 6, { quiet: true, youText: ['one person', 'still upgrades them all'] });
+    (() => {
+      const cs = Estate.at();
+      const pick = (zone, col, row) => cs.find((c) => c.zone === zone && c.col === col && c.row === row);
+      const g = (c) => Peaks.glyph({ x: c.x, y: c.y, w: 64, h: 54, cls: 'pk-glyph lit-ai' });
+      const op = pick('onprem', 0, 0), ad = pick('aws', 0, 0);
+      const extra = [pick('aws', 3, 2), pick('aws', 4, 2), pick('aws', 5, 2)];
+      let s = '';
+      s += `<g data-step="1">${g(op)}<circle class="ring-ai" cx="${op.x}" cy="${op.y + 2}" r="46"/></g>`;
+      s += `<g data-step="2">${g(ad)}<circle class="ring-ai" cx="${ad.x}" cy="${ad.y + 2}" r="46"/>${extra.map(g).join('')}`
+        + `<text class="ai-note" x="1146" y="84" text-anchor="end">+ 3 AI clusters in region 2</text></g>`;
+      Peaks.draw('#map', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

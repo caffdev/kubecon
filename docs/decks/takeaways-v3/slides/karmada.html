@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Karmada moves the work</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); }
+    h2 { font-size: 80px; max-width: 1600px; line-height: 1.02; }
+    .yaml-card { position: absolute; left: var(--margin); top: 330px; width: 600px; padding: 22px 34px; border-radius: 16px; background: #0b1820; border: 2px solid var(--scree); }
+    .yaml-card .code { font-size: 25px; line-height: 1.4; color: var(--snow); }
+    .yaml-card .c { color: var(--lichen); }
+    .yaml-card .k { color: var(--mint); }
+    .log { position: absolute; left: var(--margin); top: 730px; width: 620px; }
+    .log li { list-style: none; display: grid; grid-template-columns: 44px 1fr; align-items: baseline; margin-bottom: 10px; font-size: 28px; line-height: 1.28; color: var(--lichen); }
+    .log i { font: 700 34px/1 var(--font-display); font-style: normal; color: var(--you); }
+    .log b { font: 600 34px/1.1 var(--font-display); color: var(--snow); }
+    .log .ok i { color: var(--mint); }
+    .kmap { position: absolute; left: 760px; top: 330px; width: 1060px; height: 341px; overflow: visible; }
+    .kmap .zone-name { font-size: 50px; }
+    .kmap .zone-how { display: none; }
+    .kmap .region-name { font-size: 38px; }
+    .kmap .pk-glyph { fill: #2c3a41; }
+    .kmap .chip { stroke-width: 5; }
+    .kmap .hop { fill: none; stroke: var(--mint); stroke-width: 5; stroke-dasharray: 12 9; stroke-linecap: round; }
+    .kmap .down-mark { font-size: 64px; }
+    .kmap .down-label { font-size: 52px; }
+    .kmap .down-zone { opacity: .8; }
+    .still { position: absolute; left: 760px; top: 706px; width: 1040px; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .still b { color: var(--snow); font-weight: 500; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Lose a region or a cloud, and Karmada moves the work wherever the constraints still hold.</h2>
+
+    <div class="yaml-card"><p class="code"><span class="c"># unchanged, start to finish</span>
+<span class="k">constraints:</span>
+  provider:   cloud
+  compliance: pci
+  residency:  us
+<span class="k">asks:</span>
+  replicas:   6
+  spread:     2 regions
+  fallback:   second cloud</p></div>
+
+    <ol class="log">
+      <li data-step="1"><i>✗</i><span><b>Region 1 fails.</b> Its three replicas move to region 2.</span></li>
+      <li data-step="2"><i>✗</i><span><b>AWS fails.</b> All six move to the second cloud.</span></li>
+      <li class="ok" data-step="3"><i>✓</i><span><b>Nobody edited a file.</b> Fingers uncrossed.</span></li>
+    </ol>
+
+    <svg class="kmap" id="kmap" viewBox="0 0 1680 540" role="img" aria-label="The estate map. Six replicas start spread across AWS region 1 and region 2. Region 1 fails and its replicas move to region 2; then AWS fails and all six move to the second cloud. The developer's constraints never change."></svg>
+    <p class="still"><b>Placement follows the constraints,</b> not a list of clusters, so it keeps working as clusters come and go.</p>
+  </main>
+
+  <aside class="notes">
+    Remember "fingers crossed"? Here's the day it matters.
+
+    Same constraints on the left, same map on the right. Six replicas, three in each AWS region, exactly where Karmada put them.
+
+    Click. Region one goes down. Karmada sees those clusters go unhealthy, and the constraint still says "two regions if you can, the cloud, PCI, US". So the three replicas from region one land in region two. The app keeps running.
+
+    Click. Now it's AWS itself having the bad day. Both regions dark. The constraints say "fall back to the second cloud", so all six replicas go there.
+
+    Click. And nobody edited a file. The developer didn't change a thing, nobody rewrote a list of clusters at two in the morning, and the person in orange found out from a message. Fingers uncrossed.
+
+    To be honest about where this sits: it's the north star, not what we run. It needs every cluster labelled properly, it needs the data behind the app to be reachable from wherever it lands, and Karmada is one more control plane to run and upgrade. It goes through the same pipeline as everything else. Bloomberg runs their streaming platform on it, for exactly this.
+
+    So what does a developer actually have to know now?
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1'] });
+    Estate.draw('#kmap', 6, { quiet: true, people: false, you: false, names: false });
+    (() => {
+      const cs = Estate.at();
+      const pick = (zone, col, row) => cs.find((c) => c.zone === zone && c.col === col && c.row === row);
+      const chip = (g) => `<circle class="chip" cx="${g.x + 26}" cy="${g.y - 22}" r="20"/>`;
+      const aws = Estate.ZONES.find((z) => z.id === 'aws');
+      const r1w = aws.x0 + 2.5 * aws.dx;
+      const R1 = [['aws', 0, 1], ['aws', 1, 1], ['aws', 2, 2]], R2 = [['aws', 3, 0], ['aws', 4, 1], ['aws', 5, 1]];
+      let s = '';
+      // before: three replicas in each region
+      for (const p of [...R1, ...R2]) s += chip(pick(...p));
+      // 1: region 1 goes dark; its replicas land in region 2
+      const R2b = [['aws', 3, 1], ['aws', 4, 0], ['aws', 5, 0]];
+      s += `<g data-step="1"><rect class="down-zone" x="${aws.x + 4}" y="100" width="${r1w - 4}" height="316"/>`
+        + `<text class="down-mark" x="${aws.x + 30}" y="170">✗</text>`
+        + R2b.map((p) => chip(pick(...p))).join('')
+        + `<path class="hop" d="M${aws.x + 180} 300Q${aws.x + 330} 220 ${aws.x + 410} 250"/></g>`;
+      // 2: AWS goes dark; all six land in the second cloud
+      const c2 = [['cloud2', 0, 0], ['cloud2', 1, 0], ['cloud2', 2, 0], ['cloud2', 0, 1], ['cloud2', 1, 1], ['cloud2', 2, 1]];
+      s += `<g data-step="2"><rect class="down-zone" x="${aws.x + 4}" y="4" width="${aws.w - 8}" height="412" rx="12"/>`
+        + `<text class="down-label" x="${aws.x + aws.w / 2}" y="250" text-anchor="middle">AWS down</text>`
+        + c2.map((p) => chip(pick(...p))).join('')
+        + `<path class="hop" d="M${aws.x + aws.w - 60} 180Q${aws.x + aws.w + 30} 110 ${aws.x + aws.w + 110} 150"/></g>`;
+      Peaks.draw('#kmap', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

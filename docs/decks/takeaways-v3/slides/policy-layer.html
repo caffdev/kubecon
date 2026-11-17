@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One policy layer</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .flow { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .actor { font: 600 34px var(--font-display); fill: var(--snow); }
+    .actor-sub { font: 400 24px var(--font-body); fill: var(--lichen); }
+    .ppl { fill: var(--lichen); }
+    .pipe { fill: none; stroke: var(--mint); stroke-width: 5; }
+    .ag { fill: var(--teal); }
+    .wire { fill: none; stroke: var(--lichen); stroke-width: 3; }
+    .gate { fill: #0f2230; stroke: var(--snow); stroke-width: 4; }
+    .gate-name { font: 600 40px var(--font-display); fill: var(--snow); }
+    .gate-sub { font: 400 26px var(--font-body); fill: var(--lichen); }
+    .rules { position: absolute; left: 1220px; top: 330px; width: 600px; }
+    .rules h3 { font: 600 30px/1.1 var(--font-display); color: var(--lichen); margin-bottom: 16px; }
+    .rules li { list-style: none; font: 600 34px/1.15 var(--font-display); color: var(--snow); padding: 12px 0 12px 20px; border-left: 4px solid var(--snow); margin-bottom: 10px; }
+    .rules li span { display: block; font: 400 24px/1.3 var(--font-body); color: var(--lichen); }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>One policy layer checks every change, whether a person or an agent made it.</h2>
+    <svg class="flow" id="flow" viewBox="0 0 1920 1080" role="img" aria-label="Three kinds of actor, a person with kubectl, the pipeline and an agent, each send a change to the same Kyverno policy gate, which checks it in CI and again at admission."></svg>
+    <div class="rules">
+      <h3>The same rules, for all three</h3>
+      <ul>
+        <li>No privileged pods<span>whoever wrote the manifest</span></li>
+        <li>Egress to approved models and MCP tools<span>nothing else leaves the cluster</span></li>
+        <li>Nothing outside the change window<span>the window from the change record</span></li>
+      </ul>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Identity says who the agent is. Policy says what anyone may do. And "anyone" is the point.
+
+    Three kinds of actor change our clusters now. A person with kubectl. The pipeline, which is how most change should arrive. And agents. All three go through the same gate: Kyverno, with the same rules, checked twice. Once in CI, where a failing rule is a fast test failure the author can fix, person or agent. And again at admission, so nothing gets in around the pipeline.
+
+    The rules are written against the action, not the actor. No privileged pods, whoever wrote the manifest. Egress only to approved models and approved MCP tools. Nothing outside the change window, the same window the change record opened. Write them that way and agent governance mostly comes for free.
+
+    That's the fence along the bottom of the range: one gate on every trail, whoever's walking it. It's the second thing that crosses all three paths. The first is next.
+
+    Policy stops what shouldn't happen. Telemetry shows what did.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1', 'p2'], fence: true });
+    (() => {
+      const GX = 760, GY = 360, GW = 380, GH = 330, GM = GY + GH / 2;
+      let s = '';
+      const A = [
+        [400, 'a person', 'kubectl', (x, y) => Estate.person(x, y + 24, 0.7, 'ppl')],
+        [530, 'the pipeline', 'Argo CD', (x, y) => `<path class="pipe" d="M${x - 24} ${y + 8}h16v-20h16v20h16v-20h16"/>`],
+        [660, 'an agent', 'via the gateway', (x, y) => Estate.agent(x, y, 40, 'ag')],
+      ];
+      A.forEach(([y, name, sub, icon], i) => {
+        s += icon(150, y);
+        s += `<text class="actor" x="210" y="${y + 4}">${name}</text><text class="actor-sub" x="210" y="${y + 36}">${sub}</text>`;
+        s += `<path class="wire" d="M470 ${y}C600 ${y} ${GX - 140} ${GM - 60 + i * 60} ${GX} ${GM - 60 + i * 60}"/>`;
+      });
+      s += `<rect class="gate" x="${GX}" y="${GY}" width="${GW}" height="${GH}" rx="20"/>`;
+      s += `<text class="gate-name" x="${GX + 36}" y="${GY + 74}">Kyverno</text>`;
+      ['the same rules,', 'checked in CI,', 'then at admission'].forEach((t, i) => { s += `<text class="gate-sub" x="${GX + 36}" y="${GY + 140 + i * 40}">${t}</text>`; });
+      Peaks.draw('#flow', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One gateway for tools</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .flow { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ag { fill: var(--teal); }
+    .wire { fill: none; stroke: var(--teal); stroke-width: 3; opacity: .7; }
+    .wire.out { stroke: var(--lichen); }
+    .gw { fill: #0f2230; stroke: var(--snow); stroke-width: 4; }
+    .gw-name { font: 600 40px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .gw-sub { font: 400 26px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .tool { font: 600 32px var(--font-display); fill: var(--snow); }
+    .tool-sub { font: 400 24px var(--font-body); fill: var(--lichen); }
+    .lbl { font: 600 28px var(--font-display); fill: var(--teal); }
+    .opts { position: absolute; left: var(--margin); top: 640px; width: 1680px; display: grid; grid-template-columns: 1fr 1fr 1fr 1.15fr; gap: 36px; align-items: start; }
+    .opts div { border-top: 4px solid var(--scree); padding-top: 12px; }
+    .opts b { display: block; font: 600 36px/1.1 var(--font-display); color: var(--snow); }
+    .opts span { font-size: 26px; line-height: 1.3; color: var(--lichen); }
+    .opts .rule { border-top-color: var(--teal); }
+    .opts .rule b { color: var(--teal); }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Agents build infrastructure through MCP tools, so pick the gateway before the tools.</h2>
+    <svg class="flow" id="flow" viewBox="0 0 1920 1080" role="img" aria-label="Agents on the left reach tools on the right only through one MCP gateway in the middle, which checks permissions from the directory and logs every call. Tools: open a pull request, request infrastructure through Crossplane, read the cluster, file a change record."></svg>
+    <div class="opts">
+      <div><b>Obot</b><span>open-core; permissions from the corporate directory</span></div>
+      <div><b>ToolHive</b><span>Stacklok, open source; pairs with Cedar policy analysis</span></div>
+      <div><b>Our own</b><span>a thin proxy, and every feature after it is ours to build</span></div>
+      <div class="rule"><b>Choose on enforcement</b><span>one place that checks and logs every call; then pick the tools</span></div>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Caged, an agent still has to do things, and it does them through tools. MCP is how: the agent asks a tool server to open a pull request, request a bucket, read the cluster or file a change record.
+
+    Notice what the agents build infrastructure with. Not a kubeconfig with admin rights. A pull request, and a Crossplane claim inside that pull request. So everything an agent builds still goes through review, the pipeline, the gates and the windows we just saw.
+
+    The important box is the one in the middle: one gateway every tool call goes through. It's where we check who may call what, with permissions that come from the corporate directory rather than whatever token someone started a server with, and where every call gets logged.
+
+    Three ways to get it. Obot is open-core and does directory-managed permissions. ToolHive, from Stacklok, is open source and pairs with the Cedar policy work AWS and Stacklok presented. Or we build our own thin proxy, and then every feature after the first is ours to build and keep.
+
+    The order matters: choose on enforcement first, then pick the tools. A bake-off, not a default.
+
+    And the gateway is also where the passwords live, so the agent never holds one.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2', 'p1'] });
+    (() => {
+      const GX = 800, GY = 320, GW = 360, GH = 280, GM = GY + GH / 2;
+      let s = '';
+      // agents
+      s += `<text class="lbl" x="120" y="360">agents</text>`;
+      const AY = [404, 464, 524, 584];
+      AY.forEach((y, i) => {
+        s += Estate.agent(160, y, 34, 'ag');
+        s += `<path class="wire" d="M184 ${y}C440 ${y} ${GX - 220} ${GM - 60 + i * 40} ${GX} ${GM - 60 + i * 40}"/>`;
+      });
+      // the gateway
+      s += `<rect class="gw" x="${GX}" y="${GY}" width="${GW}" height="${GH}" rx="20"/>`;
+      s += `<text class="gw-name" x="${GX + GW / 2}" y="${GY + 74}">MCP gateway</text>`;
+      ['who may call what,', 'from the directory', '', 'every call logged'].forEach((t, i) => {
+        if (t) s += `<text class="gw-sub" x="${GX + GW / 2}" y="${GY + 136 + i * 34}">${t}</text>`;
+      });
+      // tools
+      const T = [['open a PR', 'GitHub'], ['request infra', 'a Crossplane claim, in that PR'], ['read the cluster', 'kubectl, read-only'], ['file a change record', 'Jira']];
+      T.forEach(([name, sub], i) => {
+        const y = 366 + i * 66;
+        s += `<path class="wire out" d="M${GX + GW} ${GM - 60 + i * 40}C${GX + GW + 120} ${GM - 60 + i * 40} 1240 ${y - 10} 1320 ${y - 10}"/>`;
+        s += `<text class="tool" x="1340" y="${y}">${name}</text><text class="tool-sub" x="1340" y="${y + 30}">${sub}</text>`;
+      });
+      Peaks.draw('#flow', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

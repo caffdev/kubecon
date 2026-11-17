@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One view for debugging</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 80px; max-width: 1600px; line-height: 1.02; }
+    .flow { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .f { fill: none; stroke-width: 3; opacity: .85; stroke: var(--lichen); }
+    .f.in { stroke: var(--haze); }
+    .f.out-p { stroke: var(--snow); }
+    .f.out-a { stroke: var(--teal); }
+    .src-name { font: 600 36px var(--font-display); fill: var(--snow); }
+    .src-sub { font: 400 25px var(--font-body); fill: var(--lichen); }
+    .view { fill: #0f2230; stroke: var(--snow); stroke-width: 4; }
+    .view-name { font: 600 46px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .view-sub { font: 400 26px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .who { font: 600 36px var(--font-display); fill: var(--snow); }
+    .who-sub { font: 400 25px var(--font-body); fill: var(--lichen); }
+    .ppl { fill: var(--snow); }
+    .ag { fill: var(--teal); }
+    .is-entered .f { animation: draw 1100ms var(--step-ease) both; animation-delay: calc(400ms + var(--i, 0) * 90ms); }
+    .f { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    @keyframes draw { from { stroke-dashoffset: 1; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>OTel, logs, Prometheus and state dumps give one view to anyone debugging, person or agent.</h2>
+    <svg class="flow" id="flow" viewBox="0 0 1920 1080" role="img" aria-label="Four sources, OTel traces, logs, Prometheus metrics and cluster state dumps, from classic and AI workloads alike, feed one correlated view. A person debugging and an agent debugging read the same view."></svg>
+  </main>
+
+  <aside class="notes">
+    Policy stops what shouldn't happen. Telemetry shows what did. And the point of this slide is that it's one view, not four tools.
+
+    On the left, four sources. OpenTelemetry traces, from classic services and from the AI workloads: the model servers and the agents themselves, with their tool calls and token counts. Logs. Prometheus metrics, which stay exactly where they are; this isn't OTel replacing Prometheus. And state dumps: regular snapshots of what every cluster actually contains.
+
+    The collector layer on every cluster, the Splunk OTel collector we already roll out, stamps the same cluster, namespace, team and trace ID on all of it. That's what turns four piles into one view: you can go from an alert, to the trace, to the log line, to what the cluster looked like at that moment, without changing tools.
+
+    And on the right, two kinds of reader. A person debugging at two in the morning. And an agent debugging the same thing, reading the same view. Same evidence, so when the agent says what it thinks happened, the person can check it in the same place.
+
+    And the agents read it from a lake, not from production.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1', 'p2'], survey: true });
+    (() => {
+      const MX = 820, MY = 340, MW = 400, MH = 380, MID = MY + MH / 2;
+      let s = '';
+      const SRC = [['OTel traces', 'classic and AI, tool calls too', 380], ['logs', 'everything, one place', 480], ['Prometheus', 'metrics, as they are today', 580], ['state dumps', 'what each cluster holds', 680]];
+      SRC.forEach(([n, sub, y], i) => {
+        s += `<text class="src-name" x="120" y="${y}">${n}</text><text class="src-sub" x="120" y="${y + 32}">${sub}</text>`;
+        const ty = MID - 90 + i * 60;
+        s += `<path class="f in" pathLength="1" style="--i:${i}" d="M560 ${y - 10}C680 ${y - 10} ${MX - 110} ${ty} ${MX} ${ty}"/>`;
+      });
+      s += `<rect class="view" x="${MX}" y="${MY}" width="${MW}" height="${MH}" rx="22"/>`;
+      s += `<text class="view-name" x="${MX + MW / 2}" y="${MID - 40}">one view</text>`;
+      ['joined on cluster, namespace,', 'team and trace id'].forEach((t, i) => { s += `<text class="view-sub" x="${MX + MW / 2}" y="${MID + 16 + i * 34}">${t}</text>`; });
+      const RX = 1360;
+      s += `<path class="f out-p" pathLength="1" style="--i:5" d="M${MX + MW} ${MID - 50}C${MX + MW + 80} ${MID - 50} ${RX - 120} 450 ${RX - 30} 450"/>`;
+      s += Estate.person(RX + 20, 476, 0.8, 'ppl');
+      s += `<text class="who" x="${RX + 70}" y="450">a person debugging</text><text class="who-sub" x="${RX + 70}" y="482">at 2 a.m., one place to look</text>`;
+      s += `<path class="f out-a" pathLength="1" style="--i:6" d="M${MX + MW} ${MID + 50}C${MX + MW + 80} ${MID + 50} ${RX - 120} 640 ${RX - 30} 640"/>`;
+      s += Estate.agent(RX + 20, 630, 44, 'ag');
+      s += `<text class="who" x="${RX + 70}" y="630">an agent debugging</text><text class="who-sub" x="${RX + 70}" y="662">the same evidence, checkable</text>`;
+      Peaks.draw('#flow', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
