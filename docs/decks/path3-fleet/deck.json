@@ -19,6 +19,37 @@
       "paved-road",
       "restore",
       "the-ask"
+    ],
+    "with-index": [
+      "cold-open",
+      "fleets",
+      "grows-regardless",
+      "third-platform",
+      "gap-closed",
+      "cattle",
+      "upgrade-policy",
+      "ship-the-check",
+      "two-problems",
+      "live-live",
+      "thirty-first",
+      "four-stages",
+      "the-seam",
+      "paved-road",
+      "restore",
+      "the-ask",
+      "tool-index",
+      "ti-capi",
+      "ti-karmada",
+      "ti-traffic",
+      "ti-velero",
+      "ti-secrets",
+      "ti-otel",
+      "ti-opencost",
+      "ti-nfm",
+      "ti-crossplane",
+      "ti-kro",
+      "ti-scaling",
+      "ti-backstage"
     ]
   }
 }
