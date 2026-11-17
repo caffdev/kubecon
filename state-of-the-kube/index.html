@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>State of the Kube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout: a conference program. Masthead, a time-stamped keynote ledger, then themed chapters with evidence beside the argument. */
+  --paper: #f3f5f7;
+  --panel: #ffffff;
+  --ink: #131c27;
+  --ink-2: #3c4a5a;
+  --muted: #5f6e80;
+  --rule: #d6dde5;
+  --accent: #2a5bd7;
+  --link: #2450c2;
+  --accent-wash: #e5ecfb;
+  --flag: #8f4405;
+  --flag-wash: #fbeedd;
+  --display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --measure: 68ch;
+  --wide: 1120px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f151c;
+    --panel: #161e27;
+    --ink: #e7edf3;
+    --ink-2: #bac5d0;
+    --muted: #8d9cab;
+    --rule: #27323e;
+    --accent: #5f8cf2;
+    --link: #93b3ff;
+    --accent-wash: #1a2740;
+    --flag: #f2b04a;
+    --flag-wash: #2d2416;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f151c;
+  --panel: #161e27;
+  --ink: #e7edf3;
+  --ink-2: #bac5d0;
+  --muted: #8d9cab;
+  --rule: #27323e;
+  --accent: #5f8cf2;
+  --link: #93b3ff;
+  --accent-wash: #1a2740;
+  --flag: #f2b04a;
+  --flag-wash: #2d2416;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+}
+a { color: var(--link); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3, h4 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+code, .mono { font-family: var(--mono); font-size: 0.86em; }
+em.talk { font-style: italic; color: var(--ink); }
+
+.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+.measure { max-width: var(--measure); }
+.stack { display: grid; gap: 1rem; }
+
+/* ---------- masthead ---------- */
+.masthead { border-bottom: 6px solid var(--ink); padding: 28px 0 32px; }
+.program-strip {
+  display: flex; flex-wrap: wrap; gap: 4px 20px;
+  font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--muted); border-bottom: 1px solid var(--rule); padding-bottom: 12px;
+}
+.masthead h1 {
+  font-family: var(--display); font-stretch: 68%; font-weight: 850;
+  font-size: clamp(3.4rem, 11vw, 8.2rem); line-height: 0.88; letter-spacing: -0.01em;
+  text-transform: uppercase; margin: 22px 0 18px;
+}
+.masthead h1 span { color: var(--accent); }
+.dek { font-size: clamp(1.1rem, 2.2vw, 1.35rem); line-height: 1.45; color: var(--ink-2); max-width: 58ch; }
+.byline { margin-top: 14px; font-size: 14px; color: var(--muted); }
+
+.stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0; margin-top: 28px; border-top: 1px solid var(--rule);
+}
+.stat { padding: 14px 16px 4px 0; border-right: 1px solid var(--rule); margin-right: 16px; }
+.stat:last-child { border-right: 0; }
+.stat b { display: block; font-family: var(--display); font-stretch: 80%; font-weight: 750; font-size: 2.2rem; line-height: 1.1; }
+.stat span { font-size: 13.5px; color: var(--ink-2); line-height: 1.35; display: block; }
+
+nav.toc { border-bottom: 1px solid var(--rule); }
+nav.toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 22px; margin: 0; padding: 12px 0; font-size: 14px; }
+nav.toc a { color: var(--ink-2); text-decoration: none; font-weight: 500; }
+nav.toc a:hover { color: var(--link); text-decoration: underline; }
+
+/* ---------- sections ---------- */
+section { padding: 56px 0 8px; }
+.section-head { display: grid; gap: 8px; margin-bottom: 26px; }
+.kicker { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); }
+h2 { font-family: var(--display); font-stretch: 75%; font-weight: 800; font-size: clamp(2rem, 4.6vw, 3rem); line-height: 1; text-transform: uppercase; }
+h3 { font-family: var(--display); font-stretch: 85%; font-weight: 700; font-size: 1.45rem; line-height: 1.15; }
+h4 { font-size: 1rem; font-weight: 600; }
+.lead { font-size: 1.12rem; color: var(--ink-2); }
+
+/* TL;DR */
+ol.tldr { counter-reset: t; list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; max-width: 76ch; }
+ol.tldr li { counter-increment: t; display: grid; grid-template-columns: 2.2rem 1fr; gap: 10px; }
+ol.tldr li::before { content: counter(t, decimal-leading-zero); font-family: var(--mono); color: var(--accent); font-size: 14px; padding-top: 3px; }
+
+/* refs + flags */
+a.ref {
+  font-family: var(--mono); font-size: 0.68em; vertical-align: super; line-height: 0;
+  text-decoration: none; padding: 0 1px; color: var(--link);
+}
+a.ref::before { content: "["; } a.ref::after { content: "]"; }
+.flag {
+  display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em; text-transform: uppercase;
+  color: var(--flag); background: var(--flag-wash); border: 1px solid color-mix(in srgb, var(--flag) 35%, transparent);
+  border-radius: 3px; padding: 0 5px; line-height: 1.6; vertical-align: 1px; white-space: nowrap; cursor: help;
+}
+.flag::before { content: "\26A0\FE0E  "; }
+.chip {
+  display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-wash); border-radius: 3px; padding: 0 6px; line-height: 1.7; white-space: nowrap;
+  text-decoration: none;
+}
+a.chip:hover { text-decoration: underline; }
+
+/* ---------- keynote ledger ---------- */
+.day { margin-top: 34px; }
+.day-head {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px;
+  border-top: 3px solid var(--ink); padding-top: 14px; margin-bottom: 6px;
+}
+.day-label { font-family: var(--mono); font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.day-head h3 { font-size: clamp(1.5rem, 3vw, 2rem); font-stretch: 75%; text-transform: uppercase; font-weight: 800; }
+.day-head p { color: var(--ink-2); max-width: var(--measure); }
+.entry {
+  display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); gap: 4px 18px;
+  padding: 18px 0; border-top: 1px solid var(--rule);
+}
+.entry:first-of-type { border-top: 0; }
+.entry time { font-family: var(--mono); font-size: 14px; color: var(--muted); padding-top: 2px; font-variant-numeric: tabular-nums; }
+.entry h4 { font-family: var(--display); font-stretch: 88%; font-weight: 700; font-size: 1.2rem; line-height: 1.25; }
+.entry .who { font-size: 14px; color: var(--muted); margin: 3px 0 8px; }
+.entry .who .chip { margin-left: 6px; }
+.entry p { max-width: var(--measure); }
+.entry p + p { margin-top: 8px; }
+.also { font-size: 15px; color: var(--ink-2); padding: 14px 0 0; border-top: 1px solid var(--rule); max-width: 80ch; }
+.also b { font-weight: 600; color: var(--ink); }
+
+blockquote.pull {
+  margin: 10px 0 2px; padding: 4px 0 4px 16px; border-left: 3px solid var(--accent);
+  font-size: 1.05rem; color: var(--ink); max-width: 60ch;
+}
+blockquote.pull cite { display: block; font-style: normal; font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+
+/* ---------- slide cards ---------- */
+.slides { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.slide {
+  background: var(--panel); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 20px 20px 18px; display: grid; gap: 12px; align-content: start;
+}
+.slide .snum { font-family: var(--mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); }
+.slide h3 { font-size: 1.3rem; }
+.slide .sub { font-size: 14.5px; color: var(--ink-2); }
+.metric-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.metric-list li { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1px; border-top: 1px solid var(--rule); padding-top: 9px; }
+.metric-list .m { font-family: var(--display); font-stretch: 80%; font-weight: 750; font-size: 1.45rem; line-height: 1.1; }
+.metric-list .d { font-size: 13.5px; color: var(--ink-2); line-height: 1.4; }
+.slide .fine { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+.pull-bars { display: grid; gap: 8px; }
+.pull-bars .row { display: grid; grid-template-columns: 6.6rem minmax(0, 1fr); gap: 10px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.pull-bars .track { display: flex; align-items: center; gap: 8px; }
+.pull-bars .b { height: 16px; background: var(--accent); border-radius: 0 4px 4px 0; }
+.pull-bars .v { font-family: var(--mono); font-size: 13px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.attrib { font-size: 13px; color: var(--muted); margin-top: 14px; max-width: 90ch; }
+
+/* ---------- themes ---------- */
+.theme { border-top: 1px solid var(--rule); padding: 30px 0 6px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px 44px; }
+.theme:first-of-type { border-top: 3px solid var(--ink); }
+.theme-main { display: grid; gap: 12px; align-content: start; }
+.theme-num { font-family: var(--mono); font-size: 12.5px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+.theme-main h3 { font-size: clamp(1.45rem, 2.6vw, 1.85rem); }
+.theme-main ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 6px; max-width: var(--measure); }
+.theme-side { display: grid; gap: 12px; align-content: start; }
+.fig { border-top: 2px solid var(--ink); padding-top: 8px; }
+.fig b { display: block; font-family: var(--display); font-stretch: 80%; font-weight: 750; font-size: 1.9rem; line-height: 1.05; }
+.fig span { display: block; font-size: 13.5px; color: var(--ink-2); line-height: 1.4; }
+
+.stackline { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 4px 0; }
+.stackline .layer {
+  flex: 1 1 150px; background: var(--panel); border: 1px solid var(--rule); border-radius: 5px; padding: 10px 12px;
+  display: grid; gap: 2px; align-content: start;
+}
+.stackline .layer b { font-size: 14px; font-weight: 600; line-height: 1.3; }
+.stackline .layer span { font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+.stackline .layer i { font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); background: color-mix(in srgb, var(--paper) 60%, var(--panel)); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+
+/* ---------- chart ---------- */
+.chart { margin: 0; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 20px 20px 16px; position: relative; }
+.chart figcaption { display: grid; gap: 4px; margin-bottom: 16px; }
+.chart figcaption b { font-size: 1.05rem; font-weight: 600; }
+.chart figcaption span { font-size: 13.5px; color: var(--muted); max-width: 80ch; }
+.bars { display: grid; gap: 4px; }
+.bar-row {
+  display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: 12px; align-items: center;
+  padding: 3px 4px; border-radius: 4px; cursor: default;
+}
+.bar-row:hover, .bar-row:focus-visible { background: var(--accent-wash); }
+.bar-label { font-size: 14px; color: var(--ink-2); text-align: right; line-height: 1.25; }
+.bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.bar { height: 16px; width: calc(var(--v) / 100 * (100% - 2.6rem)); background: var(--accent); border-radius: 0 4px 4px 0; flex: none; }
+.bar-row:hover .bar, .bar-row:focus-visible .bar { filter: brightness(1.12); }
+.bar-value { font-family: var(--mono); font-size: 13px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.tip {
+  position: absolute; pointer-events: none; z-index: 5; max-width: 300px;
+  background: var(--ink); color: var(--paper); border-radius: 5px; padding: 8px 10px; font-size: 13px; line-height: 1.4;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+.tip strong { display: block; font-size: 15px; }
+.tip[hidden] { display: none; }
+details.table-view { margin-top: 14px; font-size: 14px; }
+details.table-view summary { cursor: pointer; color: var(--link); }
+details.table-view .table-wrap { margin-top: 10px; }
+
+/* ---------- trends ---------- */
+.trends { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.trend { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 16px 14px; display: grid; gap: 8px; align-content: start; }
+.trend h3 { font-size: 1.12rem; }
+.trend p { font-size: 15px; color: var(--ink-2); }
+.trend .seen { font-size: 12.5px; color: var(--muted); }
+
+/* ---------- takeaways ---------- */
+ol.home { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; counter-reset: h; max-width: 84ch; }
+ol.home li { counter-increment: h; display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 4px 12px; padding: 16px 0; border-top: 1px solid var(--rule); }
+ol.home li::before { content: counter(h); font-family: var(--display); font-stretch: 75%; font-weight: 800; font-size: 1.8rem; line-height: 1; color: var(--accent); }
+ol.home h3 { font-size: 1.15rem; margin-bottom: 4px; }
+ol.home p { color: var(--ink-2); }
+ol.home .goal { font-family: var(--mono); font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+
+/* ---------- references ---------- */
+ol.refs { padding-left: 2.2rem; margin: 0; display: grid; gap: 10px; font-size: 14.5px; max-width: 90ch; }
+ol.refs li { padding-left: 4px; }
+ol.refs li::marker { font-family: var(--mono); color: var(--muted); }
+ol.refs li:target { background: var(--accent-wash); border-radius: 4px; }
+ol.refs .src { color: var(--muted); }
+ol.refs a { word-break: break-word; }
+.refgroup { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 22px 0 10px; }
+
+footer { margin-top: 64px; padding: 26px 0 40px; border-top: 6px solid var(--ink); font-size: 14px; color: var(--muted); }
+footer .wrap { display: grid; gap: 8px; }
+
+@media (max-width: 860px) {
+  .theme { grid-template-columns: minmax(0, 1fr); }
+  .theme-side { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+}
+@media (max-width: 560px) {
+  body { font-size: 16px; }
+  .entry { grid-template-columns: minmax(0, 1fr); }
+  .bar-row { grid-template-columns: 8.2rem minmax(0, 1fr); gap: 8px; }
+  .bar-label { font-size: 12.5px; }
+  .stat { border-right: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+@media (forced-colors: active) {
+  .bar, .pull-bars .b { background: CanvasText; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="program-strip">
+      <span>KubeCon + CloudNativeCon North America 2026</span>
+      <span>Salt Palace, Salt Lake City</span>
+      <span>Nov 9–12, 2026</span>
+    </div>
+    <h1>State of<br>the <span>Kube</span></h1>
+    <p class="dek">A field report from four days in Salt Lake City: what the keynote stage said, what the session rooms proved, and the trends I would bet on through 2027.</p>
+    <p class="byline">Filed November 16, 2026 by an attendee. Built from the official schedule, all 144 posted slide decks, my notes from the floor, and press coverage. Every claim carries a numbered source; secondhand figures carry an <span class="flag" title="Reported by one secondary source; not confirmed against a primary source">unverified</span> tag.</p>
+
+    <div class="stats" aria-label="The conference in numbers">
+      <div class="stat"><b>501</b><span>sessions with speakers, out of 603 scheduled items <a class="ref" href="#ref-1">1</a></span></div>
+      <div class="stat"><b>45</b><span>talks in the first-ever AI Inference + Agentic track <a class="ref" href="#ref-2">2</a></span></div>
+      <div class="stat"><b>36%</b><span>of main-conference talk titles mention AI, LLMs, agents, GPUs or inference (59% of abstracts) <a class="ref" href="#ref-2">2</a></span></div>
+      <div class="stat"><b>34</b><span>keynote slots across three mornings; one posted its slides <a class="ref" href="#ref-1">1</a></span></div>
+      <div class="stat"><b>231</b><span>CNCF projects, 32 of them new in the past year <a class="ref" href="#ref-4">4</a></span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Sections">
+  <div class="wrap">
+    <ul>
+      <li><a href="#week">The week</a></li>
+      <li><a href="#keynotes">Keynotes</a></li>
+      <li><a href="#slides">From the slides</a></li>
+      <li><a href="#themes">Themes</a></li>
+      <li><a href="#trends">Trends to watch</a></li>
+      <li><a href="#takeaways">Takeaways</a></li>
+      <li><a href="#disputes">Where sources disagree</a></li>
+      <li><a href="#sources">Sources</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+
+<!-- ================= THE WEEK ================= -->
+<section id="week">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">The week in six sentences</span>
+      <h2>Kubernetes became the AI control plane, and agents became its newest tenant</h2>
+    </div>
+    <ol class="tldr">
+      <li><p><strong>This is an AI-infrastructure conference now.</strong> Eight of the nine Day 1 keynotes after the opening remarks were about AI workloads, and the AI Inference + Agentic track made its debut as the largest non-maintainer content track <a class="ref" href="#ref-1">1</a><a class="ref" href="#ref-2">2</a>. My notebook from the hall: <em>"2024 it was a dream, 2026 is mainline"</em> <a class="ref" href="#ref-20">20</a>.</p></li>
+      <li><p><strong>Agents are a workload class with a parts list.</strong> Sandboxing, identity, durable execution and tool plumbing (MCP) each had named projects, and the CNCF took two agent runtimes into its sandbox on the opening morning: Agent Substrate and OpenShell <a class="ref" href="#ref-4">4</a><a class="ref" href="#ref-9">9</a>.</p></li>
+      <li><p><strong>The scheduler is the hard problem.</strong> Running containers is treated as solved; placing GPUs, NICs and TPUs by topology, quota and fairness is where the best engineering talks were, with Dynamic Resource Allocation (DRA) as the organizing API <a class="ref" href="#ref-2">2</a><a class="ref" href="#ref-3">3</a>.</p></li>
+      <li><p><strong>Platforms now serve two kinds of user.</strong> Humans still matter, but the open design question is what an agent may change without a person reading the diff. The answer on stage was GitOps plus policy plus progressive delivery <a class="ref" href="#ref-1">1</a><a class="ref" href="#ref-2">2</a>.</p></li>
+      <li><p><strong>Everyone runs fleets.</strong> Salesforce talked about 1,000 clusters, LinkedIn about 300 clusters and roughly 300,000 nodes, and Meta about roughly 100 clusters run by roughly 15 engineers. Manual upgrades do not survive that arithmetic <a class="ref" href="#ref-1">1</a>.</p></li>
+      <li><p><strong>Security and observability got pulled into AI's orbit.</strong> The CVE firehose (now fed by AI-found bugs) and non-human identity dominated security; OpenTelemetry is the default, and it is being pointed at inference cost and agent behaviour <a class="ref" href="#ref-2">2</a>.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= KEYNOTES ================= -->
+<section id="keynotes">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Keynote stage · Nov 10–12 · 09:00 start each morning</span>
+      <h2>What the keynotes said</h2>
+      <p class="lead measure">Three mornings, each with its own argument. Day 1 put agents inside the cluster and started building the fence. Day 2 handed the stage to end users running at scale. Day 3 asked what Kubernetes should become when everyone customizes it.</p>
+    </div>
+
+    <!-- DAY 1 -->
+    <div class="day" id="day-1">
+      <div class="day-head">
+        <span class="day-label">Day 1 · Tuesday, November 10</span>
+        <h3>Agents move into the cluster</h3>
+        <p>The most repeated word on stage was <em>sandbox</em>. Speakers treated agents as workloads that need their own isolation, identity and scheduling, and the foundation shipped the first open building blocks the same morning.</p>
+      </div>
+
+      <article class="entry">
+        <time datetime="2026-11-10T09:00">09:00</time>
+        <div>
+          <h4>Welcome + Opening Remarks</h4>
+          <p class="who">Jonathan Bryce, Chris Aniszczyk (Linux Foundation / CNCF), with guests from Anyscale, CoreWeave, Upbound and Vultr</p>
+          <p>The scoreboard: 231 projects, about 21.2 million cloud native developers (up more than 5.5 million in a year), 82,000 attendees at CNCF events over the past year, and eight new Platinum members including Adyen, CVS, NVIDIA and HAProxy <a class="ref" href="#ref-4">4</a>. New sandbox projects OpenShell and Agent Substrate; llm-d reached 1.0. Two certifications are planned for 2027: Kubernetes AI Associate (KAIA) and Certified Kubernetes Inference Engineer (CKIE) <a class="ref" href="#ref-4">4</a>. One recap quotes inference traffic across providers up fourfold in eight months <a class="ref" href="#ref-7">7</a> <span class="flag" title="Single secondary source (Virtualization Review Day 1 recap); no CNCF figure found">unverified</span>.</p>
+          <p>The AI Conformance program now counts 40 certified platforms <a class="ref" href="#ref-4">4</a>. TechTimes went through the public repos and found the 40 is cumulative across versions, that only four platforms had submitted against v1.37, and that the test suite names a single accelerator vendor <a class="ref" href="#ref-5">5</a>. Treat the badge as a checklist, not a benchmark.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-10T09:33">09:33</time>
+        <div>
+          <h4>Agent Substrate: Open Layers for Agentic Systems</h4>
+          <p class="who">Jaana Dogan, Dmitry Berkovich, Tim Hockin, Eitan Yarmush, Luiz Scheidegger · Anthropic, Google, Solo.io</p>
+          <p>The headline project of the week. Its unit is the <strong>actor</strong>: one agent session paired with a sandbox and a gateway. Idle actors suspend to microVM snapshots and wake on warm worker pods, so you stop paying for a pod per session while state, identity and access controls stay with the actor <a class="ref" href="#ref-9">9</a><a class="ref" href="#ref-10">10</a>. Isolation comes from gVisor and lightweight VMs <a class="ref" href="#ref-9">9</a><a class="ref" href="#ref-12">12</a>. It was accepted into the CNCF on stage, and 1.0 shipped the same day <a class="ref" href="#ref-9">9</a><a class="ref" href="#ref-10">10</a>.</p>
+          <p>Google's Tim Hockin framed the ambition as doing for agentic workloads what Kubernetes did for deployments <a class="ref" href="#ref-11">11</a>. Solo.io's enterprise build puts agentgateway in front of every actor for ingress and egress policy <a class="ref" href="#ref-10">10</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-10T09:42">09:42</time>
+        <div>
+          <h4>Engineering Kubernetes for the Next Era of Workloads</h4>
+          <p class="who">Mike Stefaniak · AWS <a class="chip" href="#slides">Deck posted</a></p>
+          <p>The only keynote that posted slides, and the most concrete ten minutes of the week: clusters approaching 100,000 nodes, 10&nbsp;GB images, and accelerators "a device count can't describe," with every fix landed upstream in Kubernetes 1.37, containerd 2.2 and Karpenter 1.15 <a class="ref" href="#ref-3">3</a>. The slides are rebuilt <a href="#slides">below</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-10T09:49">09:49</time>
+        <div>
+          <h4>Building the Next Generation of AI with Open Source</h4>
+          <p class="who">Warren Barkley, Ali Golshan · NVIDIA</p>
+          <p>NVIDIA pitched itself as an upstream citizen for "AI factories." The more consequential news was OpenShell, the NVIDIA-led agent sandbox, entering the CNCF sandbox the same day. It stacks a hardened container, a microVM, and a hardware policy layer on BlueField-4 DPUs, and NVIDIA says it will integrate it with Agent Substrate <a class="ref" href="#ref-4">4</a><a class="ref" href="#ref-9">9</a>.</p>
+          <blockquote class="pull">"We can't simply ask agents to follow the rules; the infrastructure must enforce them."<cite>Justin Boitano, NVIDIA, speaking to TechTarget <a class="ref" href="#ref-9">9</a></cite></blockquote>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-10T09:58">09:58</time>
+        <div>
+          <h4>Sandbox Your Agents</h4>
+          <p class="who">Jessica Forrester · Red Hat <a class="chip" href="https://www.youtube.com/watch?v=ARFC0ono7qk">Recording</a></p>
+          <p>The threat model in one line from the abstract: an agent with too much access "can take down entire production stacks and wipe databases." The answer was layered isolation from community parts, Confidential Containers plus OpenShell, applied to development workflows as well as production agents <a class="ref" href="#ref-1">1</a><a class="ref" href="#ref-19">19</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-10T10:05">10:05</time>
+        <div>
+          <h4>Pods in the Wild: Reinforcement Learning on Kubernetes with OpenRL</h4>
+          <p class="who">Sunil Arora, Ravin Kumar · Google, Google DeepMind</p>
+          <p>DolphinGemma, an open-weight Gemma model trained on decades of dolphin recordings, was the hook. The argument: fine-tuned open-weight models beat frontier baselines on domain tasks at a fraction of the cost, and RL should leave the research lab <a class="ref" href="#ref-1">1</a>. OpenRL was contributed to the CNCF <a class="ref" href="#ref-4">4</a> and schedules its RL primitives with DRA <a class="ref" href="#ref-7">7</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-10T10:15">10:15</time>
+        <div>
+          <h4>The Harness Is the New Runtime</h4>
+          <p class="who">Idit Levine, Keith Babo · Solo.io</p>
+          <p>The idea I keep thinking about. Desktop agent harnesses (a model plus a modular runtime of tools, skills and plugins) will make the same trip to shared clusters that containers made from laptops. The hard part is keeping the user experience while adopting sandboxing, checkpoint/restore, scale and identity <a class="ref" href="#ref-1">1</a>. Kubernetes 1.37 added alpha pod-level checkpoint/restore, which is the primitive this needs <a class="ref" href="#ref-16">16</a>.</p>
+          <blockquote class="pull">"The next generation of applications will be agents."<cite>Idit Levine, Solo.io <a class="ref" href="#ref-10">10</a></cite></blockquote>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-10T10:22">10:22</time>
+        <div>
+          <h4>One Kubernetes, Different Environments: Closing the Portability Gaps</h4>
+          <p class="who">Dilpreet Bindra · Broadcom</p>
+          <p>Two quiet but durable moves: VM API, a provider-neutral, Cluster-API-style VM lifecycle API, entered the CNCF sandbox, and a new Workload Conformance Working Group (with SIG Apps and SIG Architecture) will define verifiable workload behaviour so ISVs validate once <a class="ref" href="#ref-7">7</a><a class="ref" href="#ref-12">12</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-10T10:29">10:29</time>
+        <div>
+          <h4>The Identity Crisis: Who is the AI Agent in Your Cluster?</h4>
+          <p class="who">Abdel Sghiouar · Google Cloud</p>
+          <p>Kubernetes identity assumes deterministic workloads with known call paths. Agents generate network calls and run machine-written code on the fly, so the question "when an agent calls a tool or a database, what identity does it present?" has no good default answer yet <a class="ref" href="#ref-1">1</a>. No deck was posted; the 13 sessions on SPIFFE and workload identity are the follow-up reading <a class="ref" href="#ref-2">2</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-10T10:41">10:41</time>
+        <div>
+          <h4>From Pod to Actuator: Physical AI and the Future of Kubernetes</h4>
+          <p class="who">NVIDIA (scheduled speaker: Abhilash Somasamudramath)</p>
+          <p>Robotics as a cluster workload. A recap describes a bipedal robot demo built with Hugging Face and Pollen Robotics, and a render, train, deploy-to-edge pipeline across three computers <a class="ref" href="#ref-7">7</a> <span class="flag" title="Only source is one recap, which also names a different NVIDIA presenter than the schedule">unverified</span>.</p>
+        </div>
+      </article>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day" id="day-2">
+      <div class="day-head">
+        <span class="day-label">Day 2 · Wednesday, November 11</span>
+        <h3>Agent speed meets end-user reality</h3>
+        <p>The end users took the stage: CVS Health, Adyen, Apple, Meta and Uber. The shared message was that open, vendor-neutral platforms are how large companies stay in control of their own stack.</p>
+      </div>
+
+      <article class="entry">
+        <time datetime="2026-11-11T09:00">09:00</time>
+        <div>
+          <h4>Human Scale, Agent Scale</h4>
+          <p class="who">Jonathan Bryce · The Linux Foundation</p>
+          <p>Systems were sized for human-paced traffic; agents do not browse like people. A recap quotes Bryce saying agents now generate 70% of tracked inference traffic <a class="ref" href="#ref-8">8</a> <span class="flag" title="Single secondary source; the denominator ('tracked') is not defined">unverified</span>. Elsewhere in the week he called AI "one of the largest compute workloads the industry has ever seen" <a class="ref" href="#ref-6">6</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-11T09:07">09:07</time>
+        <div>
+          <h4>Beyond End User: CAP and the Evolution of Open Source at CVS Health</h4>
+          <p class="who">Michael Amundson, Jim Beyers · CVS Health</p>
+          <p>A "meta control plane" stitching CNCF projects into one platform, with the goal that a new hire ships an application on day one <a class="ref" href="#ref-1">1</a>. Per the recap: built in about ten months, thousands of apps and tens of thousands of deployments a month, dozens of clusters presented as one logical cluster, and the CAP Registry API and a feature-flag controller going open source <a class="ref" href="#ref-8">8</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-11T09:26">09:26</time>
+        <div>
+          <h4>Adyen Joins CNCF: Staying Independent with Open Source</h4>
+          <p class="who">Juliano Martinez · Adyen</p>
+          <p>A payments company that processed €1.39 trillion in 2025 on infrastructure it runs itself joined as a Platinum end-user member, and open-sourced <code>kubectl-rexec</code> for auditable <code>kubectl exec</code> in regulated environments <a class="ref" href="#ref-1">1</a><a class="ref" href="#ref-4">4</a>. The most relevant keynote for anyone under audit.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-11T09:45">09:45</time>
+        <div>
+          <h4>A Tribute to Open Source</h4>
+          <p class="who">Anthropic (scheduled speaker: Lucy Sweet)</p>
+          <p>A thank-you to maintainers. A recap reports 3,000 six-month Claude subscription codes for CNCF project maintainers <a class="ref" href="#ref-8">8</a> <span class="flag" title="Single recap, which names the speaker differently from the schedule">unverified</span>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-11T09:52">09:52</time>
+        <div>
+          <h4>Code, Containers, and Clusters: The Next Chapter of Apple's Container Framework</h4>
+          <p class="who">Kathryn Baldauf, Vince Prignano · Apple</p>
+          <p>Container Machine, a persistent Linux environment on the Mac, and a preview Kubernetes plugin that builds local clusters on Apple silicon from upstream kubeadm, kind images and Cilium <a class="ref" href="#ref-1">1</a>. Each container runs in its own lightweight VM <a class="ref" href="#ref-8">8</a>. Local clusters that match production get cheaper.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-11T10:11">10:11</time>
+        <div>
+          <h4>We Have GitOps at Home: How Meta Went from Terraform on Cron to GitOps for AI Infra</h4>
+          <p class="who">Phong Nguyen, Shaun Hopper · Meta</p>
+          <p>About 15 engineers run about 100 clusters for AI research and inference. A one-line Helm values change could take a working day in the monolithic Terraform pipeline. Kargo and Argo CD now ship each app on its own and a routine update is live in minutes. Terraform "didn't get fired, just reorged," and app teams fill in an order form instead of writing YAML <a class="ref" href="#ref-1">1</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-11T10:25">10:25</time>
+        <div>
+          <h4>Sovereign AI Starts at the Traffic Layer</h4>
+          <p class="who">Andjelko Iharos · HAProxy Technologies</p>
+          <p>"Your cluster is sovereign. Your AI isn't." An inference request is plain HTTP with the model name in the JSON body, so the ingress and Gateway API patterns you already run can route it, hash it across GPU backends and enforce policy at the edge <a class="ref" href="#ref-1">1</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-11T10:32">10:32</time>
+        <div>
+          <h4>Built on Kubernetes. Proven at Uber Scale. Now Open Source.</h4>
+          <p class="who">Viv Keswani · Uber</p>
+          <p>Michelangelo AI, Uber's Kubernetes-native ML platform behind more than 5,000 production models and 45 million predictions per second, launched publicly as open source <a class="ref" href="#ref-1">1</a>. The code has been on GitHub since May 20, 2026: the Uniflow pipeline framework, API server, controller, local sandbox and CLI <a class="ref" href="#ref-13">13</a>.</p>
+        </div>
+      </article>
+
+      <p class="also"><b>Also on stage:</b> The Flywheel Effect (Syntasso, The Access Group) previewed a Platform Engineering Community White Paper; the TAB and TOC joint keynote (Apple, Defense Unicorns, Lockheed Martin, NVIDIA) on mapping reference architectures to project lifecycle; ScaleOps on autonomous orchestration; Oracle and LiveKit on OKE <a class="ref" href="#ref-1">1</a>.</p>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day" id="day-3">
+      <div class="day-head">
+        <span class="day-label">Day 3 · Thursday, November 12</span>
+        <h3>Kubernetes as a kernel</h3>
+        <p>The last morning was the most forward-looking. Google and Meta argued that Kubernetes is settling into a lean kernel with purpose-built distributions on top, and that agentic engineering makes building those distributions cheap.</p>
+      </div>
+
+      <article class="entry">
+        <time datetime="2026-11-12T09:12">09:12</time>
+        <div>
+          <h4>Kubeflow Graduation: Powering the Next Era of Cloud Native AI</h4>
+          <p class="who">Ron Kahn, Andrey Velichkevich, Vara Bonthu, Ekin Karabulut, Manabu McCloskey · AWS, Apple, NVIDIA</p>
+          <p>A celebration of a graduation announced in August <a class="ref" href="#ref-14">14</a>. Kubeflow has grown from a TensorFlow controller in 2017 to eleven projects. The new piece: a Semantic Operator that gives agents and BI tools governed business definitions "without relying on LLM-generated SQL" <a class="ref" href="#ref-1">1</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-12T09:34">09:34</time>
+        <div>
+          <h4>Scaling Multi-Modal Models and Computer-Use Agents on Kubernetes</h4>
+          <p class="who">Kai-Hsun Chen, Hao Jiang · Hark</p>
+          <p>Data processing, training, RL and serving all on Ray via KubeRay, with MultiKueue governing GPU capacity across every cluster they run <a class="ref" href="#ref-1">1</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-12T09:48">09:48</time>
+        <div>
+          <h4>Salesforce Runs on Heroku: How We Empower Every Builder at Cloud Native Scale</h4>
+          <p class="who">Brandon Schoen, Shiva Nimmagadda · Heroku, Salesforce</p>
+          <p>Over 20,000 internal apps. Cloud Native Buildpacks plus image rebasing patch base-OS vulnerabilities across thousands of apps "in seconds without rebuilding code," which is the guardrail that makes vibe-coded apps safe to host <a class="ref" href="#ref-1">1</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-12T09:53">09:53</time>
+        <div>
+          <h4>The Storage Bottleneck AI Didn't See Coming</h4>
+          <p class="who">Joe Zhou, Frank Li · Juicedata, StepFun</p>
+          <p>Storage, not GPUs, became the limit for multimodal training. JuiceFS on TiKV scaled metadata to more than 10,000 mounting hosts; tuning cut Safetensors read amplification by about 71%, and the fixes went upstream <a class="ref" href="#ref-1">1</a>.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-12T09:58">09:58</time>
+        <div>
+          <h4>Kubernetes with Conviction: How Customization is Shaping the OSS AI Ecosystem's Future</h4>
+          <p class="who">Jago Macleod, Shaun Hopper · Google, Meta</p>
+          <p>The Linux analogy made explicit: a standard Kubernetes kernel (API machinery, reconciliation loops, resource abstractions) with vertically integrated distros for edge, enterprise and hyperscale AI <a class="ref" href="#ref-1">1</a>. If you have been arguing about whether to customize, this is permission, with a boundary.</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <time datetime="2026-11-12T10:12">10:12</time>
+        <div>
+          <h4>Cloud Native Without Limits: What Can AI Agents Do for Us?</h4>
+          <p class="who">Lin Sun · Solo.io</p>
+          <p>Drone 2, live: agents debugging production, analysing token spend and automating routine operations over MCP, "with humans firmly in control" <a class="ref" href="#ref-1">1</a>.</p>
+        </div>
+      </article>
+
+      <p class="also"><b>Also on stage:</b> Jeffrey Sica (CNCF) on the community; the CNCF Community Awards; Nutanix on CAREN, its Cluster API runtime extensions for customizing ClusterClass; Microsoft's Jorge Palma on assembling agent frameworks, substrates and identity behind declarative APIs <a class="ref" href="#ref-1">1</a>. <b>Off stage the same day:</b> Anthropic launched self-hosted Claude Managed Agents, which runs the whole agent service on your own infrastructure <a class="ref" href="#ref-18">18</a>, and Kyverno 1.20 stopped processing legacy ClusterPolicy resources <a class="ref" href="#ref-15">15</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FROM THE SLIDES ================= -->
+<section id="slides">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Keynote deck · AWS · Tue Nov 10, 09:42</span>
+      <h2>From the slides: what breaks at 100,000 nodes</h2>
+      <p class="lead measure">Of 34 keynote slots, one posted a deck. It is worth reading even if you will never run a giant cluster, because every fix ships in the versions you are about to upgrade to. The speaker notes frame the choice a managed provider faces at scale: fork it and keep the fix, let customers work around it, or fix it upstream <a class="ref" href="#ref-3">3</a>.</p>
+    </div>
+
+    <div class="slides">
+      <article class="slide">
+        <span class="snum">Slide 2 · Control plane</span>
+        <h3>Kubernetes is designed for 5,000 nodes. Three assumptions broke on the way.</h3>
+        <ul class="metric-list">
+          <li><span class="m">574 ms → 1.7 ms</span><span class="d">API server watch cache: writer wait in a 1M-pod benchmark, after replacing one long-held lock with a lazy snapshot (O(N) → O(1))</span></li>
+          <li><span class="m">4× workers</span><span class="d">Horizontal Pod Autoscaler: a new selector store so reads stop queuing behind writes; on by default in 1.37</span></li>
+          <li><span class="m">300+ pods/s</span><span class="d">Scheduler throughput with a steady pending backlog, against 10 to 20 before a delta-based volume cache</span></li>
+        </ul>
+        <p class="fine">Next: compress objects before they reach etcd (KEP-6264, alpha in 1.38). PRs cited on the slide: watch cache #139928, HPA #139142, scheduler #139238.</p>
+      </article>
+
+      <article class="slide">
+        <span class="snum">Slide 3 · Scheduling</span>
+        <h3>Karpenter now scales DRA workloads from zero</h3>
+        <p class="sub">A pod can ask for one GPU and one EFA interface on the same PCIe root. Karpenter 1.15 models those devices on every instance type before launch, so GPU capacity scales from zero with no node groups to declare.</p>
+        <ul class="metric-list">
+          <li><span class="m">16 providers</span><span class="d">Karpenter providers that can build on dynamic-capacity DRA, including AWS, Azure, Oracle, Alibaba Cloud, IBM Cloud, Hetzner and Cluster API</span></li>
+        </ul>
+        <p class="fine">EFA driver built on upstream DRANET. Requires Kubernetes 1.34+; GPU sharing 1.36+.</p>
+      </article>
+
+      <article class="slide">
+        <span class="snum">Slide 4 · Node</span>
+        <h3>A 10 GB AI image, pulled in 45 seconds</h3>
+        <p class="sub">containerd 2.1 made layer downloads parallel. containerd 2.2 makes unpack parallel too, opt-in, one setting away.</p>
+        <div class="pull-bars" role="img" aria-label="Pull time for a 10 GB vLLM image: 113 seconds with parallel download only, 45 seconds with parallel download and unpack">
+          <div class="row"><span>Serial unpack</span><span class="track"><span class="b" style="width: calc(113 / 113 * (100% - 3.4rem))"></span><span class="v">113 s</span></span></div>
+          <div class="row"><span>Parallel unpack</span><span class="track"><span class="b" style="width: calc(45 / 113 * (100% - 3.4rem))"></span><span class="v">45 s</span></span></div>
+        </div>
+        <p class="fine">Pull time for a 10 GB vLLM image. containerd #12332 (2.2) and #10177 (2.1), as cited on the slide.</p>
+      </article>
+
+      <article class="slide">
+        <span class="snum">Slide 5 · The asks</span>
+        <h3>See you upstream</h3>
+        <ul class="metric-list">
+          <li><span class="m">1</span><span class="d">Try parallel unpack in containerd 2.2</span></li>
+          <li><span class="m">2</span><span class="d">Run DRA with Karpenter and file issues</span></li>
+          <li><span class="m">3</span><span class="d">Review the etcd compression code for 1.38</span></li>
+        </ul>
+        <p class="fine">Outside Kubernetes: Go's garbage collector stalled up to 20 seconds on 100+ core API servers; a reproducer went to the Go team and a fix is in review (golang/go#82472).</p>
+      </article>
+    </div>
+    <p class="attrib">Content from <em>Engineering Kubernetes for the Next Era of Workloads</em>, Mike Stefaniak, AWS, KubeCon + CloudNativeCon NA 2026 keynote, slides and speaker notes <a class="ref" href="#ref-3">3</a>. Rebuilt as text; PR and KEP numbers are as printed on the slides and were not independently checked. Internal use.</p>
+  </div>
+</section>
+
+<!-- ================= THEMES ================= -->
+<section id="themes">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Across 501 sessions</span>
+      <h2>Seven themes from the session rooms</h2>
+      <p class="lead measure">The keynotes set the narrative; the breakout rooms supplied the evidence. Start with where the program's attention went.</p>
+    </div>
+
+    <figure class="chart" id="signal">
+      <figcaption>
+        <b>Sessions whose title or abstract mentions each topic</b>
+        <span>Out of 501 sessions with speakers. Regex counts over titles and abstracts, so read them as signal strength, not measurement <a class="ref" href="#ref-2">2</a>. "Open source sustainability" (91) is left out because it matches boilerplate in maintainer-track abstracts.</span>
+      </figcaption>
+      <div class="bars" id="bars" role="list" aria-label="Session counts by topic"></div>
+      <div class="tip" id="tip" role="tooltip" hidden></div>
+      <details class="table-view">
+        <summary>Show as a table</summary>
+        <div class="table-wrap"><table id="signal-table"><thead><tr><th scope="col">Topic</th><th scope="col">Sessions</th><th scope="col">Example session</th></tr></thead><tbody></tbody></table></div>
+      </details>
+      <noscript><p class="attrib">Counts: Agents 94 · GPU 74 · Operators/CRDs 63 · Inference 55 · Scheduling 50 · OpenTelemetry 38 · MCP 34 · Platform engineering 31 · GitOps 27 · Policy as code 25 · Upgrades 25 · CVEs 23 · Multi-cluster 19 · Gateway API 18 · DRA 14 · Workload identity 13.</p></noscript>
+    </figure>
+
+    <div style="height: 28px"></div>
+
+    <!-- Theme 1 -->
+    <article class="theme" id="theme-agents">
+      <div class="theme-main">
+        <span class="theme-num">Theme 1</span>
+        <h3>Agents became a workload class with a parts list</h3>
+        <p class="measure">The conversation moved past AI in the CI pipeline to agents running inside the cluster with real credentials. The ecosystem has named four sub-problems and has projects for each <a class="ref" href="#ref-2">2</a>.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Problem</th><th scope="col">What people are doing</th><th scope="col">Where it showed up</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Sandboxing</strong></td><td>microVMs, gVisor, Kata, pre-warmed pods, snapshots</td><td>Agent Substrate, OpenShell, <em class="talk">Lessons Learned Sandboxing Agents with kagent</em></td></tr>
+              <tr><td><strong>Identity and authz</strong></td><td>SPIFFE/SPIRE, workload identity, Cedar, OpenFGA</td><td><em class="talk">The Identity Crisis</em> keynote; <em class="talk">Cedar Analysis for MCP Servers</em> (AWS, Stacklok)</td></tr>
+              <tr><td><strong>Durability</strong></td><td>Durable workflow engines under agents</td><td><em class="talk">Agents Fail. Workflows Recover.</em> (Uber, Cadence)</td></tr>
+              <tr><td><strong>Tool plumbing</strong></td><td>MCP servers as workloads behind AI gateways</td><td>34 sessions on MCP; multi-tenant AI gateway (Adobe)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <aside class="theme-side" aria-label="Production numbers">
+        <div class="fig"><b>4,700 / mo</b><span>alerts triaged at $0.33 each by Verkada's MCP agent across nine production clusters <a class="ref" href="#ref-1">1</a></span></div>
+        <div class="fig"><b>30%</b><span>of Podium's merged PRs have no human author <a class="ref" href="#ref-1">1</a></span></div>
+        <div class="fig"><b>30 EKS clusters</b><span>driven by an LLM at Mastercard, deliberately without RAG <a class="ref" href="#ref-1">1</a></span></div>
+      </aside>
+    </article>
+
+    <!-- Theme 2 -->
+    <article class="theme" id="theme-inference">
+      <div class="theme-main">
+        <span class="theme-num">Theme 2</span>
+        <h3>Inference is Kubernetes' new core job</h3>
+        <p class="measure">There is now a reference stack with named parts, repeated across talks and drawn most cleanly in <em class="talk">Composing Inference on Kubernetes: Gateway, Schedule, Serve, Observe</em> (Google, Red Hat) <a class="ref" href="#ref-2">2</a>:</p>
+        <div class="stackline" role="list" aria-label="Reference inference stack, front to back">
+          <div class="layer" role="listitem"><i>Route</i><b>Gateway API Inference Extension</b><span>by model, LoRA and KV-cache affinity</span></div>
+          <div class="layer" role="listitem"><i>Serve</i><b>llm-d + vLLM</b><span>llm-d reached 1.0 this month <a class="ref" href="#ref-4">4</a></span></div>
+          <div class="layer" role="listitem"><i>Lifecycle</i><b>KServe</b><span>model rollout and autoscaling</span></div>
+          <div class="layer" role="listitem"><i>Queue</i><b>Kueue / Volcano</b><span>batch, quota, fair share</span></div>
+          <div class="layer" role="listitem"><i>Devices</i><b>DRA</b><span>GPUs and NICs as structured claims</span></div>
+          <div class="layer" role="listitem"><i>Observe</i><b>OpenTelemetry</b><span>tokens, latency, cost</span></div>
+        </div>
+        <ul>
+          <li><strong>Cache-aware routing is the biggest win.</strong> KV-cache locality beats round-robin badly: <em class="talk">Cache Me If You Can</em> (Red Hat), <em class="talk">Inside the Inference Load Balancer</em> (OpenAI).</li>
+          <li><strong>Cold start is the second.</strong> Kernel caching for vLLM, Kata pod snapshots, image-pull latency, Dragonfly for model distribution, and AWS's parallel unpack.</li>
+          <li><strong>Cost per token is a first-class metric.</strong> <em class="talk">Who Ran Up the Inference Bill?</em>; OpenCost attribution for llm-d (IBM).</li>
+        </ul>
+      </div>
+      <aside class="theme-side">
+        <div class="fig"><b>66%</b><span>of organizations hosting generative AI models use Kubernetes for some or all inference, per the 2026 CNCF survey as reported <a class="ref" href="#ref-6">6</a></span></div>
+        <div class="fig"><b>45 talks</b><span>in the new AI Inference + Agentic track, plus a full co-located Cloud Native AI + Inference Day <a class="ref" href="#ref-2">2</a></span></div>
+      </aside>
+    </article>
+
+    <!-- Theme 3 -->
+    <article class="theme" id="theme-scheduling">
+      <div class="theme-main">
+        <span class="theme-num">Theme 3</span>
+        <h3>The scheduler is where the hard engineering is</h3>
+        <p class="measure">DRA went from proposal to the organizing abstraction for devices, with 14 sessions, an NVIDIA driver deep dive and HAMi moving to a DRA-native design <a class="ref" href="#ref-2">2</a>. Inside it: fractional GPUs, topology-aware placement (a new WG Workload-Aware Scheduling), and quotas that actually hold.</p>
+        <p class="measure">The best talks were honest failure reports. Read these first:</p>
+        <ul>
+          <li><em class="talk">Anthropic's Kubernetes Scheduler for Frontier AI: What Worked, What Broke</em>, which opens with "A TPU on the wrong torus coordinate is worthless" <a class="ref" href="#ref-1">1</a></li>
+          <li><em class="talk">How Anthropic Almost Melted GKE (And the PRs That Saved It)</em>: "At 50,000 nodes, component failure is a statistical certainty" <a class="ref" href="#ref-1">1</a></li>
+          <li><em class="talk">Anatomy of an Outage: When Bursty ML Workloads Break the Kubernetes Scheduler</em> (Google, Isomorphic Labs)</li>
+          <li><em class="talk">Why Quotas Are Hard in Kubernetes</em> (VMware by Broadcom)</li>
+        </ul>
+      </div>
+      <aside class="theme-side">
+        <div class="fig"><b>1.37</b><span>"Garhwal," released Aug 26, 2026: HPA scale-to-zero went beta, pod-level checkpoint/restore arrived in alpha <a class="ref" href="#ref-16">16</a></span></div>
+        <div class="fig"><b>Zero → GPU</b><span>Karpenter 1.15 provisions for DRA claims on nodes that don't exist yet <a class="ref" href="#ref-3">3</a></span></div>
+      </aside>
+    </article>
+
+    <!-- Theme 4 -->
+    <article class="theme" id="theme-platform">
+      <div class="theme-main">
+        <span class="theme-num">Theme 4</span>
+        <h3>Platform engineering got a second user: the agent</h3>
+        <p class="measure">Platforms were designed around developers self-serving. The open question this year was what an agent may safely do with no human in the loop, which needs machine-readable contracts more than portals. Only about 17 sessions treated human developer experience as the open problem, against 129 that named agents or MCP <a class="ref" href="#ref-2">2</a>.</p>
+        <ul>
+          <li><strong>GitOps is the trust boundary.</strong> Meta's keynote, <em class="talk">Progressive Delivery for Trust: How Agents Earn the Right to Merge</em> (Transfix: "human review becomes the next scaling bottleneck"), and <em class="talk">GitOps Without You Writing YAML</em> (Flux).</li>
+          <li><strong>And the cautionary tale.</strong> <em class="talk">GitOps Meltdown: How a Commit Triggered a Cascading Delete of 39 Clusters in Production</em> (Nutanix). Automation amplifies whatever you merge.</li>
+          <li><strong>Policy is moving in-tree.</strong> <em class="talk">Goodbye Webhooks, Hello CEL</em> (Google); Kyverno 1.20 went CEL-first and dropped processing of legacy ClusterPolicy <a class="ref" href="#ref-15">15</a>.</li>
+          <li><strong>Composition is the agent-facing API.</strong> Crossplane functions, kro and Backstage all pitched narrow, typed APIs that an agent can call more safely than raw cloud YAML.</li>
+        </ul>
+      </div>
+      <aside class="theme-side">
+        <div class="fig"><b>3% vs 26%</b><span>sessions centred on human DX as the open problem, against sessions naming agents or MCP <a class="ref" href="#ref-2">2</a></span></div>
+        <div class="fig"><b>Minutes, not a day</b><span>Meta's routine app update after moving apps from Terraform to Kargo + Argo CD <a class="ref" href="#ref-1">1</a></span></div>
+      </aside>
+    </article>
+
+    <!-- Theme 5 -->
+    <article class="theme" id="theme-fleet">
+      <div class="theme-main">
+        <span class="theme-num">Theme 5</span>
+        <h3>Nobody runs one cluster any more</h3>
+        <p class="measure">Fleet sizes stated on stage or in published abstracts. Hybrid and multi-cloud is the norm at this size, and the talks were about upgrade and utilization toil, not migration.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Company</th><th scope="col">Fleet</th><th scope="col">Where it was said</th></tr></thead>
+            <tbody>
+              <tr><td>Salesforce</td><td class="num">1,000 clusters</td><td><em class="talk">1000 Clusters, 1 Smarter Brain: The Next Evolution of AIOps</em></td></tr>
+              <tr><td>LinkedIn</td><td class="num">300 clusters, ~300,000 nodes</td><td>Skip-level control plane upgrades with KEP-4330</td></tr>
+              <tr><td>Meta</td><td class="num">~100 clusters, ~15 engineers</td><td>Day 2 keynote</td></tr>
+              <tr><td>Anthropic on GKE</td><td class="num">50,000 nodes</td><td><em class="talk">How Anthropic Almost Melted GKE</em></td></tr>
+              <tr><td>Nutanix</td><td class="num">39 clusters</td><td>All deleted by one commit (<em class="talk">GitOps Meltdown</em>)</td></tr>
+              <tr><td>Mastercard</td><td class="num">30 EKS clusters</td><td><em class="talk">No RAG, No Regrets</em></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="measure" style="font-size:15px;color:var(--ink-2)">All from the official schedule <a class="ref" href="#ref-1">1</a>. From my notes on the floor: lots of companies are running hundreds of clusters, and manual upgrades cannot keep up <a class="ref" href="#ref-20">20</a>. The tools named for it: Cluster API (and Nutanix's CAREN), Karmada, skip-level upgrades, Kargo for fleet promotion.</p>
+      </div>
+      <aside class="theme-side">
+        <div class="fig"><b>100,000</b><span>nodes per cluster is what AWS is now engineering the control plane for <a class="ref" href="#ref-3">3</a></span></div>
+        <div class="fig"><b>19</b><span>sessions on Karmada and multi-cluster management <a class="ref" href="#ref-2">2</a></span></div>
+      </aside>
+    </article>
+
+    <!-- Theme 6 -->
+    <article class="theme" id="theme-security">
+      <div class="theme-main">
+        <span class="theme-num">Theme 6</span>
+        <h3>Security: the CVE firehose and the identity gap</h3>
+        <p class="measure">Two pains dominated. First, maintainers are drowning in vulnerability reports, increasingly AI-generated: <em class="talk">Mythos vs Maintainers: Drowning in the Vulnerability Tsunami</em> (ControlPlane, Docker), <em class="talk">AI Found a 0-Day in Metal3. What Happens Next?</em> (Ericsson) <a class="ref" href="#ref-1">1</a>. A Linux Foundation press briefing reportedly introduced Akrites, a project in which 30+ enterprises triage and patch upstream vulnerabilities <a class="ref" href="#ref-7">7</a> <span class="flag" title="Single recap; no project page found">unverified</span>.</p>
+        <p class="measure">Second, non-human identity: SPIFFE/SPIRE (13 sessions), a SPIFFE broker API so every Kubernetes object can have an identity, pod certificates and cluster trust bundles, and Coinbase's move <em class="talk">From Bearer Tokens to Mesh-Native mTLS</em> <a class="ref" href="#ref-2">2</a>.</p>
+        <ul>
+          <li><strong>Ingress NGINX is retired.</strong> Best-effort maintenance ended in March 2026 and the recommended destination is Gateway API <a class="ref" href="#ref-17">17</a>. <em class="talk">Four Resources, One Object</em> (AWS) was the migration talk.</li>
+          <li><strong>New attack surface:</strong> prompt injection, poisoned telemetry pipelines, and <em class="talk">Why Your Monitoring Stack is a Security Risk</em> (Anthropic, Snowflake).</li>
+        </ul>
+      </div>
+      <aside class="theme-side">
+        <div class="fig"><b>23</b><span>sessions on CVEs and vulnerability management, plus a full Open Source SecurityCon <a class="ref" href="#ref-2">2</a></span></div>
+        <div class="fig"><b>Seconds</b><span>for Heroku to rebase base-OS patches across thousands of Salesforce apps <a class="ref" href="#ref-1">1</a></span></div>
+      </aside>
+    </article>
+
+    <!-- Theme 7 -->
+    <article class="theme" id="theme-otel">
+      <div class="theme-main">
+        <span class="theme-num">Theme 7</span>
+        <h3>Observability: OpenTelemetry won, and now it is pointed at AI</h3>
+        <p class="measure">OpenTelemetry came up in 38 sessions against 17 for Prometheus by name; it is the default assumption <a class="ref" href="#ref-2">2</a>. The practitioner talks were about scale and cardinality cost, and the new work is about observing inference and agents.</p>
+        <ul>
+          <li><strong>Scale:</strong> <em class="talk">Tracing at Scale: Running a 16 Billion Spans/Hour Pipeline at Nubank</em>; two-stage OTel aggregation to tame Istio cardinality at 10,000 pods (Yahoo).</li>
+          <li><strong>AI as the subject:</strong> <em class="talk">The Race to Standardize AI Observability</em> (Google, Microsoft); hallucination detection for observability agents (Apple).</li>
+          <li><strong>AI as the operator, soberly:</strong> <em class="talk">The SRE Is Not Dead</em> (Best Buy) and a 10-scenario benchmark of open-source LLMs running real Kubernetes operations.</li>
+        </ul>
+        <p class="measure" style="font-size:15px;color:var(--ink-2)">The boring, load-bearing track deserves a mention too: <em class="talk">Death by a Thousand Patches: How Pod Status Updates Exhaust etcd</em> (AWS), stale watches in operators, and an 8-minute clock skew that locked a cluster for a day <a class="ref" href="#ref-2">2</a>.</p>
+      </div>
+      <aside class="theme-side">
+        <div class="fig"><b>16B</b><span>spans per hour through Nubank's tracing pipeline <a class="ref" href="#ref-1">1</a></span></div>
+        <div class="fig"><b>38 vs 17</b><span>sessions naming OpenTelemetry vs Prometheus <a class="ref" href="#ref-2">2</a></span></div>
+      </aside>
+    </article>
+  </div>
+</section>
+
+<!-- ================= TRENDS ================= -->
+<section id="trends">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Emerging · watch through 2027</span>
+      <h2>Eight trends I'd bet on</h2>
+      <p class="lead measure">Early signals, each seen at least once on the keynote stage or in a project launch this week.</p>
+    </div>
+    <div class="trends">
+      <article class="trend">
+        <h3>Actors replace pods as the agent unit</h3>
+        <p>One session, one sandbox, one gateway, suspended when idle. Packing density is the selling point; identity that survives suspension is the hard part.</p>
+        <span class="seen">Agent Substrate keynote <a class="ref" href="#ref-9">9</a><a class="ref" href="#ref-10">10</a></span>
+      </article>
+      <article class="trend">
+        <h3>The harness is the runtime</h3>
+        <p>Model, tools, skills and plugins packaged as one deployable unit, moving from laptops to clusters with checkpoint/restore underneath.</p>
+        <span class="seen">Solo.io keynote; K8s 1.37 alpha checkpoint/restore <a class="ref" href="#ref-1">1</a><a class="ref" href="#ref-16">16</a></span>
+      </article>
+      <article class="trend">
+        <h3>Policy enforced by hardware</h3>
+        <p>OpenShell pushes agent policy down to DPUs. "Ask the agent nicely" is out; enforce it below the kernel.</p>
+        <span class="seen">NVIDIA, Red Hat keynotes <a class="ref" href="#ref-9">9</a></span>
+      </article>
+      <article class="trend">
+        <h3>Kubernetes as a kernel, with distros</h3>
+        <p>A stable core of API machinery and controllers, and purpose-built distributions on top, made cheaper to build by agentic engineering.</p>
+        <span class="seen">Google + Meta keynote <a class="ref" href="#ref-1">1</a></span>
+      </article>
+      <article class="trend">
+        <h3>Sovereign inference at the gateway</h3>
+        <p>Route model traffic through your own Gateway API data plane, keep it in-cluster, and apply policy and cost attribution there.</p>
+        <span class="seen">HAProxy keynote; Gateway API Inference Extension <a class="ref" href="#ref-1">1</a><a class="ref" href="#ref-2">2</a></span>
+      </article>
+      <article class="trend">
+        <h3>Agents earn merge rights</h3>
+        <p>Progressive delivery and policy become the reviewer. Agent-authored change graduates from proposal to auto-merge by track record.</p>
+        <span class="seen">Transfix, Podium, ArgoCon <a class="ref" href="#ref-1">1</a><a class="ref" href="#ref-20">20</a></span>
+      </article>
+      <article class="trend">
+        <h3>Self-hosted agent platforms</h3>
+        <p>Vendors are shipping agent services you run on your own clusters, with your credentials and session history staying in-house.</p>
+        <span class="seen">Anthropic, Mirantis, Solo.io <a class="ref" href="#ref-18">18</a><a class="ref" href="#ref-11">11</a><a class="ref" href="#ref-10">10</a></span>
+      </article>
+      <article class="trend">
+        <h3>AI credentials for people and platforms</h3>
+        <p>KAIA and CKIE certifications in 2027, and an AI conformance badge that needs real tests to mean much.</p>
+        <span class="seen">CNCF announcement; TechTimes critique <a class="ref" href="#ref-4">4</a><a class="ref" href="#ref-5">5</a></span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAKEAWAYS ================= -->
+<section id="takeaways">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Bringing it home</span>
+      <h2>What I'd act on first</h2>
+      <p class="lead measure">The full argument, with owners and decisions, lives in <code>GOALS.md</code>. These are the six items the week made most urgent.</p>
+    </div>
+    <ol class="home">
+      <li><div><h3>Start non-human identity before the agents arrive</h3><p>Short-lived workload identity plus fine-grained authorization was the consensus answer. Retrofitting it after agents hold credentials is the painful path.</p><p class="goal">GOALS.md §3.6</p></div></li>
+      <li><div><h3>Make one path to production for people and agents</h3><p>GitOps plus policy plus progressive delivery, with traceability for who (or what) authored each change. Let agents propose; let the pipeline decide.</p><p class="goal">GOALS.md §1.9, §2.1</p></div></li>
+      <li><div><h3>Pick a sandbox story before production agents</h3><p>Kata or gVisor today; track Agent Substrate and OpenShell as they mature in the CNCF sandbox.</p><p class="goal">GOALS.md §3.1, §3.2</p></div></li>
+      <li><div><h3>Stop upgrading clusters by hand</h3><p>Every fleet talk was an upgrade and toil story. Our fleet is growing, so the process has to scale without people.</p><p class="goal">GOALS.md §5.2</p></div></li>
+      <li><div><h3>Budget for OpenTelemetry and cardinality</h3><p>Every observability scale story was a sampling and cardinality story, and AI cost tracking rides on the same pipeline.</p><p class="goal">GOALS.md §4.2</p></div></li>
+      <li><div><h3>Move off Ingress NGINX to Gateway API</h3><p>It is retired, and the inference routing extensions build on the same data plane, so the migration pays twice.</p><p class="goal">ISTIO-VS-GATEWAY-API.md</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= DISPUTES ================= -->
+<section id="disputes">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Check before you quote</span>
+      <h2>Where the sources disagree</h2>
+      <p class="lead measure">Press coverage and the schedule conflict in places. Here is what I used and why.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Claim</th><th scope="col">The conflict</th><th scope="col">What this page uses</th></tr></thead>
+        <tbody>
+          <tr><td>Kubeflow graduation</td><td>Celebrated in a Nov 12 keynote; announced in August 2026 <a class="ref" href="#ref-14">14</a></td><td>Graduated in August; the keynote was the celebration</td></tr>
+          <tr><td>Michelangelo open source</td><td>Keynote "announces" it <a class="ref" href="#ref-1">1</a>; project blog dates the release May 20, 2026 <a class="ref" href="#ref-13">13</a></td><td>Code public since May; keynote was the public launch</td></tr>
+          <tr><td>Michelangelo scale</td><td>5,000+ models and 45M predictions/s (abstract) <a class="ref" href="#ref-1">1</a>; 5,300 models (recap) <a class="ref" href="#ref-8">8</a></td><td>The abstract's figures</td></tr>
+          <tr><td>Agent Substrate contributors</td><td>100+ contributors from 40+ orgs <a class="ref" href="#ref-10">10</a>; 164 contributing orgs <a class="ref" href="#ref-9">9</a></td><td>Neither; likely different counting methods</td></tr>
+          <tr><td>Projects graduated in the past year</td><td>CNCF lists Kubeflow, Buildpacks, Karmada, KubeVirt, NATS, OpenTelemetry <a class="ref" href="#ref-4">4</a>; a recap lists a different set <a class="ref" href="#ref-7">7</a></td><td>CNCF's own release</td></tr>
+          <tr><td>AI Conformance "40 platforms"</td><td>Cumulative across versions; 41 distinct names in the repo; 4 submissions for v1.37 <a class="ref" href="#ref-5">5</a></td><td>Quoted with the caveat</td></tr>
+          <tr><td>Speaker names</td><td>Recaps name different presenters for the Anthropic and NVIDIA physical-AI keynotes than the schedule does <a class="ref" href="#ref-7">7</a><a class="ref" href="#ref-8">8</a></td><td>The official schedule</td></tr>
+          <tr><td>llm-d status</td><td>Called a new sandbox project and also "joined CNCF and reached its 1.0" in the same release <a class="ref" href="#ref-4">4</a></td><td>"Reached 1.0"; level not stated</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SOURCES ================= -->
+<section id="sources">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Accessed November 12–16, 2026</span>
+      <h2>Sources</h2>
+    </div>
+
+    <p class="refgroup">Primary: the conference itself</p>
+    <ol class="refs">
+      <li id="ref-1">Official KubeCon + CloudNativeCon NA 2026 schedule (Sessionize API), session titles and abstracts. <span class="src">Pulled 2026-11-12 to <code>kubecon-overview/data/sessions.json</code>.</span> <a href="https://kubecon-cloudnativecon-north-america-2026.sessionize.com">kubecon-cloudnativecon-north-america-2026.sessionize.com</a></li>
+      <li id="ref-2">Schedule analysis: themes, tool catalog and term-frequency counts over 501 sessions; human-DX vs agent session counts. <span class="src"><code>kubecon-overview/analysis/THEMES.md</code>, <code>TOOLS.md</code>, <code>term-frequency.txt</code>; <code>GOALS.md</code> §0.2.</span></li>
+      <li id="ref-3">Mike Stefaniak (AWS), <em>Engineering Kubernetes for the Next Era of Workloads</em>, keynote slides and speaker notes, Nov 10, 2026. <span class="src"><code>kubecon-overview/slides/2026-11-10_engineering-kubernetes-for-the-next-era-of-workloads.pptx</code></span></li>
+    </ol>
+
+    <p class="refgroup">Foundation and project announcements</p>
+    <ol class="refs" start="4">
+      <li id="ref-4">CNCF, "CNCF Hits Major Milestones with Global Community Growth, Record Industry Investment and a New Generation of Projects to Build AI Systems in Production," press release, Nov 10, 2026. <a href="https://www.cncf.io/announcements/2026/11/10/cncf-hits-major-milestones-with-global-community-growth-record-industry-investment-and-a-new-generation-of-projects-to-build-ai-systems-in-production/">cncf.io/announcements/2026/11/10/…</a></li>
+      <li id="ref-5">Shannon Harwood, "Kubernetes AI Conformance Badge: CNCF Hits 40 Platforms, Test Suite Names Only NVIDIA GPUs," TechTimes, Nov 11, 2026. <a href="https://www.techtimes.com/articles/330454/20261111/kubernetes-ai-conformance-badge-cncf-hits-40-platforms-test-suite-names-only-nvidia-gpus.htm">techtimes.com/articles/330454/…</a></li>
+      <li id="ref-6">Ronald Holman, "KubeCon Salt Lake City Closes With a Clear Signal: AI Inference Is Kubernetes' New Core Job," TechTimes, Nov 12, 2026. <a href="https://www.techtimes.com/articles/330575/20261112/kubecon-salt-lake-city-closes-clear-signal-ai-inference-kubernetes-new-core-job.htm">techtimes.com/articles/330575/…</a></li>
+    </ol>
+
+    <p class="refgroup">Press recaps and coverage</p>
+    <ol class="refs" start="7">
+      <li id="ref-7">Tom Fenton, "KubeCon Salt Lake City Day 1: Autonomous Agents, Sandboxes, Bridging AI Infrastructure and Kubernetes," Virtualization Review, Nov 12, 2026. <a href="https://virtualizationreview.com/articles/2026/11/12/kubecon-salt-lake-city-day-1-autonomous-agents-sandboxes-bridging-ai-infrastructure-and-kubernetes.aspx">virtualizationreview.com/…/day-1…</a></li>
+      <li id="ref-8">Tom Fenton, "KubeCon Salt Lake City Day 2: Operating at Agent Speed, Platform Engineering and Enterprise Reality," Virtualization Review, Nov 12, 2026. <a href="https://virtualizationreview.com/articles/2026/11/12/kubecon-salt-lake-city-day-2-operating-at-agent-speed-platform-engineering-and-enterprise-reality.aspx">virtualizationreview.com/…/day-2…</a></li>
+      <li id="ref-9">Beth Pariseau, "Nvidia, Google agent sandboxes meet within CNCF," TechTarget, Nov 11, 2026. <a href="https://www.techtarget.com/news/nvidia-google-agent-sandboxes-meet-within-cncf/874392/">techtarget.com/news/…/874392/</a></li>
+      <li id="ref-10">Techstrong Editorial, "Solo.io Makes Enterprise Agent Substrate and kagent Generally Available," Cloud Native Now, Nov 10, 2026. <a href="https://cloudnativenow.com/kubecon-cloudnativecon-north-america-2026/solo-io-makes-enterprise-agent-substrate-and-kagent-generally-available/">cloudnativenow.com/…/solo-io-makes-enterprise-agent-substrate…</a></li>
+      <li id="ref-11">ITOps Times, "KubeCon Roundup Day 2: Nov. 10, 2026" (Solo.io and Mirantis announcements, Tim Hockin quote). <a href="https://itopstimes.com/kubernetes/kubecon-roundup-day-2-nov-10-2026/">itopstimes.com/kubernetes/kubecon-roundup-day-2-nov-10-2026/</a></li>
+      <li id="ref-12">Dilpreet Bindra, "Broadcom details Kubernetes work on a vendor-neutral VM API, workload conformance and agent sandboxing," ITOps Times, Nov 10, 2026. <a href="https://itopstimes.com/kubernetes/broadcom-details-kubernetes-work-on-a-vendor-neutral-vm-api-workload-conformance-and-agent-sandboxing/">itopstimes.com/kubernetes/broadcom-details-…</a></li>
+      <li id="ref-13">Michelangelo Team, "Michelangelo is Now Open Source," May 20, 2026. <a href="https://michelangelo-ai.org/blog/open-source-launch/">michelangelo-ai.org/blog/open-source-launch/</a> · repo <a href="https://github.com/michelangelo-ai/michelangelo">github.com/michelangelo-ai/michelangelo</a></li>
+      <li id="ref-14">Kubeflow, "Kubeflow Has Graduated from CNCF," August 2026. <a href="https://blog.kubeflow.org/graduation/">blog.kubeflow.org/graduation/</a></li>
+      <li id="ref-15">Jim Bugwadia, "KubeCon + CloudNativeCon North America 2026 Recap," Nirmata (Kyverno maintainers; vendor blog), Nov 13, 2026. <a href="https://nirmata.com/2026/11/13/kubecon-cloudnativecon-north-america-2026-recap/">nirmata.com/2026/11/13/…</a></li>
+    </ol>
+
+    <p class="refgroup">Upstream and vendor documentation</p>
+    <ol class="refs" start="16">
+      <li id="ref-16">Kubernetes, "Kubernetes v1.37: Garhwal," release announcement, Aug 26, 2026. <a href="https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/">kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/</a></li>
+      <li id="ref-17">Kubernetes SIG Network and Security Response Committee, "Ingress NGINX Retirement: What You Need to Know," Nov 11, 2025. <a href="https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/">kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/</a></li>
+      <li id="ref-18">Anthropic, Claude Platform release notes, entry for Nov 12, 2026: self-hosted Claude Managed Agents. <a href="https://platform.claude.com/docs/en/release-notes/overview">platform.claude.com/docs/en/release-notes/overview</a></li>
+      <li id="ref-19">Jessica Forrester (Red Hat), "Sandbox Your Agents," keynote recording, CNCF YouTube. <a href="https://www.youtube.com/watch?v=ARFC0ono7qk">youtube.com/watch?v=ARFC0ono7qk</a></li>
+    </ol>
+
+    <p class="refgroup">Notes from the floor</p>
+    <ol class="refs" start="20">
+      <li id="ref-20">Attendee notes taken at the show, including the ArgoCon morning session. <span class="src"><code>Key lessons/Takaways</code>, <code>argocon/am-session.md</code></span></li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>State of the Kube · KubeCon + CloudNativeCon North America 2026 field report · compiled November 16, 2026.</p>
+    <p>Session counts are regex matches over titles and abstracts and show relative signal, not exact measurement. Abstracts describe what speakers intended to present. Slide content belongs to its speakers and is reproduced here for internal use with attribution. Next stop: KubeCon + CloudNativeCon Europe 2027, Barcelona, March 15–18 <a class="ref" href="#ref-6">6</a>.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var data = [
+    ["Agents / agentic", 94, "Agent Substrate: Open Layers for Agentic Systems"],
+    ["GPU", 74, "Beyond the Cluster Boundary: Sharing GPUs at Scale"],
+    ["Operators / CRDs", 63, "Green Dashboards, Broken Clusters: Taming Stale Watches in Kubernetes Operators"],
+    ["Inference / serving", 55, "Composing Inference on Kubernetes: Gateway, Schedule, Serve, Observe"],
+    ["Scheduling", 50, "Anthropic's Kubernetes Scheduler for Frontier AI: What Worked, What Broke"],
+    ["OpenTelemetry", 38, "Tracing at Scale: Running a 16 Billion Spans/Hour Pipeline at Nubank"],
+    ["Model Context Protocol", 34, "What Can Your AI Agents Actually Do? Cedar Analysis for MCP Servers"],
+    ["Platform engineering", 31, "Platform Engineering after the AI Hype: Why IDPs Must Become Intent-Driven"],
+    ["GitOps", 27, "GitOps Meltdown: How a Commit Triggered a Cascading Delete of 39 Clusters"],
+    ["Policy as code", 25, "Goodbye Webhooks, Hello CEL"],
+    ["Upgrades / lifecycle", 25, "Binary Version Is Not Behavior: Skip-Level Kubernetes Control Plane Upgrades With KEP-4330"],
+    ["Vulnerabilities / CVEs", 23, "Mythos vs Maintainers: Drowning in the Vulnerability Tsunami"],
+    ["Multi-cluster / Karmada", 19, "N Clusters, One kubectl: Multi-Cluster That Just Works"],
+    ["Gateway API", 18, "Four Resources, One Object: Surviving Gateway API After Ingress NGINX"],
+    ["Dynamic Resource Allocation", 14, "Why Are You Still Wasting Whole GPUs? Hardware-Level Sharing, Scheduled with DRA"],
+    ["Workload identity / SPIFFE", 13, "Every Kubernetes Object Deserves an Identity: The SPIFFE Broker API"]
+  ];
+  var bars = document.getElementById("bars");
+  var tbody = document.querySelector("#signal-table tbody");
+  var tip = document.getElementById("tip");
+  var fig = document.getElementById("signal");
+  if (!bars || !tip || !fig) return;
+
+  data.forEach(function (d) {
+    var row = document.createElement("div");
+    row.className = "bar-row";
+    row.setAttribute("role", "listitem");
+    row.tabIndex = 0;
+    row.setAttribute("aria-label", d[0] + ": " + d[1] + " sessions");
+    var label = document.createElement("span");
+    label.className = "bar-label";
+    label.textContent = d[0];
+    var track = document.createElement("span");
+    track.className = "bar-track";
+    var bar = document.createElement("span");
+    bar.className = "bar";
+    bar.style.setProperty("--v", d[1]);
+    var val = document.createElement("span");
+    val.className = "bar-value";
+    val.textContent = d[1];
+    track.appendChild(bar);
+    track.appendChild(val);
+    row.appendChild(label);
+    row.appendChild(track);
+    bars.appendChild(row);
+
+    var tr = document.createElement("tr");
+    [d[0], d[1], d[2]].forEach(function (c, i) {
+      var td = document.createElement("td");
+      td.textContent = c;
+      if (i === 1) td.className = "num";
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+
+    function show(x, y) {
+      tip.textContent = "";
+      var s = document.createElement("strong");
+      s.textContent = d[1] + " sessions";
+      var l = document.createElement("div");
+      l.textContent = d[0];
+      var e = document.createElement("div");
+      e.style.opacity = "0.8";
+      e.style.marginTop = "4px";
+      e.textContent = "e.g. " + d[2];
+      tip.appendChild(s); tip.appendChild(l); tip.appendChild(e);
+      tip.hidden = false;
+      var fr = fig.getBoundingClientRect();
+      var tw = tip.offsetWidth;
+      var left = Math.min(Math.max(8, x - fr.left + 14), fr.width - tw - 8);
+      tip.style.left = left + "px";
+      tip.style.top = (y - fr.top + 14) + "px";
+    }
+    row.addEventListener("pointermove", function (ev) { show(ev.clientX, ev.clientY); });
+    row.addEventListener("pointerleave", function () { tip.hidden = true; });
+    row.addEventListener("focus", function () {
+      var r = bar.getBoundingClientRect();
+      show(r.right, r.top);
+    });
+    row.addEventListener("blur", function () { tip.hidden = true; });
+  });
+})();
+</script>
+</body>
+</html>

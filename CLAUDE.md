@@ -21,6 +21,7 @@ direct, opinionated, shortcomings stated out loud rather than buried.
 | `ISTIO-VS-GATEWAY-API.md` | Deep-dive spun out of §3.4/§3.6. Splits "Istio over Gateway API" into three separate decisions (D1 data plane, D2 config surface, D3 sidecar vs ambient) | Unclaimed — two sessions disclaimed authorship |
 | `CLAUDE-AGENT-PLATFORM.md` | Delivery plan for §6 stages 1–2: desktop Claude → Jenkins-triggered Claude agents in K8s pods; skill/MCP sharing via an internal plugin marketplace; OTel | — |
 | `EKS-VS-ECS.md` | Meeting argument: standardise on EKS (Auto Mode, Helm), no second orchestrator; design rules for a large fleet | — |
+| `state-of-the-kube/` | "State of the Kube": a styled HTML field report of the show (keynotes by day, AWS keynote slides, 7 themes, trends, takeaways) + `REFERENCES.md` with numbered web/deck citations and conflict notes. Published as a private Claude artifact | — |
 | `our goals` | The original raw brainstorm. Source material; don't edit | — |
 | `Key lessons/Takaways` | Raw notes taken at the show. Source material; don't edit | — |
 | `argocon/am-session.md` | ArgoCon session notes | — |
