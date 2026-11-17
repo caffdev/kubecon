@@ -8,6 +8,9 @@ together with the delivery plan in `CLAUDE-AGENT-PLATFORM.md` (Nov 16) and GOALS
 and §7. Scope is running Claude (Claude Code, the API or Bedrock, MCP). We don't train or
 host a model.
 
+Published as a private Claude artifact (the `with-index` draft, single-file export): https://claude.ai/artifact/LWr6kajFAqnkQ3hiQD5f75
+Rebuild with `node docs/decks/_kit/deck.mjs export path2-agents --draft with-index` and republish `dist/`.
+
 ## Brief
 
 - **Audience:** engineering leadership, platform and security leads, and the engineers who
@@ -81,6 +84,8 @@ snowfield). What this deck adds:
   ("Control 01…06" eyebrows). Changed: no eyebrows; each control gets its own picture
   (enclosure, pipeline, trace). The tables (ladder, Claude surfaces) become a profile and
   a system drawing.
+
+- **Audit exceptions, accepted:** architecture, blast-radius, authority, the-default and the ladder run 85–135 words; system drawings need their labels. The tool cards are reference material.
 
 ## Beats
 

@@ -1,2 +1,5 @@
 # review screenshots from `deck shoot`
 */.shots/
+
+# exports: rebuild with `deck export <deck>`
+*/dist/

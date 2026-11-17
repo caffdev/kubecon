@@ -8,6 +8,9 @@ artifact (33 slides, Nov 12) into the umbrella talk for the three paths. The thr
 (`path1-deployments`, `path2-agents`, `path3-fleet`) carry the detail; this one carries the
 argument and the ask.
 
+Published as a private Claude artifact (the `main` draft, single-file export): https://claude.ai/artifact/3gNPsU22eQdj1o59V7AaSt
+Rebuild with `node docs/decks/_kit/deck.mjs export readout` and republish `dist/`.
+
 ## Brief
 
 - **Audience:** engineering leadership, plus the platform, SRE and security leads who will
@@ -95,6 +98,8 @@ This deck is the one that shows the whole range.
     Sources appear only where a claim needs one.
   - *Big number, small label:* fleet sizes drawn as peaks scaled to size, not stat cards.
   - *Card grids:* none. Structure comes from the range and the camps.
+
+- **Audit exceptions, accepted:** the path slides (path-1, path-2, path-3) and the-ask run 95–105 words; they summarise a whole deck each and are left up for discussion.
 
 ## Beats
 

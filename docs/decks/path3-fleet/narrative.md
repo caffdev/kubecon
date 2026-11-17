@@ -7,6 +7,9 @@ Started 2026-11-17. Reworked from "Running Our Clusters Better" (44 slides, Nov 
 delivery half (Argo, promotion, canary, policy) now lives in `path1-deployments`; this deck
 keeps the fleet half and folds in `EKS-VS-ECS.md` (Nov 16) and GOALS §5, §8 and §10.
 
+Published as a private Claude artifact (the `with-index` draft, single-file export): https://claude.ai/artifact/FziJyzV6tgBBnPL7ShPCAe
+Rebuild with `node docs/decks/_kit/deck.mjs export path3-fleet --draft with-index` and republish `dist/`.
+
 ## Brief
 
 - **Audience:** platform and infrastructure leads, SRE, and engineering leadership. Some of
@@ -79,6 +82,8 @@ snowfield). What this deck adds:
   label in each card and an "Our lean" box at the bottom of every slide (a template). Changed:
   one picture per slide; evidence moves to a single source line or the notes; our lean is
   the headline itself.
+
+- **Audit exceptions, accepted:** thirty-first, live-live, third-platform and the-ask run 90–110 words; diagrams need their labels. The tool cards are reference material.
 
 ## Beats
 

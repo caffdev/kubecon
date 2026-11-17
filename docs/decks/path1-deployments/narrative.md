@@ -8,6 +8,9 @@ slides, Nov 16), plus the delivery half of "Running Our Clusters Better" (Argo, 
 canary, policy) and GOALS §1–§2. Path 1 of 3: agents are Path 2, the EKS fleet is Path 3.
 Ingress and secrets are on no path.
 
+Published as a private Claude artifact (the `with-index` draft, single-file export): https://claude.ai/artifact/LiMjRy2hU3CZQHpJnnvKQW
+Rebuild with `node docs/decks/_kit/deck.mjs export path1-deployments --draft with-index` and republish `dist/`.
+
 ## Brief
 
 - **Audience:** platform engineering, the leads of service-owning teams, and engineering
@@ -83,6 +86,8 @@ snowfield). What this deck adds:
   deck. Changed: each stage shows its route strip, its items as a sequence with real order,
   and its exit gate as the one accented block. The four policy layers were a 2×2 card grid;
   now a single route through four gates.
+
+- **Audit exceptions, accepted:** the stage slides (stage-a to stage-e), guardrails-first, one-label, promotion-pr and the-ask run 100–170 words. The setting is "both", so they carry the argument for readers; the notes carry it for the room. The tool cards are reference material.
 
 ## Beats
 

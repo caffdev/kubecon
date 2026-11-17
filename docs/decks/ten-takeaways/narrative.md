@@ -8,6 +8,9 @@ Nov 17): one takeaway per GOALS section, each set in its own visual world. The r
 a cold open and a close, and reorders the ten into an arc that follows the three paths:
 the ground (the fleet), the spine (delivery), the agents.
 
+Published as a private Claude artifact (the `main` draft, single-file export): https://claude.ai/artifact/GqpdZH7gt8yL68ZNu5ZtbG
+Rebuild with `node docs/decks/_kit/deck.mjs export ten-takeaways` and republish `dist/`.
+
 ## Brief
 
 - **Audience:** anyone in engineering who didn't go: an all-hands or guild lightning slot.
@@ -70,6 +73,8 @@ to the set.
 - **Anti-default check:** ten different worlds is itself the anti-template move. The risk is
   the opposite: that it reads as a sampler. The frame (one range, ten peaks, coloured by
   path, in order) is what holds it together as one talk.
+
+- **Audit exceptions, accepted:** itemize and reading-room are exempted from the overlap audit (data-audit="off") because their receipt and card are rotated; several worlds run 90–130 words, as the original artifact did.
 
 ## Beats
 
