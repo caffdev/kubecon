@@ -4,10 +4,16 @@
  "url": "https://claude.ai/artifact/AnXEzPeqGE1rfMzUCAKV5r",
  "deck": "takeaways-v3",
  "blobs": {
-  "overrun--chart-labels.png": "/_blob/a79b0219f2ba9bdd73832fa915279c37",
-  "overrun--chart-step1.png": "/_blob/431fb47f518fa1ce6f1f5354109bf701",
-  "gates--rings-step1.png": "/_blob/f9662e8d493417dabc67300c565a3a0c",
-  "gates--rings-step2.png": "/_blob/47374bf15f14479e934ce3f9580532d0",
-  "gates--rings-step3.png": "/_blob/1b2b211844c64290d14f9246b2f7661e"
+  "tools-too--grid-art-labels.png": "/_blob/7503bb9ffd948a00019a61f2453f4251",
+  "overrun--chart-labels.png": "/_blob/c66f38eee6ba1194b64410f518667f77",
+  "overrun--chart-step1.png": "/_blob/6be49320eab0e57ae24ba75f03dfed94",
+  "gates--rings-step1.png": "/_blob/ead51dd98cef4059477c32d9e786ac9c",
+  "gates--rings-step2.png": "/_blob/2f8967b71bb65e8464025b3a2375f801",
+  "gates--rings-step3.png": "/_blob/3dc9594e20ef7410bccf0907e4b80cf3",
+  "karmada--kmap-step1.png": "/_blob/88158b46a4e5ef866c3e0d578a40a86e",
+  "karmada--kmap-step2.png": "/_blob/022f8f672c6ac3754e645581b3b6b0fa",
+  "no-cluster-names--route-labels.png": "/_blob/deae290df3b0e93ebe9b12530c33de97",
+  "ai-arrives--map-step1.png": "/_blob/3b97d476d3a73d549d1bae3e141ff022",
+  "ai-arrives--map-step2.png": "/_blob/4066bb16d20be01bae1ac4d4f0c298b1"
  }
 }

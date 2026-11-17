@@ -124,8 +124,9 @@ const IN_PAGE = String.raw`(async () => {
       if (!visible(t) || !t.textContent.trim()) continue;
       const cs = getComputedStyle(t), r = rel(t.getBoundingClientRect());
       let anim = null; for (let n = t; n && n !== svg; n = n.parentElement) { const a = ANIM.get(n); if (a && a.some((x) => x.kf)) { anim = { own: n === t, list: a }; break; } }
-      labels.push({ text: t.textContent.trim(), cls: t.getAttribute('class') || '', ...r, family: cs.fontFamily, size: parseFloat(cs.fontSize), weight: cs.fontWeight, style: cs.fontStyle,
-        spacing: cs.letterSpacing, color: hex(urlRef(cs.fill)), opacity: effOpacity(t, svg.parentElement), anchor: cs.textAnchor, step: stepOf(t), anim });
+      const ctm = t.getScreenCTM(), sc = (ctm ? Math.hypot(ctm.a, ctm.b) : 1) * k;
+      labels.push({ text: t.textContent.trim(), cls: t.getAttribute('class') || '', ...r, family: cs.fontFamily, size: parseFloat(cs.fontSize) * sc, weight: cs.fontWeight, style: cs.fontStyle,
+        spacing: parseFloat(cs.letterSpacing) ? (parseFloat(cs.letterSpacing) * sc).toFixed(2) + 'px' : 'normal', color: hex(urlRef(cs.fill)), opacity: effOpacity(t, svg.parentElement), anchor: cs.textAnchor, step: stepOf(t), anim });
     }
 
     // split build steps out of the base drawing
@@ -186,9 +187,254 @@ const IN_PAGE = String.raw`(async () => {
       color: hex(cs.color), step: el.closest('[data-step]') ? +(el.closest('[data-step]').getAttribute('data-step') || 1) : 0,
       anim: ANIM.get(el) ? ANIM.get(el).map((a) => a.name + ' ' + a.dur + 'ms+' + a.delay) : null });
   }
+  // ---- HTML text → Slides trees: {t, s:{css}, a:{attrs}, c:[node|string]} from computed styles ----
+  const warns = new Set();
+  const cap = (w) => w[0].toUpperCase() + w.slice(1);
+  const clear = (c) => c === 'rgba(0, 0, 0, 0)' || c === 'transparent';
+  const isInline = (cs) => cs.display === 'inline' || cs.display === 'contents';
+  const atomic = (cs) => /^inline-(block|flex|grid|table)$/.test(cs.display);
+  const painted = (cs) => !clear(cs.backgroundColor) || ['Top', 'Right', 'Bottom', 'Left'].some((s) => parseFloat(cs['border' + s + 'Width']) && cs['border' + s + 'Style'] !== 'none');
+  const SKIP = new Set(['SCRIPT', 'STYLE', 'ASIDE', 'svg', 'NOSCRIPT']);
+  const kids = (el) => { const out = [];
+    for (const n of el.childNodes) {
+      if (n.nodeType === 3) { out.push(n); continue; }
+      if (n.nodeType !== 1 || SKIP.has(n.tagName)) continue;
+      const cs = getComputedStyle(n);
+      if (cs.display === 'none') continue;
+      if (cs.display === 'contents') out.push(...kids(n)); else out.push(n);
+    }
+    return out; };
+  const textS = (cs) => { const s = { 'font-family': cs.fontFamily, 'font-size': cs.fontSize, 'font-weight': cs.fontWeight, 'line-height': cs.lineHeight, color: hex(cs.color) };
+    if (cs.fontStyle !== 'normal') s['font-style'] = cs.fontStyle;
+    if (cs.letterSpacing !== 'normal' && parseFloat(cs.letterSpacing)) s['letter-spacing'] = cs.letterSpacing;
+    if (!/^(start|left)$/.test(cs.textAlign)) s['text-align'] = cs.textAlign === 'end' ? 'right' : cs.textAlign;
+    if (cs.textTransform !== 'none') s['text-transform'] = cs.textTransform;
+    if (/tabular/.test(cs.fontVariantNumeric)) s['font-variant-numeric'] = 'tabular-nums';
+    if (cs.whiteSpace === 'nowrap' || /^pre/.test(cs.whiteSpace)) s['white-space'] = 'nowrap';
+    if (/underline/.test(cs.textDecorationLine)) s['text-decoration'] = 'underline';
+    return s; };
+  const boxS = (cs, el, { top = false } = {}) => { const s = {};
+    for (const side of ['top', 'right', 'bottom', 'left']) {
+      const p = cs['padding' + cap(side)]; if (parseFloat(p)) s['padding-' + side] = p;
+      const bw = cs['border' + cap(side) + 'Width'], bs = cs['border' + cap(side) + 'Style'];
+      if (parseFloat(bw) && bs !== 'none') s['border-' + side] = bw + ' ' + bs + ' ' + hex(cs['border' + cap(side) + 'Color']);
+      const m = cs['margin' + cap(side)]; if (!top && parseFloat(m)) s['margin-' + side] = m;
+    }
+    if (cs.borderRadius !== '0px') s['border-radius'] = cs.borderRadius;
+    if (!clear(cs.backgroundColor)) s.background = hex(cs.backgroundColor);
+    if (cs.backgroundImage !== 'none') { if (/gradient/.test(cs.backgroundImage)) s.background = cs.backgroundImage; else warns.add('background image dropped: ' + (el.className || el.tagName)); }
+    if (cs.boxShadow !== 'none') s['box-shadow'] = cs.boxShadow;
+    if (cs.opacity !== '1') s.opacity = cs.opacity;
+    s['box-sizing'] = 'border-box';
+    return s; };
+  // heading line breaks (the kit balances h1-h3; Slides doesn't)
+  const breaksOf = (el) => { const br = new Map(); const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n, top = null;
+    while ((n = tw.nextNode())) { const re = /\S+/g; let m;
+      while ((m = re.exec(n.data))) { const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const rc = rg.getClientRects()[0]; if (!rc) continue;
+        if (top !== null && rc.top - top > 5) { if (!br.has(n)) br.set(n, []); br.get(n).push(m.index); }
+        top = rc.top; } }
+    return br; };
+  const escT = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  /** inline content → HTML string (colour, bold, italic, underline survive; other phrase styling doesn't) */
+  const inl = (nodes, pcs, brk) => nodes.map((n) => {
+    if (n.nodeType === 3) {
+      let t = n.data;
+      const pre = /^pre/.test(pcs.whiteSpace);
+      const cuts = brk && brk.get(n);
+      if (cuts) { let out = '', last = 0; for (const i of cuts) { out += t.slice(last, i).replace(/\s+$/, '') + '\u0001'; last = i; } t = out + t.slice(last); }
+      if (pre) return escT(t).replace(/\n/g, '<br>').replace(/ {2,}/g, (m) => '&#160;'.repeat(m.length)).replace(/\u0001/g, '<br>');
+      return escT(t.replace(/\s+/g, ' ')).replace(/\u0001/g, '<br>');
+    }
+    if (n.tagName === 'BR') return '<br>';
+    const cs = getComputedStyle(n);
+    let inner = inl(kids(n), cs, brk);
+    if (cs.fontSize !== pcs.fontSize || cs.fontFamily !== pcs.fontFamily) warns.add('inline size/face dropped: ' + n.tagName.toLowerCase() + (n.className ? '.' + n.className : '') + ' “' + n.textContent.trim().slice(0, 30) + '”');
+    if (/underline/.test(cs.textDecorationLine) && !/underline/.test(pcs.textDecorationLine)) inner = '<u>' + inner + '</u>';
+    if (cs.fontStyle === 'italic' && pcs.fontStyle !== 'italic') inner = '<i>' + inner + '</i>';
+    if (+cs.fontWeight >= 600 && +pcs.fontWeight < 600) inner = '<b>' + inner + '</b>';
+    if (cs.color !== pcs.color) inner = '<span style="color:' + hex(cs.color) + '">' + inner + '</span>';
+    return inner;
+  }).join('');
+  const stepAttr = (el, a, s) => { const st = el.getAttribute && el.getAttribute('data-step'); if (st !== null && st !== undefined) { a.class = (a.class ? a.class + ' ' : '') + 'fragment'; a['data-fragment-index'] = String(+(st || 1)); } };
+  const geomRel = (el, host) => { const r = el.getBoundingClientRect(), h = host.getBoundingClientRect(), hc = getComputedStyle(host);
+    return { x: (r.left - h.left - parseFloat(hc.borderLeftWidth)) * k, y: (r.top - h.top - parseFloat(hc.borderTopWidth)) * k, w: r.width * k, h: r.height * k }; };
+  const px = (v) => Math.round(v * 10) / 10 + 'px';
+
+  const conv = (el, ctx) => Object.assign(conv0(el, ctx), { oc: typeof el.className === 'string' ? el.className : '' });
+  function conv0(el, ctx) {
+    const cs = getComputedStyle(el);
+    const r = rel(el.getBoundingClientRect());
+    const parent = ctx.parentEl, pcs = parent && getComputedStyle(parent);
+    const ch = kids(el);
+    const real = ch.filter((n) => n.nodeType === 1 || n.data.trim());
+    const blockKids = ch.filter((n) => n.nodeType === 1 && !isInline(getComputedStyle(n)) && n.tagName !== 'BR');
+    const atomics = ch.filter((n) => n.nodeType === 1 && atomic(getComputedStyle(n)));
+    const isTable = cs.display === 'table';
+    const s = boxS(cs, el, { top: ctx.top }), a = {};
+    stepAttr(el, a, s);
+    // placement
+    if (ctx.top || cs.position === 'absolute') {
+      const g = ctx.top ? r : geomRel(el, parent);
+      Object.assign(s, { position: 'absolute', left: px(g.x), top: px(g.y), width: px(g.w) });
+      if (painted(cs) || cs.display === 'grid' || (cs.display === 'flex' && cs.flexDirection === 'column')) s.height = px(g.h);
+      for (const m of ['top', 'right', 'bottom', 'left']) delete s['margin-' + m];
+    } else if (pcs) {
+      const pd = pcs.display;
+      const pr = parent.getBoundingClientRect(), contentW = (pr.width - parseFloat(pcs.paddingLeft) - parseFloat(pcs.paddingRight) - parseFloat(pcs.borderLeftWidth) - parseFloat(pcs.borderRightWidth)) * k;
+      const multiLine = r.h > parseFloat(cs.lineHeight || cs.fontSize) * 1.6;
+      if (/flex/.test(pd) && !/column/.test(pcs.flexDirection)) {
+        if (+cs.flexGrow > 0) s.flex = cs.flexGrow + ' 1 0'; else if (multiLine || painted(cs) || !real.length) s.width = px(r.w);
+        if (+cs.flexShrink === 0) s['flex-shrink'] = '0';
+      } else if (/grid/.test(pd)) {
+        if (!real.length) { s.width = px(r.w); }
+        if (ctx.gridPos) { const gp = ctx.gridPos.get(el); if (gp) { s['grid-column'] = String(gp.c); s['grid-row'] = String(gp.r); } }
+      } else if (r.w < contentW - 2) s.width = px(r.w);
+      if (cs.alignSelf !== 'auto' && cs.alignSelf !== 'normal') s['align-self'] = cs.alignSelf;
+    }
+    if (!real.length) { s.width = s.width || px(r.w); s.height = px(r.h); return { t: 'div', s, a, c: [] }; }
+
+    // a box of inline content only: a text block
+    if (!blockKids.length && !isTable) {
+      const differs = (n) => { const c = getComputedStyle(n); return c.fontSize !== cs.fontSize || c.fontFamily !== cs.fontFamily; };
+      const mixed = [...el.querySelectorAll('*')].some((n) => isInline(getComputedStyle(n)) && differs(n));
+      const realEls = real.filter((n) => n.nodeType === 1);
+      if (mixed && real.length === 1 && realEls.length === 1) {
+        // one phrase is the whole line: its type is the block's type
+        const ics = getComputedStyle(realEls[0]);
+        Object.assign(s, textS(ics));
+        if (ics.color !== cs.color) s.color = hex(ics.color);
+        return { t: 'p', s, a, c: [inl(kids(realEls[0]), ics, null).replace(/^\s+|\s+$/g, '')] };
+      }
+      const lh = Math.max(...[el, ...el.querySelectorAll('*')].map((n) => { const c = getComputedStyle(n); return parseFloat(c.lineHeight) || parseFloat(c.fontSize) * 1.2; })) * k;
+      if (mixed && r.h < lh * 1.6) {
+        // one line in two sizes: a row of blocks on one baseline
+        const segs = []; let cur = null;
+        for (const n of ch) {
+          const own = n.nodeType === 1 && (differs(n) || n.querySelector('*') && [...n.querySelectorAll('*')].some(differs));
+          if (own) { segs.push({ el: n, nodes: kids(n) }); cur = null; }
+          else { if (!cur) { cur = { el: null, nodes: [] }; segs.push(cur); } cur.nodes.push(n); }
+        }
+        const row = { t: 'div', s: { ...s, display: 'flex', 'align-items': 'baseline', 'column-gap': px(parseFloat(cs.fontSize) * 0.26 * k) }, a, c: [] };
+        for (const g of segs) {
+          const gcs = g.el ? getComputedStyle(g.el) : cs;
+          const html = inl(g.nodes, gcs, null).replace(/^\s+|\s+$/g, '');
+          if (!html) continue;
+          const ps = textS(gcs); if (g.el && gcs.color !== cs.color) ps.color = hex(gcs.color);
+          ps['white-space'] = 'nowrap';
+          row.c.push({ t: 'p', s: ps, a: {}, c: [html] });
+        }
+        return row;
+      }
+      const lead = realEls[0];
+      if (mixed && real[0] === lead && differs(lead)) {
+        // a wrapping line led by a phrase in another size: the phrase on its own line, the rest below
+        const lcs = getComputedStyle(lead), lr = rel(lead.getBoundingClientRect()), gap = parseFloat(cs.fontSize) * 0.26 * k;
+        const inner = r.w - (parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth)) * k;
+        const row = { t: 'div', s: { ...s, display: 'flex', 'align-items': 'baseline', 'column-gap': px(gap) }, a, c: [] };
+        if (/right|end/.test(cs.textAlign)) row.s['justify-content'] = 'flex-end';
+        const ps = textS(lcs); if (lcs.color !== cs.color) ps.color = hex(lcs.color); ps['white-space'] = 'nowrap'; ps['flex-shrink'] = '0';
+        row.c.push({ t: 'p', s: ps, a: {}, c: [inl(kids(lead), lcs, null).replace(/^\s+|\s+$/g, '')] });
+        const rest = inl(ch.slice(ch.indexOf(lead) + 1), cs, null).replace(/^\s+|\s+$/g, '');
+        let restW = inner - lr.w - gap;
+        if (/right|end|center/.test(cs.textAlign)) {
+          // hugging the lead from the right: as wide as the rest's widest line, not the whole row
+          const rg = document.createRange(); rg.setStartAfter(lead); rg.setEnd(el, el.childNodes.length);
+          const lines = [...rg.getClientRects()].filter((q) => q.width > 1), L = lead.getBoundingClientRect();
+          if (lines.length) restW = Math.max(...lines.map((q) => (Math.abs(q.bottom - L.bottom) < 4 ? q.right - L.right - gap / k : q.width))) * k + 2;
+        }
+        if (rest) row.c.push({ t: 'p', s: { ...textS(cs), width: px(restW) }, a: {}, c: [rest] });
+        return row;
+      }
+      Object.assign(s, textS(cs));
+      const tag = /^H[1-3]$/.test(el.tagName) ? el.tagName.toLowerCase() : 'p';
+      if (/grid|flex/.test(cs.display) && (cs.alignItems === 'center' || cs.justifyContent === 'center' || cs.placeItems === 'center')) {
+        s['text-align'] = 'center'; s.width = s.width || px(r.w); s.height = px(r.h);
+        s['line-height'] = px((r.h / k - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - parseFloat(cs.borderTopWidth) - parseFloat(cs.borderBottomWidth)) * k);
+      }
+      const brk = /^H[1-3]$/.test(el.tagName) ? breaksOf(el) : null;
+      const html = inl(ch, cs, brk).replace(/^\s+|\s+$/g, '');
+      return { t: tag, s, a, c: [html] };
+    }
+
+    // a container
+    const out = { t: 'div', s, a, c: [] };
+    const sub = { parentEl: el, top: false };
+    if (isTable) {
+      // table → grid of cells, columns from the first row
+      const rows = [...el.querySelectorAll('tr')];
+      const cols = [...rows[0].children].map((c) => px(c.getBoundingClientRect().width * k));
+      Object.assign(s, { display: 'grid', 'grid-template-columns': cols.join(' ') });
+      Object.assign(s, textS(cs));
+      for (const tr of rows) {
+        const tcs = getComputedStyle(tr);
+        for (const td of tr.children) {
+          const n = conv(td, { parentEl: el, top: false });
+          delete n.s.width;
+          if (!clear(tcs.backgroundColor) && !n.s.background) n.s.background = hex(tcs.backgroundColor);
+          out.c.push(n);
+        }
+      }
+      return out;
+    }
+    if (/flex|grid/.test(cs.display) || atomics.length) {
+      const grid = /grid/.test(cs.display);
+      s.display = grid ? 'grid' : 'flex';
+      if (!grid) { s['flex-direction'] = atomics.length && !/flex/.test(cs.display) ? 'row' : cs.flexDirection; if (cs.flexWrap !== 'nowrap') s['flex-wrap'] = cs.flexWrap; }
+      if (grid) {
+        s['grid-template-columns'] = cs.gridTemplateColumns;
+        if (/column/.test(cs.gridAutoFlow)) {
+          s['grid-template-rows'] = cs.gridTemplateRows;
+          // place every item explicitly: Slides has no grid-auto-flow
+          const items = ch.filter((n) => n.nodeType === 1), xs = [...new Set(items.map((n) => Math.round(n.getBoundingClientRect().left)))].sort((p, q) => p - q),
+            ys = [...new Set(items.map((n) => Math.round(n.getBoundingClientRect().top)))].sort((p, q) => p - q);
+          sub.gridPos = new Map(items.map((n) => { const b = n.getBoundingClientRect(); return [n, { c: xs.indexOf(Math.round(b.left)) + 1, r: ys.indexOf(Math.round(b.top)) + 1 }]; }));
+        }
+      }
+      if (cs.justifyContent !== 'normal' && cs.justifyContent !== 'flex-start' && cs.justifyContent !== 'start') s['justify-content'] = cs.justifyContent;
+      const ai = atomics.length && !/flex|grid/.test(cs.display) ? 'baseline' : cs.alignItems;
+      if (ai !== 'normal' && ai !== 'stretch') s['align-items'] = ai;
+      if (parseFloat(cs.rowGap)) s['row-gap'] = cs.rowGap;
+      let cg = parseFloat(cs.columnGap) || 0;
+      if (atomics.length && !/flex|grid/.test(cs.display)) {   // a line holding swatches: measure the gaps
+        const bs = ch.map((n) => { if (n.nodeType === 1) return n.getBoundingClientRect(); const rg = document.createRange(); rg.selectNodeContents(n); return rg.getBoundingClientRect(); });
+        const gaps = []; for (let i = 1; i < bs.length; i++) gaps.push(bs[i].left - bs[i - 1].right);
+        cg = Math.max(0, Math.min(...gaps.filter((g) => g > 0.5)) || 0) * k;
+      }
+      if (cg) s['column-gap'] = px(cg);
+    } else if (parseFloat(cs.rowGap)) s['row-gap'] = cs.rowGap;
+    if (ch.some((n) => n.nodeType === 1 && getComputedStyle(n).position === 'absolute')) s.position = s.position || 'relative';
+    // children: inline runs become paragraphs with this box's type
+    const swatchRow = atomics.length > 0 && !/flex|grid/.test(cs.display);
+    let run = [];
+    const flush = () => { const nodes = run; run = [];
+      if (!nodes.some((n) => n.nodeType === 1 || n.data.trim())) return;
+      // a run that is one phrase (a span after a block title) takes that phrase's type
+      const els = nodes.filter((n) => n.nodeType === 1), solo = els.length === 1 && nodes.every((n) => n.nodeType === 1 || !n.data.trim());
+      const rcs = solo ? getComputedStyle(els[0]) : cs;
+      const html = inl(solo ? kids(els[0]) : nodes, rcs, null).replace(/^\s+|\s+$/g, '');
+      if (html) out.c.push({ t: 'p', s: { ...textS(rcs), ...(swatchRow ? { 'white-space': 'nowrap' } : {}) }, a: {}, c: [html] }); };
+    for (const n of ch) {
+      const block = n.nodeType === 1 && (!isInline(getComputedStyle(n)) || atomic(getComputedStyle(n)));
+      if (block) { flush(); out.c.push(conv(n, sub)); } else run.push(n);
+    }
+    flush();
+    return out;
+  }
+  const blocks = [];
+  const order = [];   // paint order: svgs (by z-index, then DOM) and html blocks, by top-level child
+  const topKids = [...slide.children].filter((n) => !['SCRIPT', 'STYLE', 'ASIDE', 'NOSCRIPT'].includes(n.tagName) && getComputedStyle(n).display !== 'none');
+  const svgIndex = new Map(tops.map((s, i) => [s, i]));
+  for (const n of topKids) {
+    const z = parseInt(getComputedStyle(n).zIndex) || 0;
+    if (n.tagName.toLowerCase() === 'svg') { order.push({ kind: 'svg', index: svgIndex.get(n), z }); continue; }
+    if (n.querySelector && n.querySelector('svg')) warns.add('svg inside html block: ' + n.className);
+    blocks.push(conv(n, { top: true }));
+    order.push({ kind: 'html', index: blocks.length - 1, z });
+  }
+
   const notes = document.querySelector('aside.notes');
   return { title: document.title, cls: slide.className, energy: slide.dataset.energy || '', bg: getComputedStyle(slide).backgroundColor,
-    steps: window.Slide ? Slide.steps : 0, svgs, html, notes: notes ? notes.innerText.trim() : '' };
+    steps: window.Slide ? Slide.steps : 0, svgs, html, blocks, order, warns: [...warns], notes: notes ? notes.innerText.trim() : '' };
 })()`;
 
 const server = await startServer({ root: DECKS, port: 0, live: false });
@@ -197,7 +443,9 @@ try {
   const page = await chrome.newPage({ width: 1920, height: 1080 });
   for (const slug of slugs) {
     await page.goto(`${server.url}/${deck}/slides/${slug}.html?mode=solo`);
-    const data = await page.eval(IN_PAGE, 30000);
+    let data;
+    try { data = await page.eval(IN_PAGE, 30000); }
+    catch (e) { console.log(`${slug.padEnd(18)} FAILED ${e.message.split('\n')[0]}`); continue; }
     data.slug = slug;
     // PNG layers: each drawing's labels, and each build step (shapes + labels), cropped, at 2x
     data.layers = [];

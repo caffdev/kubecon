@@ -47,7 +47,7 @@ try {
       for (const c of s.children) { if (c === firstFlow) break; if (getComputedStyle(c).position === 'absolute') c.style.zIndex = '-1'; }
     })()`);
     if (at == null) {
-      await page.eval('new Promise((r) => setTimeout(r, 5000))');
+      await page.eval('new Promise((r) => setTimeout(r, 4200))');
       await page.eval('document.getAnimations().forEach((a) => a.finish())');
     } else await page.eval(`new Promise((r) => setTimeout(r, ${at}))`);
     const shot = path.join(OUT, `${slug}${at == null ? '' : '@' + at}.png`);
