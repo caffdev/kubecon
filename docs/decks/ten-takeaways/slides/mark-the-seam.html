@@ -3,23 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mark the seam before we pour.</title>
+  <title>Mark the seam</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
-  <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
-  </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Mark the seam before we pour.</h1>
+  <main class="slide t-blu">
+    <svg class="blu-grid" aria-hidden="true" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <defs><pattern id="blugrid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0 H0 V48" fill="none" stroke="#DCE8F4" stroke-opacity="0.10" stroke-width="1.5"/></pattern></defs>
+      <rect width="1920" height="1080" fill="url(#blugrid)"/>
+    </svg>
+    <p class="blu-tag">SECTION A–A: AWS STRATEGY, GOALS §10</p>
+    <h2 class="blu-title">MARK THE SEAM BEFORE WE POUR.</h2>
+    <p class="blu-lede">Landing zone and CDK below, Crossplane and GitOps above. Below the seam changes rarely; above it changes constantly. Two tools fighting over one resource starts with an unmarked line.</p>
+    <div class="blu-draw">
+      <div class="blu-floor blu-above rise" style="left:120px; top:0px; width:800px; height:100px; --i:5"><p class="blu-fname">APPS AND AGENTS</p><p class="blu-fdesc">KEDA for the signal, in-place resize for the size</p></div>
+      <div class="blu-floor blu-above rise" style="left:80px; top:108px; width:880px; height:100px; --i:4"><p class="blu-fname">CROSSPLANE</p><p class="blu-fdesc">S3 first, then typed composite APIs agents can call</p></div>
+      <p class="blu-seamlabel fade" style="--i:6">THE SEAM: OWNERSHIP HANDS OFF HERE, DECISION 3</p>
+      <div class="blu-seam fade" style="--i:6"></div>
+      <div class="blu-floor rise" style="left:40px; top:268px; width:960px; height:100px; --i:2"><p class="blu-fname">CDK</p><p class="blu-fdesc">VPCs, EKS clusters, shared services</p></div>
+      <div class="blu-floor rise" style="left:0px; top:376px; width:1040px; height:100px; --i:1"><p class="blu-fname">LZA: LANDING ZONE ACCELERATOR</p><p class="blu-fdesc">Accounts, guardrails, org-wide scaffolding</p></div>
+      <div class="blu-ground" aria-hidden="true"></div>
+    </div>
+    <div class="blu-tb">
+      <div class="blu-cell blu-first"><p class="blu-k">PROJECT</p><p class="blu-v">AWS strategy, GOALS §10</p></div>
+      <div class="blu-cell"><p class="blu-k">STATUS</p><p class="blu-v">Seam: DECIDE<br>Crossplane, Karpenter + VPA: TRIAL</p></div>
+      <div class="blu-cell"><p class="blu-k">REFERENCES</p>
+        <p class="blu-ref"><b>American Family Insurance, Upbound</b>: Crossplane once adoption is real</p>
+        <p class="blu-ref"><b>Meta</b>: Terraform on cron to GitOps</p>
+        <p class="blu-ref"><b>AWS, Microsoft, Red Hat, Uber</b>: kro</p>
+      </div>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Rule two: mark the seam before we pour.
+
+    This is our AWS stack drawn as a building in section. The foundation is the landing zone: accounts, guardrails, org-wide scaffolding. Then CDK: VPCs, the EKS clusters, shared services. Then the seam, the amber line. Above it, Crossplane, starting with S3 and moving to typed APIs that apps, and agents, can call. Then the apps themselves.
+
+    Below the seam, things change rarely. Above it, they change constantly. Two tools fighting over one AWS resource always starts with a line nobody drew. And like concrete, once it's poured, moving it is expensive.
+
+    The line is decision three, and it needs a diagram, not a debate.
+
+    And under the foundation is the one thing we can't get back.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

@@ -3,25 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ten rules; three of them cost a meeting, not a purchase.</title>
+  <title>Three on Monday</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    .slide h2 { font-size: 92px; max-width: 1500px; }
+    .monday { position: absolute; left: var(--margin); top: 310px; width: 1680px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 50px; }
+    .monday p { font: 600 38px/1.08 var(--font-display); color: var(--alpenglow); }
+    .monday small { display: block; margin-top: 6px; font: 400 26px/1.25 var(--font-body); color: var(--muted); }
+    .monday .owner { display: flex; align-items: flex-end; gap: 12px; margin-top: 16px; font: 600 26px/1 var(--font-display); color: var(--muted); }
+    .monday .owner span { flex: 1; border-bottom: 3px solid var(--scree); height: 26px; }
+    .rlab { position: absolute; width: 168px; text-align: center; font: 600 24px/1.1 var(--font-display); color: var(--lichen); }
+    .rlab.on { color: var(--snow); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Ten rules; three of them cost a meeting, not a purchase.</h1>
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Ten rules; three of them cost a meeting, not a purchase.</h2>
+
+    <div class="monday">
+      <div><p>Mark the seam<small>a diagram with the CDK-to-Crossplane line drawn</small></p><p class="owner">owner<span></span></p></div>
+      <div><p>Retain, back up, drill<small>a reclaim-policy audit and one timed restore</small></p><p class="owner">owner<span></span></p></div>
+      <div><p>Itemize it<small>telemetry on, and a list of what we use AI for</small></p><p class="owner">owner<span></span></p></div>
+    </div>
+    <div id="labels"></div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Ten rules. Here's the range again, and now every peak has its name.
+
+    Upgrade like an app. Mark the seam. Restore, or it's a rumor. A signal to leave. The rule doesn't ask who's driving. Boarding passes. Not a cage. Base camp first. Reading room. Itemize it.
+
+    None of them is a product. And three of them cost a meeting, not a purchase, so we can start them on Monday. Mark the seam: one diagram with the line drawn between CDK and Crossplane. Retain, back up, drill: audit our reclaim policies and time one restore. Itemize it: turn telemetry on and write down what we actually use AI for.
+
+    Each of those needs one owner. That's the ask.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    const caps = ['haze', 'haze', 'haze', 'mint', 'mint', 'teal', 'teal', 'teal', 'teal', 'teal'];
+    const tops = [740, 690, 760, 640, 680, 720, 660, 700, 590, 740];
+    const names = ['upgrade like an app', 'mark the seam', 'restore, or it\'s a rumor', 'a signal to leave', 'the rule ignores the driver', 'boarding passes', 'not a cage', 'base camp first', 'reading room', 'itemize it'];
+    const on = new Set([1, 2, 9]);
+    const parts = [Peaks.far({ y: 860, amp: 60, n: 16, seed: 21 })];
+    let labs = '';
+    caps.forEach((c, i) => {
+      const x = 170 + i * 176;
+      parts.push(Peaks.peak({ x, top: tops[i], base: 1080, hw: 170, cap: on.has(i) ? 'var(--alpenglow)' : `var(--${c})` }));
+      labs += `<p class="rlab${on.has(i) ? ' on' : ''}" style="left:${x - 84}px; top:${tops[i] - 70}px">${names[i]}</p>`;
+    });
+    Peaks.draw('#range', ...parts);
+    document.getElementById('labels').innerHTML = labs;
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

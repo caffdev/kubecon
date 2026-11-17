@@ -3,23 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The rule doesn't ask who's driving.</title>
+  <title>The rule doesn't ask</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
-  <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
-  </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>The rule doesn't ask who's driving.</h1>
+  <main class="slide t-law">
+    <div class="law-head">
+      <p class="law-runner">TITLE II: POLICY AS CODE</p>
+      <p class="law-runner">KUBERNETES CODE, ANNOTATED: SALT LAKE CITY EDITION</p>
+    </div>
+    <div class="law-body">
+      <div class="law-main">
+        <p class="law-sect">§ 2.1</p>
+        <h2 class="law-title">The rule doesn't ask who's driving.</h2>
+        <p class="law-lede">Write policy against the action, not the actor. The rule that stops an engineer shipping a privileged pod also bounds an agent, and it runs in CI before either one meets admission.</p>
+        <div class="law-rule"></div>
+        <div class="law-clause fade" style="--i:1"><p class="law-mark">§</p><p class="law-text">No workload shall run privileged, mount the host, or reach an unapproved model or tool, whoever authored the change.</p></div>
+        <div class="law-clause fade" style="--i:2"><p class="law-mark">(a)</p><p class="law-text">Enforced at admission in CEL, with no webhook in the request path.</p></div>
+        <div class="law-clause fade" style="--i:3"><p class="law-mark">(b)</p><p class="law-text">Run first in CI, so a violation is a failing test an agent can fix.</p></div>
+        <div class="law-clause fade" style="--i:4"><p class="law-mark">(c)</p><p class="law-text">No sync in a change window without an approved change record.</p></div>
+      </div>
+      <div class="law-notes">
+        <p class="law-nhead">ANNOTATIONS: CASES HEARD</p>
+        <div class="fade" style="--i:2"><p class="law-case">AT&amp;T, with Nirmata</p><p class="law-cdesc">Admission gated on a signed attestation, Kyverno + CEL.</p></div>
+        <div class="fade" style="--i:3"><p class="law-case">Google</p><p class="law-cdesc">Native validating and mutating admission policies replace webhooks.</p></div>
+        <div class="fade" style="--i:4"><p class="law-case">JPMorganChase, with Nirmata</p><p class="law-cdesc">The next generation of Kyverno: unified policy as code at scale.</p></div>
+        <div class="fade" style="--i:5"><p class="law-case">W.W. Grainger</p><p class="law-cdesc">Policy-as-code guardrails for autonomous AI.</p></div>
+        <div class="fade" style="--i:6"><p class="law-case">Nirmata, Nutanix</p><p class="law-cdesc">Kyverno authorization on LLM and MCP traffic at the AI gateway.</p></div>
+      </div>
+    </div>
+    <p class="law-folio">— 2 —   ADOPT: GOALS §2.1 TO §2.4</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Rule five: the rule doesn't ask who's driving.
+
+    This is set as a statute on purpose. The clause never names a person or an agent: "No workload shall run privileged, mount the host, or reach an unapproved model or tool, whoever authored the change." That's the whole idea. Write policy against the action, not the actor, and the rule that stops an engineer shipping a privileged pod also bounds an agent.
+
+    The sub-clauses are the mechanics. Enforced at admission in CEL, with no webhook in the request path. Run first in CI, so a violation is a failing test an agent can fix. And clause (c) is our own proposal: no sync during a change window without an approved change record.
+
+    In the margin, the cases we heard: AT&T, Google, JPMorganChase, Grainger, and Nirmata with Nutanix on policy at the AI gateway.
+
+    Which matters most for the drivers that aren't people.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

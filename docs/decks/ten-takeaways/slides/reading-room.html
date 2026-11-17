@@ -3,23 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reading room only.</title>
+  <title>Reading room only</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
-  <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
-  </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Reading room only.</h1>
+  <main class="slide t-cat">
+    <div class="cat-left">
+      <p class="cat-eyebrow">THE READING ROOM: GOALS §7</p>
+      <h2 class="cat-title">Reading room only.</h2>
+      <p class="cat-lede">Agents study a read-only copy of production: cluster state in a database, metrics in Prometheus. They get a desk in the reading room, never the keys to the stacks.</p>
+      <p class="cat-why">Read-only extraction is how we say yes to agent analysis without saying yes to agent credentials in prod.</p>
+    </div>
+    <!-- audit off: the card is rotated 1.2°, so its line boxes overlap by geometry, not by layout -->
+    <div class="cat-card" data-audit="off">
+      <div class="cat-chead"><p class="cat-call">K8S 7.01</p><p class="cat-call">REF. GOALS §7</p></div>
+      <p class="cat-ctitle">Production data for AI analysis</p>
+      <div class="cat-row"><p class="cat-k">HOLDINGS</p><p class="cat-v">1. Cluster state, dumped to a database<br>2. Prometheus metrics: query the store<br>3. Narrow, audited live tool calls</p></div>
+      <div class="cat-row"><p class="cat-k">ACCESS</p><p class="cat-v">Read-only. No production credentials leave the desk.</p></div>
+      <div class="cat-row"><p class="cat-k">SEE ALSO</p><p class="cat-v">NVIDIA + Upbound: "a queryable audit layer"<br>Mastercard: "No RAG, No Regrets", an LLM on 30 EKS clusters</p></div>
+      <div class="cat-row"><p class="cat-k">FEEDS</p><p class="cat-v">§6 camp 1, alert triage</p></div>
+    </div>
+    <p class="cat-stamp" aria-hidden="true">READ ONLY</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Rule nine, and the first thing camp one needs: something to read. Reading room only.
+
+    A reference library is the best-known place where you may read everything and take nothing. That's the access rule for agents. They study a read-only copy of production: cluster state dumped to a database on a schedule, metrics queried from Prometheus, and where freshness matters, a small set of narrow, audited live tools. They get a desk in the reading room, never the keys to the stacks.
+
+    NVIDIA and Upbound showed a queryable audit layer like this, and Mastercard argued for a narrow tool surface over a stale index.
+
+    Read-only extraction is how we say yes to agent analysis without saying yes to agent credentials in production. It feeds camp one directly.
+
+    And every page they read goes on the receipt.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

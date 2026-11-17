@@ -3,23 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Boarding passes, not house keys.</title>
+  <title>Boarding passes</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
-  <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
-  </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Boarding passes, not house keys.</h1>
+  <main class="slide t-brd">
+    <h2 class="brd-title">Boarding passes, not house keys.</h2>
+    <p class="brd-lede">A long-lived secret an agent can read is a secret that can leave the building. Every workload gets an identity good for one trip that expires in minutes; the vault keeps only what must exist.</p>
+    <div class="brd-pass">
+      <div class="brd-main">
+        <div class="brd-band"><p class="brd-brand">WORKLOAD IDENTITY: BOARDING PASS</p><p class="brd-bandr">GOALS §9, §3.6</p></div>
+        <div class="brd-body">
+          <div class="brd-fields">
+            <div><p class="brd-k">PASSENGER</p><p class="brd-v">triage-agent</p></div>
+            <div><p class="brd-k">NAMESPACE</p><p class="brd-v">sre</p></div>
+            <div><p class="brd-k">SEAT</p><p class="brd-v">Read-only</p></div>
+          </div>
+          <div class="brd-route"><p class="brd-code">AGENT</p><p class="brd-arrow">→</p><p class="brd-code">METRICS API</p></div>
+          <div class="brd-wide">
+            <div><p class="brd-k">IDENTITY</p><p class="brd-id">spiffe://prod/ns/sre/sa/triage-agent</p></div>
+            <div><p class="brd-k">VALID FOR</p><p class="brd-v">15 minutes</p></div>
+          </div>
+          <div class="brd-fields">
+            <div><p class="brd-k">CHECKED BY</p><p class="brd-v">Cedar / OpenFGA</p></div>
+            <div><p class="brd-k">CARRIES</p><p class="brd-v">Short-lived cert</p></div>
+            <div><p class="brd-k">ON FILE</p><p class="brd-v">No static secret</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="brd-stub">
+        <p class="brd-sh">ALSO ON THIS FLIGHT</p>
+        <p class="brd-who"><b>Coinbase</b>: bearer tokens to mesh-native mTLS</p>
+        <p class="brd-who"><b>Google, Microsoft</b>: pod certificates and cluster trust bundles</p>
+        <p class="brd-who"><b>RBC</b>: "Kubernetes Secrets were a bad idea"</p>
+        <p class="brd-who"><b>Veritas Automata</b>: rotation-first identity</p>
+        <p class="brd-who"><b>Infisical</b>: agents on Kubernetes, locked down</p>
+        <p class="brd-fine">Illustrative pass</p>
+      </div>
+    </div>
+    <div class="brd-notch" aria-hidden="true" style="left:1316px; top:358px;"></div>
+    <div class="brd-notch" aria-hidden="true" style="left:1316px; top:918px;"></div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Rule six: boarding passes, not house keys.
+
+    A house key works forever, for whoever holds it. That's what a long-lived secret is, and a secret an agent can read is a secret that can leave the building.
+
+    A boarding pass names who you are, is good for one trip, and is worthless an hour later. That's workload identity. This pass is illustrative: a triage agent in the SRE namespace, a read-only seat, going to the metrics API, with a SPIFFE identity, valid for fifteen minutes, checked by Cedar or OpenFGA, carrying a short-lived certificate, and no static secret on file.
+
+    On the stub, the other passengers on this flight at the show: Coinbase moving from bearer tokens to mesh mTLS, Google and Microsoft on pod certificates, RBC on why Kubernetes Secrets were a bad idea, and two more.
+
+    An identity says who the agent is. It doesn't say where it's allowed to run.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

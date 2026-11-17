@@ -3,23 +3,43 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Backups are a rumor until you restore.</title>
+  <title>Restore, or it's a rumor</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
-  <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
-  </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Backups are a rumor until you restore.</h1>
+  <main class="slide t-iso">
+    <div class="iso-frame" aria-hidden="true"></div>
+    <div class="iso-top">
+      <div class="iso-pict"><svg aria-label="Safety pictogram: a database cylinder with a circular restore arrow" width="180" height="180" viewBox="0 0 180 180">
+        <path d="M28 40 V126 A52 16 0 0 0 132 126 V40 Z" fill="#0E6A44"/>
+        <ellipse cx="80" cy="40" rx="52" ry="16" fill="#0E6A44"/>
+        <ellipse cx="80" cy="40" rx="40" ry="9" fill="#F4F1E8" opacity="0.3"/>
+        <path d="M28 70 A52 16 0 0 0 132 70" fill="none" stroke="#F4F1E8" stroke-width="5"/>
+        <path d="M28 98 A52 16 0 0 0 132 98" fill="none" stroke="#F4F1E8" stroke-width="5"/>
+        <circle cx="132" cy="132" r="42" fill="#F4F1E8"/>
+        <path d="M160 132 A28 28 0 1 1 151.8 112.2" fill="none" stroke="#0E6A44" stroke-width="9" stroke-linecap="round"/>
+        <path d="M166 126 L146 121 L161 105 Z" fill="#0E6A44"/>
+      </svg></div>
+      <h2 class="iso-title">BACKUPS ARE A RUMOR UNTIL YOU RESTORE.</h2>
+    </div>
+    <p class="iso-lede">The one item on our list where being wrong is unrecoverable. Retain by default, back up with Velero, and drill the restore until we trust it enough to upgrade aggressively.</p>
+    <div class="iso-steps">
+      <div class="iso-step rise" style="--i:1"><p class="iso-n">1</p><p class="iso-sh">RETAIN</p><p class="iso-sb">Audit every StorageClass. Delete is the default reclaim policy, and the wrong one for stateful production data.</p></div>
+      <div class="iso-step rise" style="--i:2"><p class="iso-n">2</p><p class="iso-sh">BACK UP</p><p class="iso-sb">Velero on a schedule, with consistent, incremental snapshots. Nothing bespoke while the primitives are being standardised.</p></div>
+      <div class="iso-step rise" style="--i:3"><p class="iso-n">3</p><p class="iso-sh">DRILL</p><p class="iso-sb">Restore into a scratch cluster on a calendar, and time it. A cluster we can rebuild is one we'll upgrade.</p></div>
+    </div>
+    <p class="iso-seen"><b>SEEN AT THE SHOW</b>: Red Hat's Velero project update, "Faster Backups, Consistent Snapshots, Incremental Everything"; Broadcom on the new Kubernetes Data Protection working group. GOALS §8.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Rule three: backups are a rumor until you restore.
+
+    This is the one item on our whole list where being wrong is unrecoverable, so it gets a safety sign. Three steps, posted like an emergency procedure. Retain: audit every storage class, because Delete is the default reclaim policy and it's the wrong one for data we care about. Back up: Velero on a schedule, and nothing bespoke, because there's now a working group standardising the primitives. Drill: restore into a scratch cluster on a calendar, and time it.
+
+    The drill is the point. A cluster we can rebuild is a cluster we're willing to upgrade aggressively, which takes us back to rule one.
+
+    That's the ground. Now the path every change takes across it.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

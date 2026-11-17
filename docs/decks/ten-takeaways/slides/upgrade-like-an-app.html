@@ -3,23 +3,36 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Upgrade the fleet like you ship an app.</title>
+  <title>Upgrade like an app</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
-  <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
-  </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Upgrade the fleet like you ship an app.</h1>
+  <main class="slide t-sws">
+    <div class="sws-top">
+      <div>
+        <div class="sws-mark" aria-hidden="true"></div>
+        <h2 class="sws-title">Upgrade the fleet like you ship an app.</h2>
+      </div>
+      <p class="sws-lede">Every fleet talk at the show was an upgrade story. The teams that scaled ship each change with the check that fails without it, roll it out in waves, and nobody upgrades a cluster by hand.</p>
+    </div>
+    <div class="sws-figs">
+      <div class="sws-fig sws-hot rise" style="--i:1"><p class="sws-num">7</p><p class="sws-unit">BUSINESS DAYS</p><p class="sws-desc">LinkedIn took production from 1.31 to 1.34 in one skip-level rollout. It used to take 40.</p></div>
+      <div class="sws-fig rise" style="--i:2"><p class="sws-num">30</p><p class="sws-unit">MINUTES</p><p class="sws-desc">NVIDIA converged ~5,600 nodes for two kernel CVEs: the change shipped with its own check.</p></div>
+      <div class="sws-fig rise" style="--i:3"><p class="sws-num">15</p><p class="sws-unit">ENGINEERS</p><p class="sws-desc">Meta runs ~100 clusters for AI research and inference with a team this size.</p></div>
+      <div class="sws-fig rise" style="--i:4"><p class="sws-num">1,000</p><p class="sws-unit">CLUSTERS</p><p class="sws-desc">Salesforce operates them with agentic AIOps.</p></div>
+    </div>
+    <p class="sws-src">ADOPT, GOALS §5.2. LinkedIn deck p.2; NVIDIA abstract and deck; Meta keynote abstract; Salesforce session title.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Rule one, and it's about the thing that's going to get big whatever we do: upgrade the fleet like you ship an app.
+
+    Every fleet talk at the show was really an upgrade story. LinkedIn took production across three Kubernetes minor versions in seven business days, in one skip-level rollout; it used to take forty. NVIDIA converged about fifty-six hundred nodes in thirty minutes for two kernel CVEs, because the change shipped with its own check. Meta runs about a hundred clusters with fifteen engineers. Salesforce runs a thousand.
+
+    The common thread: ship each change with the check that fails without it, roll it out in waves, and nobody upgrades a cluster by hand.
+
+    A fleet that big is built from code. So where does one tool's code stop and the next one's start?
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>
