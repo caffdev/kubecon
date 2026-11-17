@@ -3,23 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The "ECS is simpler" gap closed in 2025: Auto Mode and ECS Managed Instances are the same product.</title>
+  <title>The gap closed</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .cmp { position: absolute; left: var(--margin); top: 320px; width: 1680px; display: grid; grid-template-columns: 1fr 90px 1fr; row-gap: 10px; }
+    .hd { font: 600 40px/1 var(--font-display); padding-bottom: 12px; }
+    .hd small { display: block; margin-top: 6px; font: 400 24px/1 var(--font-body); color: var(--muted); }
+    .c { padding: 14px 20px; border-radius: 10px; background: var(--rock); font-size: 27px; line-height: 1.25; color: var(--snow); }
+    .rel { display: grid; place-items: center; font: 600 44px/1 var(--font-display); color: var(--scree); }
+    .rel.ne { color: var(--haze); }
+    .diff .c.k { background: #12303a; outline: 3px solid var(--haze); }
+    .diff .c.e { color: var(--lichen); }
+    .split { grid-column: 1 / -1; margin: 18px 0 6px; font: 600 28px/1 var(--font-display); color: var(--haze); }
+    .src { max-width: 1600px; }
+    .diff { display: contents; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>The "ECS is simpler" gap closed in 2025: Auto Mode and ECS Managed Instances are the same product.</h1>
+    <h2>The "ECS is simpler" gap closed in 2025: Auto Mode and ECS Managed Instances are the same product.</h2>
+
+    <div class="cmp">
+      <p class="hd">EKS Auto Mode<small>GA December 2024</small></p><span></span><p class="hd">ECS Managed Instances<small>GA autumn 2025</small></p>
+      <p class="c">AWS runs and patches the nodes</p><span class="rel">=</span><p class="c">AWS runs and patches the nodes</p>
+      <p class="c">EC2 plus a per-instance fee ⚠️</p><span class="rel">=</span><p class="c">EC2 plus a per-instance fee ⚠️</p>
+      <p class="c">GPU fee cut, July 2026</p><span class="rel">=</span><p class="c">GPU fee cut, the same day</p>
+      <p class="split">What's left is the API</p>
+      <div class="diff"><p class="c k">Managed Argo CD, ACK, kro (EKS Capabilities)</p><span class="rel ne">≠</span><p class="c e">nothing comparable</p></div>
+      <div class="diff"><p class="c k">Helm charts for nearly everything we run</p><span class="rel ne">≠</span><p class="c e">a hand-written task definition per product</p></div>
+      <div class="diff"><p class="c k">On-prem and other clouds: upstream Kubernetes</p><span class="rel ne">≠</span><p class="c e">AWS only</p></div>
+    </div>
+    <p class="src">EKS-VS-ECS.md §3. ⚠️ Fee levels come from third-party write-ups; check AWS pricing before quoting a number.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    The old argument for ECS was that it's simpler. That was true in 2022. It isn't now.
+
+    EKS Auto Mode went GA in December 2024; ECS Managed Instances in the autumn of 2025. Side by side, they're the same product shape. AWS runs and patches the nodes on both. Both charge EC2 plus a per-instance management fee; we need to check the actual fee levels on the pricing pages before anyone quotes a number. And when AWS cut GPU fees in July this year, they cut them on both, on the same day.
+
+    So what's left is the API. EKS has managed Argo CD, ACK and kro running in the AWS control plane; ECS has nothing comparable. Nearly everything we'd run alongside our apps ships as a Helm chart first; on ECS each one becomes a task definition we write and maintain. And Kubernetes runs on-prem and in every other cloud; ECS runs on AWS.
+
+    For us, the Kubernetes API is the asset, not the cost. So we stay on EKS. Here's how to run a big one.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

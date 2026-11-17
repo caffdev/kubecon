@@ -3,25 +3,63 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Four stages, and the first is nearly free: labels, fleet delivery, lifecycle, Crossplane.</title>
+  <title>Four stages</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { font-size: 70px; max-width: 820px; }
+    .why { position: absolute; left: var(--margin); top: 470px; width: 720px; }
+    .why h3 { color: var(--haze); margin-bottom: 14px; }
+    .why p { font-size: 28px; line-height: 1.32; color: var(--muted); margin-bottom: 10px; padding-left: 22px; border-left: 5px solid var(--scree); }
+    .route { fill: none; stroke: var(--haze); stroke-width: 4; }
+    .camp-dot { fill: var(--night); stroke: var(--haze); stroke-width: 4; }
+    .camp-dot.lit { fill: var(--haze); }
+    .camp-txt { font: 600 30px var(--font-display); fill: var(--haze); text-anchor: middle; dominant-baseline: central; }
+    .camp-txt.lit { fill: var(--night); }
+    .stage { position: absolute; width: 460px; font: 600 32px/1.05 var(--font-display); }
+    .stage small { display: block; margin-top: 4px; font: 400 24px/1.25 var(--font-body); color: var(--muted); }
+    .stage .now { color: var(--alpenglow); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Four stages, and the first is nearly free: labels, fleet delivery, lifecycle, Crossplane.</h1>
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Four stages, and the first is nearly free: labels, fleet delivery, lifecycle, Crossplane.</h2>
+
+    <div class="why">
+      <h3>Why stage 1 goes first</h3>
+      <p>Path 1's fleet waves select on cluster labels.</p>
+      <p>The 31st cluster only joins itself if its labels exist.</p>
+      <p>Developers stop naming clusters only when there's a vocabulary to use instead.</p>
+    </div>
+
+    <p class="stage" style="left: 1220px; top: 934px;">Cluster labels become an API<small><span class="now">Starts now.</span> A schema, an owner, and a join policy.</small></p>
+    <p class="stage" style="left: 1265px; top: 754px;">Fleet delivery in waves<small>ApplicationSets with rollingSync, shared with Path 1 stage D</small></p>
+    <p class="stage" style="left: 1310px; top: 574px;">Lifecycle<small>Auto Mode by default, the upgrade window as policy, Hybrid Nodes at one on-prem site</small></p>
+    <p class="stage" style="left: 1355px; top: 394px;">Crossplane for app-owned infrastructure<small>S3 first, above a marked seam</small></p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    That's the summit. Here's the route: four stages, and the first one is nearly free.
+
+    Stage 1, starting now: cluster labels become an API. That's a schema, an owner, and a policy that won't let a cluster join the fleet without its labels. It costs a few days of agreement, not a tool.
+
+    Stage 2: fleet delivery in waves, ApplicationSets with rolling sync, which we share with Path 1's stage D. Stage 3: lifecycle. Auto Mode as the default for new clusters, the support window as a policy, and Hybrid Nodes piloted at one on-prem site so on-prem and EKS become one control-plane model. Stage 4: Crossplane for the infrastructure app teams own, starting with S3.
+
+    Why stage 1 first? Three things wait on it. Path 1's fleet waves select on cluster labels. The thirty-first cluster only joins itself if its labels exist. And developers only stop naming clusters when there's a vocabulary to use instead.
+
+    Stage 4 needs one line drawn before anyone builds on it.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    const camps = [[1170, 960, '1'], [1215, 780, '2'], [1260, 600, '3'], [1305, 420, '4']];
+    Peaks.draw('#range',
+      Peaks.far({ y: 820, amp: 60, n: 9, x0: 820, seed: 5 }),
+      Peaks.peak({ x: 1380, top: 120, base: 1080, hw: 480, cap: 'var(--haze)', capScale: 0.5 }),
+      `<polyline class="route" points="${camps.map(c => c[0] + ',' + c[1]).join(' ')}"/>` +
+      camps.map(([x, y, t], i) => `<circle class="camp-dot${i === 0 ? ' lit' : ''}" cx="${x}" cy="${y}" r="30"/><text class="camp-txt${i === 0 ? ' lit' : ''}" x="${x}" y="${y}">${t}</text>`).join(''));
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

@@ -3,25 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Every roadmap item we brought home lands on Kubernetes, so the fleet grows either way.</title>
+  <title>It grows either way</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .chip { position: absolute; padding: 10px 18px; border-radius: 10px; background: var(--rock); border: 2px solid var(--scree); font: 600 28px/1.1 var(--font-display); color: var(--snow); white-space: nowrap; }
+    .chip small { font: 400 22px/1 var(--font-body); color: var(--muted); margin-left: 8px; }
+    .drop { stroke: var(--scree); stroke-width: 3; stroke-dasharray: 4 7; fill: none; }
+    .grow { fill: none; stroke: var(--haze); stroke-width: 4; stroke-dasharray: 12 9; }
+    .legend { position: absolute; left: var(--margin); bottom: 52px; padding: 10px 18px; border-radius: 10px; background: var(--night); font-size: 26px; color: var(--muted); }
+    .legend b { color: var(--haze); font-weight: 600; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Every roadmap item we brought home lands on Kubernetes, so the fleet grows either way.</h1>
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Every roadmap item we brought home lands on Kubernetes, so the fleet grows either way.</h2>
+
+    <p class="chip" style="left: 140px; top: 330px;">live-live, two regions<small>§5</small></p>
+    <p class="chip" style="left: 560px; top: 300px;">agent pods, sandboxes<small>Path 2</small></p>
+    <p class="chip" style="left: 980px; top: 330px;">Argo, policy, canaries<small>Path 1</small></p>
+    <p class="chip" style="left: 1400px; top: 300px;">Crossplane, kro<small>§10</small></p>
+    <p class="chip" style="left: 360px; top: 440px;">GPU pools<small>isolation</small></p>
+    <p class="chip" style="left: 1180px; top: 440px;">on-prem sites<small>Hybrid Nodes</small></p>
+
+    <p class="legend">Solid: the clusters we run today. <b>Dashed</b>: where the roadmap puts us. None of it runs on ECS.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    And ours is going to grow, whatever we decide about anything else.
+
+    Look at what we've already committed to, or brought home as the plan. Live-live across two EKS regions. Agent pods and their sandboxes, from Path 2. The Argo, policy and canary work from Path 1. Crossplane and kro writing app infrastructure. GPU pools for isolation. On-prem sites joining through Hybrid Nodes.
+
+    Every single one of those lands on Kubernetes. None of them runs on ECS. So the fleet grows on its own: more clusters for isolation, for regions, for GPU pools, for on-prem sites and for agent sandboxes. Solid is what we run today; dashed is where the roadmap puts us.
+
+    Every hour spent standing up a second orchestrator is an hour not spent on the fleet tooling we need anyway.
+
+    So the question people keep asking us, "EKS or ECS?", is the wrong question.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    const parts = [Peaks.far({ y: 820, amp: 50, n: 14, seed: 12 })];
+    const today = [[620, 720], [860, 680], [1100, 700], [1340, 740]];
+    for (const [x, top] of today) parts.push(Peaks.peak({ x, top, base: 1080, hw: 170, cap: 'var(--haze)', capScale: .6 }));
+    const later = [[200, 760], [400, 740], [1560, 720], [1760, 760], [1900, 780]];
+    for (const [x, top] of later) parts.push(`<path class="grow" d="M${x - 150} 1080 L${x} ${top} L${x + 150} 1080"/>`);
+    const drops = [[300, 382, 300, 740], [740, 352, 860, 660], [1160, 382, 1100, 680], [1580, 352, 1560, 700], [470, 492, 400, 720], [1300, 492, 1340, 720]];
+    for (const [x1, y1, x2, y2] of drops) parts.push(`<path class="drop" d="M${x1} ${y1} L${x2} ${y2}"/>`);
+    Peaks.draw('#range', ...parts);
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

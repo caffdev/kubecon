@@ -3,23 +3,58 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Upgrade cadence is a policy, not a project, and a missed window shows up on the bill.</title>
+  <title>Upgrades as a policy</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .chart { position: absolute; left: var(--margin); top: 330px; }
+    .ax { stroke: var(--slate-quiet); stroke-width: 3; }
+    .tk { font: 500 22px var(--font-body); fill: var(--slate-quiet); }
+    .std { fill: #cfe0e2; }
+    .ext { fill: #f5dfcf; }
+    .cost { fill: none; stroke-width: 7; stroke-linejoin: round; }
+    .cost.a { stroke: var(--haze-ink); } .cost.b { stroke: var(--alpenglow-ink); }
+    .lbl { position: absolute; font-size: 26px; line-height: 1.25; }
+    .lbl b { display: block; font: 600 40px/1 var(--font-display); }
+    .lbl.a b { color: var(--haze-ink); } .lbl.b b { color: var(--alpenglow-ink); }
+    .rules { position: absolute; left: 1360px; top: 340px; width: 440px; display: grid; gap: 26px; }
+    .rules p { font-size: 28px; line-height: 1.3; color: var(--muted); }
+    .rules b { display: block; font: 600 34px/1.05 var(--font-display); color: var(--slate); margin-bottom: 4px; }
+    .src { max-width: 1600px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Upgrade cadence is a policy, not a project, and a missed window shows up on the bill.</h1>
+  <main class="slide snow">
+    <h2>Upgrade cadence is a policy, not a project, and a missed window shows up on the bill.</h2>
+
+    <svg class="chart" width="1180" height="560" viewBox="0 0 1180 560" aria-label="Control-plane cost per cluster per month: about $73 inside the 14-month standard window, about $438 after it">
+      <rect class="std" x="60" y="20" width="700" height="460"/>
+      <rect class="ext" x="760" y="20" width="400" height="460"/>
+      <path class="ax" d="M60 480 H1160 M60 20 V480"/>
+      <path class="cost a" d="M60 420 H760"/>
+      <path class="cost b" d="M760 420 V80 H1160"/>
+      <text class="tk" x="60" y="512">month 0</text><text class="tk" x="720" y="512">month 14</text><text class="tk" x="1080" y="512">month 22</text>
+    </svg>
+    <p class="lbl a" style="left: 220px; top: 640px;"><b>~$73 a month</b>standard support, $0.10 an hour per cluster</p>
+    <p class="lbl b" style="left: 920px; top: 430px;"><b>~$438 a month</b>extended support, $0.60 an hour ⚠️</p>
+
+    <div class="rules">
+      <p><b>Never enter extended support</b>every cluster upgraded inside its 14 months, with a named owner</p>
+      <p><b>Skip-level upgrades</b>KEP-4330: three minors in one rollout, not six waves</p>
+      <p><b>Measure our own toil</b>hours per EKS minor last year, so this argument has our number in it</p>
+    </div>
+    <p class="src">EKS-VS-ECS.md §4, rule 4. ⚠️ Fees from third-party write-ups; check the AWS pricing page before quoting.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Cattle still need upgrading, and the second design rule is that upgrade cadence is a policy, not a project.
+
+    Every EKS minor version gets fourteen months of standard support. Inside that window, the control plane costs about ten cents an hour per cluster, around seventy-three dollars a month. Miss the window and the cluster drops into extended support, at about sixty cents an hour, around four hundred and forty dollars a month, per cluster, six times as much. Those figures come from third-party write-ups, so we check the pricing page before quoting them in a meeting. But the shape is the point: a missed upgrade is now a line on the bill, not just a risk.
+
+    So the rule is: never enter extended support. Every cluster gets upgraded inside its window and has a named owner. Skip-level upgrades help, three minors in one rollout instead of six waves, which is what LinkedIn did. And we should measure our own toil, hours per EKS minor upgrade last year, so this argument carries our number and not just theirs.
+
+    And every upgrade change carries its own proof.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

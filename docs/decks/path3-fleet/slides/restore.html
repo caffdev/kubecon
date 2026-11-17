@@ -3,23 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Backups are a rumor until we restore one.</title>
+  <title>Restore</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    .slide h2 { font-size: 108px; max-width: 1500px; }
+    .steps { position: absolute; left: var(--margin); top: 450px; width: 1680px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; }
+    .step .n { display: block; font: 600 120px/1 var(--font-display); color: var(--haze); }
+    .step b { display: block; margin-top: 10px; font: 600 48px/1 var(--font-display); }
+    .step p { margin-top: 12px; font-size: 29px; line-height: 1.3; color: var(--muted); }
+    .etcd { position: absolute; left: var(--margin); bottom: 70px; width: 1680px; padding-top: 22px; border-top: 2px solid var(--scree); font-size: 28px; line-height: 1.3; color: var(--muted); }
+    .etcd b { color: var(--snow); font-weight: 600; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Backups are a rumor until we restore one.</h1>
+    <h2>Backups are a rumor until we restore one.</h2>
+
+    <div class="steps">
+      <div class="step"><span class="n">1</span><b>Retain</b><p>Audit every StorageClass. Delete is the default reclaim policy, and the wrong one for data we care about.</p></div>
+      <div class="step"><span class="n">2</span><b>Back up</b><p>Velero on a schedule, with consistent, incremental snapshots. Nothing bespoke: a working group is standardising this.</p></div>
+      <div class="step"><span class="n">3</span><b>Drill</b><p>Restore into a scratch cluster on a calendar, and time it. A cluster we can rebuild is one we'll upgrade.</p></div>
+    </div>
+
+    <p class="etcd"><b>And alert on etcd size at 50% and 75%.</b> Pod status churn can push a cluster read-only with zero crashed nodes; catch it in days, not minutes.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Last, the floor under all of it, and the one area where being wrong is unrecoverable.
+
+    Backups are a rumor until we restore one.
+
+    Three steps, in order. Retain: audit every storage class, because Delete is the default reclaim policy and it's the wrong one for data we care about. Back up: Velero on a schedule, with consistent, incremental snapshots, and nothing bespoke, because there's now a Kubernetes data protection working group standardising exactly this. Drill: restore into a scratch cluster on a calendar, and time it.
+
+    The drill matters more than the backup. A cluster we can rebuild and restore is a cluster we're willing to upgrade aggressively, which is the whole deck.
+
+    And one cheap alert: etcd database size at fifty and seventy-five percent. AWS showed how pod status churn alone can push a cluster read-only with zero crashed nodes. Catch it in days, not minutes.
+
+    So, five decisions.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

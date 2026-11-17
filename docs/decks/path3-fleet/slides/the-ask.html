@@ -3,25 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Standardise on EKS, default to Auto Mode, and name an owner for the label schema.</title>
+  <title>The ask</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .strip { position: absolute; left: var(--margin); top: 290px; display: grid; grid-template-columns: repeat(40, 32px); gap: 6px; }
+    .strip .day { width: 32px; height: 32px; border-radius: 4px; border-width: 2px; }
+    .strip-t { position: absolute; left: var(--margin); top: 340px; font: 600 30px/1 var(--font-display); color: var(--haze); }
+    .leans { position: absolute; left: var(--margin); top: 410px; width: 1680px; display: grid; }
+    .lean { display: grid; grid-template-columns: 90px 1fr 700px; gap: 26px; padding: 18px 0; border-top: 2px solid var(--scree); align-items: baseline; }
+    .lean:last-child { border-bottom: 2px solid var(--scree); }
+    .lean .id { font: 600 30px/1 var(--font-display); color: var(--lichen); }
+    .lean p { font: 600 36px/1.08 var(--font-display); }
+    .lean span:last-child { font-size: 27px; line-height: 1.25; color: var(--haze); }
+    .start { position: absolute; left: var(--margin); bottom: 58px; font-size: 27px; color: var(--muted); }
+    .start b { color: var(--snow); font-weight: 600; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Standardise on EKS, default to Auto Mode, and name an owner for the label schema.</h1>
+    <h2>Standardise on EKS, default to Auto Mode, and name an owner for the label schema.</h2>
+
+    <div class="strip" id="strip" aria-label="40 day squares, 7 lit"></div>
+    <p class="strip-t">LinkedIn's seven days, as our policy rather than the exception</p>
+
+    <div class="leans">
+      <div class="lean"><span class="id">E1</span><p>Our container orchestrator</p><span>EKS. No new ECS without a written exception</span></div>
+      <div class="lean"><span class="id">E2</span><p>Node management for new clusters</p><span>Auto Mode by default; self-managed Karpenter by exception</span></div>
+      <div class="lean"><span class="id">E3</span><p>Upgrade policy</p><span>Never in extended support; an owner named per cluster</span></div>
+      <div class="lean"><span class="id">2c</span><p>The cluster-label schema</p><span>An owner today; it's stage 1, and three things wait on it</span></div>
+      <div class="lean"><span class="id">2</span><p>Prod workloads that can't run active-active</p><span>The list, named and counted. If it's empty, Karmada stays on watch</span></div>
+    </div>
+
+    <p class="start">Starting unless someone objects: <b>a skip-level upgrade pilot in non-prod, paired with a timed restore drill.</b></p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    We opened with forty days becoming seven. The ask is to make that our policy rather than someone else's exception.
+
+    Five decisions. E1: EKS is our container orchestrator, and new ECS workloads need a written exception. E2: new clusters default to Auto Mode, with self-managed Karpenter only where it doesn't fit. E3: no cluster ever enters extended support, and every cluster has a named owner. Then the cluster-label schema needs an owner today, because it's stage 1 and three things wait on it. And decision 2: the list of production workloads that can't run active-active, named and counted. If that list is empty, Karmada stays on the watch list and the decision closes.
+
+    And one thing we're starting unless someone objects: a skip-level upgrade pilot in non-prod this quarter, paired with a timed restore drill, so we're willing to upgrade aggressively.
   </aside>
 
+  <script>
+    document.getElementById('strip').innerHTML =
+      Array.from({ length: 40 }, (_, i) => `<span class="day${i < 7 ? ' lit' : ''}"></span>`).join('');
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

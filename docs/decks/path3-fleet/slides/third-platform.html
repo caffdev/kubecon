@@ -3,23 +3,52 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ECS wouldn't replace anything; it would be a third container platform.</title>
+  <title>A third platform</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .grid { position: absolute; left: var(--margin); top: 320px; width: 1680px; display: grid; grid-template-columns: 260px repeat(5, 1fr); gap: 10px; }
+    .hd { font: 600 28px/1.1 var(--font-display); color: var(--muted); padding: 0 6px 8px; }
+    .rowname { font: 600 34px/1.05 var(--font-display); padding: 14px 6px; align-self: center; }
+    .rowname small { display: block; font: 400 22px/1.2 var(--font-body); color: var(--muted); }
+    .k8s { grid-column: 2 / span 5; grid-row: span 2; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .cell { padding: 16px 18px; border-radius: 12px; font-size: 26px; line-height: 1.25; }
+    .k8s .cell { background: #fff; border: 3px solid var(--haze-ink); color: var(--slate); }
+    .ecs .cell, .cell.ecs { background: transparent; border: 3px dashed var(--alpenglow-ink); color: var(--alpenglow-ink); }
+    .one { grid-column: 2 / span 5; text-align: center; font: 600 28px/1 var(--font-display); color: var(--haze-ink); padding: 6px 0 4px; }
+    .end { position: absolute; left: var(--margin); bottom: 70px; font: 600 38px/1.2 var(--font-display); max-width: 1600px; }
+    .src { bottom: 30px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>ECS wouldn't replace anything; it would be a third container platform.</h1>
+  <main class="slide snow">
+    <h2>ECS wouldn't replace anything; it would be a third container platform.</h2>
+
+    <div class="grid">
+      <span></span><p class="hd">Deploy</p><p class="hd">Policy</p><p class="hd">Identity</p><p class="hd">Observability</p><p class="hd">Agents operating it</p>
+      <p class="rowname">On-prem<small>Kubernetes</small></p>
+      <div class="k8s">
+        <p class="cell">Helm charts, Argo CD</p><p class="cell">CEL and Kyverno at admission, and in CI</p><p class="cell">Pod Identity, IRSA, SPIFFE</p><p class="cell">OTel collector, kube-state-metrics</p><p class="cell">one API every MCP tool already speaks</p>
+      </div>
+      <p class="rowname">EKS<small>live-live, two regions</small></p>
+      <p class="one">one API, one set of tools: we're building this anyway</p>
+      <p class="rowname" style="color: var(--alpenglow-ink);">ECS<small>if we add it</small></p>
+      <p class="cell ecs">task definitions, CDK pipelines</p><p class="cell ecs">IAM and pipeline checks; no admission point</p><p class="cell ecs">task roles: a second model to audit</p><p class="cell ecs">FireLens, CloudWatch, second dashboards</p><p class="cell ecs">a second API for every agent and tool</p>
+    </div>
+
+    <p class="end">Not "some workloads get simpler": two of everything, plus a second on-call skill set.</p>
+    <p class="src">EKS-VS-ECS.md §2</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    The question isn't "EKS or ECS". It's "EKS, or EKS plus ECS". We already run Kubernetes on-prem and EKS in two regions, and everything we committed to at KubeCon lands on Kubernetes. ECS wouldn't replace anything. It would be a third container platform.
+
+    Across the top: deploy, policy, identity, observability, and the new one, agents operating it. On-prem and EKS share one API and one set of tools, which we're building anyway: Helm and Argo CD, CEL and Kyverno at admission and in CI, Pod Identity and IRSA, the OTel collector, and one API that every MCP tool already speaks.
+
+    Add ECS and every column gets a second answer. Task definitions and their own pipelines. IAM and pipeline checks, with no admission point to enforce policy. Task roles, a second identity model to audit. FireLens and CloudWatch, a second set of dashboards. And a second API surface for every agent and MCP tool, which matters more every month, because the main consumer of the platform is becoming a machine, and machines are good at one well-documented API and worse at two.
+
+    It's not "some workloads get simpler". It's two of everything, and on-call has to know both. And the old argument for ECS, that it's simpler, closed last year.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

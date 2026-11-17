@@ -3,23 +3,60 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mark the seam before we pour: landing zone and CDK below, Crossplane above.</title>
+  <title>The seam</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .bldg { position: absolute; left: var(--margin); top: 320px; width: 1060px; height: 600px; }
+    .floor { position: absolute; padding: 14px 26px; border: 3px solid var(--slate); background: #fff; }
+    .floor b { display: block; font: 600 36px/1.05 var(--font-display); }
+    .floor small { display: block; margin-top: 4px; font-size: 26px; color: var(--muted); }
+    .floor.above { background: #e0eef0; border-color: var(--haze-ink); }
+    .floor.above b { color: var(--haze-ink); }
+    .seam { position: absolute; left: -20px; width: 1100px; border-top: 5px dashed var(--alpenglow-ink); }
+    .seam-t { position: absolute; left: 0; font: 600 30px/1 var(--font-display); color: var(--alpenglow-ink); }
+    .ground { position: absolute; left: 0; width: 1060px; height: 30px; background: repeating-linear-gradient(45deg, var(--slate-quiet) 0 2px, transparent 2px 14px); opacity: .5; }
+    .tb { position: absolute; left: 1280px; top: 330px; width: 520px; border: 3px solid var(--slate); }
+    .tb div { padding: 16px 20px; border-top: 2px solid var(--slate); font-size: 25px; line-height: 1.3; }
+    .tb div:first-child { border-top: 0; }
+    .tb .k { display: block; font: 600 24px/1.1 var(--font-display); color: var(--muted); margin-bottom: 4px; }
+    .tb .warm { color: var(--alpenglow-ink); font-weight: 600; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Mark the seam before we pour: landing zone and CDK below, Crossplane above.</h1>
+  <main class="slide snow">
+    <h2>Mark the seam before we pour: landing zone and CDK below, Crossplane above.</h2>
+
+    <div class="bldg">
+      <div class="floor above" style="left: 140px; top: 0; width: 780px;"><b>Apps and agents</b><small>call typed APIs, never raw cloud YAML</small></div>
+      <div class="floor above" style="left: 90px; top: 112px; width: 880px;"><b>Crossplane, kro</b><small>S3 first, then the infrastructure app teams own</small></div>
+      <p class="seam-t" style="top: 252px;">the seam: ownership hands off here</p>
+      <div class="seam" style="top: 292px;"></div>
+      <div class="floor" style="left: 40px; top: 322px; width: 980px;"><b>CDK</b><small>VPCs, EKS clusters, shared services: changes rarely</small></div>
+      <div class="floor" style="left: 0; top: 434px; width: 1060px;"><b>LZA, the landing zone</b><small>accounts, guardrails, org-wide scaffolding</small></div>
+      <div class="ground" style="top: 548px;"></div>
+    </div>
+
+    <div class="tb">
+      <div><span class="k">Decision 3</span><span class="warm">Where CDK hands off to Crossplane</span>: a diagram with the line drawn, not a debate</div>
+      <div><span class="k">Why it matters</span>Two tools fighting over one resource starts with an unmarked line.</div>
+      <div><span class="k">Who we saw</span>American Family Insurance and Upbound on Crossplane in practice; AWS, Microsoft, Red Hat and Uber on kro; two contribfest slides were our own function-lifecycle work.</div>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Stage 4 needs one line drawn before anyone builds on it. Mark the seam before we pour.
+
+    Read the building from the ground up. The landing zone: accounts, guardrails, org-wide scaffolding. Then CDK: VPCs, the EKS clusters themselves, shared services. Both of those change rarely.
+
+    Then the seam, the dashed line, where ownership hands off. Above it, Crossplane and kro, starting with S3 and moving to the infrastructure app teams own. And at the top, apps and agents, which call narrow, typed APIs rather than writing raw cloud YAML. An agent calls a typed API far more reliably than it writes CloudFormation.
+
+    Below the seam things change rarely; above it they change constantly. Two tools fighting over one resource starts with an unmarked line, and once it's poured, it's expensive to move.
+
+    This is decision 3, and it needs a diagram with the seam marked, not a debate. Nice moment from the show: two of the Crossplane contribfest slides were our own function-lifecycle work.
+
+    And above the seam, developers still have no road.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

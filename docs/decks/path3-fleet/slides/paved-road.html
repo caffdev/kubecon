@@ -3,23 +3,58 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>We have no paved road, so we build the road before we buy a portal.</title>
+  <title>Road before portal</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .scale { stroke: var(--scree); stroke-width: 6; stroke-linecap: round; }
+    .end { position: absolute; top: 470px; font: 600 28px/1 var(--font-display); color: var(--muted); }
+    .opt { position: absolute; top: 560px; width: 300px; }
+    .opt b { display: block; font: 600 36px/1.05 var(--font-display); }
+    .opt .eg { display: block; margin: 4px 0 10px; font: 500 24px/1.2 var(--font-body); color: var(--lichen); }
+    .opt p { font-size: 26px; line-height: 1.28; color: var(--muted); }
+    .opt.ours b { color: var(--haze); }
+    .dot { fill: var(--night); stroke: var(--scree); stroke-width: 5; }
+    .dot.ours { fill: var(--haze); stroke: var(--haze); }
+    .lean { position: absolute; left: var(--margin); bottom: 64px; width: 1680px; font: 600 36px/1.2 var(--font-display); color: var(--haze); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>We have no paved road, so we build the road before we buy a portal.</h1>
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="scale" d="M140 520 H1780"/>
+      <path d="M1780 520 l-22 -14 v28z" fill="var(--scree)"/>
+      <circle class="dot ours" cx="270" cy="520" r="20"/>
+      <circle class="dot" cx="610" cy="520" r="16"/>
+      <circle class="dot" cx="950" cy="520" r="16"/>
+      <circle class="dot" cx="1290" cy="520" r="16"/>
+      <circle class="dot" cx="1630" cy="520" r="16"/>
+    </svg>
+    <h2>We have no paved road, so we build the road before we buy a portal.</h2>
+
+    <p class="end" style="left: 120px;">Kubernetes visible</p>
+    <p class="end" style="right: 120px;">Kubernetes invisible</p>
+
+    <div class="opt ours" style="left: 120px;"><b>Paved road, no portal</b><span class="eg">templates in Git</span><p>ApplicationSets, cluster labels, policy-enforced defaults. ŌURA: "you probably already have one."</p></div>
+    <div class="opt" style="left: 460px;"><b>Portal</b><span class="eg">Backstage, Port, Cortex</span><p>Catalog, golden paths, scorecards. Backstage is an app we'd staff.</p></div>
+    <div class="opt" style="left: 800px;"><b>Workload spec</b><span class="eg">Score, OpenChoreo</span><p>One portable file per workload, bound per environment.</p></div>
+    <div class="opt" style="left: 1140px;"><b>Orchestrator</b><span class="eg">Humanitec, Kratix</span><p>Declare what a workload needs; the platform wires it.</p></div>
+    <div class="opt" style="left: 1480px;"><b>PaaS</b><span class="eg">Heroku</span><p>Push code, get an app. Salesforce runs on it.</p></div>
+
+    <p class="lean">Every company that made deploying boring standardised the path first. The portal came after, as a window onto it.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Above the seam, developers still have no road. We have no internal developer platform today, so every team invents its own way to deploy.
+
+    Here are the options, laid out by how much of Kubernetes they hide. A portal like Backstage, Port or Cortex: a catalog, golden-path templates and scorecards; Backstage was a full day of the show, and it's a TypeScript application we'd own and staff, not a weekend install. A workload spec like Score or OpenChoreo: one portable file per workload. An orchestrator like Humanitec or Kratix: declare what a workload needs and the platform wires it. And at the far end, a PaaS: push code, get an app; Salesforce runs on Heroku.
+
+    Our lean is the far left: a paved road with no portal yet. Templates in Git, ApplicationSets, the cluster-label vocabulary, and policy-enforced defaults. As one talk put it, you probably already have one. It's useful on day one, and it keeps every portal option open.
+
+    Every company that made deploying boring standardised the path first. The portal came afterwards, as a window onto it.
+
+    Last, the floor under all of it.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

@@ -3,25 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ship every change with the check that fails without it, so `kubectl get` is the audit.</title>
+  <title>Ship the check</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .text { position: absolute; left: var(--margin); top: 330px; width: 560px; display: grid; gap: 26px; }
+    .text p { font-size: 29px; line-height: 1.32; color: var(--muted); }
+    .text b { display: block; font: 600 36px/1.05 var(--font-display); color: var(--snow); margin-bottom: 6px; }
+    .field { position: absolute; left: 760px; top: 330px; }
+    .n { fill: var(--haze); } .p { fill: var(--scree); } .f { fill: var(--alpenglow); }
+    .key { position: absolute; left: 760px; top: 880px; display: flex; gap: 40px; font: 500 26px/1 var(--font-code); color: var(--lichen); }
+    .key span::before { content: ""; display: inline-block; width: 18px; height: 18px; margin-right: 10px; vertical-align: -2px; background: var(--c); }
+    .src { max-width: 1600px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Ship every change with the check that fails without it, so `kubectl get` is the audit.</h1>
+    <h2>Ship every change with the check that fails without it, so <code style="font-family: var(--font-code); font-size: .8em; white-space: nowrap;">kubectl get</code> is the audit.</h2>
+
+    <div class="text">
+      <p><b>The change and its check, together</b>The fix ships with a check that fails until the fix has really landed on that node.</p>
+      <p><b>Every node reports a status</b>so where the fleet stands is a query, not a spreadsheet.</p>
+      <p><b>NVIDIA: ~5,600 nodes in 30 minutes</b>two kernel CVEs, twice in a week, across clouds and on-prem.</p>
+    </div>
+    <svg class="field" id="field" width="1040" height="520" viewBox="0 0 1040 520" aria-label="5,600 node squares; nearly all verified, a few pending, one failed"></svg>
+    <p class="key"><span style="--c: var(--haze)">Verified</span><span style="--c: var(--scree)">Pending</span><span style="--c: var(--alpenglow)">Failed, retrying</span></p>
+    <p class="src">NVIDIA, "5,000 Nodes in Minutes, Twice in a Week" (deck-assets/12-fleet-node-changes). Illustrative status mix.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    The third design rule has nothing to do with AI, and it's the best template we saw all week for anything we'll later want a machine to drive.
+
+    Ship every change together with the check that fails without it. NVIDIA had two kernel CVEs to fix, twice in one week, across EKS, GKE, AKS, OKE and on-prem. The fix shipped with its own check, the check fails until the fix has really landed on that node, and every node reports a status.
+
+    So the picture on the right is the audit. Every square is a node, about fifty-six hundred of them. Most are verified, a few are still pending, and one failed and is being retried. Where the fleet stands is a kubectl get, not a spreadsheet someone fills in. They converged about fifty-six hundred nodes in thirty minutes.
+
+    The status mix here is illustrative; the pattern is theirs.
+
+    That's fleet toil. Multi-cluster has a second problem that looks similar and isn't.
   </aside>
 
+  <script>
+    // 5,600 nodes: 112 x 50
+    const r = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+    let out = '';
+    for (let i = 0; i < 5600; i++) {
+      const x = (i % 112) * 9.25, y = Math.floor(i / 112) * 10.4;
+      const v = r();
+      const cls = i === 3333 ? 'f' : v < 0.03 ? 'p' : 'n';
+      out += `<rect class="${cls}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="7" height="8"/>`;
+    }
+    document.getElementById('field').innerHTML = out;
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>
