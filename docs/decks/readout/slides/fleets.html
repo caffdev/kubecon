@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fleet sizes</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { max-width: 1440px; }
+
+    .fleet { position: absolute; text-align: center; width: 240px; }
+    .fleet .n { font: 600 60px/1 var(--font-display); color: var(--slate); }
+    .fleet .who { font: 600 32px/1.1 var(--font-display); color: var(--slate); }
+    .fleet .what { font-size: 24px; line-height: 1.2; color: var(--muted); margin-top: 4px; }
+
+    .ours {
+      position: absolute;
+      left: 840px; top: 950px; width: 720px;
+      border-top: 4px solid var(--haze-ink);
+      padding-top: 10px;
+      font: 600 30px/1.1 var(--font-display);
+      color: var(--haze-ink);
+      text-align: center;
+    }
+    .pk.us .pk-body { fill: #9ec0c8; }
+    .pk.us .pk-shadow { fill: #7fa9b4; }
+    .src { bottom: 36px; max-width: 690px; }
+
+    .is-entered .pk { animation: grow 900ms var(--step-ease) both; transform-box: fill-box; transform-origin: 50% 100%; }
+    @keyframes grow { from { transform: scaleY(0.1); } }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <h2>Nobody presenting at our scale was single-cluster or upgrading by hand.</h2>
+
+    <div id="labels"></div>
+
+    <p class="ours">Our shape: regulated, multi-cluster EKS plus on-prem</p>
+    <p class="src">Clusters, from each company's own talk materials. Log scale. ⚠️ Hertz's 80 is from the room.</p>
+  </main>
+
+  <aside class="notes">
+    "Fleet toil is unsustainable" is an opinion until you put numbers next to it, so here are the numbers. These are fleet sizes companies disclosed from the stage this year, every one from their own title, abstract or deck, with one exception I'll come to.
+
+    Salesforce runs a thousand clusters under agentic AIOps. LinkedIn, three hundred, on bare metal. Meta, about a hundred, with about fifteen engineers. Hertz, eighty. Coinbase, seventy-nine in production. Mastercard, thirty EKS clusters driven by an LLM. Verkada, nine.
+
+    The heights are a log scale, so the small fleets aren't flattened to nothing. The point isn't the biggest number. It's that none of these companies is single-cluster, and none of them upgrades by hand.
+
+    The bracket is us. Regulated, EKS plus on-prem, right in the middle of this range alongside Hertz, Coinbase and Mastercard. That's the useful part: the patterns these teams use are available to us, not aspirational.
+
+    Expect the Hertz question, because Coinbase's seventy-nine sits right next to it. Kyle heard the eighty in the room; the published abstract only says "fleet scale". Everything else here is public.
+
+    The second force arrived as a user, not just a workload.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // [clusters, company, detail]; heights are log10(clusters)
+    const fleets = [
+      [1000, '1,000', 'Salesforce', 'agentic AIOps'],
+      [300, '300', 'LinkedIn', 'bare metal, ~300k nodes'],
+      [100, '~100', 'Meta', 'run by ~15 engineers'],
+      [80, '80', 'Hertz ⚠️', 'multi-cluster EKS'],
+      [79, '79', 'Coinbase', '4k+ services'],
+      [30, '30', 'Mastercard', 'EKS, driven by an LLM'],
+      [9, '9', 'Verkada', '4,700 alerts a month'],
+    ];
+    const base = 830, perDecade = 155, x0 = 250, gap = 237, hw = 125;
+    const us = new Set(['Hertz ⚠️', 'Coinbase', 'Mastercard']);
+    const parts = [];
+    let labels = '';
+    fleets.forEach(([n, shown, who, what], i) => {
+      const x = x0 + i * gap;
+      const top = base - Math.log10(n) * perDecade;
+      parts.push(Peaks.peak({ x, top, base, hw, cap: 'var(--haze-ink)', cls: us.has(who) ? 'us' : '' }));
+      labels += `<div class="fleet" style="left:${x - 120}px; top:${top - 76}px"><p class="n">${shown}</p></div>`;
+      labels += `<div class="fleet" style="left:${x - 120}px; top:${base + 18}px"><p class="who">${who}</p><p class="what">${what}</p></div>`;
+    });
+    Peaks.draw('#range', ...parts);
+    document.getElementById('labels').innerHTML = labels;
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

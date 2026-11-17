@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The 31st cluster</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 88px; max-width: 1500px; }
+    .yaml-card {
+      position: absolute;
+      left: var(--margin); top: 360px;
+      width: 700px;
+      padding: 34px 40px;
+      border-radius: 18px;
+      background: var(--rock);
+      border: 3px solid var(--scree);
+    }
+    .yaml-card .code { font-size: 28px; line-height: 1.55; color: var(--snow); }
+    .yaml-card .k { color: var(--haze); }
+    .yaml-cap { position: absolute; left: var(--margin); top: 720px; width: 640px; font-size: 30px; line-height: 1.3; color: var(--muted); }
+    .yaml-cap b { color: var(--snow); font-weight: 500; }
+
+    .herd { position: absolute; left: 860px; top: 340px; width: 940px; height: 560px; }
+    .cnum { font: 500 22px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .cnum.lit { fill: var(--haze); }
+    .new-ring { fill: none; stroke: var(--alpenglow); stroke-width: 4; stroke-dasharray: 8 7; }
+    .new-tag {
+      position: absolute;
+      left: 1500px; top: 912px;
+      width: 330px;
+      font-size: 28px; line-height: 1.25;
+      color: var(--snow);
+    }
+    .new-tag b { display: block; font: 600 32px/1.1 var(--font-display); color: var(--alpenglow); }
+    .legend { position: absolute; left: 860px; top: 912px; width: 560px; font-size: 26px; line-height: 1.3; color: var(--muted); }
+    .legend i { font-style: normal; color: var(--haze); }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2>Adding the 31st cluster should cost nobody an app change.</h2>
+
+    <div class="yaml-card"><p class="code"><span class="k">placement:</span>
+  regions:    [us-east-1, us-west-2]
+  compliance: pci
+  capability: gpu
+  residency:  us</p></div>
+    <p class="yaml-cap"><b>The app's placement, in its own repo.</b> It names constraints, never a cluster, so it doesn't change when the fleet does.</p>
+
+    <svg class="herd" id="herd" viewBox="0 0 940 560" aria-label="31 clusters; the ones whose labels match are lit, including the new 31st"></svg>
+
+    <p class="legend"><i>Lit</i>: clusters whose labels match, picked by an ApplicationSet label selector.</p>
+    <p class="new-tag" data-step="1"><b>Cluster 31 joins</b>with its labels set by policy, and is selected on its own.</p>
+  </main>
+
+  <aside class="notes">
+    This is the payoff for every rule so far.
+
+    On the left is what a developer writes for their app: constraints. Regions, compliance, capability, residency. Not a cluster name. On the right is the fleet, thirty clusters as identical glyphs. The lit ones are the clusters whose labels match those constraints; an ApplicationSet label selector picks them, and we already run that.
+
+    Click. We add cluster thirty-one. It comes up from code, policy won't let it join the fleet without its labels, and because it's in us-west-2 with PCI and GPU, the selector picks it up. The app gets deployed there.
+
+    Now look at the YAML on the left. It didn't move. Nobody opened a pull request against the app. Adding the thirty-first cluster cost the app team nothing.
+
+    That's the summit. Here's the route.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // 8 x 4 slots; 30 clusters, the 31st in slot 31, slot 32 empty. Matching clusters are lit.
+    const lit = new Set([2, 5, 7, 10, 13, 18, 21, 24, 28, 31]);
+    const cols = 8, sx = 117, sy = 138;
+    let out = '';
+    for (let n = 1; n <= 31; n++) {
+      const c = (n - 1) % cols, r = Math.floor((n - 1) / cols);
+      const x = 58 + c * sx, y = 46 + r * sy;
+      const on = lit.has(n);
+      const glyph = Peaks.glyph({ x, y, w: 74, h: 62, cls: 'pk-glyph' + (on ? ' lit' : '') });
+      const label = `<text class="cnum${on ? ' lit' : ''}" x="${x}" y="${y + 66}">${String(n).padStart(2, '0')}</text>`;
+      if (n === 31) {
+        out += `<g data-step="1" data-effect="sink">${glyph}${label}<circle class="new-ring" cx="${x}" cy="${y + 10}" r="58"/></g>`;
+      } else {
+        out += glyph + label;
+      }
+    }
+    Peaks.draw('#herd', out);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

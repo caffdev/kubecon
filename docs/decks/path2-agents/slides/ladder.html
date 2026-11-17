@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The ladder</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 92px; max-width: 980px; }
+
+    .dated-fill { fill: #12302b; }
+    .undated-fill { fill: #12181c; }
+    .dated-line { fill: none; stroke: var(--teal); stroke-width: 7; stroke-linejoin: round; stroke-linecap: round; }
+    .undated-line { fill: none; stroke: var(--lichen); stroke-width: 4; stroke-dasharray: 14 12; stroke-linejoin: round; opacity: .8; }
+    .camp-on { fill: var(--teal); stroke: var(--night); stroke-width: 5; }
+    .camp-off { fill: var(--night); stroke: var(--lichen); stroke-width: 4; stroke-dasharray: 6 6; }
+    .flagpole { stroke: var(--snow); stroke-width: 4; }
+    .flag { fill: var(--alpenglow); }
+
+    .lab { position: absolute; width: 290px; font-size: 26px; line-height: 1.22; color: var(--muted); }
+    .lab .when { display: block; font: 600 28px/1 var(--font-display); color: var(--alpenglow); margin-bottom: 8px; }
+    .lab .when.none { color: var(--lichen); }
+    .lab .when.today { color: var(--teal); }
+    .lab b { display: block; font: 600 36px/1.04 var(--font-display); color: var(--snow); margin-bottom: 6px; }
+    .lab.off b { color: var(--lichen); }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <!-- camps: 0 (220,860) 1 (520,760) 2 (820,640) 3 (1120,500) 4 (1420,370) 5 (1700,270) -->
+      <path class="dated-fill" d="M0 1080 L0 880 L220 860 L360 830 L520 760 L660 720 L820 640 L820 1080 Z"/>
+      <path class="undated-fill" d="M820 1080 L820 640 L960 590 L1120 500 L1270 450 L1420 370 L1570 330 L1700 270 L1920 240 L1920 1080 Z" data-step="2"/>
+      <polyline class="dated-line" points="0,880 220,860 360,830 520,760 660,720 820,640" pathLength="1" data-step="1" data-effect="draw"/>
+      <polyline class="undated-line" points="820,640 960,590 1120,500 1270,450 1420,370 1570,330 1700,270 1920,240" data-step="2"/>
+      <line class="flagpole" x1="220" y1="860" x2="220" y2="780"/>
+      <path class="flag" d="M222 782 L270 796 L222 810 Z"/>
+      <circle class="camp-on" cx="220" cy="860" r="16"/>
+      <circle class="camp-on" cx="520" cy="760" r="16"/>
+      <circle class="camp-on" cx="820" cy="640" r="16"/>
+      <g data-step="2">
+        <circle class="camp-off" cx="1120" cy="500" r="15"/>
+        <circle class="camp-off" cx="1420" cy="370" r="15"/>
+        <circle class="camp-off" cx="1700" cy="270" r="15"/>
+      </g>
+    </svg>
+
+    <h2>Six rungs, and only the next two get dates.</h2>
+
+    <p class="lab" style="left: 200px; top: 896px;"><span class="when today">Camp 0: today, we are here</span><b>Local prompts</b>A human applies every change.</p>
+    <p class="lab" data-step="1" style="left: 500px; top: 796px;"><span class="when">Camp 1: by Q2 2027</span><b>Alert triage</b>Explains, never acts. No write path.</p>
+    <p class="lab" data-step="1" style="left: 800px; top: 676px;"><span class="when">Camp 2: by end of 2027</span><b>Agents open PRs</b>Review unchanged. Needs Path 1 stage B.</p>
+    <p class="lab off" data-step="2" style="left: 1100px; top: 536px;"><span class="when none">Camp 3: no date</span><b>Always-on analysis</b>Owns alert severity and noise.</p>
+    <p class="lab off" data-step="2" style="left: 1400px; top: 406px;"><span class="when none">Camp 4: no date</span><b>Agents that fix</b>Inside a blast radius we defined.</p>
+    <p class="lab off" data-step="2" style="left: 1690px; top: 314px; width: 200px;"><span class="when none">Camp 5: no date</span><b>Team agents</b>DBA, SRE and dev agents compared.</p>
+  </main>
+
+  <aside class="notes">
+    This is the slide we want a decision on. Our AI rollout as a climb, six camps from where we are to where the talks we heard had got to.
+
+    We're at camp zero. Engineers use Claude Code, and a human applies every change.
+
+    Click. The line draws to the next two camps, and they're the only ones with dates. Camp one, alert triage, by Q2 2027. It explains, it never acts: there's no write path anywhere, so it needs no policy gate, no sandbox and no rollback story. That's why the date is safe. Camp two, agents open pull requests, by the end of 2027. Review is unchanged. That date is a bet, because it needs Path 1's stage B, policy in CI, to land first.
+
+    Click. Above that the route is dashed. Always-on analysis that owns alert severity. Agents that fix things inside a blast radius we define. Teams writing their own agents. They have no dates, deliberately. Dating them before the camps below exist would be fiction. If the lower route lands early, they start early; if it slips, they slip, and nobody has to re-argue the order.
+
+    Camp one is close. Here's what reaching it actually means.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

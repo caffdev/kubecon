@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The rope</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 80px; max-width: 860px; }
+
+    /* route: camps on each face */
+    .route { fill: none; stroke-width: 4; }
+    .camp-dot { stroke-width: 4; fill: var(--night); }
+    .camp-txt { font: 600 30px var(--font-display); text-anchor: middle; dominant-baseline: central; }
+    .r1 { stroke: var(--mint); } .t1 { fill: var(--mint); }
+    .r2 { stroke: var(--teal); } .t2 { fill: var(--teal); }
+    .r3 { stroke: var(--haze); } .t3 { fill: var(--haze); }
+    .camp-dot.hit { stroke: var(--alpenglow); stroke-width: 6; }
+
+    .rope-1 { --rope: var(--alpenglow); stroke-width: 6; }
+    .rope-2 { --rope: var(--haze); stroke-width: 4; stroke-dasharray: 8 10; }
+    .arrow-1 { fill: var(--alpenglow); }
+    .arrow-2 { fill: var(--haze); }
+
+    .cap {
+      position: absolute;
+      font-size: 28px;
+      line-height: 1.2;
+      color: var(--snow);
+    }
+    .cap b { display: block; font: 600 30px/1.1 var(--font-display); }
+    .cap.c1 b { color: var(--alpenglow); }
+    .cap.c2 b { color: var(--haze); }
+    .summit { position: absolute; font: 600 32px/1 var(--font-display); }
+
+    .basecamp {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 84px;
+      padding: 0 var(--margin);
+      display: flex;
+      align-items: center;
+      background: #0b1115;
+      border-top: 2px solid var(--scree);
+      color: var(--muted);
+      font-size: 26px;
+    }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+
+    <h2>No agent opens a PR until policy runs in CI.</h2>
+
+    <p class="summit p3" style="left: 440px; top: 340px;">Path 3</p>
+    <p class="summit p1" style="left: 1100px; top: 266px;">Path 1</p>
+    <p class="summit p2" style="left: 1540px; top: 340px;">Path 2</p>
+
+    <p class="cap c1" data-step="1" style="left: 1196px; top: 426px; width: 300px;"><b>The belay</b>Policy in CI and promotion as a PR come first.</p>
+    <p class="cap c2" data-step="2" style="left: 596px; top: 436px; width: 300px;"><b>The label rope</b>Cluster labels come before fleet-wide waves.</p>
+
+    <p class="basecamp">Base camp: Argo on manual sync, clusters named by hand, Claude on laptops.</p>
+  </main>
+
+  <aside class="notes">
+    Three climbs, and on the last slide they looked independent. Mostly they are, which is why we can staff them in parallel. But two ropes tie them together, and one of them decides what we protect.
+
+    Click. The first rope runs from Path 1, stages B and C, across to Path 2, phase 2. Stage B is policy running in CI and at admission. Stage C is promotion as a pull request. Phase 2 is the first time an agent opens a PR. An agent's PR is only safe because the same policy and the same promotion path check it that check a human's. So no agent opens a PR until policy runs in CI. That's the belay.
+
+    Pause on that. It means the least visible work on Path 1, a policy layer nobody demos, is the thing that gates the most visible work on Path 2. If one piece of work gets protected headcount, it's stage B.
+
+    Click. The second rope is thinner. Path 3's first stage is a cluster-label vocabulary. Path 1's stage D rolls changes across the fleet by selecting on those labels. That one's nearly free to start, which is why Path 3 starts now.
+
+    Everything else on the three faces is independent. Each climb in one slide, starting with the one the others are belayed to.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // camps: [x, y, label]
+    const p3 = [[330, 930, '1'], [364, 810, '2'], [398, 690, '3'], [432, 570, '4']];
+    const p1 = [[898, 930, 'A'], [933, 790, 'B'], [969, 650, 'C'], [1004, 510, 'D'], [1035, 390, 'E']];
+    const p2 = [[1439, 930, '0'], [1471, 810, '1'], [1503, 690, '2'], [1535, 570, '3']];
+    const hits = new Set(['p1B', 'p1C', 'p2-2']);
+    const line = (pts, cls) => `<polyline class="route ${cls}" points="${pts.map(p => p[0] + ',' + p[1]).join(' ')}"/>`;
+    const camps = (pts, n, key) => pts.map(([x, y, t]) =>
+      `<circle class="camp-dot r${n}${hits.has(key + t) ? ' hit' : ''}" cx="${x}" cy="${y}" r="30"/>` +
+      `<text class="camp-txt t${n}" x="${x}" y="${y}">${t}</text>`).join('');
+
+    Peaks.draw('#range',
+      Peaks.far({ y: 760, amp: 80, n: 13, seed: 4 }),
+      Peaks.peak({ x: 480, top: 400, base: 1000, hw: 340, cap: 'var(--haze)' }),
+      Peaks.peak({ x: 1060, top: 290, base: 1000, hw: 360, cap: 'var(--mint)' }),
+      Peaks.peak({ x: 1580, top: 400, base: 1000, hw: 320, cap: 'var(--teal)' }),
+      line(p3, 'r3'), line(p1, 'r1'), line(p2, 'r2'),
+      camps(p3, 3, 'p3-'), camps(p1, 1, 'p1'), camps(p2, 2, 'p2-'),
+      // rope 1: from between B and C on Path 1 to phase 2 on Path 2 (drawn through a mask so the dashes reveal)
+      `<defs>
+        <mask id="m1" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+          <path d="M991 720 C 1150 610, 1330 600, 1476 687" pathLength="1" fill="none" stroke="#fff" stroke-width="40" data-step="1" data-effect="draw"/>
+        </mask>
+        <mask id="m2" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+          <path d="M360 925 C 520 900, 700 650, 978 510" pathLength="1" fill="none" stroke="#fff" stroke-width="36" data-step="2" data-effect="draw"/>
+        </mask>
+      </defs>
+      <g mask="url(#m1)">
+        <path class="rope rope-1" d="M991 720 C 1150 610, 1330 600, 1450 672"/>
+        <path class="arrow-1" d="M1473 685 L1444 683 L1457 661 Z"/>
+      </g>
+      <g mask="url(#m2)">
+        <path class="rope rope-2" d="M360 925 C 520 900, 700 650, 950 524"/>
+        <path class="arrow-2" d="M975 511 L957 533 L947 513 Z"/>
+      </g>`
+    );
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

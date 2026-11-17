@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day one</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .mark {
+      position: absolute;
+      left: 108px;
+      top: 70px;
+      font: 600 260px/1 var(--font-display);
+      color: var(--mint);
+    }
+    .slide blockquote {
+      margin-top: 190px;
+      font: 500 118px/1.02 var(--font-display);
+      letter-spacing: -0.01em;
+      max-width: 1560px;
+    }
+    .who {
+      margin-top: 48px;
+      font-size: 32px;
+      color: var(--muted);
+    }
+    .deck-id {
+      position: absolute;
+      right: var(--margin);
+      bottom: 64px;
+      display: flex;
+      align-items: flex-end;
+      gap: 22px;
+      font: 600 32px/1.1 var(--font-display);
+      color: var(--mint);
+      text-align: right;
+    }
+    .deck-id span { color: var(--muted); font-weight: 500; }
+    .deck-id svg { width: 96px; height: 80px; }
+
+    .is-entered blockquote { animation: rise 900ms var(--step-ease) both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(40px); } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <span class="mark" aria-hidden="true">“</span>
+    <blockquote>…approachable enough that someone joining the company could ship a new application on their very first day.</blockquote>
+    <p class="who">Michael Amundson and Jim Beyers, CVS Health, keynote, 11 November</p>
+
+    <p class="deck-id"><svg id="glyph" viewBox="0 0 96 80" aria-hidden="true"></svg>Path 1: Deployments as a service<br><span>Evan and Kyle</span></p>
+  </main>
+
+  <aside class="notes">
+    This is CVS Health, on the main stage on Wednesday. Read it with me: approachable enough that someone joining the company could ship a new application on their very first day.
+
+    That's the bar they set for their platform. Not a tooling migration, not a number of clusters. Developer onboarding time. They spent two years on it, and the control plane they built is being open-sourced.
+
+    Pause. Our first reaction was probably the same as yours.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>Peaks.draw('#glyph', Peaks.peak({ x: 48, top: 6, base: 80, hw: 48, cap: 'var(--mint)' }));</script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stage B</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { max-width: 1440px; }
+    .when { margin-top: 18px; }
+
+    .art { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: -1; }
+    .track { stroke: var(--slate); stroke-width: 4; fill: none; }
+    .drop { stroke: var(--mint-ink); stroke-width: 4; stroke-dasharray: 2 10; stroke-linecap: round; fill: none; }
+    .gate { fill: var(--mint-ink); }
+    .token { fill: var(--slate); }
+
+    .policy-bar {
+      position: absolute;
+      left: 420px; top: 372px; width: 1060px; height: 76px;
+      border: 4px solid var(--mint-ink);
+      border-radius: 38px;
+      display: flex; align-items: center; justify-content: center;
+      font: 600 34px/1 var(--font-display);
+      color: var(--mint-ink);
+      background: var(--snowfield);
+    }
+    .end { position: absolute; font: 600 32px/1 var(--font-display); color: var(--slate); }
+    .g {
+      position: absolute;
+      top: 642px;
+      width: 330px;
+      font-size: 28px;
+      line-height: 1.25;
+    }
+    .g .gate-label { display: block; margin-bottom: 8px; }
+    .rule {
+      position: absolute;
+      left: var(--margin); bottom: 82px;
+      max-width: 1500px;
+      font: 600 40px/1.15 var(--font-display);
+      color: var(--mint-ink);
+    }
+    .flag { font-size: 24px; color: var(--alpenglow-ink); }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <!-- the change's path: commit → CI → merge → admission (CEL, Kyverno) → running -->
+      <path class="track" d="M250 560 H1560"/>
+      <path class="drop" d="M585 448 V516 M955 448 V516 M1315 448 V516"/>
+      <rect class="gate" x="575" y="512" width="20" height="96" rx="4"/>
+      <rect class="gate" x="945" y="512" width="20" height="96" rx="4"/>
+      <rect class="gate" x="1305" y="512" width="20" height="96" rx="4"/>
+      <circle class="token" cx="250" cy="560" r="14"/>
+      <path class="track" d="M1548 546 L1572 560 L1548 574"/>
+    </svg>
+
+    <h2>Stage B is the trade: one policy set, run in CI and at admission.</h2>
+    <p class="when">Adopt, Q1 2027</p>
+
+    <p class="policy-bar">One Kyverno policy set in Git, with its own tests</p>
+    <p class="end" style="left: 120px; top: 600px;">commit</p>
+    <p class="end" style="left: 1500px; top: 600px;">running</p>
+
+    <p class="g" style="left: 430px;"><span class="gate-label">In CI</span>kyverno apply on manifests and plans. A violation is a 90-second test failure an agent can fix.</p>
+    <p class="g" style="left: 800px;"><span class="gate-label">Admission, hot path</span>CEL admission policy generated from the same set, so no webhook can be down. <span class="flag">⚠️ unverified</span></p>
+    <p class="g" style="left: 1170px;"><span class="gate-label">Admission, the rest</span>Kyverno for what CEL can't express: generation, mutation, verifyImages.</p>
+
+    <p class="rule">Write policy against the action, not the actor, and one rule bounds people and agents alike.</p>
+
+    <div class="route-strip" aria-label="Stages A to E, stage B current">
+      <span class="camp done">A</span><span class="camp lit">B</span><span class="camp">C</span><span class="camp">D</span><span class="camp">E</span>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Stage B is the trade from two slides ago, made real, and it's the least visible work on this whole path.
+
+    One policy set, written once in Git, with its own tests, so the policies themselves are code we review. It runs in two places. First in CI: kyverno apply against the manifests and the cloud plans before anything merges. A violation becomes a ninety-second test failure, for a person or for an agent, and an agent can iterate against a test failure. It can't iterate against a rejected sync at two in the morning.
+
+    Then at admission. The hot path is CEL ValidatingAdmissionPolicy, which runs in-process in the API server, so there's no webhook that can be down. Be honest about the flag: generating those CEL policies from our Kyverno set is a documented capability we haven't run yet. We verify it before anyone treats this box as a design.
+
+    Kyverno keeps what CEL can't express: generation, mutation chains, and verifyImages, with our own images signed by cosign in CI. verifyImages starts in audit mode.
+
+    The rule at the bottom is the one that matters for Path 2. Write policy against the action, not the actor. The policy that stops a person deploying a privileged container is the same one that bounds an agent, so most agent governance comes for free.
+
+    Stage B gates stage C here, and it gates phase 2 of the agent path. Nobody demos it, which is why it's the stage that gets deprioritised. And the freeze becomes something the cluster enforces.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -50,8 +50,39 @@ Ingress and secrets are on no path.
 
 ## Visual direction
 
-Series brand: Three Peaks (`docs/decks/_shared/`). This path's colour is **mint**. The full
-plan is written in phase 3.
+Series brand: Three Peaks (`docs/decks/_shared/`, see the readout's narrative for the full
+palette and type). This path's colour is **mint** (`#9cf0e1` on night, `#0b6e5f` on
+snowfield). What this deck adds:
+
+- **Subject world:** the delivery path itself. A change is a climber on a fixed line: it
+  passes gates (CI, admission, analysis), clips into belays (policy), and reaches camps A–E.
+  The one artifact everyone in the room knows is Argo CD's SYNC button, so it becomes an
+  object in the deck: present on `stage-zero`, given up on `the-trade`.
+- **Grounds:** night for the story, snowfield for the evidence-dense stage and mechanism
+  slides, and **mint for exactly one slide, the trade**. The colour change is the peak.
+- **Layout:** headline top-left, the mechanism drawn left to right as a route a change
+  travels. Stage slides carry a **route strip** on the right edge (camps A–E, the slide's
+  own stage lit). That isn't decoration: it tells the room where on the climb we are.
+
+  ```
+  opening (day-one)              peak (the-trade, mint ground)     densest (stage-b, snowfield)
+  ┌──────────────────────────┐  ┌──────────────────────────┐      ┌──────────────────────────┐
+  │ "…someone joining the    │  │ Teams resist… (small)    │      │ Stage B is the trade…  E │
+  │  company could ship a    │  │ STOP CLICKING SYNC.      │      │    ┌ one policy set ┐   D │
+  │  new application on      │  │ ⓑ nothing ships in a…    │      │ commit→[CI]→[CEL][Kyv]→  C │
+  │  their very first day."  │  │ ⓑ policy fails in CI…    │      │  what runs where       ●B │
+  │  CVS Health keynote      │  │ ⓓ a bad version rolls…   │      │ against the action…    A │
+  └──────────────────────────┘  └──────────────────────────┘      └──────────────────────────┘
+  ```
+- **Concepts as pictures:** a change is a token moving left to right; a gate is a vertical
+  bar it must pass; one source feeding many gates is drawn as a bar with drop lines; each
+  gain or item is tagged with the camp (stage) that delivers it.
+- **Motion moment:** on `the-trade`, the three gains arrive one per click, each tagged with
+  the camp that delivers it, while the SYNC button fades.
+- **Anti-default check:** stage slides were six-item lists (title and bullets) in the old
+  deck. Changed: each stage shows its route strip, its items as a sequence with real order,
+  and its exit gate as the one accented block. The four policy layers were a 2×2 card grid;
+  now a single route through four gates.
 
 ## Beats
 

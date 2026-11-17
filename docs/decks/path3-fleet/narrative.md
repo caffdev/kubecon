@@ -47,8 +47,38 @@ keeps the fleet half and folds in `EKS-VS-ECS.md` (Nov 16) and GOALS §5, §8 an
 
 ## Visual direction
 
-Series brand: Three Peaks (`docs/decks/_shared/`). This path's colour is **haze blue**. The
-full plan is written in phase 3.
+Series brand: Three Peaks (`docs/decks/_shared/`, see the readout's narrative for the full
+palette and type). This path's colour is **haze blue** (`#68b6c3` on night, `#22697a` on
+snowfield). What this deck adds:
+
+- **Subject world:** the herd. Clusters as cattle: identical, numbered, replaceable, counted
+  rather than named. Time as business days you can count. Infrastructure as a building
+  drawn in section, with the seam where one trade hands over to the next.
+- **Grounds:** night for the argument; snowfield for the evidence and the systems
+  (live-live lanes, the seam, the decision grid).
+- **Pieces:** **day squares** (one square = one business day); **cluster glyphs** (one small
+  peak = one cluster; lit = selected by a label); **lanes** (a sum of delays drawn as
+  segments in parallel, with the RTO line at the slowest lane's end).
+
+  ```
+  opening (cold-open)               peak (thirty-first)                densest (live-live, snowfield)
+  ┌──────────────────────────┐     ┌──────────────────────────┐       ┌──────────────────────────┐
+  │ LinkedIn took prod 1.31  │     │ Adding the 31st cluster… │       │ Losing a region is a sum…│
+  │ → 1.34 in seven days…    │     │ placement:    ▲ ▲ △ ▲ △ ▲│       │ delivery ▏solved         │
+  │ ■■■■■■■□□□□□□□□□□□□□     │     │   regions: …  △ ▲ △ ▲ ▲ △│       │ traffic  ▬▬▬▬            │RTO
+  │ □□□□□□□□□□□□□□□□□□□□     │     │   compliance… ▲ △ ▲ △ ▲ ★│       │ state    ▬▬▬▬▬▬          │
+  │ 7 now · 40 before        │     │ (unchanged)              │       │ capacity ▬▬▬▬▬▬▬▬        │
+  └──────────────────────────┘     └──────────────────────────┘       └──────────────────────────┘
+  ```
+- **Concepts as pictures:** duration is counted squares; the fleet is a herd of identical
+  glyphs; selection is lighting the glyphs a label matches; a sum of delays is parallel
+  lanes, with the slowest setting the line.
+- **Motion moment:** on `thirty-first`, the 31st cluster drops into the herd, lights up
+  because its labels match, and the YAML beside it never moves.
+- **Anti-default check:** the old deck's topic slides were card grids with a "SEEN AT" mono
+  label in each card and an "Our lean" box at the bottom of every slide (a template). Changed:
+  one picture per slide; evidence moves to a single source line or the notes; our lean is
+  the headline itself.
 
 ## Beats
 

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Itemize it</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body>
+  <main class="slide t-rct">
+    <div class="rct-left">
+      <p class="rct-eyebrow">GOALS §4: OBSERVABILITY AND COST</p>
+      <h2 class="rct-title">Itemize it, or it didn't happen.</h2>
+      <p class="rct-lede">We can't pick the right model per use case, or defend the spend, until every AI call is a line item: who called it, which tool, what it cost. OpenTelemetry is the till.</p>
+    </div>
+    <p class="rct-status">ADOPT. List what we use AI for first; everything else in §4 depends on it.</p>
+
+    <!-- audit off: the receipt is rotated 2°, so its line boxes overlap by geometry, not by layout --><div class="rct-paper" data-audit="off" aria-label="A receipt: what we saw itemised at the show, then our own tab, which reads not yet">
+      <p class="rct-cb">KUBECON NA 2026</p>
+      <p class="rct-c">SALT LAKE CITY, UT</p>
+      <p class="rct-c">ORDER: WHAT WE SAW ITEMIZED</p>
+      <div class="rct-dash"></div>
+      <p class="rct-item">VERKADA · alert triage</p>
+      <div class="rct-row"><p class="rct-sub">4,700/mo × $0.33</p><p class="rct-amt">$1,551</p></div>
+      <p class="rct-item">NUBANK · trace pipeline</p>
+      <div class="rct-row"><p class="rct-sub">spans per hour</p><p class="rct-amt">16B</p></div>
+      <p class="rct-item">YAHOO · two-stage OTel</p>
+      <div class="rct-row"><p class="rct-sub">Istio cardinality, pods</p><p class="rct-amt">10K</p></div>
+      <p class="rct-item">ADOBE · eBPF egress</p>
+      <div class="rct-row"><p class="rct-sub">network cost, to</p><p class="rct-amt">TEAMS</p></div>
+      <div class="rct-dash"></div>
+      <p class="rct-item">OUR TAB</p>
+      <div class="rct-row"><p class="rct-sub">AI use cases listed</p><p class="rct-amt">NOT YET</p></div>
+      <div class="rct-row"><p class="rct-sub">AI spend by team</p><p class="rct-amt">NOT YET</p></div>
+      <div class="rct-row"><p class="rct-sub">MCP calls as spans</p><p class="rct-amt">NOT YET</p></div>
+      <div class="rct-dash"></div>
+      <div class="rct-row"><p class="rct-total">TOTAL KNOWN</p><p class="rct-total">$ —</p></div>
+      <div class="rct-dash"></div>
+      <p class="rct-c">INSTRUMENT FIRST. THANK YOU.</p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Last rule: itemize it, or it didn't happen.
+
+    On the receipt, what we saw other teams itemise. Verkada knows its alert triage costs thirty-three cents an alert, which is about fifteen hundred dollars a month; that total is our arithmetic on their title. Nubank traces sixteen billion spans an hour. Yahoo tamed Istio's metric cardinality at ten thousand pods. Adobe attributes network cost back to teams with eBPF.
+
+    Then our tab. Can we list what we use AI for? Not yet. Spend by team? Not yet. Every MCP call as a span? Not yet. Total known: nothing.
+
+    The fix is boring and it's first: turn on telemetry, put every call on the OpenTelemetry pipeline we already run, with a team and a use case on it. The inventory falls out of the instrumentation.
+
+    Ten rules. Three of them we can start on Monday.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

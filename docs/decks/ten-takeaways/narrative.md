@@ -40,7 +40,36 @@ the ground (the fleet), the spine (delivery), the agents.
 
 Each takeaway keeps its own visual world: that is the point of this deck. The cold open and
 close use the series brand, Three Peaks (`docs/decks/_shared/`), so the deck still belongs
-to the set. The full plan is written in phase 3.
+to the set.
+
+- **The frame:** the cold open is a range of ten small peaks, one per rule, capped in the
+  colour of the path each rule belongs to (haze for the fleet three, mint for the spine
+  two, teal for the agent five), in the order the talk takes them. The close returns to the
+  same range with each peak labelled and the three no-purchase rules lit.
+- **The ten worlds** (carried over from the original artifact, one per slide, all in
+  `theme/theme.css` scoped by a class on `.slide`):
+
+  | Slide | World | Type | Ground |
+  |---|---|---|---|
+  | `upgrade-like-an-app` (§5) | Swiss poster: four-column grid, numbers as image | Archivo 900 | off-white `#EFEDE8`, signal red `#D8291B` |
+  | `mark-the-seam` (§10) | cyanotype blueprint in section, title block | Oswald, JetBrains Mono | Prussian blue `#1C3D6C`, amber seam |
+  | `restore-or-rumor` (§8) | ISO 7010 safe-condition placard | Archivo 900 | safety green `#0E6A44` |
+  | `signal` (§1) | split-flap departure board | Oswald | board black `#131418`, amber `#F5B800` |
+  | `rule-not-driver` (§2) | annotated statute book | EB Garamond | paper `#F3EEE2`, rubric red |
+  | `boarding-pass` (§9, §3.6) | airline boarding pass with a stub | Oswald, Archivo, mono | counter grey `#DAD5C9`, band blue |
+  | `not-a-cage` (§3) | biocontainment notice, level ladder | Oswald 700 | safety yellow `#F2C12E`, hazard stripes |
+  | `base-camp-first` (§6) | expedition elevation profile | Archivo, EB Garamond italic | map paper `#ECE6D6` |
+  | `reading-room` (§7) | library catalogue card and stamp | EB Garamond, Courier | baize green `#1F3A2F` |
+  | `itemize` (§4) | thermal till receipt | JetBrains Mono | counter brown `#2B2723` |
+
+- **Rule for the worlds:** each label that looks like an eyebrow must be something the real
+  artifact carries (a board's header, a statute's running head, a receipt's header). The
+  old "TAKEAWAY 0N" numbers become GOALS section references, since the order changed.
+- **Motion moment:** on `base-camp-first`, the profile draws to camp 2, then the dashed
+  undated slope appears.
+- **Anti-default check:** ten different worlds is itself the anti-template move. The risk is
+  the opposite: that it reads as a sampler. The frame (one range, ten peaks, coloured by
+  path, in order) is what holds it together as one talk.
 
 ## Beats
 

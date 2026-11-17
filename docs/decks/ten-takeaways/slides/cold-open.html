@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ten rules</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 120px; max-width: 1300px; line-height: .98; }
+    .byline { margin-top: 36px; font-size: 32px; color: var(--muted); }
+    .key { position: absolute; right: var(--margin); top: 112px; display: grid; gap: 10px; font: 600 30px/1.1 var(--font-display); text-align: right; }
+    .key .k3 { color: var(--haze); } .key .k1 { color: var(--mint); } .key .k2 { color: var(--teal); }
+    .is-entered .pk { animation: up 900ms var(--step-ease) both; }
+    @keyframes up { from { transform: translateY(260px); } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>We came home with ten rules, and none of them is a product.</h1>
+    <p class="byline">KubeCon NA 2026, Salt Lake City. Evan and Kyle.</p>
+    <div class="key">
+      <p class="k3">the ground: three</p>
+      <p class="k1">the spine: two</p>
+      <p class="k2">the agents: five</p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Ten things we brought home from Salt Lake City, about a minute each. Here's the promise: every one of them is a rule we can adopt, not a tool we have to buy.
+
+    They come in the order you'd build them. The first three are the ground the fleet stands on. The next two are the path every change takes across it. The last five are what agents need before we let them in. The colours are the same three paths we use everywhere else.
+
+    The first rule is about the thing that's going to get big whatever we do.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // ten peaks in talk order, capped by path: 3 haze (ground), 2 mint (spine), 5 teal (agents)
+    const caps = ['haze', 'haze', 'haze', 'mint', 'mint', 'teal', 'teal', 'teal', 'teal', 'teal'];
+    const tops = [740, 690, 760, 640, 680, 720, 660, 700, 590, 740];
+    const parts = [Peaks.far({ y: 860, amp: 60, n: 16, seed: 21 })];
+    caps.forEach((c, i) => {
+      parts.push(Peaks.peak({ x: 170 + i * 176, top: tops[i], base: 1080, hw: 170, cap: `var(--${c})` }));
+    });
+    Peaks.draw('#range', ...parts);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

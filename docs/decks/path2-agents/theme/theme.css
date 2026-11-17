@@ -1,53 +1,47 @@
-/* Path 2: Claude off the laptop, into the pod: theme
-   Placeholder values. Replace all of them with this deck's design plan
-   (narrative.md, Visual direction) before building slides. Name colors for what
-   they are in this deck's world, not "primary/secondary". */
+/* Path 2: Claude off the laptop, into the pod: theme.
+   Series brand (Three Peaks) plus this path's colour, teal. The deck's own pieces: the
+   enclosure (a pod drawn as a dashed boundary with labelled exits), owned-component
+   boxes, and the expedition profile used once, for the ladder. */
 
-/* @import url("https://fonts.googleapis.com/css2?family=…&display=swap"); */
+@import url("../../_shared/brand.css");
 
 :root {
-  /* palette: 4–6 named colors */
-  --c-ground: #e9e9e6;
-  --c-ink: #1d1d1b;
-  --c-quiet: #77756f;
-  --c-signal: #3a3a37;
+  --path: var(--teal);
+  --path-ink: var(--teal-ink);
+}
+.slide { --accent: var(--path); }
+.slide.snow { --accent: var(--path-ink); --path: var(--path-ink); }
 
-  /* roles the kit and slides use */
-  --bg: var(--c-ground);
-  --ink: var(--c-ink);
-  --muted: var(--c-quiet);
-  --accent: var(--c-signal);
-  --letterbox: var(--c-ground);
-
-  /* type: one or two families, chosen for this subject */
-  --font-display: Georgia, serif;
-  --font-body: system-ui, sans-serif;
-
-  /* scale at 1920×1080: body stays ≥ 28px for rooms, captions ≥ 22px */
-  --t-hero: 176px;
-  --t-1: 112px;
-  --t-2: 72px;
-  --t-3: 48px;
-  --t-body: 34px;
-  --t-small: 24px;
-
-  /* space */
-  --margin: 120px;
-  --margin-y: 96px;
-  --gutter: 40px;
+.stage-art {
+  position: absolute;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+  z-index: -1;
 }
 
-.slide {
+/* boxes in system drawings: .own = a component we build; plain = config of what we run */
+.box {
+  position: absolute;
+  border: 3px solid var(--line);
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-size: 26px;
+  line-height: 1.25;
   background: var(--bg);
-  color: var(--ink);
-  font: 400 var(--t-body)/1.35 var(--font-body);
-  padding: var(--margin-y) var(--margin);
 }
-.slide h1 {
-  font: 600 var(--t-1)/1 var(--font-display);
-  letter-spacing: -0.02em;
-  max-width: 16ch;
+.box b { display: block; font: 600 32px/1.1 var(--font-display); }
+.box.own { border-color: var(--accent); border-width: 4px; }
+.box.own b { color: var(--accent); }
+.tag {
+  display: inline-block;
+  margin-top: 8px;
+  font: 600 22px/1 var(--font-display);
+  letter-spacing: .02em;
+  color: var(--accent);
 }
-
-/* Deck-wide pieces (an annotation style, a figure caption, a data label…) go here,
-   designed for this deck. Keep one-off compositions in each slide's <style>. */
+.enclosure {
+  position: absolute;
+  border: 4px dashed var(--accent);
+  border-radius: 24px;
+}

@@ -1,53 +1,204 @@
-/* Ten takeaways, ten looks: theme
-   Placeholder values. Replace all of them with this deck's design plan
-   (narrative.md, Visual direction) before building slides. Name colors for what
-   they are in this deck's world, not "primary/secondary". */
+/* Ten takeaways, ten looks: theme.
+   Two layers. The frame slides (cold open, close) wear the series brand, Three Peaks.
+   Each takeaway slide wears its own visual world, scoped by a class on .slide
+   (.t-dep, .t-law, …). The worlds were first drawn in the "Ten Takeaways, Ten Looks"
+   artifact (2026-11-17) and are carried over here, with motion moved under .is-entered
+   so stills always show the finished slide. */
 
-/* @import url("https://fonts.googleapis.com/css2?family=…&display=swap"); */
+@import url("../../_shared/brand.css");
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400..700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Archivo:wght@400..900&display=swap");
 
-:root {
-  /* palette: 4–6 named colors */
-  --c-ground: #e9e9e6;
-  --c-ink: #1d1d1b;
-  --c-quiet: #77756f;
-  --c-signal: #3a3a37;
+:root { --path: var(--snow); --path-ink: var(--slate); }
 
-  /* roles the kit and slides use */
-  --bg: var(--c-ground);
-  --ink: var(--c-ink);
-  --muted: var(--c-quiet);
-  --accent: var(--c-signal);
-  --letterbox: var(--c-ground);
+.stage-art { position: absolute; inset: 0; width: 1920px; height: 1080px; z-index: -1; }
 
-  /* type: one or two families, chosen for this subject */
-  --font-display: Georgia, serif;
-  --font-body: system-ui, sans-serif;
+/* every world starts from the same neutral page */
+.slide[class*=" t-"] { padding: 128px; font-family: 'Archivo', Arial, sans-serif; color: #1A1A1A; background: #F2F0EB; font-size: 28px; line-height: 1.35; }
 
-  /* scale at 1920×1080: body stays ≥ 28px for rooms, captions ≥ 22px */
-  --t-hero: 176px;
-  --t-1: 112px;
-  --t-2: 72px;
-  --t-3: 48px;
-  --t-body: 34px;
-  --t-small: 24px;
+/* shared arrival motion (only when the slide is entered; stills show the end state) */
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+@keyframes drop { from { opacity: 0; transform: translateY(-18px); } }
+@keyframes fadein { from { opacity: 0; } }
+.is-entered .rise { animation: rise 520ms cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+.is-entered .drop { animation: drop 380ms ease-out both; animation-delay: calc(var(--i, 0) * 80ms); }
+.is-entered .fade { animation: fadein 600ms ease-out both; animation-delay: calc(var(--i, 0) * 100ms); }
 
-  /* space */
-  --margin: 120px;
-  --margin-y: 96px;
-  --gutter: 40px;
-}
+/* ============ DEPARTURE BOARD (§1 delivery) ============ */
+.slide.t-dep { background: #131418; color: #F1ECE0; padding: 88px 128px 96px; font-family: 'Oswald', Arial, sans-serif; }
+.t-dep .dep-top { display: flex; align-items: center; gap: 28px; border-bottom: 2px solid #34363C; padding-bottom: 20px; }
+.t-dep .dep-word { font-size: 44px; font-weight: 600; letter-spacing: 8px; color: #F5B800; }
+.t-dep .dep-where { flex: 1; font-size: 28px; letter-spacing: 3px; color: #A9A59B; }
+.t-dep .dep-clock { display: flex; gap: 6px; }
+.t-dep .dep-flap, .t-dep .dep-cell { background: linear-gradient(180deg, #2C2E34 0%, #26282D 49%, #0B0C0E 49%, #0B0C0E 51%, #212328 51%, #1C1E22 100%); border-radius: 6px; color: #F1ECE0; }
+.t-dep .dep-flap { padding: 6px 14px; font-size: 40px; font-weight: 500; letter-spacing: 2px; }
+.t-dep .dep-title { font-family: 'Oswald', Arial, sans-serif; font-size: 96px; font-weight: 500; line-height: 1.04; color: #F1ECE0; margin-top: 36px; max-width: 1600px; letter-spacing: 0; }
+.t-dep .dep-lede { font-family: 'Archivo', Arial, sans-serif; font-size: 30px; line-height: 1.4; color: #BDB8AC; margin-top: 20px; width: 1320px; }
+.t-dep .dep-board { display: flex; flex-direction: column; gap: 8px; margin-top: 44px; }
+.t-dep .dep-row { display: grid; grid-template-columns: 300px 860px 488px; gap: 8px; }
+.t-dep .dep-h { font-size: 24px; letter-spacing: 5px; color: #F5B800; padding: 0 18px; }
+.t-dep .dep-cell { padding: 12px 18px; font-size: 32px; font-weight: 500; letter-spacing: 2px; white-space: nowrap; }
+.t-dep .dep-amber { color: #F5B800; }
 
-.slide {
-  background: var(--bg);
-  color: var(--ink);
-  font: 400 var(--t-body)/1.35 var(--font-body);
-  padding: var(--margin-y) var(--margin);
-}
-.slide h1 {
-  font: 600 var(--t-1)/1 var(--font-display);
-  letter-spacing: -0.02em;
-  max-width: 16ch;
-}
+/* ============ STATUTE BOOK (§2 policy) ============ */
+.slide.t-law { background: #F3EEE2; color: #221E19; padding: 80px 128px 96px; font-family: 'EB Garamond', Georgia, serif; }
+.t-law .law-head { display: flex; justify-content: space-between; border-bottom: 2px solid #221E19; padding-bottom: 14px; }
+.t-law .law-runner { font-size: 24px; letter-spacing: 4px; color: #5B5248; }
+.t-law .law-body { display: grid; grid-template-columns: 1040px 1fr; gap: 64px; margin-top: 44px; }
+.t-law .law-main { display: flex; flex-direction: column; }
+.t-law .law-sect { font-size: 24px; letter-spacing: 4px; font-weight: 600; color: #9E2A1E; }
+.t-law .law-title { font-family: 'EB Garamond', Georgia, serif; font-size: 96px; font-weight: 500; line-height: 1.02; color: #221E19; margin-top: 12px; letter-spacing: 0; }
+.t-law .law-lede { font-size: 32px; font-style: italic; line-height: 1.35; color: #3E3830; margin-top: 24px; }
+.t-law .law-rule { border-top: 1px solid #B9AF9E; margin-top: 30px; }
+.t-law .law-clause { display: flex; gap: 20px; margin-top: 18px; }
+.t-law .law-mark { font-size: 30px; font-weight: 700; color: #9E2A1E; width: 64px; }
+.t-law .law-text { flex: 1; font-size: 30px; line-height: 1.3; color: #221E19; }
+.t-law .law-notes { border-left: 2px solid #B9AF9E; padding-left: 40px; display: flex; flex-direction: column; gap: 22px; }
+.t-law .law-nhead { font-size: 24px; letter-spacing: 4px; font-weight: 600; color: #9E2A1E; }
+.t-law .law-case { font-size: 26px; font-weight: 700; letter-spacing: 1px; color: #221E19; }
+.t-law .law-cdesc { font-size: 25px; font-style: italic; line-height: 1.3; color: #3E3830; margin-top: 2px; }
+.t-law .law-folio { position: absolute; left: 128px; width: 1664px; bottom: 44px; text-align: center; font-size: 24px; letter-spacing: 3px; color: #5B5248; }
 
-/* Deck-wide pieces (an annotation style, a figure caption, a data label…) go here,
-   designed for this deck. Keep one-off compositions in each slide's <style>. */
+/* ============ CONTAINMENT NOTICE (§3 sandboxing) ============ */
+.slide.t-haz { background: #F2C12E; color: #17181A; padding: 116px 128px 120px; font-family: 'Archivo', Arial, sans-serif; }
+.t-haz .haz-stripe { position: absolute; left: 0; width: 1920px; height: 44px; background: repeating-linear-gradient(-45deg, #17181A 0px, #17181A 30px, #F2C12E 30px, #F2C12E 60px); }
+.t-haz .haz-grid { display: grid; grid-template-columns: 720px 1fr; gap: 80px; }
+.t-haz .haz-left { display: flex; flex-direction: column; }
+.t-haz .haz-tag { align-self: flex-start; background: #17181A; color: #F2C12E; font-family: 'Oswald', Arial, sans-serif; font-size: 26px; letter-spacing: 6px; padding: 8px 18px; }
+.t-haz .haz-title { font-family: 'Oswald', Arial, sans-serif; font-size: 116px; font-weight: 700; line-height: 0.98; color: #17181A; margin-top: 24px; letter-spacing: 0; }
+.t-haz .haz-lede { font-size: 28px; line-height: 1.4; color: #17181A; margin-top: 28px; }
+.t-haz .haz-levels { display: flex; flex-direction: column; border-bottom: 4px solid #17181A; }
+.t-haz .haz-level { display: grid; grid-template-columns: 96px 1fr 250px; gap: 24px; align-items: center; border-top: 4px solid #17181A; padding: 18px 0; }
+.t-haz .haz-num { width: 96px; height: 96px; background: #17181A; color: #F2C12E; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', Arial, sans-serif; font-size: 60px; font-weight: 700; }
+.t-haz .haz-name { font-family: 'Oswald', Arial, sans-serif; font-size: 36px; font-weight: 600; letter-spacing: 1px; color: #17181A; }
+.t-haz .haz-desc { font-size: 24px; line-height: 1.3; color: #17181A; margin-top: 4px; }
+.t-haz .haz-verdict { border: 3px solid #17181A; padding: 8px 10px; text-align: center; font-family: 'Oswald', Arial, sans-serif; font-size: 24px; letter-spacing: 3px; color: #17181A; }
+.t-haz .haz-verdict-on { background: #17181A; color: #F2C12E; }
+.t-haz .haz-band { background: #17181A; color: #F2C12E; padding: 18px 28px; margin-top: 44px; font-size: 24px; line-height: 1.4; }
+
+/* ============ THERMAL RECEIPT (§4 observability and cost) ============ */
+@keyframes print { from { opacity: 0; transform: translateY(90px) rotate(-2deg); } }
+.slide.t-rct { background: #2B2723; color: #F1EBDF; padding: 128px; font-family: 'JetBrains Mono', 'Courier New', monospace; }
+.t-rct .rct-left { width: 860px; display: flex; flex-direction: column; }
+.t-rct .rct-eyebrow { font-size: 24px; letter-spacing: 4px; color: #E9A23B; }
+.t-rct .rct-title { font-family: 'JetBrains Mono', monospace; font-size: 80px; font-weight: 800; line-height: 1.08; letter-spacing: -2px; color: #F6F1E6; margin-top: 24px; }
+.t-rct .rct-lede { font-size: 28px; line-height: 1.45; color: #CFC6B6; margin-top: 32px; }
+.t-rct .rct-status { position: absolute; left: 128px; bottom: 104px; width: 860px; font-size: 24px; line-height: 1.4; color: #E9A23B; }
+.t-rct .rct-paper { position: absolute; left: 1120px; top: 72px; width: 600px; padding: 40px 40px 36px; background: #F7F4EC; color: #262320; transform: rotate(-2deg); box-shadow: 0 30px 60px rgba(0,0,0,0.45); }
+.is-entered.t-rct .rct-paper { animation: print 900ms cubic-bezier(.2,.7,.2,1) both; }
+.t-rct .rct-c { font-size: 24px; line-height: 1.3; text-align: center; color: #262320; }
+.t-rct .rct-cb { font-size: 26px; font-weight: 800; line-height: 1.3; text-align: center; color: #262320; }
+.t-rct .rct-dash { border-top: 2px dashed #8F877B; margin: 12px 0; }
+.t-rct .rct-row { display: flex; justify-content: space-between; gap: 16px; }
+.t-rct .rct-item { font-size: 24px; font-weight: 800; line-height: 1.3; color: #262320; }
+.t-rct .rct-sub { font-size: 24px; line-height: 1.3; color: #4F4943; padding-left: 24px; }
+.t-rct .rct-amt { font-size: 24px; font-weight: 700; line-height: 1.3; color: #262320; white-space: nowrap; }
+.t-rct .rct-total { font-size: 30px; font-weight: 800; line-height: 1.3; color: #262320; }
+
+/* ============ SWISS POSTER (§5 fleet upgrades) ============ */
+.slide.t-sws { background: #EFEDE8; color: #151515; padding: 112px 128px 128px; font-family: 'Archivo', Arial, sans-serif; }
+.t-sws .sws-top { display: grid; grid-template-columns: 1040px 1fr; gap: 64px; align-items: end; }
+.t-sws .sws-mark { width: 56px; height: 56px; background: #D8291B; margin-bottom: 28px; }
+.t-sws .sws-title { font-family: 'Archivo', Arial, sans-serif; font-size: 108px; font-weight: 900; line-height: 0.94; letter-spacing: -4px; color: #151515; }
+.t-sws .sws-lede { font-size: 28px; font-weight: 500; line-height: 1.4; color: #2E2D2A; }
+.t-sws .sws-figs { display: grid; grid-template-columns: 340px 340px 340px 1fr; gap: 32px; margin-top: 60px; }
+.t-sws .sws-fig { border-top: 6px solid #151515; padding-top: 20px; }
+.t-sws .sws-hot { border-top-color: #D8291B; }
+.t-sws .sws-num { font-size: 168px; font-weight: 900; line-height: 0.9; letter-spacing: -6px; color: #151515; }
+.t-sws .sws-unit { font-size: 26px; font-weight: 800; letter-spacing: 3px; color: #C02317; margin-top: 16px; }
+.t-sws .sws-desc { font-size: 24px; line-height: 1.35; color: #2E2D2A; margin-top: 10px; }
+.t-sws .sws-src { position: absolute; left: 128px; bottom: 56px; width: 1664px; font-size: 24px; color: #5E5B55; }
+
+/* ============ EXPEDITION PROFILE (§6 AI rollout ladder) ============ */
+.slide.t-topo { background: #ECE6D6; color: #2B2620; padding: 112px 128px; font-family: 'Archivo', Arial, sans-serif; }
+.t-topo .topo-eyebrow { font-size: 24px; font-weight: 700; letter-spacing: 5px; color: #A8401F; }
+.t-topo .topo-title { font-family: 'Archivo', Arial, sans-serif; font-size: 112px; font-weight: 800; letter-spacing: -2px; line-height: 1; color: #2B2620; margin-top: 16px; }
+.t-topo .topo-lede { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 34px; line-height: 1.3; color: #4A4238; margin-top: 20px; width: 1040px; }
+.t-topo .topo-svg { position: absolute; left: 128px; top: 300px; width: 1664px; height: 470px; }
+.t-topo .topo-zone { position: absolute; font-size: 24px; font-weight: 700; letter-spacing: 3px; line-height: 1.3; }
+.t-topo .topo-labels { position: absolute; left: 128px; top: 780px; width: 1664px; display: grid; grid-template-columns: 277px 277px 277px 277px 277px 1fr; }
+.t-topo .topo-lab { padding: 0 8px; text-align: center; display: flex; flex-direction: column; gap: 4px; }
+.t-topo .topo-camp { font-size: 24px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; color: #A8401F; }
+.t-topo .topo-camp-off { color: #6B604F; }
+.t-topo .topo-name { font-size: 26px; font-weight: 800; color: #2B2620; }
+.t-topo .topo-note { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 25px; line-height: 1.2; color: #4A4238; }
+
+/* ============ CARD CATALOGUE (§7 production data) ============ */
+@keyframes stamp { from { opacity: 0; transform: rotate(-12deg) scale(1.6); } }
+@keyframes cardin { from { opacity: 0; transform: translateY(40px) rotate(1.2deg); } }
+.slide.t-cat { background: #1F3A2F; color: #F1E9D2; padding: 120px 128px; font-family: 'EB Garamond', Georgia, serif; }
+.t-cat .cat-left { width: 680px; display: flex; flex-direction: column; }
+.t-cat .cat-eyebrow { font-size: 24px; letter-spacing: 5px; color: #C9B98F; }
+.t-cat .cat-title { font-family: 'EB Garamond', Georgia, serif; font-size: 112px; font-weight: 600; line-height: 0.98; color: #F4ECD6; margin-top: 24px; letter-spacing: 0; }
+.t-cat .cat-lede { font-size: 32px; line-height: 1.38; color: #D5DDD0; margin-top: 32px; }
+.t-cat .cat-why { font-size: 28px; font-style: italic; line-height: 1.35; color: #C9B98F; margin-top: 28px; border-left: 3px solid #C9B98F; padding-left: 24px; }
+.t-cat .cat-card { position: absolute; left: 888px; top: 188px; width: 904px; padding: 36px 48px 48px; background: #F6F0DC; color: #2A2620; border-radius: 6px; transform: rotate(1.2deg); box-shadow: 0 24px 50px rgba(0,0,0,0.4); font-family: 'Courier New', Courier, monospace; }
+.is-entered.t-cat .cat-card { animation: cardin 700ms cubic-bezier(.2,.7,.2,1) both; }
+.t-cat .cat-chead { display: flex; justify-content: space-between; border-bottom: 3px solid #B23A2E; padding-bottom: 12px; }
+.t-cat .cat-call { font-size: 26px; font-weight: 700; color: #9C2F24; }
+.t-cat .cat-ctitle { font-size: 30px; font-weight: 700; color: #2A2620; margin-top: 20px; }
+.t-cat .cat-row { display: grid; grid-template-columns: 170px 1fr; gap: 12px; margin-top: 16px; }
+.t-cat .cat-k { font-size: 24px; line-height: 1.35; color: #6A6257; }
+.t-cat .cat-v { font-size: 24px; line-height: 1.35; color: #2A2620; }
+.t-cat .cat-stamp { position: absolute; left: 1400px; top: 740px; border: 5px solid #B23A2E; border-radius: 8px; padding: 6px 22px; font-family: 'Courier New', Courier, monospace; font-size: 44px; font-weight: 700; letter-spacing: 6px; color: #B23A2E; opacity: 0.92; transform: rotate(-12deg); }
+.is-entered.t-cat .cat-stamp { animation: stamp 260ms ease-in 750ms both; }
+
+/* ============ SAFETY PLACARD (§8 data protection) ============ */
+.slide.t-iso { background: #0E6A44; color: #F4F1E8; padding: 112px 136px; font-family: 'Archivo', Arial, sans-serif; }
+.t-iso .iso-frame { position: absolute; left: 40px; top: 40px; width: 1840px; height: 1000px; border: 8px solid #F4F1E8; border-radius: 28px; }
+.t-iso .iso-top { display: grid; grid-template-columns: 232px 1fr; gap: 48px; align-items: center; }
+.t-iso .iso-pict { width: 232px; height: 232px; background: #F4F1E8; border-radius: 20px; display: flex; align-items: center; justify-content: center; }
+.t-iso .iso-title { font-family: 'Archivo', Arial, sans-serif; font-size: 88px; font-weight: 900; line-height: 0.98; letter-spacing: -1px; color: #F4F1E8; }
+.t-iso .iso-lede { font-size: 28px; line-height: 1.4; color: #E3EDE6; margin-top: 36px; width: 1500px; }
+.t-iso .iso-steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; margin-top: 44px; }
+.t-iso .iso-step { background: #F4F1E8; color: #123826; border-radius: 20px; padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 12px; }
+.t-iso .iso-n { width: 64px; height: 64px; border-radius: 32px; background: #0E6A44; color: #F4F1E8; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; }
+.t-iso .iso-sh { font-size: 36px; font-weight: 900; letter-spacing: 2px; color: #0E6A44; }
+.t-iso .iso-sb { font-size: 24px; line-height: 1.38; color: #21352B; }
+.t-iso .iso-seen { font-size: 24px; line-height: 1.4; color: #E3EDE6; margin-top: 32px; width: 1600px; }
+
+/* ============ BOARDING PASS (§9 identity, not secrets) ============ */
+@keyframes slidein { from { opacity: 0; transform: translateX(80px); } }
+.slide.t-brd { background: #DAD5C9; color: #1B2230; padding: 104px 128px; font-family: 'Archivo', Arial, sans-serif; }
+.t-brd .brd-title { font-family: 'Oswald', Arial, sans-serif; font-size: 96px; font-weight: 600; line-height: 1; color: #16233A; letter-spacing: 0; }
+.t-brd .brd-lede { font-size: 28px; line-height: 1.4; color: #3A3F48; margin-top: 20px; width: 1560px; }
+.t-brd .brd-pass { position: absolute; left: 128px; top: 380px; width: 1664px; height: 560px; display: grid; grid-template-columns: 1210px 1fr; background: #FBF9F3; border-radius: 28px; box-shadow: 0 18px 40px rgba(40,34,20,0.18); overflow: hidden; }
+.is-entered.t-brd .brd-pass { animation: slidein 650ms cubic-bezier(.2,.7,.2,1) both; }
+.t-brd .brd-main { display: flex; flex-direction: column; }
+.t-brd .brd-band { background: #1D4E89; display: flex; justify-content: space-between; align-items: center; padding: 22px 48px; }
+.t-brd .brd-brand { font-family: 'Oswald', Arial, sans-serif; font-size: 32px; font-weight: 600; letter-spacing: 4px; color: #F6F3EA; }
+.t-brd .brd-bandr { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; letter-spacing: 2px; color: #F6F3EA; }
+.t-brd .brd-body { padding: 28px 48px 32px; display: flex; flex-direction: column; gap: 22px; }
+.t-brd .brd-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+.t-brd .brd-wide { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+.t-brd .brd-k { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; letter-spacing: 2px; color: #6A6455; }
+.t-brd .brd-v { font-family: 'Oswald', Arial, sans-serif; font-size: 36px; font-weight: 500; color: #16233A; }
+.t-brd .brd-id { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 26px; font-weight: 700; color: #16233A; margin-top: 4px; }
+.t-brd .brd-route { display: flex; align-items: center; gap: 32px; }
+.t-brd .brd-code { font-family: 'Oswald', Arial, sans-serif; font-size: 96px; font-weight: 700; line-height: 1; letter-spacing: 2px; color: #16233A; }
+.t-brd .brd-arrow { font-family: 'Oswald', Arial, sans-serif; font-size: 72px; font-weight: 700; color: #B9580C; }
+.t-brd .brd-stub { border-left: 4px dashed #BDB5A3; background: #F3EFE4; padding: 32px 36px; display: flex; flex-direction: column; gap: 14px; }
+.t-brd .brd-sh { font-family: 'Oswald', Arial, sans-serif; font-size: 28px; font-weight: 600; letter-spacing: 3px; color: #1D4E89; }
+.t-brd .brd-who { font-size: 24px; line-height: 1.3; color: #2B303A; }
+.t-brd .brd-fine { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; color: #6A6455; }
+.t-brd .brd-notch { position: absolute; width: 44px; height: 44px; border-radius: 22px; background: #DAD5C9; }
+
+/* ============ BLUEPRINT SECTION (§10 AWS) ============ */
+.slide.t-blu { background: #1C3D6C; color: #DCE8F4; padding: 104px 128px; font-family: 'JetBrains Mono', 'Courier New', monospace; }
+.t-blu .blu-grid { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.t-blu .blu-tag { font-size: 24px; letter-spacing: 4px; color: #FFB25C; }
+.t-blu .blu-title { font-family: 'Oswald', Arial, sans-serif; font-size: 96px; font-weight: 500; letter-spacing: 2px; line-height: 1.02; color: #EEF4FA; margin-top: 14px; }
+.t-blu .blu-lede { font-size: 26px; line-height: 1.45; color: #BFD3E8; margin-top: 20px; width: 1100px; }
+.t-blu .blu-draw { position: absolute; left: 128px; top: 410px; width: 1040px; height: 520px; }
+.t-blu .blu-floor { position: absolute; border: 3px solid #DCE8F4; padding: 12px 24px; display: flex; flex-direction: column; gap: 4px; }
+.t-blu .blu-above { background: rgba(255, 178, 92, 0.10); }
+.t-blu .blu-fname { font-family: 'Oswald', Arial, sans-serif; font-size: 30px; font-weight: 500; letter-spacing: 2px; line-height: 1.1; color: #EEF4FA; }
+.t-blu .blu-fdesc { font-size: 24px; line-height: 1.25; color: #BFD3E8; }
+.t-blu .blu-seamlabel { position: absolute; left: 0; top: 218px; width: 1040px; font-size: 24px; font-weight: 700; letter-spacing: 2px; color: #FFB25C; }
+.t-blu .blu-seam { position: absolute; left: 0; top: 256px; width: 1040px; height: 0; border-top: 4px dashed #FFB25C; }
+.t-blu .blu-ground { position: absolute; left: 0; top: 484px; width: 1040px; height: 36px; background: repeating-linear-gradient(45deg, #DCE8F4 0px, #DCE8F4 2px, #1C3D6C 2px, #1C3D6C 16px); opacity: 0.5; }
+.t-blu .blu-tb { position: absolute; left: 1240px; top: 400px; width: 552px; border: 3px solid #DCE8F4; display: flex; flex-direction: column; }
+.t-blu .blu-cell { border-top: 2px solid #DCE8F4; padding: 12px 18px; display: flex; flex-direction: column; gap: 4px; }
+.t-blu .blu-first { border-top: none; }
+.t-blu .blu-k { font-size: 24px; letter-spacing: 2px; color: #8FB0D3; }
+.t-blu .blu-v { font-size: 24px; line-height: 1.3; color: #EEF4FA; }
+.t-blu .blu-ref { font-size: 24px; line-height: 1.3; color: #BFD3E8; }

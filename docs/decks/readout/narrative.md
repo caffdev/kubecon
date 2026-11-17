@@ -46,9 +46,55 @@ argument and the ask.
 ## Visual direction
 
 Series brand, decided with the user: **Three Peaks**, the Wasatch ridgeline from the show's
-own artwork (the earlier "Three Peaks — visual concepts" artifact). Shared tokens live in
-`docs/decks/_shared/`. Path colours: mint = Path 1, teal = Path 2, haze = Path 3. The full
-design plan for this deck is written in phase 3, after the story is agreed.
+own artwork (the earlier "Three Peaks — visual concepts" artifact). It lives in
+`docs/decks/_shared/` (`brand.css` for tokens and pieces, `peaks.js` to draw the mountains).
+This deck is the one that shows the whole range.
+
+- **Subject world:** the Wasatch above Salt Lake City as the show drew it: flat silhouette
+  peaks, one ridge-shadow stripe per face, a sky-to-mint disc. Around it, expedition
+  material: route topos with numbered pitches, base camp, ropes, summit registers.
+- **Palette:** night `#070b0e` (ground) · snow `#e8f4f2` (ink) · lichen `#9fb4b6` (quiet text,
+  9:1) · mint `#9cf0e1` = Path 1 · teal `#36baa2` = Path 2 · haze `#68b6c3` = Path 3 ·
+  alpenglow `#f4a261`, the one warm accent: the rope, the dates, the ask · snowfield
+  `#e9f1f0` light ground for evidence, with slate `#0f1e29` ink · sky `#1f6fb2` for the disc
+  only (3.7:1, never text).
+- **Type:** Barlow Condensed 600 for headlines (the narrow cut of US highway and trail
+  signage, readable from the back of a room); Barlow 400/500 for body; JetBrains Mono only
+  for literal code.
+- **Layout:** margins 120 / 96, left-aligned. Hero slides put the range on the bottom edge
+  with the headline in the sky above it. Content slides: headline top-left in at most two
+  lines, picture in the right two-thirds or across the lower band. Evidence slides go on
+  snowfield, so the deck alternates night and day.
+
+  ```
+  opening (the-answer)              densest (fleets, snowfield)       peak (the-rope)
+  ┌───────────────────────────┐    ┌───────────────────────────┐    ┌───────────────────────────┐
+  │ One path to production…   │    │ Nobody presenting at our… │    │ No agent opens a PR until │
+  │                    (disc) │    │  1,000                    │    │ policy runs in CI.        │
+  │  P3      P1         P2    │    │   /\   300                │    │   4     E                 │
+  │  /\      /\         /\    │    │  /  \  /\  100 80 79 30 9 │    │  3     D       3          │
+  │ /  \    /  \       /  \   │    │ /____\/__\_/\_/\_/\_/\_/\ │    │ 2     C ~~~~~> 2          │
+  │/____\__/____\_____/____\_ │    │ [our band]                │    │1     A B       0 1        │
+  └───────────────────────────┘    └───────────────────────────┘    └══ base camp ══════════════┘
+  ```
+- **Signature element:** the three-peak range, with mint, teal and haze snow caps on the
+  disc. It appears only where the range means something: the answer, the route map, the
+  rope, the path slides, the echo, the ask.
+- **Concepts as pictures:** altitude is progress; camps are stages (numbered circles in the
+  path colour; filled = where we are, dashed = undated); ropes are dependencies (alpenglow,
+  dashed); fields of small peak glyphs are counts (one glyph = one cluster); the base-camp
+  band at the foot is today.
+- **Motion moment:** on `the-rope`, the rope draws itself from Path 1 B–C across to Path 2
+  phase 2, then the thinner label rope from Path 3 stage 1 to Path 1 D.
+- **Anti-default check, and what changed:**
+  - *Near-black with a bright accent* is the show's own artwork, so it stays, but: three
+    accents with fixed meanings instead of one decorative accent; the warm accent reserved
+    for decisions; the evidence slides moved to a snowfield ground.
+  - *Inter* (every earlier deck) replaced by Barlow Condensed, chosen from signage.
+  - *Template chrome:* no eyebrow labels, act labels, page numbers, logos or mono labels.
+    Sources appear only where a claim needs one.
+  - *Big number, small label:* fleet sizes drawn as peaks scaled to size, not stat cards.
+  - *Card grids:* none. Structure comes from the range and the camps.
 
 ## Beats
 

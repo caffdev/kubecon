@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Losing a region</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { max-width: 1500px; }
+    .lanes { position: absolute; left: var(--margin); top: 330px; width: 1680px; display: grid; gap: 34px; }
+    .lane { display: grid; grid-template-columns: 290px 1fr; align-items: center; column-gap: 30px; }
+    .lane-name { font: 600 42px/1 var(--font-display); }
+    .lane-name small { display: block; margin-top: 6px; font: 400 24px/1.2 var(--font-body); color: var(--muted); }
+    .bar { display: flex; gap: 6px; align-items: center; height: 84px; }
+    .seg {
+      height: 84px;
+      border-radius: 10px;
+      background: var(--haze-ink);
+      color: var(--snowfield);
+      display: flex; align-items: center;
+      padding: 0 18px;
+      font: 600 28px/1.05 var(--font-display);
+    }
+    .seg.light { background: #a9c6cc; color: var(--slate); }
+    .seg.off {
+      background: transparent;
+      border: 3px dashed var(--slate-quiet);
+      color: var(--slate-quiet);
+      text-decoration: line-through;
+    }
+    .note { margin-left: 18px; font-size: 26px; line-height: 1.2; color: var(--muted); max-width: 340px; }
+    .rto { position: absolute; left: 1538px; top: 300px; width: 4px; height: 560px; background: var(--alpenglow-ink); }
+    .rto-label { position: absolute; left: 1560px; top: 300px; width: 240px; font: 600 30px/1.1 var(--font-display); color: var(--alpenglow-ink); }
+    .src { max-width: 1500px; }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <h2>Losing a region is a sum of delays, and the slowest layer sets our RTO.</h2>
+
+    <div class="lanes">
+      <div class="lane">
+        <p class="lane-name">Delivery<small>ApplicationSets, both regions</small></p>
+        <div class="bar"><span class="seg">solved</span><span class="note">The app already runs in both.</span></div>
+      </div>
+      <div class="lane">
+        <p class="lane-name">Traffic<small>edge and east-west</small></p>
+        <div class="bar"><span class="seg" style="width: 170px;">detect</span><span class="seg" style="width: 190px;">propagate</span><span class="seg off" style="width: 300px;">client DNS cache</span><span class="note">Global Accelerator takes the DNS cache off the clock.</span></div>
+      </div>
+      <div class="lane">
+        <p class="lane-name">State<small>Aurora Global, DynamoDB global</small></p>
+        <div class="bar"><span class="seg light" style="width: 700px;">data converges in the survivor</span><span class="note">Traffic can't move faster than this.</span></div>
+      </div>
+      <div class="lane">
+        <p class="lane-name">Capacity<small>the survivor takes 100%</small></p>
+        <div class="bar"><span class="seg" style="width: 1100px;">survivor scales from half to full size</span></div>
+      </div>
+    </div>
+
+    <div class="rto" aria-hidden="true"></div>
+    <p class="rto-label">RTO is wherever the slowest lane ends</p>
+
+    <p class="src">Illustrative lengths, not measured: measuring them is decision 2b. Global Accelerator is our recommendation, not something we saw presented.</p>
+  </main>
+
+  <aside class="notes">
+    "No user-visible downtime" isn't a number. It's a sum, and the slowest part of it is what the customers see.
+
+    Four layers. Delivery is solved: ApplicationSets already put the same app in both regions, so a scheduler buys us nothing here.
+
+    Traffic: something has to notice the region is gone, and the change has to propagate. Then clients keep the old DNS answer cached for as long as they like, which lands inside our recovery time and is out of our control. That's why we recommend AWS Global Accelerator at the edge: it takes the DNS cache off the clock. That's our recommendation, to be clear, not something we saw presented.
+
+    State: we can't fail traffic over faster than the data. Aurora Global or DynamoDB global tables have to converge in the surviving region, and doing it in the other order is how writes split.
+
+    Capacity: the survivor inherits a hundred percent of traffic at fifty percent of its size. Either we pay for permanent double headroom, and this lane is zero, or Karpenter's scale-up time is formally part of our RTO.
+
+    The lengths are illustrative. Measuring them is decision 2b. And the developer-facing half of multi-cluster is the part nobody budgets.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

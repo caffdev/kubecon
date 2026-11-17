@@ -49,8 +49,38 @@ host a model.
 
 ## Visual direction
 
-Series brand: Three Peaks (`docs/decks/_shared/`). This path's colour is **teal**. The full
-plan is written in phase 3.
+Series brand: Three Peaks (`docs/decks/_shared/`, see the readout's narrative for the full
+palette and type). This path's colour is **teal** (`#36baa2` on night, `#0f6b5b` on
+snowfield). What this deck adds:
+
+- **Subject world:** the throwaway pod and the expedition. An agent run is a short trip:
+  issued a pass, sent through two gates, logged, and torn down. The ladder is an expedition
+  elevation profile: surveyed and dated where we can see the route, dashed where we can't.
+- **Grounds:** night for the argument; snowfield for the system drawings (architecture,
+  blast radius, the trace); the ladder on night so the profile glows.
+- **Pieces:** the **enclosure** (a pod drawn as a dashed teal boundary whose only openings
+  are labelled exits); **owned boxes** (teal border = something we build; grey = config of
+  something we already run); the **profile** on the peak slide only.
+
+  ```
+  opening (cold-open)              peak (ladder)                    densest (architecture)
+  ┌──────────────────────────┐    ┌──────────────────────────┐     ┌──────────────────────────┐
+  │ Verkada triages 4,700    │    │ Six rungs, and only the  │     │ We own four components…  │
+  │ alerts a month for 33¢.  │    │ next two get dates.   ○5 │     │ triggers→[Jenkins]→┆pod┆→AI gw  │
+  │         ::::::::::::::::  │    │                 ○4 ┄┄┄   │     │            [step]  ┆img┆→MCP gw │
+  │         :::::::●$0.33::  │    │        ●2 ┄○3            │     │                    ┆   ┆→OTel   │
+  │         ::::::::::::::::  │    │ ●0 ━━●1                  │     │       [marketplace]→      │
+  └──────────────────────────┘    └──────────────────────────┘     └──────────────────────────┘
+  ```
+- **Concepts as pictures:** a count is drawn as that many dots (4,700 alerts); reach is
+  drawn as an enclosure with exits; authority is a progressive-delivery pipeline with the
+  payload swapped; a run is a trace.
+- **Motion moment:** on `ladder`, the profile draws itself up to camp 2, then the dashed,
+  undated slope appears.
+- **Anti-default check:** the old deck's controls were six near-identical card grids
+  ("Control 01…06" eyebrows). Changed: no eyebrows; each control gets its own picture
+  (enclosure, pipeline, trace). The tables (ladder, Claude surfaces) become a profile and
+  a system drawing.
 
 ## Beats
 
@@ -165,7 +195,7 @@ plan is written in phase 3.
 
 - **Act:** III
 - **Job:** the peak: the ladder and its two dates
-- **Headline:** Six rungs, and only the first two get dates.
+- **Headline:** Six rungs, and only the next two get dates.
 - **Visual:** an expedition profile. Camps 0–2 sit on a solid, surveyed slope with dates (today; Q2 2027; end 2027). Camps 3–5 sit on a pale, dashed slope with no dates. The line draws up to camp 2, then the dashes appear
 - **Energy:** 5
 - **Into next:** camp 1 is close. Here's what reaching it means.

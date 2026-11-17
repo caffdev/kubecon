@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One path, three climbs</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 {
+      font-size: 88px;
+      line-height: 1.0;
+      max-width: 1270px;
+    }
+    .byline {
+      margin-top: 36px;
+      font-size: 30px;
+      color: var(--muted);
+      max-width: 900px;
+    }
+    .path-label { position: absolute; }
+    .path-label b { margin-top: 4px; }
+
+    .is-entered .pk { animation: rise-up 1100ms var(--step-ease) both; }
+    .is-entered #pk3 { animation-delay: 80ms; }
+    .is-entered #pk1 { animation-delay: 220ms; }
+    .is-entered #pk2 { animation-delay: 360ms; }
+    .is-entered .path-label { animation: fade-in 700ms 900ms both; }
+    @keyframes rise-up { from { transform: translateY(160px); } }
+    @keyframes fade-in { from { opacity: 0; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+
+    <h1>One path to production for every change, built as three climbs that start this quarter.</h1>
+    <p class="byline">Our readout from KubeCon NA 2026 in Salt Lake City. Evan and Kyle.</p>
+
+    <p class="path-label p3" style="left: 330px; top: 590px;">Path 3<b>EKS fleet + Crossplane</b></p>
+    <p class="path-label p1" style="left: 1450px; top: 350px;">Path 1<b>Deployments as a service</b></p>
+    <p class="path-label p2" style="left: 1540px; top: 520px;">Path 2<b>Claude agent platform</b></p>
+  </main>
+
+  <aside class="notes">
+    This is the answer, so we're putting it first. One path to production for every change, whoever or whatever wrote it. We build it as three climbs, and all three start this quarter.
+
+    The picture is the show's own artwork: the Wasatch range you could see from the convention centre. Three summits from one base camp. The centre one is the tallest because it's the one the others depend on: Path 1, making deployment a service. On the right, the sharpest and newest: Path 2, getting Claude off laptops and into pods we control. On the left, the broadest: Path 3, the EKS fleet and Crossplane, the ground the other two stand on.
+
+    Peak height is ambition, not priority. Path 3 is widest because everything else stands on its cluster-label vocabulary.
+
+    Why one path? Because two things got loud this week, and they turn out to be the same problem.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    Peaks.draw('#range',
+      Peaks.disc({ cx: 1250, cy: 690, r: 280 }),
+      Peaks.far({ y: 900, amp: 70, n: 12, seed: 11 }),
+      Peaks.peak({ id: 'pk3', x: 560, top: 720, base: 1080, hw: 460, cap: 'var(--haze)' }),
+      Peaks.peak({ id: 'pk1', x: 1250, top: 440, base: 1080, hw: 470, cap: 'var(--mint)' }),
+      Peaks.peak({ id: 'pk2', x: 1690, top: 660, base: 1080, hw: 330, cap: 'var(--teal)' })
+    );
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

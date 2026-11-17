@@ -1,0 +1,154 @@
+/* Three Peaks: the shared brand for the KubeCon NA 2026 readout decks.
+   Source: the Wasatch ridgeline in the show's own artwork (flat silhouette peaks, one
+   ridge-shadow stripe per face, a sky-to-mint disc behind). Each deck's theme.css imports
+   this file, sets --path / --path-ink to its own path colour, and adds its own pieces.
+
+   Colour meanings are fixed across the series:
+     mint = Path 1 (deployments) · teal = Path 2 (agents) · haze = Path 3 (fleet)
+     alpenglow = the one warm accent: a decision, a date we commit to, a ⚠️ flag.
+   Sky is for shapes only (contrast 3.7 on night); never set text in it. */
+
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  /* the range */
+  --night: #070b0e;      /* ground: the sky behind the ridge, after dark */
+  --dusk: #0f2230;       /* statement ground: the ridge-shadow navy, lifted */
+  --rock: #1b1f22;       /* peak body */
+  --rock-far: #11171b;   /* far range */
+  --ridge: #132634;      /* the single shadow stripe on each face */
+  --sky: #1f6fb2;        /* top of the disc; shapes only */
+  --snow: #e8f4f2;       /* text on dark */
+  --lichen: #9fb4b6;     /* quiet text on dark (9:1 on night) */
+  --scree: #3a4a52;      /* hairlines, unlit marks on dark */
+
+  /* the three paths, plus the warm accent */
+  --mint: #9cf0e1;
+  --teal: #36baa2;
+  --haze: #68b6c3;
+  --alpenglow: #f4a261;
+
+  /* snowfield: the light ground for dense evidence */
+  --snowfield: #e9f1f0;
+  --slate: #0f1e29;      /* text on snowfield (14.8:1) */
+  --slate-quiet: #435760;
+  --hairline: #c4d3d3;
+  --mint-ink: #0b6e5f;
+  --teal-ink: #0f6b5b;
+  --haze-ink: #22697a;
+  --alpenglow-ink: #a4501a;
+
+  /* roles (dark by default; .snow flips them) */
+  --bg: var(--night);
+  --ink: var(--snow);
+  --muted: var(--lichen);
+  --line: var(--scree);
+  --warm: var(--alpenglow);
+  --letterbox: var(--night);
+
+  /* type */
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --font-code: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  --t-hero: 168px;
+  --t-1: 112px;
+  --t-2: 76px;
+  --t-3: 50px;
+  --t-body: 34px;
+  --t-small: 24px;
+
+  /* space */
+  --margin: 120px;
+  --margin-y: 96px;
+  --gutter: 40px;
+}
+
+.slide {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--t-body)/1.38 var(--font-body);
+  padding: var(--margin-y) var(--margin);
+  font-variant-numeric: lining-nums;
+}
+
+/* grounds */
+.slide.snow {
+  --bg: var(--snowfield);
+  --ink: var(--slate);
+  --muted: var(--slate-quiet);
+  --line: var(--hairline);
+  --warm: var(--alpenglow-ink);
+  --accent: var(--path-ink);
+}
+.slide.dusk { --bg: var(--dusk); }
+
+/* type pieces: :where(.slide) keeps these at element specificity, so a slide's own
+   `h1 { … }` wins. Margins still need `.slide h1` (the kit's reset is .slide-scoped). */
+:where(.slide) :is(h1, h2) {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+}
+:where(.slide) h1 { font-size: var(--t-1); }
+:where(.slide) h2 { font-size: var(--t-2); max-width: 1500px; }
+:where(.slide) h3 {
+  font: 600 var(--t-3)/1.08 var(--font-display);
+  letter-spacing: -0.005em;
+}
+.lede { font-size: 38px; line-height: 1.36; color: var(--muted); max-width: 1180px; }
+.quiet { color: var(--muted); }
+.src {
+  position: absolute;
+  left: var(--margin);
+  bottom: 52px;
+  font-size: var(--t-small);
+  line-height: 1.3;
+  color: var(--muted);
+  max-width: 1680px;
+}
+.warn { color: var(--warm); }
+.num {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+  line-height: .92;
+}
+.code {
+  font: 400 30px/1.5 var(--font-code);
+  white-space: pre;
+}
+
+/* camp marker: a stage on a path. <span class="camp">B</span> · .lit fills it · .open dashes it */
+.camp {
+  --c: var(--path, var(--snow));
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 4px solid var(--c);
+  color: var(--c);
+  font: 600 34px/1 var(--font-display);
+  flex: none;
+}
+.camp.lit { background: var(--c); color: var(--bg); }
+.camp.open { border-style: dashed; color: var(--muted); border-color: var(--muted); }
+
+/* SVG pieces drawn by peaks.js, coloured here so they follow the palette */
+.pk-body { fill: var(--rock); }
+.pk-shadow { fill: var(--ridge); }
+.pk-cap { fill: var(--cap, var(--mint)); }
+.pk-far { fill: var(--rock-far); }
+.snow .pk-body { fill: #cfdcdc; }
+.snow .pk-shadow { fill: #b3c5c8; }
+.snow .pk-far { fill: #dde7e6; }
+.rope {
+  fill: none;
+  stroke: var(--rope, var(--alpenglow));
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 14 12;
+}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four components</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { max-width: 1400px; }
+    .arrows path { fill: none; stroke: var(--slate-quiet); stroke-width: 3; }
+    .arrows .head { fill: var(--slate-quiet); stroke: none; }
+    .col-head { position: absolute; font: 600 28px/1 var(--font-display); color: var(--muted); }
+    .item { position: absolute; font-size: 28px; line-height: 1.2; }
+    .dest { position: absolute; width: 300px; font-size: 26px; line-height: 1.22; color: var(--muted); }
+    .enc-label { position: absolute; font: 600 24px/1.1 var(--font-display); color: var(--teal-ink); }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="stage-art arrows" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path d="M330 490 H372"/><path class="head" d="M380 490 l-12 -8 v16z"/>
+      <path d="M660 490 H712"/><path class="head" d="M720 490 l-12 -8 v16z"/>
+      <path d="M1120 440 H1182"/><path class="head" d="M1190 440 l-12 -8 v16z"/>
+      <path d="M1120 560 H1182"/><path class="head" d="M1190 560 l-12 -8 v16z"/>
+      <path d="M1120 715 H1182"/><path class="head" d="M1190 715 l-12 -8 v16z"/>
+      <path d="M1440 420 H1486"/><path class="head" d="M1494 420 l-12 -8 v16z"/>
+      <path d="M1440 560 H1486"/><path class="head" d="M1494 560 l-12 -8 v16z"/>
+      <path d="M1440 715 H1486"/><path class="head" d="M1494 715 l-12 -8 v16z"/>
+      <path d="M920 850 V790"/><path class="head" d="M920 782 l-8 12 h16z"/>
+    </svg>
+
+    <h2>We own four components; everything else is configuration.</h2>
+
+    <p class="col-head" style="left: 120px; top: 340px;">Triggers</p>
+    <p class="item" style="left: 120px; top: 392px;">GitHub webhook</p>
+    <p class="item" style="left: 120px; top: 452px;">Alertmanager</p>
+    <p class="item" style="left: 120px; top: 512px;">Jira or Slack</p>
+    <p class="item" style="left: 120px; top: 572px;">Nightly cron</p>
+
+    <div class="box" style="left: 380px; top: 340px; width: 280px; height: 300px;"><b>Jenkins</b>credentials, audit, retries, a UI people know</div>
+    <div class="box own" style="left: 400px; top: 516px; width: 240px;"><b>claudeAgent( )</b><span class="tag">we build</span></div>
+
+    <div class="enclosure" style="left: 720px; top: 320px; width: 400px; height: 470px;"></div>
+    <p class="enc-label" style="left: 750px; top: 338px;">namespace claude-agents</p>
+    <div class="box own" style="left: 750px; top: 384px; width: 340px;"><b>Agent image</b>claude -p, headless<br>managed settings<br>plugins from the marketplace<br>OTel on by default<br><span class="tag">we build</span></div>
+    <p class="enc-label" style="left: 750px; top: 744px;">egress: gateway and OTel only</p>
+
+    <div class="box own" style="left: 1190px; top: 360px; width: 250px; height: 250px;"><b>Gateway</b>every model and tool call: quota, auth, audit<br><span class="tag">we build</span></div>
+    <div class="box" style="left: 1190px; top: 664px; width: 250px;"><b>OTel collector</b></div>
+
+    <p class="dest" style="left: 1500px; top: 404px;">Anthropic API or Bedrock</p>
+    <p class="dest" style="left: 1500px; top: 530px;">GitHub, Jira, Grafana, read-only k8s</p>
+    <p class="dest" style="left: 1500px; top: 700px;">Jaeger, Loki, Prometheus</p>
+
+    <div class="box own" style="left: 720px; top: 850px; width: 680px;"><b>Marketplace repo</b>skills, MCP configs and settings for pods and laptops <span class="tag">we build</span></div>
+
+    <p class="src">From CLAUDE-AGENT-PLATFORM.md §2. ⚠️ Claude Code flag names to be checked against current docs.</p>
+  </main>
+
+  <aside class="notes">
+    Here's the whole runtime on one slide, and the point is how little of it is new.
+
+    Left to right. Something happens: a pull request opens, an alert fires, someone types a command in Slack, or the nightly cron runs. Jenkins picks it up, as it already does for everything else, with credential binding, audit logs, retries and a UI people know. It calls one shared library step we write, claudeAgent. That starts a throwaway pod in a namespace of its own, running an agent image we build: Claude Code headless, with managed settings baked in, plugins pulled from our marketplace, and telemetry on.
+
+    The dashed line is the namespace's network policy. The pod can only talk to two things: the gateway, and the telemetry collector. Every model call goes through the gateway to the Anthropic API or Bedrock. Every tool call goes through it to GitHub, Jira, Grafana and a read-only view of Kubernetes. Quota, auth and audit live there, once.
+
+    Teal is what we build. Four things: the agent image, the library step, the marketplace, and the gateway. Grey is configuration of things we already run.
+
+    The marketplace is the piece laptops get first, so let's look at that.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>$0.33 an alert</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 104px; max-width: 1600px; line-height: .98; }
+    .sub { margin-top: 40px; font-size: 32px; color: var(--muted); max-width: 600px; }
+    .field { position: absolute; left: 766px; top: 430px; }
+    .field circle { fill: var(--scree); }
+    .field .one { fill: var(--teal); }
+    .ticket {
+      position: absolute;
+      left: 1452px; top: 732px;
+      background: var(--teal);
+      color: var(--night);
+      border-radius: 10px;
+      padding: 18px 26px 20px;
+      font: 600 30px/1.1 var(--font-display);
+    }
+    .ticket .price { display: block; font-size: 88px; line-height: .95; letter-spacing: -0.02em; }
+    .deck-id {
+      position: absolute;
+      left: var(--margin);
+      bottom: 64px;
+      font: 600 30px/1.2 var(--font-display);
+      color: var(--teal);
+    }
+    .deck-id span { color: var(--muted); font-weight: 500; }
+    .is-entered .ticket { animation: stamp 520ms 500ms var(--step-ease) both; }
+    @keyframes stamp { from { opacity: 0; transform: scale(1.3); } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h1>Verkada triages 4,700 alerts a month for 33 cents each.</h1>
+    <p class="sub">Every alert across nine production clusters, read and explained by an agent. Our arithmetic: about $1,550 a month.</p>
+
+    <svg class="field" id="field" width="1040" height="556" viewBox="0 0 1040 556" aria-label="4,700 dots, one per alert in a month; one highlighted"></svg>
+    <p class="ticket">one alert, triaged<span class="price">$0.33</span></p>
+
+    <p class="deck-id">Path 2: Claude off the laptop, into the pod<br><span>Evan and Kyle</span></p>
+  </main>
+
+  <aside class="notes">
+    Every dot on the right is one alert. There are four thousand seven hundred of them, one month of alerts at Verkada across nine production clusters. An agent reads every one, says whether it's real or noise, how severe and why, and links the runbook and the deploy that correlates. Thirty-three cents each. Our arithmetic says that's about fifteen hundred dollars a month for the whole pile.
+
+    That's an operations report, not a demo. And it's exactly the kind of work we want Claude doing for us first, because it reads and explains. It never writes to a cluster.
+
+    Before we go further, let me be precise about what we mean by AI in this deck.
+  </aside>
+
+  <script>
+    // 4,700 dots: 94 columns x 50 rows, one per alert in a month
+    const cols = 94, rows = 50, step = 11, r = 3.4;
+    let dots = '';
+    for (let i = 0; i < cols * rows; i++) {
+      const x = 6 + (i % cols) * step, y = 6 + Math.floor(i / cols) * step;
+      dots += i === 2410 ? `<circle class="one" cx="${x}" cy="${y}" r="7"/>` : `<circle cx="${x}" cy="${y}" r="${r}"/>`;
+    }
+    document.getElementById('field').innerHTML = dots;
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -2,6 +2,25 @@
   "title": "Path 1: Deployments as a service",
   "draft": "main",
   "drafts": {
-    "main": []
+    "main": [
+      "day-one",
+      "abstraction-depth",
+      "peers",
+      "stage-zero",
+      "guardrails-first",
+      "canary-gate",
+      "ramps",
+      "one-label",
+      "no-cluster-names",
+      "promotion-pr",
+      "the-trade",
+      "stage-a",
+      "reloader",
+      "stage-b",
+      "freeze-windows",
+      "stages-c-d",
+      "stage-e",
+      "the-ask"
+    ]
   }
 }
