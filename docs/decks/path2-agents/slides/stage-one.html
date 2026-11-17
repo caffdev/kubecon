@@ -3,23 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Triage counts only if a responder would act on it, and the accept-or-reject log is the product.</title>
+  <title>Stage 1, done</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .card { position: absolute; left: var(--margin); top: 320px; width: 1020px; background: #fff; border: 3px solid var(--hairline); border-radius: 18px; overflow: hidden; }
+    .alert { padding: 18px 28px; background: #f6efe6; border-bottom: 3px solid var(--hairline); font: 400 24px/1.3 var(--font-code); color: var(--alpenglow-ink); }
+    .alert b { font-family: var(--font-display); font-weight: 600; font-size: 30px; color: var(--slate); margin-right: 12px; }
+    .field { display: grid; grid-template-columns: 250px 1fr; gap: 20px; padding: 14px 28px; border-bottom: 2px solid #eef3f2; font-size: 27px; line-height: 1.28; }
+    .field .k { font: 600 28px/1.2 var(--font-display); color: var(--teal-ink); }
+    .field a { color: var(--teal-ink); text-decoration: underline; text-underline-offset: 4px; }
+    .verdict { display: flex; gap: 14px; align-items: center; padding: 18px 28px; background: #f2f8f6; font-size: 26px; color: var(--muted); }
+    .btn { padding: 8px 18px; border-radius: 10px; border: 2px solid var(--hairline); font: 600 26px/1 var(--font-display); color: var(--slate-quiet); }
+    .btn.on { background: var(--teal-ink); border-color: var(--teal-ink); color: #fff; }
+    .side { position: absolute; left: 1220px; top: 330px; width: 580px; display: grid; gap: 30px; }
+    .side h3 { color: var(--teal-ink); margin-bottom: 8px; }
+    .side p { font-size: 27px; line-height: 1.3; color: var(--muted); }
+    .side b { color: var(--slate); font-weight: 600; }
+    .src { max-width: 1000px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Triage counts only if a responder would act on it, and the accept-or-reject log is the product.</h1>
+  <main class="slide snow">
+    <h2>Triage counts only if a responder would act on it, and the accept-or-reject log is the product.</h2>
+
+    <div class="card">
+      <p class="alert"><b>HighErrorRate</b>checkout-api · prod-use1 · fired 09:46</p>
+      <p class="field"><span class="k">Relevance</span><span>Real. Not a duplicate of the open incident.</span></p>
+      <p class="field"><span class="k">Severity</span><span>SEV2: 4.2% errors for 12 minutes on the payment path.</span></p>
+      <p class="field"><span class="k">Links</span><span><a>runbook</a>, <a>dashboard</a>, <a>deploy at 09:41</a> (correlates), <a>last 3 firings</a></span></p>
+      <p class="field"><span class="k">Suggested action</span><span>Roll checkout back to v1.81.</span></p>
+      <p class="verdict"><span class="btn on">Accept</span><span class="btn">Modify</span><span class="btn">Reject</span><span>logged: accepted by on-call, 09:58</span></p>
+    </div>
+
+    <div class="side">
+      <div><h3>Start from open source</h3><p><b>HolmesGPT</b>, the agentic investigator with 30+ integrations, read-only, with Claude behind it ⚠️. <b>k8sgpt</b> is the lighter rule-based scanner.</p></div>
+      <div><h3>The log is the product</h3><p>Accept, modify or reject, on every triage. That record is the evidence stage 2 is gated on. Instrument it from day one.</p></div>
+    </div>
+    <p class="src">An illustrative triage, not a real alert. ⚠️ Check HolmesGPT's current Claude support before we commit.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Camp one is close, so let's define what reaching it means, because if the output is a summary nobody acts on, we've built a chatbot.
+
+    This is an illustrative triage, not a real one. An alert fires. The agent posts four things, and these are the acceptance criteria. A relevance call: real, noise, or a duplicate of an open incident, with its reasoning. A severity, stated in terms a responder can disagree with. Links out: the runbook, the dashboard, the deploy that correlates, the last three times this fired. And a suggested action.
+
+    Then the responder accepts it, modifies it, or rejects it, and we log which. That log is the product. It's the track record that stage 2, agents opening pull requests, is gated on. If we don't instrument it from day one, we arrive at the next gate with no evidence.
+
+    We don't start from scratch. HolmesGPT is a CNCF Sandbox project built for exactly this, alert-driven and read-only, with Claude behind it; we need to confirm its current Claude support. k8sgpt is the lighter, rule-based option.
+
+    The teams with good numbers all budgeted two things nobody puts in a business case.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

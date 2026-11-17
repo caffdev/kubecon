@@ -3,23 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Don't build an agent platform: run Claude headless in throwaway pods, through the CI we already trust.</title>
+  <title>The turn</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    .slide h2 { font-size: 84px; max-width: 1560px; }
+    .col { position: absolute; top: 400px; }
+    .col h3 { font-size: 36px; color: var(--muted); margin-bottom: 20px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 14px; }
+    .chip { padding: 10px 18px; border-radius: 10px; border: 2px solid var(--scree); font: 500 30px/1.1 var(--font-display); color: var(--lichen); }
+    .chip::before { content: "✓ "; color: var(--scree); }
+    .gaps { display: grid; gap: 16px; }
+    .gap { padding: 18px 24px; border-radius: 14px; border: 4px solid var(--teal); font-size: 27px; line-height: 1.25; color: var(--muted); }
+    .gap b { display: block; font: 600 36px/1.05 var(--font-display); color: var(--teal); margin-bottom: 4px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Don't build an agent platform: run Claude headless in throwaway pods, through the CI we already trust.</h1>
+    <h2>Don't build an agent platform: run Claude headless in throwaway pods, through the CI we already trust.</h2>
+
+    <div class="col" style="left: 120px; width: 520px;">
+      <h3>Jenkins already gives us</h3>
+      <div class="chips"><span class="chip">triggers</span><span class="chip">credential binding</span><span class="chip">audit log</span><span class="chip">RBAC</span><span class="chip">retries</span><span class="chip">queueing</span><span class="chip">a UI people know</span></div>
+    </div>
+    <div class="col" style="left: 700px; width: 420px;">
+      <h3>Kubernetes already gives us</h3>
+      <div class="chips"><span class="chip">isolation</span><span class="chip">quotas</span><span class="chip">network policy</span></div>
+    </div>
+    <div class="col" style="left: 1200px; width: 600px;">
+      <h3 style="color: var(--snow);">What's missing: four things</h3>
+      <div class="gaps">
+        <p class="gap" data-step><b>A hardened agent image</b>Claude Code headless, with managed settings baked in</p>
+        <p class="gap" data-step><b>One shared marketplace</b>skills, MCP configs and settings, versioned</p>
+        <p class="gap" data-step><b>A gateway</b>every model call and tool call passes through it</p>
+        <p class="gap" data-step><b>Telemetry</b>what each run did, and what it cost</p>
+      </div>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Here's the turn. We could build all four of those walls into a new agent platform. We think that's the mistake.
+
+    Don't build an agent platform. Run Claude Code headless, in throwaway pods, through the CI system we already trust.
+
+    Jenkins already gives us triggers, credential binding, audit logs, RBAC, retries, queueing, and a UI people know. Kubernetes already gives us isolation, quotas and network policy. That's most of a platform, and we already run it.
+
+    What's missing is four things. Click: a hardened agent image. Click: one shared, versioned marketplace of skills, MCP configs and settings. Click: a gateway that every model call and tool call passes through. Click: telemetry that tells us what each run did and what it cost.
+
+    Build those four things and let everything else be Jenkins. Those four gaps are the whole build.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

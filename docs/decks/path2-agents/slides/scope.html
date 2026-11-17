@@ -3,23 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>We run Claude; we are not building or hosting a model.</title>
+  <title>Scope</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1500px; }
+    .inside { left: 120px; top: 310px; width: 900px; height: 600px; }
+    .zone-title { position: absolute; font: 600 30px/1 var(--font-display); }
+    .list { position: absolute; display: grid; gap: 20px; }
+    .list p { font: 600 40px/1.05 var(--font-display); }
+    .list p small { display: block; margin-top: 4px; font: 400 26px/1.2 var(--font-body); color: var(--muted); }
+    .out .list p, .out .zone-title { color: #56666c; }
+    .out .list p small { color: #4a585d; }
+    .note { position: absolute; left: 1120px; top: 760px; width: 680px; font-size: 28px; line-height: 1.3; color: var(--muted); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>We run Claude; we are not building or hosting a model.</h1>
+    <h2>We run Claude; we are not building or hosting a model.</h2>
+
+    <div class="enclosure inside" aria-hidden="true"></div>
+    <p class="zone-title" style="left: 160px; top: 340px; color: var(--teal);">Inside our boundary</p>
+    <div class="list" style="left: 160px; top: 400px; width: 820px;">
+      <p>Claude Code<small>engineers, every day; a human approves each change</small></p>
+      <p>The Claude API, or Bedrock<small>agents we write and host</small></p>
+      <p>The Agent SDK<small>the Claude Code harness as a library, in our pods</small></p>
+      <p>Our MCP servers<small>the tools those agents reach</small></p>
+    </div>
+
+    <div class="out">
+      <p class="zone-title" style="left: 1120px; top: 340px;">Deliberately outside</p>
+      <div class="list" style="left: 1120px; top: 400px; width: 680px;">
+        <p>GPU scheduling, DRA, quota</p>
+        <p>llm-d, vLLM, KServe</p>
+        <p>Training and fine-tuning</p>
+      </div>
+    </div>
+    <p class="note">About a third of the week was the right-hand side. Excellent engineering, and none of it is our problem.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Before anything else: scope. We run Claude. We are not building or hosting a model.
+
+    Inside our boundary: engineers using Claude Code every day, with a human approving every change. Agents we write that call Claude through the API or Bedrock. The Agent SDK, which is the Claude Code harness as a library, running in our own pods. And the MCP servers those agents reach.
+
+    Deliberately outside: GPU scheduling, device allocation and quota; model-serving stacks like llm-d, vLLM and KServe; training and fine-tuning. Roughly a third of the week was about those. It was excellent engineering, and none of it is our problem.
+
+    Buying inference means our hard problems are the ones at our boundary: what an agent may touch, with whose identity, what it costs per task, and how we know what it did.
+
+    And if we do nothing, here's what running Claude turns into.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

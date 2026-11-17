@@ -3,23 +3,51 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Before an agent runs, we name where its sandbox, identity, session and egress come from.</title>
+  <title>Four questions</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1500px; }
+    .wall { stroke: var(--lichen); stroke-width: 8; stroke-dasharray: 22 18; stroke-linecap: round; }
+    .core { position: absolute; left: 780px; top: 560px; width: 360px; text-align: center; }
+    .core b { display: block; font: 600 56px/1 var(--font-display); }
+    .core small { display: block; margin-top: 10px; font-size: 26px; line-height: 1.25; color: var(--muted); }
+    .q { position: absolute; font-size: 28px; line-height: 1.25; color: var(--muted); }
+    .q b { display: block; font: 600 42px/1 var(--font-display); color: var(--teal); margin-bottom: 6px; }
+    .rule { position: absolute; left: var(--margin); bottom: 64px; width: 1680px; font: 600 34px/1.2 var(--font-display); }
+    .src { bottom: 24px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Before an agent runs, we name where its sandbox, identity, session and egress come from.</h1>
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="wall" d="M700 420 H1220"/>
+      <path class="wall" d="M1220 420 V820"/>
+      <path class="wall" d="M700 820 H1220"/>
+      <path class="wall" d="M700 420 V820"/>
+    </svg>
+    <h2>Before an agent runs, we name where its sandbox, identity, session and egress come from.</h2>
+
+    <div class="core"><b>an agent</b><small>today: a laptop and one person's credentials</small></div>
+    <p class="q" style="left: 700px; top: 300px; width: 600px;"><b>Sandbox</b>where does code it wrote a minute ago run?</p>
+    <p class="q" style="left: 120px; top: 560px; width: 520px; text-align: right;"><b>Identity</b>who is it, and for how long?</p>
+    <p class="q" style="left: 1280px; top: 560px; width: 520px;"><b>Egress</b>what can it reach, and through what?</p>
+    <p class="q" style="left: 700px; top: 840px; width: 600px;"><b>Session</b>where does its state live if it dies mid-task?</p>
+
+    <p class="rule">If we can't answer all four, it isn't production-ready.</p>
+    <p class="src">"Agent Substrate", "Sandbox Your Agents", "The Identity Crisis" keynotes (no decks posted)</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Four keynotes this week, Agent Substrate, Sandbox Your Agents, The Harness Is the New Runtime, and The Identity Crisis, all named the same checklist.
+
+    For any agent we run, we have to be able to say where four things come from. Its sandbox: the code it wrote a minute ago runs somewhere, and a container shares a kernel. Its identity: who it is, and for how long, ideally minutes rather than forever. Its egress: what it can reach, and through what. And its session: where its state lives, and what happens if it dies halfway through a task.
+
+    Right now, for Claude on a laptop, the honest answer to all four is "the laptop, with one person's credentials". That's why the walls are drawn open.
+
+    If we can't answer all four, it isn't production-ready. Three of the four are much cheaper to build in than to retrofit.
+
+    We could build all four into a new platform. We think that's the mistake.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

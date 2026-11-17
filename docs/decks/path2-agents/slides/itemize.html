@@ -3,25 +3,62 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Every Claude call and MCP call becomes a span with a team, a use case and a cost.</title>
+  <title>Every call is a span</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .trace { position: absolute; left: var(--margin); top: 320px; width: 1680px; }
+    .row { display: grid; grid-template-columns: 420px 1fr 170px; align-items: center; height: 58px; border-bottom: 2px solid #dbe5e4; }
+    .row .name { font: 400 24px/1 var(--font-code); color: var(--slate); white-space: nowrap; }
+    .row .name.i1 { padding-left: 28px; } .row .name.i2 { padding-left: 56px; }
+    .row .lane { position: relative; height: 100%; }
+    .row .bar { position: absolute; top: 14px; height: 30px; border-radius: 6px; background: #b3c5c8; }
+    .row .bar.model { background: var(--teal-ink); }
+    .row .bar.tool { background: #7fa9b4; }
+    .row .cost { text-align: right; font: 500 26px/1 var(--font-display); color: var(--slate); font-variant-numeric: tabular-nums; }
+    .attrs { position: absolute; left: var(--margin); top: 900px; font: 400 24px/1.4 var(--font-code); color: var(--teal-ink); }
+    .attrs span { margin-right: 28px; }
+    .side { position: absolute; left: var(--margin); bottom: 60px; width: 1680px; font-size: 26px; color: var(--muted); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Every Claude call and MCP call becomes a span with a team, a use case and a cost.</h1>
+  <main class="slide snow">
+    <h2>Every Claude call and MCP call becomes a span with a team, a use case and a cost.</h2>
+
+    <div class="trace" id="trace" aria-label="An illustrative trace of one alert-triage run"></div>
+    <p class="attrs"><span>team=payments</span><span>use_case=alert-triage</span><span>trigger=alertmanager</span><span>jenkins.run=4127</span></p>
+    <p class="side">An illustrative run, using the OTel GenAI conventions rather than our own attributes. Turning telemetry on is also how we take the inventory of what we use AI for.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    None of what we've described works unless we can see what each run did and what it cost.
+
+    This is one alert-triage run, laid out as a trace. It's illustrative, not measured. An alert fires. Jenkins starts the job. Claude runs. It calls the model, then asks Grafana for a dashboard through an MCP tool, calls the model again, searches the logs, calls the model one more time, and posts its note to Slack. Every one of those is a span on the OpenTelemetry pipeline we already run, and every span carries the same labels: which team, which use case, which trigger, which Jenkins run. The model calls carry their token cost.
+
+    We use the OpenTelemetry generative-AI conventions rather than inventing our own attributes, because that standard is being written right now and we don't want to redo this next year.
+
+    And here's the trick: turning telemetry on is also how we answer "what are we using AI for?" The inventory falls out of the instrumentation.
+
+    With that in place, we can climb.
   </aside>
 
+  <script>
+    // [name, indent, start, width (of 1000), kind, cost]
+    const spans = [
+      ['alertmanager webhook', 0, 0, 30, '', ''],
+      ['jenkins: claudeAgent', 0, 30, 960, '', ''],
+      ['claude -p  (run)', 1, 50, 930, '', '$0.21'],
+      ['chat  claude-sonnet', 2, 60, 160, 'model', '$0.06'],
+      ['mcp  grafana.query', 2, 230, 110, 'tool', ''],
+      ['chat  claude-sonnet', 2, 350, 200, 'model', '$0.08'],
+      ['mcp  loki.search', 2, 560, 140, 'tool', ''],
+      ['chat  claude-sonnet', 2, 710, 170, 'model', '$0.07'],
+      ['mcp  slack.post', 2, 890, 60, 'tool', ''],
+    ];
+    document.getElementById('trace').innerHTML = spans.map(([n, ind, st, w, k, c]) =>
+      `<div class="row"><span class="name i${ind}">${n}</span><span class="lane"><span class="bar ${k}" style="left:${st / 10}%; width:${w / 10}%"></span></span><span class="cost">${c}</span></div>`).join('');
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

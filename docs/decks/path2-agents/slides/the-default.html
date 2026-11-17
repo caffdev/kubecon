@@ -3,25 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Left alone, every team wires its own `claude -p` into its own pipeline, with its own API key.</title>
+  <title>The default</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .grid { position: absolute; left: var(--margin); top: 320px; width: 1680px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .jf { padding: 16px 20px; border-radius: 12px; background: var(--rock); border: 2px solid var(--scree); font: 400 22px/1.45 var(--font-code); color: var(--lichen); white-space: pre; overflow: hidden; }
+    .jf .team { font: 600 26px/1 var(--font-display); color: var(--snow); display: block; margin-bottom: 6px; }
+    .jf .key { color: var(--alpenglow); }
+    .end { position: absolute; left: var(--margin); bottom: 70px; font: 600 40px/1.15 var(--font-display); color: var(--snow); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Left alone, every team wires its own `claude -p` into its own pipeline, with its own API key.</h1>
+    <h2>Left alone, every team wires its own <code style="font-family: var(--font-code); font-size: .82em; white-space: nowrap;">claude -p</code> into its own pipeline, with its own API key.</h2>
+    <div class="grid" id="grid" aria-label="Twelve near-identical pipeline snippets, each with its own API key and settings"></div>
+    <p class="end">It's the laptop problem again, with no human watching.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Here's the outcome we're drifting into if we do nothing.
+
+    Every team that wants an agent in its pipeline wires up its own. Payments does it one way, search does it another. Each one has a personal API key pasted into a credential somewhere, each one has whatever permissions its author happened to allow, and each one copied a slightly different set of skills from Slack.
+
+    Twelve teams, twelve keys, twelve allow-lists, twelve versions of the same prompt. Nobody can say what any of them cost, what they touched, or which key to revoke.
+
+    That's the laptop problem again, except this time there's no human watching.
+
+    The teams we heard from who run agents in production did the opposite.
   </aside>
 
+  <script>
+    const teams = ['payments', 'search', 'checkout', 'identity', 'billing', 'catalog', 'ledger', 'notify', 'risk', 'orders', 'pricing', 'ingest'];
+    const keys = ['3f9a', 'b71c', '0d2e', '9a44', 'c3e8', '51fb', '7e02', 'aa19', '2c6d', 'f480', '6b3a', 'd915'];
+    const perms = ['allow: Bash(*)', 'allow: whatever I clicked', 'skills: from Slack, v2', 'allow: Bash(*)', 'skills: from Slack', 'allow: Edit, Bash(git *)',
+                   'skills: someone\'s fork', 'allow: Bash(*)', 'allow: whatever I clicked', 'skills: from Slack, v3', 'allow: Bash(kubectl *)', 'allow: Bash(*)'];
+    document.getElementById('grid').innerHTML = teams.map((t, i) =>
+      `<p class="jf"><span class="team">${t}</span>sh 'claude -p "$PROMPT"'\n<span class="key">KEY=sk-ant-••••${keys[i]}</span>\n${perms[i]}</p>`).join('');
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

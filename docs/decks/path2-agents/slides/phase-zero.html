@@ -3,23 +3,58 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Phase 0 starts this month, on laptops: telemetry, org auth, one marketplace.</title>
+  <title>Phase 0</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .route { position: absolute; left: var(--margin); top: 300px; width: 1680px; display: grid; grid-template-columns: repeat(4, 1fr); }
+    .route::before { content: ""; position: absolute; left: 32px; right: 380px; top: 30px; height: 4px; background: var(--scree); z-index: -1; }
+    .ph { display: grid; grid-template-columns: 64px 1fr; gap: 16px; align-items: center; }
+    .ph b { display: block; font: 600 32px/1.05 var(--font-display); }
+    .ph small { display: block; font-size: 24px; color: var(--muted); }
+    .ph .camp:not(.lit) { background: var(--night); }
+    .ph.off b { color: var(--lichen); }
+    .items { position: absolute; left: var(--margin); top: 450px; width: 1000px; display: grid; gap: 20px; }
+    .items p { display: grid; grid-template-columns: 44px 1fr; font-size: 28px; line-height: 1.28; color: var(--muted); }
+    .items p .n { font: 600 32px/1.2 var(--font-display); color: var(--teal); }
+    .items p b { color: var(--snow); font-weight: 600; }
+    .gate { position: absolute; left: 1220px; top: 450px; width: 580px; padding: 30px 34px; border-radius: 18px; background: var(--teal); color: var(--night); font-size: 28px; line-height: 1.3; }
+    .gate b { display: block; font: 600 40px/1 var(--font-display); margin-bottom: 14px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Phase 0 starts this month, on laptops: telemetry, org auth, one marketplace.</h1>
+    <h2>Phase 0 starts this month, on laptops: telemetry, org auth, one marketplace.</h2>
+
+    <div class="route">
+      <p class="ph"><span class="camp lit">0</span><span><b>Laptops</b><small>now to January 2027</small></span></p>
+      <p class="ph off"><span class="camp">1</span><span><b>Read-only agents in CI</b><small>February to Q2 2027</small></span></p>
+      <p class="ph off"><span class="camp">2</span><span><b>Agents open PRs</b><small>second half of 2027</small></span></p>
+      <p class="ph off"><span class="camp open">3</span><span><b>Self-service</b><small>2028, to decide</small></span></p>
+    </div>
+
+    <div class="items">
+      <p><span class="n">1</span><span><b>Telemetry on every desktop</b>, via managed settings: our AI inventory, almost free</span></p>
+      <p><span class="n">2</span><span><b>Org-provisioned auth</b>: Enterprise seats or Bedrock via SSO; personal keys stop working on company repos</span></p>
+      <p><span class="n">3</span><span><b>A managed settings file</b> with the org-wide deny list</span></p>
+      <p><span class="n">4</span><span><b>The marketplace repo</b>, with the five to ten skills people already pass around</span></p>
+      <p><span class="n">5</span><span><b>A CLAUDE.md in every service repo</b>; agents in pods will read the same file</span></p>
+    </div>
+
+    <div class="gate"><b>Exit gate</b>80% of active users reporting telemetry. The marketplace has an owner and a review process. We can name the top five use cases from data, not anecdote.</div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    All of this starts on laptops, this month, and nothing in phase 0 needs a write path anywhere.
+
+    Four phases along the top. Phase 0 is laptops, now to January. Phase 1 is read-only agents in CI, February to Q2, which is our stage-1 alert triage. Phase 2 is agents opening pull requests in the second half of 2027. Phase 3, teams adding their own agent jobs, is a 2028 decision we make with real data.
+
+    Phase 0 is five things. Turn on telemetry on every desktop through managed settings; two to four weeks of that data is the inventory of what we use AI for. Move everyone to org-provisioned auth, so personal API keys stop working on company repos. Ship a managed settings file with the org-wide deny list. Stand up the marketplace repo and move in the five to ten skills people already pass around. And commit a CLAUDE.md in each service repo, because the agents in pods will read the same file.
+
+    The exit gate: eighty percent of active users reporting telemetry, a marketplace with an owner and a review process, and the top five use cases named from data rather than anecdote.
+
+    So here's what we need decided.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

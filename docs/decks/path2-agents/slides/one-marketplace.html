@@ -3,25 +3,67 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Laptops and pods read the same skills, MCP servers and settings from one versioned repo.</title>
+  <title>One marketplace</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1560px; }
+    .half-title { position: absolute; top: 320px; font: 600 36px/1 var(--font-display); }
+    .art { position: absolute; top: 380px; }
+    .node { fill: #fff; stroke: #b3c3c4; stroke-width: 3; }
+    .node.pod { stroke: var(--teal-ink); stroke-dasharray: 8 6; }
+    .copy { stroke: #b3c3c4; stroke-width: 3; fill: none; stroke-dasharray: 6 6; }
+    .feed { stroke: var(--teal-ink); stroke-width: 4; fill: none; }
+    .lbl { font: 500 22px var(--font-body); fill: var(--slate-quiet); text-anchor: middle; }
+    .lbl.b { font: 600 26px var(--font-display); fill: var(--slate); }
+    .repo { fill: var(--teal-ink); }
+    .repo-t { font: 600 30px var(--font-display); fill: #fff; text-anchor: middle; }
+    .divider { position: absolute; left: 940px; top: 330px; width: 3px; height: 600px; background: var(--hairline); }
+    .cap { position: absolute; top: 900px; width: 760px; font-size: 27px; line-height: 1.3; color: var(--muted); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Laptops and pods read the same skills, MCP servers and settings from one versioned repo.</h1>
+  <main class="slide snow">
+    <h2>Laptops and pods read the same skills, MCP servers and settings from one versioned repo.</h2>
+
+    <p class="half-title" style="left: 120px; color: var(--muted);">Today</p>
+    <svg class="art" style="left: 120px;" width="780" height="500" viewBox="0 0 780 500" aria-label="Laptops passing copies of skills to each other, each slightly different">
+      <path class="copy" d="M120 90 L380 60 M380 60 L640 120 M120 90 L210 290 M380 60 L420 260 M210 290 L420 260 M640 120 L620 330 M420 260 L620 330 M210 290 L120 430 M620 330 L470 440"/>
+      <g id="laptops"></g>
+    </svg>
+    <div class="divider" aria-hidden="true"></div>
+    <p class="half-title" style="left: 1000px; color: var(--teal-ink);">With one marketplace</p>
+    <svg class="art" style="left: 1000px;" width="800" height="500" viewBox="0 0 800 500" aria-label="One repo feeding every laptop and every agent pod">
+      <rect class="repo" x="250" y="10" width="300" height="80" rx="14"/><text class="repo-t" x="400" y="60">marketplace repo</text>
+      <g id="fan"></g>
+    </svg>
+    <p class="cap" style="left: 120px;">Skills and MCP configs passed person to person in Slack, drifting with every copy.</p>
+    <p class="cap" style="left: 1000px; width: 800px;">One versioned repo, reviewed by PR, with an owner. MCP servers run centrally, not on every laptop.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    The marketplace is the piece laptops get first, before any agent runs anywhere.
+
+    Today, on the left: the skills and MCP configs people find useful get passed person to person, in Slack. Every copy drifts a little. There's someone's version two, someone's fork, and nobody knows which one is current or safe.
+
+    On the right: one versioned repo, owned by the platform team, with contributions by pull request from anyone. Every laptop and every agent pod reads from the same place, so the agent in a pod behaves like the engineer at the terminal, because it's using the same skills and settings. And MCP servers run centrally rather than being shipped to every laptop.
+
+    Phase 0 is mostly this, which is why it starts on laptops. And when it runs in a pod, here's how far it can reach.
   </aside>
 
+  <script>
+    const laptop = (x, y, t) => `<rect class="node" x="${x - 58}" y="${y - 34}" width="116" height="68" rx="8"/><text class="lbl b" x="${x}" y="${y + 4}">laptop</text><text class="lbl" x="${x}" y="${y + 60}">${t}</text>`;
+    document.getElementById('laptops').innerHTML =
+      laptop(120, 90, 'skills v1') + laptop(380, 60, 'v1, edited') + laptop(640, 120, 'v2') + laptop(210, 290, "Kyle's fork") +
+      laptop(420, 260, 'v2, old MCP') + laptop(620, 330, 'v3?') + laptop(120, 430, 'v1') + laptop(470, 440, 'unknown');
+    let f = '';
+    const targets = [[100, 250, 'laptop'], [300, 250, 'laptop'], [500, 250, 'laptop'], [700, 250, 'laptop'], [200, 420, 'agent pod'], [400, 420, 'agent pod'], [600, 420, 'agent pod']];
+    for (const [x, y, t] of targets) {
+      f += `<path class="feed" d="M400 90 C 400 ${y - 90}, ${x} ${y - 110}, ${x} ${y - 34}"/>`;
+      f += `<rect class="node${t === 'agent pod' ? ' pod' : ''}" x="${x - 70}" y="${y - 34}" width="140" height="68" rx="8"/><text class="lbl b" x="${x}" y="${y + 6}">${t}</text>`;
+    }
+    document.getElementById('fan').innerHTML = f;
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

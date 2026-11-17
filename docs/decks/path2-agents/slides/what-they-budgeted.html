@@ -3,25 +3,75 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The teams with good numbers budgeted a knowledge base and an evaluation harness.</title>
+  <title>What they budgeted</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { max-width: 1500px; }
+    .obj { position: absolute; top: 340px; width: 760px; }
+    .obj svg { width: 760px; height: 330px; }
+    .obj h3 { margin-top: 26px; color: var(--teal); }
+    .obj p { margin-top: 10px; font-size: 29px; line-height: 1.3; color: var(--muted); }
+    .spine { fill: var(--rock); stroke: var(--scree); stroke-width: 2; }
+    .spine.cur { fill: #173a33; stroke: var(--teal); }
+    .flat { fill: #121619; stroke: #2a3236; stroke-width: 2; }
+    .shelf { fill: var(--scree); }
+    .weight { fill: var(--lichen); }
+    .cell { fill: none; stroke: var(--scree); stroke-width: 2; }
+    .tick { fill: none; stroke: var(--teal); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+    .samp { fill: var(--alpenglow); }
+    .ax { font: 500 22px var(--font-body); fill: var(--lichen); }
+    .src { max-width: 1600px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>The teams with good numbers budgeted a knowledge base and an evaluation harness.</h1>
+    <h2>The teams with good numbers budgeted a knowledge base and an evaluation harness.</h2>
+
+    <div class="obj" style="left: 120px;">
+      <svg id="shelf" viewBox="0 0 760 330" aria-label="A shelf of current runbooks, with old chat threads lying flat under a weight"></svg>
+      <h3>A curated knowledge base</h3>
+      <p>Runbooks and design docs kept current on purpose. Chat threads weighted down. Better runbooks beat a better model.</p>
+    </div>
+    <div class="obj" style="left: 1040px;">
+      <svg id="rubric" viewBox="0 0 760 330" aria-label="A rubric grid scored by a model, with a sample of cells checked by people"></svg>
+      <h3>An evaluation harness</h3>
+      <p>A rubric, graded by a model, plus stratified human sampling. Built before launch, so a better prompt isn't confused with a lucky week.</p>
+    </div>
+    <p class="src">Salesforce AIOps · STCLab (CNCF blog) · Mastercard · KubeCon NA 2026</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    The teams we heard from with good accuracy numbers all budgeted two things that nobody puts in an AI business case by default.
+
+    On the left, a curated knowledge base. Runbooks and design docs, kept current on purpose, with chat threads weighted down. Salesforce credited this, not a model change, for their accuracy across a thousand clusters. STCLab found that runbook quality mattered more than which model they used. Write the runbook the agent follows, and it gets better as the runbook does.
+
+    On the right, an evaluation harness. A rubric, graded by a model, plus a stratified sample checked by people. Built before launch, so we can tell a better prompt from a lucky week.
+
+    Both are unglamorous, both need an owner, and both are what separated the teams with good numbers from everyone else. They're the two owners we'll ask for at the end.
+
+    All of this starts on laptops, this month.
   </aside>
 
+  <script>
+    let s = '<rect class="shelf" x="0" y="250" width="760" height="10"/>';
+    const books = [[150, 'cur'], [190, ''], [170, 'cur'], [200, 'cur'], [140, ''], [185, 'cur'], [160, 'cur'], [195, ''], [175, 'cur'], [150, 'cur'], [180, '']];
+    let x = 20;
+    for (const [h, c] of books) { s += `<rect class="spine ${c}" x="${x}" y="${250 - h}" width="38" height="${h}" rx="3"/>`; x += 44; }
+    s += '<rect class="flat" x="520" y="226" width="220" height="24" rx="3"/><rect class="flat" x="530" y="202" width="200" height="24" rx="3"/><rect class="flat" x="514" y="178" width="230" height="24" rx="3"/>';
+    s += '<rect class="weight" x="580" y="130" width="100" height="48" rx="6"/><text class="ax" x="520" y="300">old chat threads</text><text class="ax" x="20" y="300">current runbooks</text>';
+    document.getElementById('shelf').innerHTML = s;
+    let r = '';
+    const sampled = new Set(['1,2', '3,0', '2,4', '0,5']);
+    for (let row = 0; row < 4; row++) for (let col = 0; col < 7; col++) {
+      const cx = 40 + col * 100, cy = 20 + row * 62;
+      r += `<rect class="cell" x="${cx}" y="${cy}" width="84" height="50" rx="6"/>`;
+      r += `<path class="tick" d="M${cx + 26} ${cy + 26} l10 10 l20 -20"/>`;
+      if (sampled.has(`${row},${col}`)) r += `<circle class="samp" cx="${cx + 74}" cy="${cy + 10}" r="8"/>`;
+    }
+    r += '<text class="ax" x="40" y="300">graded by a model</text><text class="ax" x="470" y="300">● checked by people</text>';
+    document.getElementById('rubric').innerHTML = r;
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>
