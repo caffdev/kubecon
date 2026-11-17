@@ -68,13 +68,13 @@
     };
   }
 
-  function draw(sel, stage, { youLabel = true } = {}) {
+  function draw(sel, stage, { youLabel = true, youText = null, litAll = false, people = true } = {}) {
     let out = '';
     const at = slots();
     // zones
     for (const z of ZONES) {
       if (z.from > stage) continue;
-      const nw = z.from === stage ? ' new' : '';
+      const nw = z.from === stage && !litAll ? ' new' : '';
       out += `<rect class="zone-box${nw}" x="${z.x}" y="0" width="${z.w}" height="${ZONE_H}" rx="14"/>`;
       out += `<text class="zone-name${nw}" x="${z.x + 28}" y="50">${z.name}</text>`;
       out += `<text class="zone-how" x="${z.x + 28}" y="84">${z.how}</text>`;
@@ -88,34 +88,37 @@
     // clusters
     for (const c of at) {
       if (c.stage > stage) continue;
-      const nw = c.stage === stage ? ' new' : '';
+      const nw = litAll ? ' lit' : c.stage === stage ? ' new' : '';
       out += Peaks.glyph({ x: c.x, y: c.y, w: 64, h: 54, cls: `pk-glyph${c.ai ? ' ai' : ''}${nw}` });
       if (c.name && stage <= 3) out += `<text class="cl-name${nw}" x="${c.x}" y="${c.y + 58}">${c.name}</text>`;
     }
     // apps moving to the second cloud
-    if (stage >= 6) {
+    if (stage >= 6 && !litAll) {
       const arc = (x1, x2, lift) => {
         const y = 0, mx = (x1 + x2) / 2;
         return `<path class="move" d="M${x1} ${y - 6}Q${mx} ${y - lift} ${x2 - 14} ${y - 10}"/>`
           + `<path class="move-head" d="M${x2 - 2} ${y - 6}l-22 -12l2 22z"/>`;
       };
-      out += arc(240, 1380, 120) + arc(860, 1480, 80);
+      out += arc(240, 1380, 64) + arc(860, 1480, 44);
+      out += `<text class="move-label" x="226" y="-14" text-anchor="end">apps moving</text>`;
     }
     // the people strip: the one person, then users and agents, one mark each
     const n = count(stage), y0 = 488;
     out += you(40, y0 + 34, 1.05);
-    if (youLabel) out += `<text class="you-label" x="92" y="${y0 + 8}">one person</text><text class="you-label" x="92" y="${y0 + 40}">${n.clusters === 2 ? 'upgrades both' : `upgrades all ${n.clusters}`}</text>`;
+    if (youText) out += `<text class="you-label" x="92" y="${y0 + 8}">${youText[0]}</text><text class="you-label" x="92" y="${y0 + 40}">${youText[1]}</text>`;
+    else if (youLabel) out += `<text class="you-label" x="92" y="${y0 + 8}">one person</text><text class="you-label" x="92" y="${y0 + 40}">${n.clusters === 2 ? 'upgrades both' : `upgrades all ${n.clusters}`}</text>`;
     let k = 0;
-    const per = 44, sx = 27, px = 420;
+    if (!people) return Peaks.draw(sel, out);
+    const per = 48, sx = 26, px = 420;
     const place = () => { const c = k % per, r = Math.floor(k / per); k++; return [px + c * sx, y0 - 8 + r * 34]; };
     for (let i = 0; i < n.people; i++) {
       const [x, y] = place();
-      const nw = i >= PEOPLE[stage - 1] ? ' new' : '';
+      const nw = i >= PEOPLE[stage - 1] && !litAll ? ' new' : '';
       out += person(x, y + 14, 0.44, `user${nw}`);
     }
     for (let i = 0; i < n.agents; i++) {
       const [x, y] = place();
-      const nw = i >= AGENTS[stage - 1] ? ' new' : '';
+      const nw = i >= AGENTS[stage - 1] && !litAll ? ' new' : '';
       out += agent(x, y, 20, `agent${nw}`);
     }
     return Peaks.draw(sel, out);
@@ -124,7 +127,7 @@
   /** The census line under the map: counts that changed since the last stage get class "up". */
   function census(stage) {
     const n = count(stage), p = stage > 1 ? count(stage - 1) : n;
-    const item = (v, was, word, cls = 'up') => `<span${v !== was ? ` class="${cls}"` : ''}><b>${v}</b>${word}</span>`;
+    const item = (v, was, word, cls = 'up') => `<span${v !== was ? ` class="${cls}"` : ''}><b>${v}</b><span>${word}</span></span>`;
     let s = item(n.clusters, p.clusters, 'clusters') + item(n.apps, p.apps, 'apps') + item(n.people, p.people, 'people');
     if (n.agents) s += item(n.agents, p.agents, 'agents', 'ai');
     return s;

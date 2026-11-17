@@ -3,25 +3,92 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Platform tools ship like apps: test first, then a canary cluster, then prod in waves.</title>
+  <title>Tools ship in waves</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    .slide { --path: var(--mint); --accent: var(--mint); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .rings { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ring { fill: none; stroke: var(--mint); stroke-width: 2.5; opacity: .55; }
+    .ring-name { font: 600 28px var(--font-display); fill: var(--mint); paint-order: stroke; stroke: var(--bg); stroke-width: 10px; letter-spacing: .02em; }
+    .ray { stroke: var(--mint); stroke-width: 3; stroke-dasharray: 4 8; opacity: .7; }
+    .pk-glyph.lit { fill: var(--mint); }
+    .pk-glyph.aws { fill: none; stroke: var(--mint); stroke-width: 3; }
+    .is-entered .wave { animation: light 700ms var(--step-ease) both; animation-delay: calc(500ms + var(--w) * 420ms); }
+    @keyframes light { from { opacity: .15; } }
+
+    .points { position: absolute; left: 1010px; top: 340px; width: 800px; }
+    .points li { list-style: none; margin-bottom: 34px; font-size: 30px; line-height: 1.32; color: var(--lichen); }
+    .points b { display: block; font: 600 42px/1.08 var(--font-display); color: var(--snow); margin-bottom: 6px; }
+    .points code { font: 400 28px var(--font-code); color: var(--mint); }
+    .src { left: 1440px; max-width: 380px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Platform tools ship like apps: test first, then a canary cluster, then prod in waves.</h1>
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Platform tools ship like apps: test first, then a canary cluster, then prod in waves.</h2>
+
+    <svg class="rings" id="rings" viewBox="0 0 1920 1080" role="img" aria-label="Rollout rings rippling out from the test cluster: canary, wave 1, wave 2, prod. A new tool version reaches each ring in turn. Clusters drawn as outlines are EKS Auto Mode, where AWS rolls Karpenter."></svg>
+
+    <ul class="points">
+      <li><b>One definition, every cluster</b>An ApplicationSet per tool, with progressive sync taking it one wave at a time.</li>
+      <li><b>Waves by label, not by list</b>A cluster joins a wave with <code>rollout-wave: 2</code>, so a new cluster needs no pipeline change.</li>
+      <li><b>One train fewer</b>On Auto Mode clusters (outlined), AWS rolls Karpenter for us.</li>
+    </ul>
+    <p class="src">LinkedIn cut cluster-service releases from about a week of manual testing to about an hour this way.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    That's the clusters. The tools on them need the same treatment, and the fix is the one we already use for apps.
+
+    Read the picture from the left. The middle of the ripple is the test cluster. The next ring is one canary cluster: real workloads, real traffic, but just one. Then the prod fleet in waves: wave one, wave two, and the rest of prod. A new version of a platform tool, say a new Argo CD, starts in the middle and moves outward one ring at a time.
+
+    How. One definition per tool, an ApplicationSet, and progressive sync takes it one wave at a time. Which wave a cluster is in is a label on the cluster, not a list in a pipeline, so when cluster twenty-nine shows up it just gets a label and it's in.
+
+    And one train we can get off entirely. On EKS Auto Mode clusters, the outlined ones, AWS runs Karpenter itself. The cheapest rollout is the one somebody else does.
+
+    LinkedIn does this for their cluster services and took a release from about a week of manual testing to about an hour.
+
+    But a ring only moves outward when the tool proves itself.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p1'] });
+    (() => {
+      // same geometry as gates.html: half-rings rippling right from the test cluster
+      const cx = 190, cy = 700, A = 42 * Math.PI / 180;
+      const R = { canary: 190, w1: 320, w2: 440, prod: 560 };
+      const COUNT = { w1: 6, w2: 9, prod: 11 };
+      const AUTO = { w1: [1, 4], w2: [2, 6, 7], prod: [0, 3, 5, 8, 10] };   // EKS Auto Mode clusters
+      const names = { canary: 'canary', w1: 'wave 1', w2: 'wave 2', prod: 'prod' };
+      const pt = (r, a) => [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+      let s = '';
+      s += `<line class="ray" x1="${cx}" y1="${cy}" x2="${cx + R.prod + 30}" y2="${cy}"/>`;
+      s += `<g class="wave" style="--w:0">${Peaks.glyph({ x: cx, y: cy, w: 60, h: 50, cls: 'pk-glyph lit' })}<text class="ring-name" x="${cx}" y="${cy + 68}" text-anchor="middle">test</text></g>`;
+      Object.entries(R).forEach(([k, r], w) => {
+        const [x1, y1] = pt(r, -A), [x2, y2] = pt(r, A);
+        let g = `<path class="ring" d="M${x1} ${y1}A${r} ${r} 0 0 1 ${x2} ${y2}"/>`;
+        g += `<text class="ring-name" x="${x1 + 14}" y="${y1 - 6}">${names[k]}</text>`;
+        if (k === 'canary') {
+          g += Peaks.glyph({ x: cx + r, y: cy, w: 60, h: 50, cls: 'pk-glyph lit' });
+        } else {
+          const n = COUNT[k];
+          for (let i = 0; i < n; i++) {
+            const a = -A + 2 * A * (i + 0.5) / n;
+            if (Math.abs(a) < 0.11) continue;
+            const [x, y] = pt(r, a);
+            g += Peaks.glyph({ x, y, w: 42, h: 36, cls: 'pk-glyph ' + (AUTO[k].includes(i) ? 'aws' : 'lit') });
+          }
+        }
+        s += `<g class="wave" style="--w:${w + 1}">${g}</g>`;
+      });
+      Peaks.draw('#rings', s);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

@@ -43,6 +43,9 @@
 .snow .range .rg.sunk .pk-body { fill: #e1eae9; }
 .snow .range .rg.sunk .pk-shadow { fill: #d8e3e3; }
 .snow .range .survey { stroke: var(--slate); opacity: .3; }
+.snow .range #rg-p3 :is(.pk-cap, .pk-word) { fill: var(--haze-ink); }
+.snow .range #rg-p1 :is(.pk-cap, .pk-word) { fill: var(--mint-ink); }
+.snow .range #rg-p2 :is(.pk-cap, .pk-word) { fill: var(--teal-ink); }
 .dusk .range .pk-body { fill: #172a37; }
 .dusk .range .pk-shadow { fill: #13232f; }
 .dusk .range .rg.sunk .pk-body { fill: #132430; }
@@ -85,11 +88,18 @@
 .you-book { fill: none; stroke: var(--you); stroke-width: 3; }
 .you-label { font: 600 28px var(--font-display); fill: var(--you); letter-spacing: .01em; }
 
-/* the census line under the map */
-.census { position: absolute; left: var(--margin); display: flex; gap: 56px; font: 400 30px/1.2 var(--font-body); color: var(--muted); }
-.census b { font: 600 46px/1 var(--font-display); color: var(--ink); margin-right: 10px; font-variant-numeric: tabular-nums lining-nums; }
+/* the census: a tally in the top-right corner, numbers right-aligned, words left */
+.census {
+  position: absolute; top: 104px; right: var(--margin);
+  display: grid; grid-template-columns: auto auto; column-gap: 14px; row-gap: 2px;
+  align-items: baseline;
+  font: 400 30px/1.2 var(--font-body); color: var(--muted);
+}
+.census span { display: contents; }
+.census b { justify-self: end; font: 600 50px/1.05 var(--font-display); color: var(--ink); font-variant-numeric: tabular-nums lining-nums; }
 .census .up b { color: var(--path); }
 .census .ai b { color: var(--teal); }
+.move-label { font: 500 24px var(--font-body); fill: var(--haze); }
 
 /* path words in running text */
 .p1 { color: var(--mint); }

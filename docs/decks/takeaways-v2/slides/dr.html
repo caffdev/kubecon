@@ -3,25 +3,43 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DR made it three, and the third has to match prod version for version.</title>
+  <title>DR makes three</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h1 { font-size: 92px; max-width: 1400px; line-height: 1; }
+    .map { position: absolute; left: var(--margin); top: 350px; width: 1680px; height: 540px; overflow: visible; }
+    .is-entered .map .pk-glyph.new { animation: drop 700ms var(--step-ease) both; animation-delay: 500ms; transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .map .you { animation: fade-in 700ms 900ms both; }
+    @keyframes drop { from { transform: translateY(-40px); opacity: 0; } }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
     <h1>DR made it three, and the third has to match prod version for version.</h1>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The estate: on-prem now holds test, prod and DR, with DR tied to prod in lockstep; the one person now upgrades all three"></svg>
+    <p class="census" id="census"></p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Then prod got important. Important enough that losing it wasn't an option, so it got a twin: a DR cluster.
+
+    Now there are three. And DR only works if it matches prod: same Kubernetes version, same tools, same config. That dashed line is lockstep. Every upgrade now happens twice, back to back, and the second one isn't allowed to drift from the first.
+
+    Still one person.
+
+    Then we moved into AWS.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    Estate.draw('#map', 2);
+    document.getElementById('census').innerHTML = Estate.census(2);
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

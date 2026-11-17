@@ -73,6 +73,11 @@ what the fleets at KubeCon do instead. Sources: GOALS §0, §1.4, §1.7, §2.3, 
   drops off our rollout list. Say this on `waves`: the cheapest rollout is one AWS does.
 - ⚠️ Carried from the path decks: Auto Mode pricing and the extended-support fee come from
   third-party write-ups. Neither appears on a slide here.
+- ⚠️ `tools-too` release cadences are approximate and unverified: Prometheus about every
+  six weeks and Argo CD about every three months (both from the projects' stated
+  cadences, as we remember them); the OTel collector "every few weeks" and Karpenter
+  "every month or two" are rough. Check each project's release page before this goes
+  beyond the team. The version-skew grid itself is illustrative (seeded).
 
 ## Visual direction
 
@@ -94,8 +99,8 @@ mint = delivery (Path 1), teal = agents (Path 2), haze = fleet (Path 3).
   for literal version strings and commands.
 - **Signature 1, for the series: the range in the background.** The three peaks sit on the
   horizon in the same place on every slide (fleet left, delivery centre, agents right), in
-  the order the readout uses. A peak **emerges** (rises about 190px and shows its coloured
-  cap) only when the slide's topic touches its path. The others stay sunk as dark
+  the order the readout uses. A peak **emerges** (rises about 150px, shows its coloured
+  cap, and carries its path word at its base) only when the slide's topic touches its path. The others stay sunk as dark
   silhouettes. Drawn by `theme/range.js`: `Range.draw('#range', {touch: ['p3'], bands})`.
 - **Three peaks plus a survey layer, not four peaks.** The user offered a fourth peak. OTel
   touches every path, so a fourth summit would make observability a separate climb, which
@@ -167,8 +172,22 @@ mint = delivery (Path 1), teal = agents (Path 2), haze = fleet (Path 3).
     lightness and chroma checks, because the brand is soft by design, but pass both
     separation checks (ΔE 17, normal and CVD). Accepted, with direct labels beside the last
     bar as the legend. Columns are 76px, not the 24px dashboard cap, for a projected room.
-- **Audit exceptions, accepted:** `gates` (90 words) and `overrun` (110) are the peak and
-  the densest evidence slide; the extra words are the gate list and the model's inputs.
+  - The census line under the map ran into the fleet cap once the agents count appeared, so
+    it became a tally in the top-right corner (numbers right-aligned), and the map
+    headlines are capped at 1400px to leave it room.
+  - Which peaks rise, as built: fleet on 1–10 except `waves`; delivery on `waves`,
+    `gates`, `change-windows` (and with fleet on `tools-too`); agents with fleet on
+    `ai-users`, alone on `the-lake`; all three with survey lines on
+    `otel-common-layer`, `same-person` and `the-ask`. Survey lines cross only risen peaks.
+    `more-of-everything` and `waves` were trimmed to one peak because a second cap collided
+    with the people row or the outer ripple.
+  - `same-person` drops the people row: the delivery cap sits where it would run, and the
+    echo is about the one person, not the users.
+  - On snowfield the caps and words switch to the path inks (`theme.css`).
+- **Audit exceptions, accepted:** these slides run 88–157 words: `tools-too` (157, almost
+  all of it one- or two-character cell labels), `overrun` (110), `kubeadm-past` (93),
+  `waves` (93), `change-windows` (91), `gates` (90), `the-ask` (90), `one-runbook` (88).
+  Each is the evidence its headline needs, and the notes carry the argument.
 
 ## Beats
 
@@ -359,7 +378,8 @@ mint = delivery (Path 1), teal = agents (Path 2), haze = fleet (Path 3).
 - **Act:** III
 - **Job:** AI makes decisions from data: give it one read-only lake, not credentials to prod
 - **Headline:** Agents decide from a read-only lake, not from credentials to production.
-- **Visual:** the tarn at the foot of the range, fed by three streams: from the fleet peak
+- **Visual (as built: the streams come from the three path names rather than a second
+  range, so the slide doesn't draw two sets of mountains):** the tarn at the foot of the range, fed by three streams: from the fleet peak
   (cluster state snapshots, metrics), from the delivery peak (syncs, rollouts, gate
   results), from the agents peak (traces, token and tool-call spans). On the shore, teal
   agent diamonds, each with the decision it makes from the lake: triage this alert, judge

@@ -6,7 +6,7 @@
      Range.draw('#range', { touch: ['p1','p2','p3'], survey: true });   // OTel: survey lines
 
    The three peaks always sit in the same place (fleet left, delivery centre, agents right).
-   A touched peak is drawn up, with its cap and word; an untouched one is drawn sunk, dark,
+   A touched peak is drawn up, with its cap and its word at the base; an untouched one is drawn sunk, dark,
    with no cap. Base styles are the finished state; theme.css animates .rg.up from below. */
 (() => {
   'use strict';
@@ -31,16 +31,16 @@
       const p = PEAKS[id], up = touch.includes(id);
       const inner = Peaks.peak({ x: p.x, top: p.top, base: p.top + H, hw: p.hw, cap: up ? p.cap : null });
       const word = up && words
-        ? `<text class="pk-word" style="--cap:${p.cap}" x="${p.x - 26}" y="${p.top + 44}" text-anchor="end">${p.word}</text>`
+        ? `<text class="pk-word" style="--cap:${p.cap}" x="${p.x}" y="1050" text-anchor="middle">${p.word}</text>`
         : '';
       out += up
         ? `<g class="rg up" id="rg-${id}" style="--sink:${sink}px;--cap:${p.cap}">${inner}${word}</g>`
         : `<g class="rg sunk" id="rg-${id}" transform="translate(0 ${sink})">${inner}</g>`;
     }
     if (survey) {
-      // level lines at the same heights across every peak: one measurement for the range
+      // level lines at the same heights across every risen peak: one measurement for the range
       const clip = `rg-clip-${Math.random().toString(36).slice(2, 7)}`;
-      out += `<defs><clipPath id="${clip}">${ORDER.map((id) => `<path d="${body(PEAKS[id], touch.includes(id) ? 0 : sink)}"/>`).join('')}</clipPath></defs>`;
+      out += `<defs><clipPath id="${clip}">${ORDER.filter((id) => touch.includes(id)).map((id) => `<path d="${body(PEAKS[id])}"/>`).join('')}</clipPath></defs>`;
       out += `<g clip-path="url(#${clip})">`;
       let i = 0;
       for (let y = 900; y < 1080; y += 30) {

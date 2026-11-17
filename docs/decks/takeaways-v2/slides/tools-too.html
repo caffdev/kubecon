@@ -3,25 +3,107 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Each cluster also carries four platform tools, each on its own release train.</title>
+  <title>Four tools, four trains</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { font-size: 84px; max-width: 1500px; line-height: 1.02; }
+    .grid-art { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .tool { font: 600 36px var(--font-display); fill: var(--slate); }
+    .train { font: 400 24px var(--font-body); fill: var(--slate-quiet); }
+    .zone { font: 600 26px var(--font-display); fill: var(--slate-quiet); letter-spacing: .02em; }
+    .pk-glyph { fill: #9fb3b7; }
+    .cell { stroke-width: 2.5; }
+    .cell.v0 { fill: var(--haze-ink); stroke: var(--haze-ink); }
+    .cell.v1 { fill: #c9dde0; stroke: #7fa6ae; }
+    .cell.v2 { fill: none; stroke: var(--slate-quiet); }
+    .cell.vq { fill: none; stroke: var(--slate-quiet); stroke-dasharray: 5 5; }
+    .cell.na { fill: none; stroke: none; }
+    .ct { font: 500 22px var(--font-code); letter-spacing: -.04em; text-anchor: middle; fill: var(--slate); }
+    .ct.na { fill: #a3b5b8; }
+    .key { position: absolute; left: var(--margin); top: 728px; display: flex; gap: 40px; font-size: 26px; color: var(--muted); align-items: center; }
+    .key i { display: inline-block; width: 30px; height: 30px; border-radius: 5px; margin-right: 10px; vertical-align: -6px; border: 2.5px solid; }
+    .key .k0 { background: var(--haze-ink); border-color: var(--haze-ink); }
+    .key .k1 { background: #c9dde0; border-color: #7fa6ae; }
+    .key .k2 { border-color: var(--slate-quiet); }
+    .key .kq { border-color: var(--slate-quiet); border-style: dashed; }
+    .tally { position: absolute; left: 1220px; top: 700px; width: 600px; font-size: 30px; line-height: 1.3; color: var(--muted); text-align: right; }
+    .tally b { font: 600 46px/1 var(--font-display); color: var(--slate); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
-  <main class="slide">
-    <h1>Each cluster also carries four platform tools, each on its own release train.</h1>
+  <main class="slide snow">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Each cluster also carries four platform tools, each on its own release train.</h2>
+
+    <svg class="grid-art" id="grid" viewBox="0 0 1920 1080" role="img" aria-label="A grid of 28 clusters by 4 tools. Each cell shows how far that cluster's copy of the tool is behind the latest release; few cells are current."></svg>
+
+    <div class="key">
+      <span><i class="k0"></i>latest</span>
+      <span><i class="k1"></i>one behind</span>
+      <span><i class="k2"></i>two or more</span>
+      <span><i class="kq"></i>nobody’s sure</span>
+    </div>
+    <p class="tally" id="tally"></p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Every one of those clusters also runs the platform: Argo CD to deploy, Prometheus to measure, the Splunk OTel collector to ship telemetry, and Karpenter to scale nodes on the cloud clusters.
+
+    Each of those has its own release train. Prometheus ships a minor about every six weeks. Argo CD about every three months. The OTel collector every few weeks. Karpenter every month or two. Those are rough, and they don't line up with each other or with Kubernetes.
+
+    So here's the fleet, twenty-eight clusters across the top, the four tools down the side. Each square is how far that cluster's copy is behind the latest release. Dark is current. Pale is one behind. Hollow is two or more. Dashed means nobody's quite sure without logging in. The blanks are Karpenter on our own hardware, where it doesn't run.
+
+    This is what hand rollouts leave behind. Not because anyone's careless: because each release is another twenty-odd rollouts by hand, and the next release lands before the last one's finished. The grid is illustrative, but anyone who's run a fleet will recognise it.
+
+    Now add the clusters and the tools together, and put them against one person's year.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1'] });
+    (() => {
+      // illustrative skew, seeded so it renders the same every time
+      const r = Peaks.rng(37);
+      const ZONES = [['on-prem', 6], ['AWS', 16], ['second cloud', 6]];
+      const TOOLS = [
+        ['Argo CD', 'every ~3 months'], ['Prometheus', 'every ~6 weeks'],
+        ['splunk-otel', 'every few weeks'], ['Karpenter', 'every month or two'],
+      ];
+      const LX = 120, X0 = 410, CW = 40, CG = 6, ZG = 24, Y0 = 384, RH = 82, CH = 50;
+      let s = '', x = X0, cols = [];
+      ZONES.forEach(([name, n], zi) => {
+        s += `<text class="zone" x="${x}" y="${Y0 - 66}">${name}</text>`;
+        for (let i = 0; i < n; i++) {
+          cols.push({ x, zone: zi });
+          s += Peaks.glyph({ x: x + CW / 2, y: Y0 - 26, w: 30, h: 26 });
+          x += CW + CG;
+        }
+        x += ZG;
+      });
+      let latest = 0, installs = 0;
+      TOOLS.forEach(([tool, train], ti) => {
+        const y = Y0 + ti * RH;
+        s += `<text class="tool" x="${LX}" y="${y + 30}">${tool}</text><text class="train" x="${LX}" y="${y + 60}">${train}</text>`;
+        cols.forEach((c) => {
+          if (ti === 3 && c.zone === 0) {   // no Karpenter on our own hardware
+            s += `<text class="ct na" x="${c.x + CW / 2}" y="${y + CH / 2 + 8}">–</text>`;
+            return;
+          }
+          installs++;
+          // older on-prem, fresher in the new cloud
+          const bias = [0.55, 0.35, 0.15][c.zone], v = r() + bias;
+          const [cls, label] = v < 0.42 ? ['v0', ''] : v < 0.78 ? ['v1', '−1'] : v < 1.2 ? ['v2', v < 1.0 ? '−2' : '−3'] : ['vq', '?'];
+          if (cls === 'v0') latest++;
+          s += `<rect class="cell ${cls}" x="${c.x}" y="${y}" width="${CW}" height="${CH}" rx="6"/>`;
+          if (label) s += `<text class="ct" x="${c.x + CW / 2}" y="${y + CH / 2 + 8}">${label}</text>`;
+        });
+      });
+      Peaks.draw('#grid', s);
+      document.getElementById('tally').innerHTML = `<b>${latest}</b> of <b>${installs}</b> installs on the latest release<br>(illustrative)`;
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

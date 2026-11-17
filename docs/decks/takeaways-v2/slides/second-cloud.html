@@ -3,25 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>One provider's outage can't be our outage, so a second cloud joined.</title>
+  <title>A second cloud</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h1 { font-size: 92px; max-width: 1400px; line-height: 1; }
+    .map { position: absolute; left: var(--margin); top: 350px; width: 1680px; height: 540px; overflow: visible; }
+    .is-entered .map .pk-glyph.new { animation: drop 700ms var(--step-ease) both; animation-delay: 500ms; transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .map .you { animation: fade-in 700ms 900ms both; }
+    @keyframes drop { from { transform: translateY(-40px); opacity: 0; } }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>One provider's outage can't be our outage, so a second cloud joined.</h1>
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>One provider’s outage can’t be our outage, so a second cloud joined.</h1>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The full estate: on-prem, AWS and a second cloud; apps move from on-prem and AWS into the second cloud; 28 clusters, about 140 apps, 52 people and 40 agents, and still one person"></svg>
+    <p class="census" id="census"></p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    The last step. When AWS has a bad day in a region, so do we. So a second provider joins, and apps start moving into it: some off our own hardware, some out of AWS.
+
+    That's normal at this scale. Nearly every large fleet at the show was hybrid or multi-cloud. GEICO put it plainly: no single cloud had enough of what they needed.
+
+    Now pull back and look at the whole thing. Twenty-eight clusters. Three kinds of place, three upgrade procedures. About a hundred and forty apps. People and agents using all of it.
+
+    Six reasonable steps. Every one of them made sense on the day. And there's still one person in orange.
+
+    Now look at what one upgrade costs him.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    Estate.draw('#map', 6);
+    document.getElementById('census').innerHTML = Estate.census(6);
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

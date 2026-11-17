@@ -3,25 +3,93 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OTel isn't beating Prometheus; it's the one layer our classic and AI workloads share.</title>
+  <title>OTel, the shared layer</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .flow { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .f-classic { stroke: var(--haze); }
+    .f-ai { stroke: var(--teal); }
+    .f-out { stroke: var(--lichen); }
+    .f { fill: none; stroke-width: 3; opacity: .85; }
+    .layer { fill: #0f2230; stroke: var(--snow); stroke-width: 3; }
+    .layer-name { font: 600 40px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .layer-sub { font: 400 26px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .group { font: 600 36px var(--font-display); }
+    .group.classic { fill: var(--haze); }
+    .group.ai { fill: var(--teal); }
+    .item { font: 400 28px var(--font-body); fill: var(--snow); }
+    .item small, .q { fill: var(--lichen); }
+    .dest { font: 600 36px var(--font-display); fill: var(--snow); }
+    .dest-sub { font: 400 26px var(--font-body); fill: var(--lichen); }
+    .is-entered .f { animation: draw 1200ms var(--step-ease) both; animation-delay: calc(500ms + var(--i, 0) * 80ms); }
+    .f { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    @keyframes draw { from { stroke-dashoffset: 1; } }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>OTel isn't beating Prometheus; it's the one layer our classic and AI workloads share.</h1>
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>OTel isn’t beating Prometheus; it’s the one layer our classic and AI workloads share.</h2>
+
+    <svg class="flow" id="flow" viewBox="0 0 1920 1080" role="img" aria-label="Classic workloads (services and jobs: metrics, logs, traces) and AI workloads (model servers and agents: tokens, tool calls, GenAI spans) flow into one OpenTelemetry collector layer on every cluster, which stamps cluster, namespace and team on everything, then out to Prometheus, Splunk and Jaeger."></svg>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    One more layer runs on every cluster we just rolled to, and it's the one that sees both kinds of workload.
+
+    The headline is the point, so let me be careful with it. This isn't OTel winning and Prometheus losing. Prometheus stays. It's on the right, as a place metrics land, and plenty of what we run will keep exposing Prometheus metrics for years.
+
+    What OTel is, is the layer in the middle. On the left, our classic workloads: services and batch jobs, emitting metrics, logs and traces. Below them, the AI workloads: model servers and agents, emitting things classic tools have no words for: token counts, tool calls, which model answered. OpenTelemetry has semantic conventions for exactly that now, and Google and Microsoft spent a whole session on keeping them consistent.
+
+    Both go through the same collector on every cluster. That's the splunk-otel-collector we're already rolling out, so this isn't a new tool. And it stamps the same cluster, namespace and team on everything, classic and AI alike. That's what lets us ask one question across both: what did this team's agent cost, and what did it touch?
+
+    IBM and JPMorgan showed it in practice: their inference servers emit OTel traces and get scraped by Prometheus, both at once.
+
+    And everything that layer collects has to land somewhere the agents can read.
   </aside>
 
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1', 'p2'], survey: true });
+    (() => {
+      const LX = 120, LY = 860, MX = 820, MW = 360, MY = 360, MH = 400, RX = 1350;
+      const mid = MY + MH / 2;
+      let s = '';
+      const SRC = [
+        ['classic', 'services', 'metrics, logs, traces', 418],
+        ['classic', 'batch jobs', 'metrics, logs', 502],
+        ['ai', 'model servers', 'tokens, latency, cache hits', 652],
+        ['ai', 'agents', 'tool calls, which model, cost', 736],
+      ];
+      s += `<text class="group classic" x="${LX}" y="368">Classic workloads</text>`;
+      s += `<text class="group ai" x="${LX}" y="602">AI workloads</text>`;
+      SRC.forEach(([k, name, what, y], i) => {
+        s += `<text class="item" x="${LX}" y="${y}">${name}</text><text class="item q" x="${LX}" y="${y + 32}">${what}</text>`;
+        const x0 = LX + 440, yy = y + 4, ty = mid - 90 + i * 60;
+        s += `<path class="f f-${k}" pathLength="1" style="--i:${i}" d="M${x0} ${yy}C${x0 + 90} ${yy} ${MX - 90} ${ty} ${MX} ${ty}"/>`;
+      });
+      // the one layer
+      s += `<rect class="layer" x="${MX}" y="${MY}" width="${MW}" height="${MH}" rx="20"/>`;
+      s += `<text class="layer-name" x="${MX + MW / 2}" y="${mid - 40}">OTel collector</text>`;
+      s += `<text class="layer-sub" x="${MX + MW / 2}" y="${mid + 2}">on every cluster</text>`;
+      s += `<text class="layer-sub" x="${MX + MW / 2}" y="${mid + 62}">stamps cluster,</text>`;
+      s += `<text class="layer-sub" x="${MX + MW / 2}" y="${mid + 96}">namespace and team</text>`;
+      const DEST = [
+        ['Prometheus', 'stays, as a backend', 430],
+        ['Splunk', 'logs, alerts, search', 560],
+        ['Jaeger', 'traces, agent runs', 690],
+      ];
+      DEST.forEach(([name, what, y], i) => {
+        const fy = mid - 60 + i * 60;
+        s += `<path class="f f-out" pathLength="1" style="--i:${i + 5}" d="M${MX + MW} ${fy}C${MX + MW + 90} ${fy} ${RX - 110} ${y - 12} ${RX - 20} ${y - 12}"/>`;
+        s += `<text class="dest" x="${RX}" y="${y}">${name}</text><text class="dest-sub" x="${RX}" y="${y + 34}">${what}</text>`;
+      });
+      Peaks.draw('#flow', s);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>
