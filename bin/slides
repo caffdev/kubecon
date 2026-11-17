@@ -1,0 +1,233 @@
+#!/usr/bin/env node
+// slides: open a deck straight into present mode in the browser.
+// → / Space / click to go forward, ← / right-click / click the left third to go back.
+// Wraps the deck kit's own player (docs/decks/_kit, vendored, not edited): this script serves
+// the page locally and adds two things the kit lacks: click-to-advance and auto-start.
+// Zero dependencies; Node 22+.
+import fs from 'node:fs';
+import path from 'node:path';
+import http from 'node:http';
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const DECKS = path.join(REPO, 'docs', 'decks');
+const KIT = path.join(DECKS, '_kit');
+
+const HELP = `slides: present a deck in the browser
+
+  bin/slides <deck> [<n|slug>]     the deck's exported artifact: docs/decks/<deck>/dist/<deck>.html
+  bin/slides <file.html>           any deck page: a dist/ export or a deck's index.html
+  bin/slides <https://…>           a published artifact URL, opened as-is (keys work; no click-to-advance)
+  bin/slides                       list decks
+
+Options
+  --draft <name>     a named draft (e.g. with-index): dist/<deck>.<draft>.html
+  --src              present the live source (slides/*.html) instead of the dist/ export
+  --at <n|slug>      start at slide n (1-based) or a slug; same as the second argument
+  --app              open in a chromeless Chrome window instead of the default browser
+  --port <n>         fixed port (default: any free one)
+  --no-open          just serve and print the URL
+
+In the browser
+  → Space click            next (steps through builds first)
+  ← right-click            back; clicking the left third of the slide also goes back
+  F full screen · P presenter view · O/Esc overview · Home/End · type a number + Enter to jump · ? keys`;
+
+// ---------- args ----------
+const VALUE = new Set(['draft', 'at', 'port']);
+const pos = [];
+const flags = {};
+const argv = process.argv.slice(2);
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '-h' || a === '--help') flags.help = true;
+  else if (a.startsWith('--')) {
+    const [k, v] = a.slice(2).split(/=(.*)/s);
+    if (v !== undefined) flags[k] = v;
+    else if (VALUE.has(k)) { if (argv[i + 1] == null) fail(`--${k} needs a value`); flags[k] = argv[++i]; }
+    else flags[k] = true;
+  } else pos.push(a);
+}
+
+function fail(msg) { console.error(`slides: ${msg}`); process.exit(1); }
+const rel = (p) => path.relative(process.cwd(), p) || '.';
+const when = (ms) => new Date(ms).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+
+function listDecks() {
+  return fs.readdirSync(DECKS, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !/^[_.]/.test(d.name) && fs.existsSync(path.join(DECKS, d.name, 'deck.json')))
+    .map((d) => d.name).sort();
+}
+const readJson = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
+const exportFile = (dir, name, draft, def) => path.join(dir, 'dist', `${name}${draft && draft !== def ? '.' + draft : ''}.html`);
+
+if (flags.help) { console.log(HELP); process.exit(0); }
+
+if (!pos.length) {
+  console.log('Decks (bin/slides <deck>):\n');
+  for (const name of listDecks()) {
+    const dir = path.join(DECKS, name);
+    const meta = readJson(path.join(dir, 'deck.json'));
+    for (const d of Object.keys(meta.drafts || {})) {
+      const f = exportFile(dir, name, d, meta.draft);
+      const label = d === meta.draft ? name : `${name} --draft ${d}`;
+      const n = meta.drafts[d].length;
+      console.log(`  ${label.padEnd(36)} ${String(n).padStart(2)} slides   ${fs.existsSync(f) ? 'exported ' + when(fs.statSync(f).mtimeMs) : 'not exported (use --src)'}`);
+    }
+  }
+  console.log(`\n${HELP.split('\n').slice(2).join('\n')}`);
+  process.exit(0);
+}
+
+// ---------- open ----------
+let findChrome = null;
+if (flags.app) {
+  try { ({ findChrome } = await import(path.join(KIT, 'lib', 'chrome.mjs'))); } catch { /* default browser */ }
+}
+function openUrl(url) {
+  if (flags.app) {
+    const chrome = findChrome?.();
+    if (chrome) return spawn(chrome, [`--app=${url}`, '--new-window'], { stdio: 'ignore', detached: true }).unref();
+    console.log('  (Chrome not found for --app; set CHROME_PATH. Using the default browser.)');
+  }
+  const [cmd, args] = process.platform === 'darwin' ? ['open', [url]]
+    : process.platform === 'win32' ? ['cmd', ['/c', 'start', '', url]]
+    : ['xdg-open', [url]];
+  spawn(cmd, args, { stdio: 'ignore', detached: true }).unref();
+}
+
+const target = pos[0];
+const at = flags.at ?? pos[1] ?? null;
+
+if (/^https?:\/\//i.test(target)) {
+  if (!flags['no-open']) openUrl(target);
+  console.log(`Opened ${target}\n  Click into the page once, then ← → work. Click-to-advance needs a local file: bin/slides <deck>.`);
+  process.exit(0);
+}
+
+// ---------- resolve the page to present ----------
+let file;
+let query = '';
+let note = '';
+const asPath = path.resolve(target);
+const isFile = fs.existsSync(asPath) && fs.statSync(asPath).isFile();
+if (isFile) {
+  file = asPath;
+  if (!/\.html?$/i.test(file)) fail(`${rel(file)} isn't an HTML file`);
+} else {
+  const deckDir = fs.existsSync(path.join(asPath, 'deck.json')) ? asPath
+    : fs.existsSync(path.join(DECKS, target, 'deck.json')) ? path.join(DECKS, target) : null;
+  if (!deckDir) fail(`no deck or file called "${target}". Decks: ${listDecks().join(', ')}`);
+  const name = path.basename(deckDir);
+  const meta = readJson(path.join(deckDir, 'deck.json'));
+  const draft = flags.draft || meta.draft;
+  if (!meta.drafts?.[draft]) fail(`${name} has no draft "${draft}". Drafts: ${Object.keys(meta.drafts || {}).join(', ')}`);
+
+  const exp = exportFile(deckDir, name, draft, meta.draft);
+  if (!flags.src && fs.existsSync(exp)) {
+    file = exp;
+    const built = fs.statSync(exp).mtimeMs;
+    const newer = newestSource(deckDir).filter((f) => f.t > built).sort((a, b) => b.t - a.t);
+    note = `exported ${when(built)}`;
+    if (newer.length) {
+      note += `\n  ⚠ ${newer.length} source file(s) changed since (newest: ${rel(newer[0].f)}). ` +
+        `Re-export with \`node docs/decks/_kit/deck.mjs export ${name}${draft !== meta.draft ? ' --draft ' + draft : ''}\` or pass --src.`;
+    }
+  } else {
+    if (!flags.src) note = `no dist/ export yet, presenting the source`;
+    else note = 'live source';
+    const { buildDeck } = await import(path.join(KIT, 'lib', 'project.mjs'));
+    buildDeck(DECKS, name); // regenerate index.html so it matches deck.json + slides/, as `deck serve` does
+    file = path.join(deckDir, 'index.html');
+    if (draft !== meta.draft) query = `?draft=${encodeURIComponent(draft)}`;
+  }
+}
+
+/** Files whose changes show up on screen. narrative.md is left out: it feeds notes, and is edited for bookkeeping. */
+function newestSource(deckDir) {
+  const out = [];
+  const walk = (p) => {
+    if (!fs.existsSync(p)) return;
+    const st = fs.statSync(p);
+    if (st.isDirectory()) { for (const e of fs.readdirSync(p)) if (!e.startsWith('.')) walk(path.join(p, e)); }
+    else out.push({ f: p, t: st.mtimeMs });
+  };
+  for (const sub of ['slides', 'theme', 'assets', 'deck.json']) walk(path.join(deckDir, sub));
+  walk(path.join(DECKS, '_shared'));
+  return out;
+}
+
+// ---------- serve ----------
+// Serve from docs/decks when the page lives there (a source index.html reaches into ../_kit and ../_shared),
+// otherwise from the page's own folder.
+const inDecks = !path.relative(DECKS, file).startsWith('..');
+const root = inDecks ? DECKS : path.dirname(file);
+const pagePath = '/' + path.relative(root, file).split(path.sep).map(encodeURIComponent).join('/');
+
+const MIME = {
+  '.html': 'text/html; charset=utf-8', '.htm': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.json': 'application/json',
+  '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif',
+  '.webp': 'image/webp', '.avif': 'image/avif', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf', '.otf': 'font/otf', '.mp4': 'video/mp4', '.webm': 'video/webm', '.pdf': 'application/pdf',
+  '.txt': 'text/plain; charset=utf-8', '.md': 'text/plain; charset=utf-8',
+};
+
+// Runs in the page after the kit's player (deck.js). The player only exposes itself through window.DECK and
+// a keydown listener on window, so clicks are turned into the same arrow keys the keyboard sends.
+const AT = at == null ? null : /^\d+$/.test(String(at)) ? parseInt(at, 10) : String(at);
+const CLIENT = `<script>/* injected by bin/slides */
+(() => {
+  const D = window.DECK, player = document.querySelector('.player');
+  if (!D || !player) return;
+  const q = new URLSearchParams(location.search);
+  if (q.get('view') === 'presenter') return;
+  const key = (k) => dispatchEvent(new KeyboardEvent('keydown', { key: k, cancelable: true }));
+  const pad = document.createElement('div');
+  pad.style.cssText = 'position:absolute;inset:0;z-index:10;-webkit-tap-highlight-color:transparent';
+  pad.addEventListener('click', (e) => key(e.clientX < innerWidth / 3 ? 'ArrowLeft' : 'ArrowRight'));
+  pad.addEventListener('contextmenu', (e) => { e.preventDefault(); key('ArrowLeft'); });
+  player.append(pad);
+  if (/^#\\//.test(location.hash)) return; // already presenting (deep link or reload)
+  const order = D.drafts[q.get('draft')] || D.drafts[D.draft] || [];
+  const at = ${JSON.stringify(AT)};
+  const slug = typeof at === 'number' ? order[Math.min(Math.max(at, 1), order.length) - 1]
+    : order.includes(at) ? at : order[0];
+  if (slug) location.hash = '#/' + encodeURIComponent(slug);
+})();
+</script>`;
+
+const server = http.createServer((req, res) => {
+  let p;
+  try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch { res.writeHead(400).end(); return; }
+  // The player asks whether it's under `deck serve` (drags save to deck.json). It isn't: this is a viewer.
+  if (p === '/__deck/ping') { res.writeHead(200, { 'content-type': 'application/json' }).end('{"live":false}'); return; }
+  if (p === '/favicon.ico') { res.writeHead(204).end(); return; }
+  let f = path.join(root, p);
+  if (path.relative(root, f).startsWith('..')) { res.writeHead(403).end(); return; }
+  if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');
+  if (!fs.existsSync(f) || !fs.statSync(f).isFile()) { res.writeHead(404, { 'content-type': 'text/plain' }).end('not found'); return; }
+  const type = MIME[path.extname(f).toLowerCase()] || 'application/octet-stream';
+  const headers = { 'content-type': type, 'cache-control': 'no-store' };
+  if (f === file) {
+    let html = fs.readFileSync(f, 'utf8');
+    const i = html.lastIndexOf('</body>');
+    html = i < 0 ? html + CLIENT : html.slice(0, i) + CLIENT + html.slice(i);
+    res.writeHead(200, headers).end(html);
+  } else {
+    res.writeHead(200, headers);
+    fs.createReadStream(f).pipe(res);
+  }
+});
+
+server.on('error', (e) => fail(e.code === 'EADDRINUSE' ? `port ${flags.port} is in use; drop --port or pick another` : e.message));
+server.listen(flags.port ? parseInt(flags.port, 10) : 0, '127.0.0.1', () => {
+  const url = `http://127.0.0.1:${server.address().port}${pagePath}${query}`;
+  console.log(`Presenting ${rel(file)}${note ? `  (${note.split('\n')[0]})` : ''}${note.includes('\n') ? '\n' + note.split('\n').slice(1).join('\n') : ''}`);
+  console.log(`  ${url}`);
+  console.log('  → Space click: next   ← right-click left-third: back   F full screen · P presenter · O overview · ? keys');
+  console.log('Ctrl-C to stop.');
+  if (!flags['no-open']) openUrl(url);
+});
+process.on('SIGINT', () => { server.close(); process.exit(0); });
