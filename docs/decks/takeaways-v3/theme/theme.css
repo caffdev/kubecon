@@ -150,3 +150,21 @@
 .snow .range .star { fill: var(--slate); }
 .snow .range .star-glow-0, .snow .range .star-glow-1 { stop-color: var(--haze-ink); }
 .is-entered .range .north-star { animation: fade-in 1200ms 200ms both; }
+
+/* group tag (range.js Range.group): which of the three groups this slide's fix is for */
+.group-tag { position: absolute; left: var(--margin); top: 40px; display: flex; align-items: center; gap: 14px; font: 600 28px/1 var(--font-display); letter-spacing: .02em; }
+.group-tag .g-bars { display: inline-flex; gap: 5px; align-items: flex-end; }
+.group-tag .g-bars i { display: block; width: 10px; height: 26px; border-radius: 2px; opacity: .25; }
+.group-tag .g-bars i.on { opacity: 1; }
+.g-bars .g-admins { background: var(--haze); }
+.g-bars .g-platform { background: var(--mint); }
+.g-bars .g-developers { background: var(--lake); }
+.group-tag.g-admins { color: var(--haze); }
+.group-tag.g-platform { color: var(--mint); }
+.group-tag.g-developers { color: var(--lake); }
+.snow .g-bars .g-admins { background: var(--haze-ink); }
+.snow .g-bars .g-platform { background: var(--mint-ink); }
+.snow .g-bars .g-developers { background: #2a64a8; }
+.snow .group-tag.g-admins { color: var(--haze-ink); }
+.snow .group-tag.g-platform { color: var(--mint-ink); }
+.snow .group-tag.g-developers { color: #2a64a8; }

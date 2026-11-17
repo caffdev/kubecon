@@ -46,7 +46,7 @@
   </main>
 
   <aside class="notes">
-    Confession: the four tools so far were a demo, to keep the pictures readable. Here's what the platform actually runs.
+    Now the platform team, who carry the most. First, a confession: the four tools so far were a demo, to keep the pictures readable. Here's what the platform actually runs.
 
     The four in blue are the ones you've seen: Argo CD, Prometheus, the Splunk OTel collector, Karpenter. Click. And the rest: Ceph and Rook for storage on our own hardware, the Vault operator and External Secrets, Grafana and Thanos, Istio or the ALB controller depending on the cloud, the Kafka UI, the file viewer, cert-manager, external-dns, Kyverno, Velero, KEDA, Reloader, Argo Rollouts. Twenty. The tag beside each says where it runs: on every cluster, only on-prem, only in the cloud, or on just a few.
 
@@ -56,13 +56,14 @@
 
     Same caveat as before: it's a model, not a measurement. But the shape holds.
 
-    And those twenty don't land the same way everywhere, which is the developers' problem too.
+    Twenty platform apps, and every one has to roll out across the fleet. The answer is the one we already use for apps.
   </aside>
 
   <script src="../../_shared/peaks.js"></script>
   <script src="../theme/range.js"></script>
   <script>
     Range.draw('#range', { touch: ['p3', 'p1'] });
+    Range.group('platform');
     const ALL = 'all 29', ON = 'on-prem', CLOUD = 'cloud', FEW = 'a few';
     const TOOLS = [
       ['argo-cd', ALL, 1], ['prometheus', ALL, 1], ['splunk-otel', ALL, 1], ['karpenter', CLOUD, 1],

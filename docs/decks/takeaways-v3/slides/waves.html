@@ -41,7 +41,7 @@
   </main>
 
   <aside class="notes">
-    That's the clusters. The tools on them need the same treatment, and the fix is the one we already use for apps.
+    Twenty platform apps, rolled out the way we roll out any app: progressively.
 
     Read the picture from the left. The middle of the ripple is the test cluster. The next ring is one canary cluster: real workloads, real traffic, but just one. Then the prod fleet in waves: wave one, wave two, and the rest of prod. A new version of a platform tool, say a new Argo CD, starts in the middle and moves outward one ring at a time.
 
@@ -58,6 +58,7 @@
   <script src="../theme/range.js"></script>
   <script>
     Range.draw('#range', { touch: ['p1'] });
+    Range.group('platform');
     (() => {
       // same geometry as gates.html: half-rings rippling right from the test cluster
       const cx = 190, cy = 700, A = 42 * Math.PI / 180;

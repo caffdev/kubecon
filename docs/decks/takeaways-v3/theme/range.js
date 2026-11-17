@@ -91,5 +91,15 @@
     return s + '</g>';
   }
 
-  window.Range = { draw, star, PEAKS, H, SINK };
+  /** The group a slide belongs to, after the overrun chart split the work three ways:
+      a small tag above the headline with three bars, this group's lit (its chart colour). */
+  function group(which) {
+    const G = { admins: 'Cluster admins', platform: 'Platform team', developers: 'Developers' };
+    const el = document.querySelector('.slide');
+    if (!el || !G[which]) return;
+    const bars = Object.keys(G).map((k) => `<i class="g-${k}${k === which ? ' on' : ''}"></i>`).join('');
+    el.insertAdjacentHTML('afterbegin', `<p class="group-tag g-${which}" aria-hidden="true"><span class="g-bars">${bars}</span>${G[which]}</p>`);
+  }
+
+  window.Range = { draw, star, group, PEAKS, H, SINK };
 })();

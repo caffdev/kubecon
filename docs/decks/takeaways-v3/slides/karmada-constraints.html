@@ -48,7 +48,7 @@
   </main>
 
   <aside class="notes">
-    So twenty tools and dozens of apps have to land somewhere across three kinds of place. Today, somebody decides which cluster each one goes to, and writes that cluster's name down. Here's the north-star alternative.
+    Now the developers. Their hidden hours went on three things: knowing what runs where and why, picking clusters and regions, and keeping DR patterns alive. Today, somebody decides which cluster each app goes to, and writes that cluster's name down. Here's the north-star alternative.
 
     On the left is everything a developer writes. Constraints: it runs in the cloud, it's PCI, it stays in the US. And asks: six replicas, spread across two regions, and fall back to the second cloud if it has to. There isn't a cluster name anywhere.
 
@@ -64,6 +64,7 @@
   <script src="../theme/estate.js"></script>
   <script>
     Range.draw('#range', { touch: ['p3', 'p1'] });
+    Range.group('developers');
     Estate.draw('#kmap', 6, { quiet: true, people: false, you: false, names: false });
     (() => {
       const cs = Estate.at();

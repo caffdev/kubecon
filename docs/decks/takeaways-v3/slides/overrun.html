@@ -3,68 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The team's year runs out</title>
+  <title>Every group drowns in upkeep</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    h2 { font-size: 84px; max-width: 1500px; line-height: 1.02; }
+    h2 { font-size: 80px; max-width: 1600px; line-height: 1.02; }
     .chart { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
-    .grid { stroke: #1c262c; stroke-width: 1; }
-    .tick { font: 400 24px var(--font-body); fill: var(--lichen); text-anchor: end; font-variant-numeric: tabular-nums; }
-    .axis-name { font: 500 24px var(--font-body); fill: var(--lichen); }
-    .stage { font: 600 26px var(--font-display); fill: var(--snow); text-anchor: middle; }
-    .ghost { fill: none; stroke: var(--lichen); stroke-width: 2.5; stroke-dasharray: 8 6; }
-    .ghost-name { font: 600 26px var(--font-display); fill: var(--lichen); text-anchor: middle; }
-    .total { font: 600 32px var(--font-display); fill: var(--snow); text-anchor: middle; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--bg); stroke-width: 14px; }
-    .seg-k { fill: var(--haze); }
-    .seg-t { fill: var(--mint); }
-    .seg-a { fill: var(--lake); }
+    .p-name { font: 600 38px var(--font-display); }
+    .p-key { font: 400 23px var(--font-body); fill: var(--lichen); }
+    .base { stroke: var(--scree); stroke-width: 2; }
+    .stage { font: 500 22px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .total { font: 600 28px var(--font-display); fill: var(--snow); text-anchor: middle; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--bg); stroke-width: 12px; }
     .cap-line { stroke: var(--you); stroke-width: 4; }
-    .cap-line.two { stroke-dasharray: 14 10; }
-    .cap-name { font: 600 30px var(--font-display); fill: var(--you); }
-    .key { font: 500 26px var(--font-body); fill: var(--snow); }
-
-    .side { position: absolute; left: 1310px; width: 520px; font-size: 30px; line-height: 1.32; color: var(--lichen); }
-    .side b { display: block; font: 600 40px/1.08 var(--font-display); color: var(--snow); margin-bottom: 6px; }
-    .side .you-t { color: var(--you); }
-    .model-tag { position: absolute; left: 1310px; top: 880px; width: 520px; }
+    .cap-name { font: 600 26px var(--font-display); fill: var(--you); paint-order: stroke; stroke: var(--bg); stroke-width: 10px; }
+    .ghost { fill: none; stroke: var(--lichen); stroke-width: 2.5; stroke-dasharray: 8 6; }
+    .call { font: 600 28px var(--font-display); fill: var(--snow); }
+    .call.out { fill: var(--you); }
+    .call-sub { font: 400 23px var(--font-body); fill: var(--lichen); }
+    .model-tag { position: absolute; left: var(--margin); top: 930px; width: 560px; }
   </style>
 </head>
 <body>
   <main class="slide" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h2>Keep doing it this way, and the team’s year runs out at the second cloud.</h2>
-
-    <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="Upgrade hours a year by growth stage, cluster upgrades plus tool rollouts plus app upgrades: day one 480, cloud dev 786, second exchange 1,170, migration 1,728, second region 2,250, second cloud 2,862, and with AI 4,056. A team of three has 2,550 hours; four people have 3,400."></svg>
-
-    <div class="side" style="top: 340px;">
-      <b class="you-t">+ second cloud: 2,862 hours</b>More than the whole team has for upgrades.
-    </div>
-    <div class="side" style="top: 500px;" data-step="1">
-      <b>Hire a fourth person</b>and it holds, until AI arrives.
-    </div>
-    <div class="side" style="top: 660px;">
-      <b>Apps are the biggest share</b>Every app on every cluster is an upgrade too.
-    </div>
-    <p class="model-tag"><b>Illustrative model, not our measurements:</b> a team of 3; 12 h per kubeadm upgrade, 6 h per managed cluster, 1.5 h per tool per cluster, 0.5 h per app upgrade. Inputs in <code>assets/toil-model.json</code>.</p>
+    <h2>Keep doing it this way, and admins, platform and developers all drown in upkeep.</h2>
+    <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="Three panels, hours a year by growth stage. Cluster admins (kubeadm upgrades, Karmada upkeep) pass one admin's 850 hours at the second cloud. The platform team (platform apps, progressive rollouts, time syncs) passes two engineers' 1,700 hours at the second region. Developers (what runs where and why, scheduling, DR patterns) reach 1,280 hours by the second cloud. AI adds more to all three. Illustrative."></svg>
+    <p class="model-tag"><b>Illustrative model, not our measurements.</b> One admin and two platform engineers, half their year each. Each panel has its own scale.</p>
   </main>
 
   <aside class="notes">
-    Now add it up.
+    Now add it up, and split it by who actually carries it. Three groups.
 
-    Each bar is one stage of the story. The height is the hours a year of upgrade work, done the way we do it today, in three layers: upgrading the clusters at the bottom, rolling out the four tools in the middle, and upgrading the apps on top, because every app on every cluster gets upgraded too.
+    On the left, the cluster admins. Their time goes on kubeadm and cluster upgrades, and on the multi-cluster upkeep: the labels, the registrations, the failover setup that something like Karmada would otherwise own. One admin, about half their year for this, 850 hours. They run out at the second cloud.
 
-    The orange line is the team's year. Three people, and about half of each of their years, because they also have tickets, on-call and projects. Twenty-five hundred and fifty hours.
+    In the middle, the platform team, and they carry the most. The platform apps, the four tools so far. Progressive rollouts of every app upgrade, cluster by cluster. And the time syncs: change windows, approvals, keeping admins and developers and everyone else in step. Two engineers, 1,700 hours. They run out first, at the second region.
 
-    For a while it's fine. At the second region it's most of their time. At the second cloud the bar goes through the line: almost twenty-nine hundred hours. More than the whole team has.
+    On the right, developers, the cost nobody budgets. Knowing what runs where and why. Deciding which clusters and regions each app goes to. Keeping DR patterns and drills alive. By the second cloud that's about thirteen hundred hours a year, three-quarters of a developer, spread thinly across every team, so nobody sees it.
 
-    These are not our measurements. It's a model: twelve hours per kubeadm upgrade, six per managed cluster, the tools, and half an hour per app upgrade. Change the inputs and the crossing moves a stage left or right. It doesn't go away, because every new cluster multiplies all three layers.
+    Click. And that's before AI, the dashed bars, which adds to all three.
 
-    Click. The obvious answer is to hire. A fourth person moves the line to 3,400, and that holds. Then AI arrives, the dashed bar, with its own clusters, twice the tools on each one and more apps, and it goes through both lines.
-
-    And look at which layer is biggest: the apps. Fixing kubeadm alone doesn't come close.
-
-    So what do the people with three hundred clusters do?
+    It's a model, not a measurement; the inputs are in assets/toil-model.json. But each group's line gets crossed for a different reason, so each group gets its own fix. The next few slides take them in turn: admins first, then the platform team, then developers.
   </aside>
 
   <script src="../../_shared/peaks.js"></script>
@@ -72,47 +50,60 @@
   <script>
     Range.draw('#range', { touch: ['p3'] });
     (() => {
-      // data: assets/toil-model.json (inlined so the slide works from file://)
-      const S = [
-        ['day one', 144, 96, 240], ['+ cloud', 198, 168, 420], ['+ exchange', 342, 264, 564],
-        ['+ migration', 450, 408, 870], ['+ region', 558, 552, 1140], ['+ cloud 2', 666, 696, 1500],
+      // illustrative: assets/toil-model.json "groups" (inlined so the slide works from file://)
+      const G = [
+        { name: 'Cluster admins', col: 'var(--haze)', cap: 850, capName: '1 admin: 850 h', max: 1200,
+          keys: [['kubeadm upgrades', '#68b6c3'], ['Karmada upkeep', '#a9d8e0']],
+          rows: [[144, 32], [198, 56], [342, 88], [450, 136], [558, 184], [666, 232], [720, 256]],
+          call: ['Out at the second cloud', '898 h, past one admin’s year'], out: true },
+        { name: 'Platform team', col: 'var(--mint)', cap: 1700, capName: '2 engineers: 1,700 h', max: 4000,
+          keys: [['platform apps', '#9cf0e1'], ['progressive rollouts', '#4fcdb5'], ['time syncs', '#d4faf3']],
+          rows: [[96, 240, 180], [168, 420, 180], [264, 564, 228], [408, 870, 300], [552, 1140, 300], [696, 1500, 360], [1536, 1800, 420]],
+          call: ['Out first, at the second region', '1,992 h; 2,556 by the second cloud'], out: true },
+        { name: 'Developers', col: 'var(--lake)', cap: 0, max: 2000,
+          keys: [['where and why', '#4f8fd8'], ['scheduling', '#86b3ea'], ['DR patterns', '#c2d9f5']],
+          rows: [[80, 80, 80], [140, 80, 80], [188, 128, 128], [290, 200, 200], [380, 200, 400], [500, 260, 520], [600, 320, 640]],
+          call: ['1,280 h by the second cloud', 'three-quarters of a developer, spread thin'], out: false },
       ];
-      const AI = ['+ AI', 720, 1536, 1800];   // part 2: three AI clusters, eight tools, eighty apps
-      const TEAM = 2550, MORE = 3400;
-      const X0 = 236, SLOT = 128, BW = 64, BASE = 800, MAXH = 4200, PX = 450 / MAXH;
-      const y = (h) => BASE - h * PX;
-      const GAP = 2;
-      let s = '', totals = '';
-      for (const t of [0, 1000, 2000, 3000, 4000]) {
-        s += `<line class="grid" x1="${X0 - 30}" x2="${X0 + SLOT * 7 - 40}" y1="${y(t)}" y2="${y(t)}"/>`;
-        s += `<text class="tick" x="${X0 - 44}" y="${y(t) + 8}">${t.toLocaleString('en-US')} h</text>`;
-      }
-      const cxOf = (i) => X0 + SLOT * i + SLOT / 2 - 30;
-      S.forEach(([name, k, t, a], i) => {
-        const cx = cxOf(i), x = cx - BW / 2;
-        const yk = y(k), yt = y(k + t), ya = y(k + t + a);
-        s += `<rect class="seg-k" x="${x}" y="${yk}" width="${BW}" height="${BASE - yk}"/>`;
-        s += `<rect class="seg-t" x="${x}" y="${yt}" width="${BW}" height="${yk - yt - GAP}"/>`;
-        s += `<path class="seg-a" d="M${x} ${yt - GAP}V${ya + 4}q0 -4 4 -4H${x + BW - 4}q4 0 4 4V${yt - GAP}Z"/>`;
-        totals += `<text class="total" x="${cx}" y="${ya - 14}">${(k + t + a).toLocaleString('en-US')}</text>`;
-        s += `<text class="stage" x="${cx}" y="${BASE + 40}">${name}</text>`;
+      const PX0 = [120, 690, 1260], PW = 540, TOP = 500, BASE = 740, H = BASE - TOP, SLOT = 68, BW = 40, GAP = 2;
+      let s = '', late = '';
+      G.forEach((g, p) => {
+        const x0 = PX0[p], y = (v) => BASE - (v / g.max) * H;
+        s += `<text class="p-name" x="${x0}" y="352" style="fill:${g.col}">${g.name}</text>`;
+        g.keys.forEach(([k, c], j) => {
+          const ky = 374 + j * 30;
+          s += `<rect x="${x0}" y="${ky}" width="16" height="16" rx="3" fill="${c}"/><text class="p-key" x="${x0 + 24}" y="${ky + 15}">${k}</text>`;
+        });
+        g.rows.forEach((r, i) => {
+          const cx = x0 + 20 + i * SLOT + SLOT / 2, bx = cx - BW / 2;
+          const total = r.reduce((a, b) => a + b, 0);
+          if (i === 6) {
+            late += `<g data-step="1"><rect class="ghost" x="${bx}" y="${y(total)}" width="${BW}" height="${BASE - y(total)}" rx="4"/>`
+              + `<text class="total" x="${cx}" y="${y(total) - 10}">${total.toLocaleString('en-US')}</text>`
+              + `<text class="stage" x="${cx}" y="${BASE + 30}">AI</text></g>`;
+            return;
+          }
+          let acc = 0;
+          r.forEach((v, j) => {
+            const y1 = y(acc + v), y0 = y(acc) - (j ? GAP : 0);
+            const last = j === r.length - 1;
+            s += last
+              ? `<path d="M${bx} ${y0}V${y1 + 4}q0 -4 4 -4H${bx + BW - 4}q4 0 4 4V${y0}Z" fill="${g.keys[j][1]}"/>`
+              : `<rect x="${bx}" y="${y1}" width="${BW}" height="${y0 - y1}" fill="${g.keys[j][1]}"/>`;
+            acc += v;
+          });
+          if (i === 5) s += `<text class="total" x="${cx}" y="${y(total) - 10}">${total.toLocaleString('en-US')}</text>`;
+          if (i === 0) s += `<text class="stage" x="${cx}" y="${BASE + 30}">day one</text>`;
+          if (i === 5) s += `<text class="stage" x="${cx}" y="${BASE + 30}">cloud 2</text>`;
+        });
+        s += `<line class="base" x1="${x0}" x2="${x0 + PW - 20}" y1="${BASE}" y2="${BASE}"/>`;
+        if (g.cap) {
+          s += `<line class="cap-line" x1="${x0}" x2="${x0 + PW - 20}" y1="${y(g.cap)}" y2="${y(g.cap)}"/>`;
+          s += `<text class="cap-name" x="${x0 + 4}" y="${y(g.cap) - 12}">${g.capName}</text>`;
+        }
+        s += `<text class="call${g.out ? ' out' : ''}" x="${x0}" y="${BASE + 76}">${g.call[0]}</text><text class="call-sub" x="${x0}" y="${BASE + 106}">${g.call[1]}</text>`;
       });
-      // direct labels beside the last solid bar double as the legend
-      const lx = cxOf(5) + BW / 2 + 12, L = S[5];
-      s += `<rect class="seg-a" x="${lx}" y="${y(L[1] + L[2] + L[3] / 2) - 12}" width="18" height="18" rx="3"/><text class="key" x="${lx + 26}" y="${y(L[1] + L[2] + L[3] / 2) + 4}">apps</text>`;
-      s += `<rect class="seg-t" x="${lx}" y="${y(L[1] + L[2] / 2) - 12}" width="18" height="18" rx="3"/><text class="key" x="${lx + 26}" y="${y(L[1] + L[2] / 2) + 4}">tools</text>`;
-      s += `<rect class="seg-k" x="${lx}" y="${y(L[1] / 2) - 12}" width="18" height="18" rx="3"/><text class="key" x="${lx + 26}" y="${y(L[1] / 2) + 4}">clusters</text>`;
-      // the team's year, and (on click) a fourth person's, with AI's bar beyond both
-      const xe = X0 + SLOT * 7 - 20;
-      s += `<line class="cap-line" x1="${X0 - 30}" x2="${xe}" y1="${y(TEAM)}" y2="${y(TEAM)}"/>`;
-      s += `<text class="cap-name" x="${X0 - 24}" y="${y(TEAM) - 14}">the team of 3: 2,550 h</text>`;
-      const ax = cxOf(6) - BW / 2, at = y(AI[1] + AI[2] + AI[3]);
-      s += `<g data-step="1"><line class="cap-line two" x1="${X0 - 30}" x2="${xe}" y1="${y(MORE)}" y2="${y(MORE)}"/>`
-        + `<text class="cap-name" x="${X0 - 24}" y="${y(MORE) - 14}">four people: 3,400 h</text>`
-        + `<rect class="ghost" x="${ax}" y="${at}" width="${BW}" height="${BASE - at}" rx="4"/>`
-        + `<text class="ghost-name" x="${cxOf(6)}" y="${BASE + 40}">+ AI</text></g>`;
-      totals += `<g data-step="1"><text class="total" x="${cxOf(6)}" y="${at - 14}">4,056</text></g>`;
-      Peaks.draw('#chart', s + totals);  // totals last, so their knockout breaks the lines
+      Peaks.draw('#chart', s + late);
     })();
   </script>
   <script src="../../_kit/runtime/slide.js"></script>

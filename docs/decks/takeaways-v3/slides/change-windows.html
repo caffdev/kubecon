@@ -60,13 +60,16 @@
 
     NVIDIA showed the same idea at fleet scale: their maintenance scheduler factors in business-critical windows. Agility Robotics put an admission gate on top of sync windows for the cases a schedule can't see.
 
-    That's how four tools roll out safely. Now the real number.
+    And that's the platform team's third time sink, the syncs between everyone. The window is the sync: admins, the platform team and developers stay in step without a meeting, because the cluster enforces what they agreed.
+
+    That's the platform team. Now the developers.
   </aside>
 
   <script src="../../_shared/peaks.js"></script>
   <script src="../theme/range.js"></script>
   <script>
     Range.draw('#range', { touch: ['p1'] });
+    Range.group('platform');
     (() => {
       const X0 = 200, W = 1600, Y = 448, H = 96, HOUR = W / 192;   // eight days: Monday to the next Monday
       const hx = (d, h) => X0 + (d * 24 + h) * HOUR;

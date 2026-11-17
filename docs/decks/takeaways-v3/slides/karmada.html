@@ -66,6 +66,8 @@
 
     Click. Now it's AWS itself having the bad day. Both regions dark. The constraints say "fall back to the second cloud", so all six replicas go there.
 
+    That's the developers' DR pattern, done by policy instead of a runbook.
+
     Click. And nobody edited a file. The developer didn't change a thing, nobody rewrote a list of clusters at two in the morning, and the team in orange found out from a message. Fingers uncrossed.
 
     To be honest about where this sits: it's the north star, not what we run. It needs every cluster labelled properly, it needs the data behind the app to be reachable from wherever it lands, and Karmada is one more control plane to run and upgrade. It goes through the same pipeline as everything else. Bloomberg runs their streaming platform on it, for exactly this.
@@ -78,6 +80,7 @@
   <script src="../theme/estate.js"></script>
   <script>
     Range.draw('#range', { touch: ['p3', 'p1'] });
+    Range.group('developers');
     Estate.draw('#kmap', 6, { quiet: true, people: false, you: false, names: false });
     (() => {
       const cs = Estate.at();

@@ -63,13 +63,15 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   - Open (1): the title, "KubeCon 2027 north star: managing our fleet at scale."
   - I: *watch it grow* (6): four clusters → three clouds, apps and pods climbing, still one
     team.
-  - II: *add it up* (3): the runbook, the tools, the overrun.
-  - III: *stop doing it by hand* (4): kubeadm's place, waves, gates, windows.
-  - IV: *at real size* (4): twenty tools, Karmada constraints, Karmada failover, no
-    cluster names.
-  - V: *the agents arrive* (6): AI on the map, elastic agents, sandbox, MCP tools,
+  - II: *add it up* (3): the runbook, the tools, the overrun split three ways (cluster
+    admins, platform team, developers).
+  - III: *cluster admins* (1): clusters as a fleet, kubeadm and Karmada from code.
+  - IV: *platform team* (4): twenty tools, waves, gates, windows (the time syncs).
+  - V: *developers* (3): Karmada constraints (where and why, scheduling), Karmada failover
+    (DR patterns), no cluster names.
+  - VI: *the agents arrive* (6): AI on the map, elastic agents, sandbox, MCP tools,
     credentials, policy.
-  - VI: *see it, then climb* (4): one view, the lake, AI resizing, the AI phases.
+  - VII: *see it, then climb* (4): one view, the lake, lakeside savings, the AI phases.
   - Close (2): the same person; the ask.
 - **The peak:** `karmada`, slide 17 of 30 (57%). Slide 6 says "fingers crossed for no AWS
   outage". Here a region fails and the work shifts to the other region, then AWS fails and
@@ -82,6 +84,17 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 
 ## Editorial notes
 
+- **Three groups (user, 2026-11-17).** The overrun splits the upkeep by who carries it.
+  *Cluster admins:* kubeadm and cluster upgrades as before, plus Karmada / multi-cluster
+  upkeep at 8 h per cluster a year. *Platform team:* platform apps (the tool rollouts),
+  progressive rollouts of app upgrades (6 a year per placement at 0.5 h), and time syncs
+  (100 h plus 4 h per app). *Developers:* where and why (1 h per placement), scheduling
+  (4 h per app), DR patterns (8 h per app with DR: 10, 10, 16, 25, 50, 65, then 80 with
+  AI). Totals by stage, admins / platform / developers: 176 / 516 / 240 → 254 / 768 / 300
+  → 430 / 1,056 / 444 → 586 / 1,578 / 690 → 742 / 1,992 / 980 → 898 / 2,556 / 1,280 →
+  (AI) 976 / 3,756 / 1,560. The team of three is one admin (850 h) and two platform
+  engineers (1,700 h); developers have no line. The slides after the chart are grouped
+  in that order, each with a group tag.
 - **One team, not one person (user, 2026-11-17).** One team of three owns cluster *and* app
   upgrades; it's drawn as three climbers roped together. The toil model now includes app
   upgrades: 6 a year per app placement at 0.5 h each by hand, plus the cluster and tool
@@ -175,6 +188,10 @@ What v3 adds:
   every slide, drawn by `range.js`. Its brightness follows the beat's Energy (1 = dim, no
   halo; 5 = full, wide halo), read from `data-energy` on `.slide`, which
   `theme/gen/energy.mjs` syncs from this file. **Re-run it after changing an Energy.**
+- **Group tags.** After the overrun, each fix slide carries a small tag above the headline
+  (`Range.group('admins' | 'platform' | 'developers')`): three bars in the chart's group
+  colours, this group's lit, and the group's name. Admins haze, platform mint, developers
+  lake blue (darker inks on snowfield). It encodes the chart's split, so it isn't chrome.
 - **The team and the apps.** The one person became one team: three alpenglow climbers on
   a rope. The strip beside them is now one lake-blue square per app (`--lake #4f8fd8`,
   shapes only); the tally reads clusters, apps, pods.
@@ -304,59 +321,28 @@ What v3 adds:
 ### overrun
 
 - **Act:** II
-- **Job:** the turn of the first half: the work outgrows the person
-- **Headline:** Keep doing it this way, and the team's year runs out at the second cloud.
-- **Visual:** stacked bars (clusters, tools, apps) for the six stages against the team's
-  line (3 × 850 = 2,550 h); the second-cloud bar crosses it. Click: a fourth person's
-  line (3,400 h) holds, and a dashed seventh bar, "+ AI (part 2)", goes through both.
-  Marked illustrative
+- **Job:** the turn of the first half: the upkeep outgrows every group, each for its own reason
+- **Headline:** Keep doing it this way, and admins, platform and developers all drown in upkeep.
+- **Visual:** three panels, each with its own scale and stacked bars for the six stages:
+  cluster admins (kubeadm upgrades, Karmada upkeep) against one admin's 850 h, out at the
+  second cloud; platform team (platform apps, progressive rollouts, time syncs) against
+  two engineers' 1,700 h, out first at the second region; developers (where and why,
+  scheduling, DR patterns), no line, 1,280 h by the second cloud, three-quarters of a
+  developer spread thin. Click: dashed AI bars in all three. Marked illustrative
 - **Energy:** 4
-- **Into next:** so what do the people with 300 clusters do?
-- **Data:** illustrative model, see Editorial notes
+- **Into next:** each group crosses its line for a different reason, so each gets its own
+  fix: admins first, then the platform team, then developers.
+- **Data:** illustrative model, see Editorial notes (groups)
 
 ### kubeadm-past
 
 - **Act:** III
 - **Job:** clusters managed as a fleet: kubeadm stays, driven from code instead of by hand
 - **Headline:** Clusters as a fleet, managing kubeadm from code.
-- **Visual:** as v2: 54 steps collapse into a one-line version change; Cluster API
-  on-prem, EKS Auto Mode in AWS
+- **Visual:** as v2: 54 steps collapse into a one-line version change; Cluster API on-prem, EKS Auto Mode in AWS; plus one line: Karmada's own control plane is built and upgraded the same way
 - **Energy:** 3
-- **Into next:** that's the clusters. The tools on them need the same treatment.
+- **Into next:** that's the cluster admins, Karmada's own control plane included. Next, the platform team, who carry the most.
 - **Source:** LinkedIn KEP-4330; NVIDIA; Cluster API primer; Nutanix CAREN
-
-### waves
-
-- **Act:** III
-- **Job:** platform tools ship like apps
-- **Headline:** Platform tools ship like apps: test first, then a canary cluster, then prod in waves.
-- **Visual:** as v2: half-rings rippling from the test cluster; Auto Mode clusters
-  outlined (AWS rolls Karpenter)
-- **Energy:** 3
-- **Into next:** and a ring only moves outward when the tool proves itself.
-- **Source:** GOALS §1.4; LinkedIn canary pipeline
-
-### gates
-
-- **Act:** III
-- **Job:** automated gates and rollback
-- **Headline:** Every wave passes its tool's gate, and a failed gate rolls itself back.
-- **Visual:** as v2: a new Prometheus passes test, fails the canary gate, rolls back.
-  Three clicks
-- **Energy:** 4
-- **Into next:** and the pipeline knows when not to run at all.
-- **Source:** LinkedIn canary pipeline; GOALS §1.7
-
-### change-windows
-
-- **Act:** III
-- **Job:** time gating by policy
-- **Headline:** Nothing rolls during a freeze, because the window is a policy, not a promise.
-- **Visual:** as v2: an eight-day strip; the prod wave pauses at Thursday's close and
-  resumes Monday
-- **Energy:** 2
-- **Into next:** that's the clusters and the tools. Now the apps on them.
-- **Source:** GOALS §2.3; NVIDIA; Agility Robotics
 
 ### twenty-tools
 
@@ -371,14 +357,46 @@ What v3 adds:
   installs, 464 rollouts a year, 696 h; 20 tools → 418, 1,672, 2,508 h (three people).
   Through the pipeline: 80 approvals a year
 - **Energy:** 4
-- **Into next:** and those twenty don't land the same way everywhere, which is the
-  developers' problem too.
+- **Into next:** twenty platform apps, and every one has to roll out across the fleet, the way any app does.
 - **Data:** twenty-tools model, see Editorial notes
+
+### waves
+
+- **Act:** IV
+- **Job:** platform tools ship like apps
+- **Headline:** Platform tools ship like apps: test first, then a canary cluster, then prod in waves.
+- **Visual:** as v2: half-rings rippling from the test cluster; Auto Mode clusters
+  outlined (AWS rolls Karpenter)
+- **Energy:** 3
+- **Into next:** and a ring only moves outward when the tool proves itself.
+- **Source:** GOALS §1.4; LinkedIn canary pipeline
+
+### gates
+
+- **Act:** IV
+- **Job:** automated gates and rollback
+- **Headline:** Every wave passes its tool's gate, and a failed gate rolls itself back.
+- **Visual:** as v2: a new Prometheus passes test, fails the canary gate, rolls back.
+  Three clicks
+- **Energy:** 4
+- **Into next:** and the pipeline knows when not to run at all.
+- **Source:** LinkedIn canary pipeline; GOALS §1.7
+
+### change-windows
+
+- **Act:** IV
+- **Job:** time gating by policy: the platform team's time syncs, replaced by a window everyone shares
+- **Headline:** Nothing rolls during a freeze, because the window is a policy, not a promise.
+- **Visual:** as v2: an eight-day strip; the prod wave pauses at Thursday's close and
+  resumes Monday
+- **Energy:** 2
+- **Into next:** that's the platform team. Now the developers.
+- **Source:** GOALS §2.3; NVIDIA; Agility Robotics
 
 ### karmada-constraints
 
-- **Act:** IV
-- **Job:** Karmada as the option that lets developers think only in constraints
+- **Act:** V
+- **Job:** for developers: where and why, and scheduling, become constraints Karmada acts on
 - **Headline:** With Karmada, developers state constraints, and it picks the clusters and regions.
 - **Visual:** left, what a developer writes: constraints (regions, compliance, capability,
   residency) and asks (replicas, spread across two regions, a fallback cloud). Right, the
@@ -393,8 +411,8 @@ What v3 adds:
 
 ### karmada
 
-- **Act:** IV
-- **Job:** the peak: dynamic routing between clusters, regions and clouds, paying off "fingers crossed"
+- **Act:** V
+- **Job:** the peak, for developers: DR patterns done by policy, routing between clusters, regions and clouds
 - **Headline:** Lose a region or a cloud, and Karmada moves the work wherever the constraints still hold.
 - **Visual:** the same map and constraints. Click: replicas spread across both AWS
   regions. Click: region 1 fails (dimmed, alpenglow mark); its replicas slide to region
@@ -407,7 +425,7 @@ What v3 adds:
 
 ### no-cluster-names
 
-- **Act:** IV
+- **Act:** V
 - **Job:** close the first half: the developer's whole job is a PR and a change record
 - **Headline:** A developer now knows no cluster: a merged PR and a change record do the rest.
 - **Visual:** a short path, left to right: PR with constraints and asks → merged → change
@@ -422,7 +440,7 @@ What v3 adds:
 
 ### ai-arrives
 
-- **Act:** V
+- **Act:** VI
 - **Job:** turn to the second half: AI lands on the map, starting where it's safest
 - **Headline:** AI arrived on the on-prem dev clusters first, then in AWS.
 - **Visual:** the map, back to its quiet state. Click: the on-prem dev cluster turns
@@ -433,7 +451,7 @@ What v3 adds:
 
 ### elastic-agents
 
-- **Act:** V
+- **Act:** VI
 - **Job:** autonomous agents as a new kind of user: spawned on demand, on elastic compute
 - **Headline:** Autonomous agents spawn on elastic nodes on demand, and nobody approves each one.
 - **Visual:** a day on a time axis. The node count rises and falls as Karpenter/Auto Mode
@@ -446,7 +464,7 @@ What v3 adds:
 
 ### sandbox
 
-- **Act:** V
+- **Act:** VI
 - **Job:** containment: a container shares a kernel
 - **Headline:** A container is not a cage, so agents run in gVisor or Kata.
 - **Visual:** an agent diamond inside nested shells, from container (shared kernel)
@@ -460,7 +478,7 @@ What v3 adds:
 
 ### mcp-tools
 
-- **Act:** V
+- **Act:** VI
 - **Job:** agents build infra through MCP tools; one gateway is the enforcement point
 - **Headline:** Agents build infrastructure through MCP tools, so pick the gateway before the tools.
 - **Visual:** agents on the left, tools on the right (Git, Jira, read-only kubectl,
@@ -476,7 +494,7 @@ What v3 adds:
 
 ### credentials
 
-- **Act:** V
+- **Act:** VI
 - **Job:** credential patterns that keep passwords out of the agent
 - **Headline:** Agents get a short-lived identity; the passwords never enter the agent.
 - **Visual:** the agent holds a boarding pass (a workload identity, valid minutes); at
@@ -492,7 +510,7 @@ What v3 adds:
 
 ### policy-layer
 
-- **Act:** V
+- **Act:** VI
 - **Job:** Kyverno as a cross-cutting layer for user and AI actions
 - **Headline:** One policy layer checks every change, whether a person or an agent made it.
 - **Visual:** the fence line along the foot of all three peaks. In front: three kinds of
@@ -507,7 +525,7 @@ What v3 adds:
 
 ### one-view
 
-- **Act:** VI
+- **Act:** VII
 - **Job:** OTel, logs, Prometheus and state dumps become one view for whoever is debugging
 - **Headline:** OTel, logs, Prometheus and state dumps give one view to anyone debugging, person or agent.
 - **Visual:** four sources on the left (OTel traces, logs, Prometheus metrics, cluster
@@ -523,7 +541,7 @@ What v3 adds:
 
 ### the-lake
 
-- **Act:** VI
+- **Act:** VII
 - **Job:** AI decides from data: one read-only lake
 - **Headline:** Agents decide from a read-only lake, not from credentials to production.
 - **Visual:** as v2
@@ -533,7 +551,7 @@ What v3 adds:
 
 ### ai-resize
 
-- **Act:** VI
+- **Act:** VII
 - **Job:** AI reads the lake's signals and resizes pods more aggressively than VPA alone, for cost
 - **Headline:** Lakeside savings in practice.
 - **Lede (the assertion, under the title):** with the lake's signals, AI resizes pods more aggressively than VPA alone, and cuts the bill.
@@ -554,7 +572,7 @@ What v3 adds:
 
 ### ai-phases
 
-- **Act:** VI
+- **Act:** VII
 - **Job:** the AI rollout ladder with realistic dates and the safety gate for each camp
 - **Headline:** Climb a camp at a time: alert triage by Q2 2027, agent PRs by end of 2027.
 - **Visual:** an expedition profile. Camp 0 (local prompts, we are here), camp 1 (alert
