@@ -1,0 +1,123 @@
+/* deck kit · slide mechanics
+   Fixed 1920×1080 stage scaled to fit any viewport, build steps, and render modes.
+   This file is deliberately not a design: theme.css and each slide's <style> own the look.
+   Rule for motion: a slide's base styles are its FINAL state; animations run *from* hidden.
+   That way thumbnails, print and PDF always show the finished slide. */
+
+:root {
+  --slide-w: 1920px;
+  --slide-h: 1080px;
+  --fit: 1;
+  --letterbox: #000;
+  --step-duration: 560ms;
+  --step-ease: cubic-bezier(.2, .7, .2, 1);
+  --draw-duration: 1400ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; height: 100%; }
+html {
+  background: var(--letterbox);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+}
+body { overflow: hidden; }
+
+.slide {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--slide-w);
+  height: var(--slide-h);
+  transform: translate(-50%, -50%) scale(var(--fit));
+  transform-origin: 50% 50%;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg, #fff);
+  color: var(--ink, #000);
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+/* Neutral reset inside the stage (zero specificity so themes win without a fight) */
+.slide :where(h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, blockquote, dl, dd) { margin: 0; padding: 0; }
+.slide :where(ul, ol) { list-style: none; }
+.slide :where(img, svg, video, canvas, picture) { display: block; max-width: 100%; }
+.slide :where(h1, h2, h3, h4, blockquote) { text-wrap: balance; }
+.slide :where(p, li, figcaption, dd) { text-wrap: pretty; }
+
+/* Speaker notes live in the slide file but never render on it */
+.notes { display: none !important; }
+
+/* ---------- Build steps ----------
+   <el data-step>        next step in document order
+   <el data-step="2">    explicit step (same number = revealed together)
+   data-effect: fade (default) | rise | sink | wipe | scale | blur | draw
+   data-dim on a container dims earlier steps when a later one appears
+   The stage also gets .at-1 .at-2 … (cumulative) and .is-entered for your own CSS. */
+
+[data-step] {
+  transition:
+    opacity var(--step-duration) var(--step-ease),
+    transform var(--step-duration) var(--step-ease),
+    clip-path var(--step-duration) var(--step-ease),
+    filter var(--step-duration) var(--step-ease);
+}
+[data-step]:not(.is-on) { opacity: 0; }
+[data-step][data-effect="rise"]:not(.is-on)  { transform: translateY(48px); }
+[data-step][data-effect="sink"]:not(.is-on)  { transform: translateY(-48px); }
+[data-step][data-effect="scale"]:not(.is-on) { transform: scale(.92); }
+[data-step][data-effect="blur"]:not(.is-on)  { filter: blur(18px); }
+[data-step][data-effect="wipe"]              { clip-path: inset(0 0 0 0); }
+[data-step][data-effect="wipe"]:not(.is-on)  { clip-path: inset(0 100% 0 0); opacity: 1; }
+
+/* draw: give each shape pathLength="1" */
+[data-effect="draw"],
+[data-effect="draw"] :is(path, line, polyline, polygon, circle, ellipse, rect) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--draw-duration) var(--step-ease), opacity var(--step-duration);
+}
+[data-step][data-effect="draw"]:not(.is-on) { opacity: 1; }
+[data-step][data-effect="draw"]:not(.is-on),
+[data-step][data-effect="draw"]:not(.is-on) :is(path, line, polyline, polygon, circle, ellipse, rect) { stroke-dashoffset: 1; }
+
+/* only while presenting or shooting a specific step; finished stills show everything at full strength */
+.slide:not(.is-pinned) [data-dim] [data-step].is-on:not(.is-current) { opacity: var(--dim-opacity, .32); }
+
+/* ---------- Still modes: thumbnails, print, PDF, screenshots ----------
+   Animations jump to their end state; transitions are off. */
+html:is([data-mode="thumb"], [data-mode="print"]) *,
+html:is([data-mode="thumb"], [data-mode="print"]) *::before,
+html:is([data-mode="thumb"], [data-mode="print"]) *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition: none !important;
+}
+html:is([data-mode="thumb"], [data-mode="print"]) { background: var(--bg, var(--letterbox)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .slide *, .slide *::before, .slide *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* ---------- ?grid: layout overlay for checking alignment ---------- */
+html[data-grid] .slide::after {
+  content: "";
+  position: absolute;
+  inset: var(--margin-y, var(--margin, 120px)) var(--margin, 120px);
+  z-index: 2147483647;
+  pointer-events: none;
+  outline: 2px dashed rgb(255 0 110 / .55);
+  --col: calc((100% - 11 * var(--gutter, 40px)) / 12);
+  background: repeating-linear-gradient(to right,
+    rgb(255 0 110 / .10) 0 var(--col),
+    transparent var(--col) calc(var(--col) + var(--gutter, 40px)));
+}

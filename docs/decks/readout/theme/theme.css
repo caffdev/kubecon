@@ -1,0 +1,53 @@
+/* One range, three climbs: KubeCon NA 2026 readout: theme
+   Placeholder values. Replace all of them with this deck's design plan
+   (narrative.md, Visual direction) before building slides. Name colors for what
+   they are in this deck's world, not "primary/secondary". */
+
+/* @import url("https://fonts.googleapis.com/css2?family=…&display=swap"); */
+
+:root {
+  /* palette: 4–6 named colors */
+  --c-ground: #e9e9e6;
+  --c-ink: #1d1d1b;
+  --c-quiet: #77756f;
+  --c-signal: #3a3a37;
+
+  /* roles the kit and slides use */
+  --bg: var(--c-ground);
+  --ink: var(--c-ink);
+  --muted: var(--c-quiet);
+  --accent: var(--c-signal);
+  --letterbox: var(--c-ground);
+
+  /* type: one or two families, chosen for this subject */
+  --font-display: Georgia, serif;
+  --font-body: system-ui, sans-serif;
+
+  /* scale at 1920×1080: body stays ≥ 28px for rooms, captions ≥ 22px */
+  --t-hero: 176px;
+  --t-1: 112px;
+  --t-2: 72px;
+  --t-3: 48px;
+  --t-body: 34px;
+  --t-small: 24px;
+
+  /* space */
+  --margin: 120px;
+  --margin-y: 96px;
+  --gutter: 40px;
+}
+
+.slide {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--t-body)/1.35 var(--font-body);
+  padding: var(--margin-y) var(--margin);
+}
+.slide h1 {
+  font: 600 var(--t-1)/1 var(--font-display);
+  letter-spacing: -0.02em;
+  max-width: 16ch;
+}
+
+/* Deck-wide pieces (an annotation style, a figure caption, a data label…) go here,
+   designed for this deck. Keep one-off compositions in each slide's <style>. */
