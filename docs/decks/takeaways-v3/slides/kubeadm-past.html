@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>kubeadm by hand is the past</title>
+  <title>Clusters as a fleet</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
@@ -33,7 +33,7 @@
 <body>
   <main class="slide snow" data-energy="3">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h2>kubeadm by hand is the past: the fleets on stage rebuild clusters from code.</h2>
+    <h2>Clusters as a fleet, managing kubeadm from code.</h2>
 
     <svg class="art" id="art" viewBox="0 0 1920 1080" role="img" aria-label="The 54-step runbook chain collapses into a two-line change to a version field."></svg>
 
@@ -60,7 +60,7 @@
 
     On the left is the row from two slides ago: fifty-four steps for one cluster, by hand. Nobody presenting at this scale does that any more. What they do instead is on the right: the upgrade is a change to one field, a version number, in a pull request. It gets reviewed, it gets merged, and a controller does the fifty-four steps, the same way every time.
 
-    Two routes for us. On-prem, that's Cluster API. And to be straight about it: Cluster API still uses kubeadm underneath. kubeadm isn't going anywhere. What goes is a person running it node by node. Cluster API replaces machines one at a time instead of patching them in place. The tool stays; the hands go.
+    Two routes for us. On-prem, that's Cluster API. And to be straight about it: Cluster API still uses kubeadm underneath. kubeadm isn't going anywhere. What goes is someone running it node by node. The clusters become a fleet, managed from code. Cluster API replaces machines one at a time instead of patching them in place. The tool stays; the hands go.
 
     In AWS, it's EKS Auto Mode. AWS upgrades the control plane, then replaces the nodes for us, and it runs Karpenter itself, which takes one tool off our list.
 

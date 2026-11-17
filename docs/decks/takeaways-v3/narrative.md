@@ -317,8 +317,8 @@ What v3 adds:
 ### kubeadm-past
 
 - **Act:** III
-- **Job:** retire hand-run kubeadm, honestly
-- **Headline:** kubeadm by hand is the past: the fleets on stage rebuild clusters from code.
+- **Job:** clusters managed as a fleet: kubeadm stays, driven from code instead of by hand
+- **Headline:** Clusters as a fleet, managing kubeadm from code.
 - **Visual:** as v2: 54 steps collapse into a one-line version change; Cluster API
   on-prem, EKS Auto Mode in AWS
 - **Energy:** 3
