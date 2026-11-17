@@ -10,7 +10,8 @@
 :root {
   --path: var(--haze);
   --path-ink: var(--haze-ink);
-  --you: var(--alpenglow);        /* the one person, his limit, the failed gate, the ask */
+  --you: var(--alpenglow);        /* the one team, its limit, the failed gate, the ask */
+  --lake: #4f8fd8;                /* apps: lake blue (shapes only) */
 }
 .slide { --accent: var(--path); }
 .slide.snow { --accent: var(--path-ink); --path: var(--path-ink); --you: var(--alpenglow-ink); }
@@ -94,6 +95,9 @@
 .you { fill: var(--you); }
 .you-book { fill: none; stroke: var(--you); stroke-width: 3; }
 .you-label { font: 600 28px var(--font-display); fill: var(--you); letter-spacing: .01em; }
+.team-rope { fill: none; stroke: var(--you); stroke-width: 3; stroke-dasharray: 6 5; }
+.app { fill: #2f4a5c; }
+.app.new { fill: var(--lake, #4f8fd8); }
 
 /* the census: a tally in the top-right corner, numbers right-aligned, words left */
 .census {
@@ -139,3 +143,10 @@
 .down-zone { fill: #070b0e; opacity: .72; }
 .down-mark { font: 700 40px var(--font-display); fill: var(--you); }
 .down-label { font: 600 28px var(--font-display); fill: var(--you); }
+
+/* the north star (range.js): top-right corner of every slide, brightness = slide energy */
+.range .star { fill: var(--snow); }
+.range .star-glow-0, .range .star-glow-1 { stop-color: var(--snow); }
+.snow .range .star { fill: var(--slate); }
+.snow .range .star-glow-0, .snow .range .star-glow-1 { stop-color: var(--haze-ink); }
+.is-entered .range .north-star { animation: fade-in 1200ms 200ms both; }

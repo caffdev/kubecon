@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KubeCon 2027 north star</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 150px; line-height: .95; letter-spacing: -0.02em; max-width: 1300px; }
+    .sub { margin-top: 26px; font: 600 72px/1.02 var(--font-display); color: var(--lichen); max-width: 1200px; }
+    .byline { margin-top: 30px; font-size: 30px; color: var(--muted); }
+    .hero { position: absolute; inset: 0; width: 1920px; height: 1080px; z-index: -1; }
+    .hero .pk-word { font: 600 34px var(--font-display); letter-spacing: .04em; }
+    .is-entered .hero .pk { animation: rise-up 1300ms var(--step-ease) both; }
+    .is-entered .hero #t3 { animation-delay: 80ms; }
+    .is-entered .hero #t1 { animation-delay: 220ms; }
+    .is-entered .hero #t2 { animation-delay: 360ms; }
+    @keyframes rise-up { from { transform: translateY(220px); } }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <svg class="hero" id="hero" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>KubeCon 2027 north star</h1>
+    <p class="sub">Managing our fleet at scale</p>
+    <p class="byline">From KubeCon NA 2026, Salt Lake City</p>
+  </main>
+
+  <aside class="notes">
+    This is where we think the fleet should be heading: a north star for 2027, built from what we saw at KubeCon in Salt Lake City.
+
+    Three peaks behind it, the same three as the rest of the readout. On the left, the fleet: the clusters themselves. In the middle, delivery: how every change reaches them. On the right, agents: the new kind of user arriving on all of it.
+
+    And up in the corner, the north star. You'll see it on every slide. It burns brighter on the slides that matter most.
+
+    It starts small.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    // the corner star only; the range on this slide is the larger hero below
+    Peaks.draw('#range', Range.star());
+    Peaks.draw('#hero',
+      Peaks.disc({ cx: 1270, cy: 640, r: 250 }),
+      Peaks.far({ y: 930, amp: 60, n: 12, seed: 11 }),
+      Peaks.peak({ id: 't3', x: 700, top: 690, base: 1290, hw: 600, cap: 'var(--haze)' }),
+      Peaks.peak({ id: 't1', x: 1270, top: 520, base: 1290, hw: 560, cap: 'var(--mint)' }),
+      Peaks.peak({ id: 't2', x: 1750, top: 660, base: 1290, hw: 380, cap: 'var(--teal)' }),
+      `<text class="pk-word" x="700" y="1050" text-anchor="middle" style="fill:var(--haze)">fleet</text>`,
+      `<text class="pk-word" x="1270" y="1050" text-anchor="middle" style="fill:var(--mint)">delivery</text>`,
+      `<text class="pk-word" x="1750" y="1050" text-anchor="middle" style="fill:var(--teal)">agents</text>`);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

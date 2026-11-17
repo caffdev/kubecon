@@ -1,8 +1,9 @@
 {
-  "title": "Takeaways v3: the fleet outgrows one person, then the agents arrive",
+  "title": "Takeaways v3: the fleet outgrows one team, then the agents arrive",
   "draft": "main",
   "drafts": {
     "main": [
+      "title",
       "day-one",
       "cloud-dev",
       "second-exchange",

@@ -68,8 +68,28 @@
       }
       out += `</g>`;
     }
+    out += star();
     return Peaks.draw(sel, out);
   }
 
-  window.Range = { draw, PEAKS, H, SINK };
+  /** The north star in the top-right corner. Its brightness follows the slide's energy (1-5),
+      read from data-energy on .slide (synced from narrative.md by theme/gen/energy.mjs). */
+  function star() {
+    const el = document.querySelector('.slide');
+    const e = Math.min(5, Math.max(1, +(el && el.dataset.energy) || 3));
+    const op = [0.3, 0.45, 0.62, 0.82, 1][e - 1];
+    const halo = [0, 0.1, 0.18, 0.32, 0.55][e - 1];
+    const hr = [0, 44, 54, 66, 84][e - 1];
+    const cx = 1828, cy = 80, R = 34, r = 21, w = 5;
+    const id = `star-glow-${Math.random().toString(36).slice(2, 7)}`;
+    let s = `<g class="north-star" data-e="${e}">`;
+    if (halo) {
+      s += `<defs><radialGradient id="${id}"><stop offset="0" class="star-glow-0" style="stop-opacity:${halo}"/><stop offset="1" class="star-glow-1" style="stop-opacity:0"/></radialGradient></defs>`;
+      s += `<circle cx="${cx}" cy="${cy}" r="${hr}" fill="url(#${id})"/>`;
+    }
+    s += `<path class="star" style="opacity:${op}" d="M${cx} ${cy - R}Q${cx + w} ${cy - w} ${cx + r} ${cy}Q${cx + w} ${cy + w} ${cx} ${cy + R}Q${cx - w} ${cy + w} ${cx - r} ${cy}Q${cx - w} ${cy - w} ${cx} ${cy - R}Z"/>`;
+    return s + '</g>';
+  }
+
+  window.Range = { draw, star, PEAKS, H, SINK };
 })();

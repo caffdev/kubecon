@@ -16,7 +16,7 @@
   </style>
 </head>
 <body>
-  <main class="slide">
+  <main class="slide" data-energy="3">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
     <h1>AI arrived on the on-prem dev clusters first, then in AWS.</h1>
     <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The full estate again. AI workloads appear first on the on-prem dev cluster, then on AWS dev and three new AI clusters in AWS region 2."></svg>
@@ -29,7 +29,7 @@
 
     Click. Then in AWS: the dev cluster first, then three clusters built for it in region two, where the GPUs and the elastic capacity are.
 
-    Thirty-two clusters now. Same one person. And three more kinds of thing for him to upgrade, which is where the dashed bar on the overrun chart came from.
+    Thirty-two clusters now. Same one team. And three more kinds of thing for them to upgrade, which is where the dashed bar on the overrun chart came from.
 
     And with AI come users that aren't people.
   </aside>
@@ -39,7 +39,7 @@
   <script src="../theme/estate.js"></script>
   <script>
     Range.draw('#range', { touch: ['p3', 'p2'] });
-    Estate.draw('#map', 6, { quiet: true, youText: ['one person', 'still upgrades them all'] });
+    Estate.draw('#map', 6, { quiet: true, youText: ['one team', 'still upgrades them all'] });
     (() => {
       const cs = Estate.at();
       const pick = (zone, col, row) => cs.find((c) => c.zone === zone && c.col === col && c.row === row);

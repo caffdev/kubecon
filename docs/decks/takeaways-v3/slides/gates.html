@@ -41,7 +41,7 @@
   </style>
 </head>
 <body>
-  <main class="slide dusk">
+  <main class="slide dusk" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
     <h2>Every wave passes its tool’s gate, and a failed gate rolls itself back.</h2>
 
@@ -74,7 +74,7 @@
 
     Click. It reaches the canary cluster, which is a real cluster with real workloads. And this time the gate fails: targets dropped after the upgrade.
 
-    Click. And here's the point. Nobody decides anything. The pipeline rolls the canary back to the old version on its own. Wave one never started. The prod rings never saw it. Nobody got paged, and the person from the start of this talk found out from a message in the morning, not a phone call at night.
+    Click. And here's the point. Nobody decides anything. The pipeline rolls the canary back to the old version on its own. Wave one never started. The prod rings never saw it. Nobody got paged, and the team from the start of this talk found out from a message in the morning, not a phone call at night.
 
     On the right: each tool brings its own gate. Argo CD checks every app is still synced and healthy. Prometheus checks its own targets and rules. The OTel collector checks that exports are succeeding. Karpenter checks that pending pods still get nodes. Different checks, same machinery.
 

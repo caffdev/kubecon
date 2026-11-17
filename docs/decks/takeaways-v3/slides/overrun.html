@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>One person's year runs out</title>
+  <title>The team's year runs out</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
@@ -18,6 +18,7 @@
     .total { font: 600 32px var(--font-display); fill: var(--snow); text-anchor: middle; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--bg); stroke-width: 14px; }
     .seg-k { fill: var(--haze); }
     .seg-t { fill: var(--mint); }
+    .seg-a { fill: var(--lake); }
     .cap-line { stroke: var(--you); stroke-width: 4; }
     .cap-line.two { stroke-dasharray: 14 10; }
     .cap-name { font: 600 30px var(--font-display); fill: var(--you); }
@@ -30,38 +31,38 @@
   </style>
 </head>
 <body>
-  <main class="slide">
+  <main class="slide" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h2>Keep doing it this way, and one person’s year runs out at the migration.</h2>
+    <h2>Keep doing it this way, and the team’s year runs out at the second cloud.</h2>
 
-    <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="Upgrade hours a year by growth stage, cluster upgrades plus tool rollouts: day one 240, cloud dev 366, second exchange 606, migration 858, second region 1,110, second cloud 1,362, and with AI 2,256. One person has 850 hours; two people have 1,700."></svg>
+    <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="Upgrade hours a year by growth stage, cluster upgrades plus tool rollouts plus app upgrades: day one 480, cloud dev 786, second exchange 1,170, migration 1,728, second region 2,250, second cloud 2,862, and with AI 4,056. A team of three has 2,550 hours; four people have 3,400."></svg>
 
     <div class="side" style="top: 340px;">
-      <b class="you-t">+ migration: 858 hours</b>A whole person doing only upgrades.
+      <b class="you-t">+ second cloud: 2,862 hours</b>More than the whole team has for upgrades.
     </div>
     <div class="side" style="top: 500px;" data-step="1">
-      <b>Hire a second person</b>and it holds, until AI arrives.
+      <b>Hire a fourth person</b>and it holds, until AI arrives.
     </div>
     <div class="side" style="top: 660px;">
-      <b>Tools pass clusters</b>From the second cloud on, tool rollouts cost more than cluster upgrades.
+      <b>Apps are the biggest share</b>Every app on every cluster is an upgrade too.
     </div>
-    <p class="model-tag"><b>Illustrative model, not our measurements:</b> 12 h per kubeadm upgrade, 6 h per managed cluster, 1.5 h per tool per cluster. Inputs in <code>assets/toil-model.json</code>.</p>
+    <p class="model-tag"><b>Illustrative model, not our measurements:</b> a team of 3; 12 h per kubeadm upgrade, 6 h per managed cluster, 1.5 h per tool per cluster, 0.5 h per app upgrade. Inputs in <code>assets/toil-model.json</code>.</p>
   </main>
 
   <aside class="notes">
     Now add it up.
 
-    Each bar is one stage of the story: day one, the cloud for dev, the second exchange, the migration, the second region, the second cloud. The height is the hours a year of upgrade work, done the way we do it today. The lower part is cluster upgrades; the upper part is rolling out the four tools on them.
+    Each bar is one stage of the story. The height is the hours a year of upgrade work, done the way we do it today, in three layers: upgrading the clusters at the bottom, rolling out the four tools in the middle, and upgrading the apps on top, because every app on every cluster gets upgraded too.
 
-    The orange line is one person's year. Not his whole year: about half of it, 850 hours, because he also has tickets, on-call and projects.
+    The orange line is the team's year. Three people, and about half of each of their years, because they also have tickets, on-call and projects. Twenty-five hundred and fifty hours.
 
-    Day one, fine. The cloud and the second exchange, fine. At the migration the bar touches the line: 858 hours. A whole person doing nothing but upgrades.
+    For a while it's fine. At the second region it's most of their time. At the second cloud the bar goes through the line: almost twenty-nine hundred hours. More than the whole team has.
 
-    These are not our measurements. It's a model: twelve hours per kubeadm upgrade, six per managed cluster, three minors a year, plus the tools. Change the inputs and the crossing moves a stage left or right. It doesn't go away, because every new cluster multiplies both parts.
+    These are not our measurements. It's a model: twelve hours per kubeadm upgrade, six per managed cluster, the tools, and half an hour per app upgrade. Change the inputs and the crossing moves a stage left or right. It doesn't go away, because every new cluster multiplies all three layers.
 
-    Click. The obvious answer is to hire. A second person moves the line to 1,700, and that holds through the second region and the second cloud. Then AI arrives, the dashed bar, with its own clusters and twice the tools on each one, and it goes through both of them.
+    Click. The obvious answer is to hire. A fourth person moves the line to 3,400, and that holds. Then AI arrives, the dashed bar, with its own clusters, twice the tools on each one and more apps, and it goes through both lines.
 
-    And look inside the bars: from the second cloud on, the tools cost more than the clusters. So fixing kubeadm alone isn't enough.
+    And look at which layer is biggest: the apps. Fixing kubeadm alone doesn't come close.
 
     So what do the people with three hundred clusters do?
   </aside>
@@ -73,41 +74,44 @@
     (() => {
       // data: assets/toil-model.json (inlined so the slide works from file://)
       const S = [
-        ['day one', 144, 96], ['+ cloud', 198, 168], ['+ exchange', 342, 264],
-        ['+ migration', 450, 408], ['+ region', 558, 552], ['+ cloud 2', 666, 696],
+        ['day one', 144, 96, 240], ['+ cloud', 198, 168, 420], ['+ exchange', 342, 264, 564],
+        ['+ migration', 450, 408, 870], ['+ region', 558, 552, 1140], ['+ cloud 2', 666, 696, 1500],
       ];
-      const AI = ['+ AI', 720, 1536];   // part 2: three AI clusters, eight tools
-      const X0 = 236, SLOT = 128, BW = 64, BASE = 800, MAXH = 2400, PX = 450 / MAXH;
+      const AI = ['+ AI', 720, 1536, 1800];   // part 2: three AI clusters, eight tools, eighty apps
+      const TEAM = 2550, MORE = 3400;
+      const X0 = 236, SLOT = 128, BW = 64, BASE = 800, MAXH = 4200, PX = 450 / MAXH;
       const y = (h) => BASE - h * PX;
       const GAP = 2;
       let s = '', totals = '';
-      for (const t of [0, 500, 1000, 1500, 2000]) {
+      for (const t of [0, 1000, 2000, 3000, 4000]) {
         s += `<line class="grid" x1="${X0 - 30}" x2="${X0 + SLOT * 7 - 40}" y1="${y(t)}" y2="${y(t)}"/>`;
         s += `<text class="tick" x="${X0 - 44}" y="${y(t) + 8}">${t.toLocaleString('en-US')} h</text>`;
       }
       const cxOf = (i) => X0 + SLOT * i + SLOT / 2 - 30;
-      S.forEach(([name, k, t], i) => {
+      S.forEach(([name, k, t, a], i) => {
         const cx = cxOf(i), x = cx - BW / 2;
-        const yk = y(k), yt = y(k + t);
+        const yk = y(k), yt = y(k + t), ya = y(k + t + a);
         s += `<rect class="seg-k" x="${x}" y="${yk}" width="${BW}" height="${BASE - yk}"/>`;
-        s += `<path class="seg-t" d="M${x} ${yk - GAP}V${yt + 4}q0 -4 4 -4H${x + BW - 4}q4 0 4 4V${yk - GAP}Z"/>`;
-        totals += `<text class="total" x="${cx}" y="${yt - 14}">${(k + t).toLocaleString('en-US')}</text>`;
+        s += `<rect class="seg-t" x="${x}" y="${yt}" width="${BW}" height="${yk - yt - GAP}"/>`;
+        s += `<path class="seg-a" d="M${x} ${yt - GAP}V${ya + 4}q0 -4 4 -4H${x + BW - 4}q4 0 4 4V${yt - GAP}Z"/>`;
+        totals += `<text class="total" x="${cx}" y="${ya - 14}">${(k + t + a).toLocaleString('en-US')}</text>`;
         s += `<text class="stage" x="${cx}" y="${BASE + 40}">${name}</text>`;
       });
       // direct labels beside the last solid bar double as the legend
-      const lx = cxOf(5) + BW / 2 + 12;
-      s += `<rect class="seg-t" x="${lx}" y="${y(666 + 348) - 12}" width="18" height="18" rx="3"/><text class="key" x="${lx + 26}" y="${y(666 + 348) + 4}">tools</text>`;
-      s += `<rect class="seg-k" x="${lx}" y="${y(333) - 12}" width="18" height="18" rx="3"/><text class="key" x="${lx + 26}" y="${y(333) + 4}">clusters</text>`;
-      // one person's year, and (on click) a second person's, with AI's bar beyond both
+      const lx = cxOf(5) + BW / 2 + 12, L = S[5];
+      s += `<rect class="seg-a" x="${lx}" y="${y(L[1] + L[2] + L[3] / 2) - 12}" width="18" height="18" rx="3"/><text class="key" x="${lx + 26}" y="${y(L[1] + L[2] + L[3] / 2) + 4}">apps</text>`;
+      s += `<rect class="seg-t" x="${lx}" y="${y(L[1] + L[2] / 2) - 12}" width="18" height="18" rx="3"/><text class="key" x="${lx + 26}" y="${y(L[1] + L[2] / 2) + 4}">tools</text>`;
+      s += `<rect class="seg-k" x="${lx}" y="${y(L[1] / 2) - 12}" width="18" height="18" rx="3"/><text class="key" x="${lx + 26}" y="${y(L[1] / 2) + 4}">clusters</text>`;
+      // the team's year, and (on click) a fourth person's, with AI's bar beyond both
       const xe = X0 + SLOT * 7 - 20;
-      s += `<line class="cap-line" x1="${X0 - 30}" x2="${xe}" y1="${y(850)}" y2="${y(850)}"/>`;
-      s += `<text class="cap-name" x="${X0 - 24}" y="${y(850) - 14}">one person: 850 h</text>`;
-      const ax = cxOf(6) - BW / 2, at = y(AI[1] + AI[2]);
-      s += `<g data-step="1"><line class="cap-line two" x1="${X0 - 30}" x2="${xe}" y1="${y(1700)}" y2="${y(1700)}"/>`
-        + `<text class="cap-name" x="${X0 - 24}" y="${y(1700) - 14}">two people: 1,700 h</text>`
+      s += `<line class="cap-line" x1="${X0 - 30}" x2="${xe}" y1="${y(TEAM)}" y2="${y(TEAM)}"/>`;
+      s += `<text class="cap-name" x="${X0 - 24}" y="${y(TEAM) - 14}">the team of 3: 2,550 h</text>`;
+      const ax = cxOf(6) - BW / 2, at = y(AI[1] + AI[2] + AI[3]);
+      s += `<g data-step="1"><line class="cap-line two" x1="${X0 - 30}" x2="${xe}" y1="${y(MORE)}" y2="${y(MORE)}"/>`
+        + `<text class="cap-name" x="${X0 - 24}" y="${y(MORE) - 14}">four people: 3,400 h</text>`
         + `<rect class="ghost" x="${ax}" y="${at}" width="${BW}" height="${BASE - at}" rx="4"/>`
         + `<text class="ghost-name" x="${cxOf(6)}" y="${BASE + 40}">+ AI</text></g>`;
-      totals += `<g data-step="1"><text class="total" x="${cxOf(6)}" y="${at - 14}">2,256</text></g>`;
+      totals += `<g data-step="1"><text class="total" x="${cxOf(6)}" y="${at - 14}">4,056</text></g>`;
       Peaks.draw('#chart', s + totals);  // totals last, so their knockout breaks the lines
     })();
   </script>

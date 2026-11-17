@@ -33,7 +33,7 @@
   </style>
 </head>
 <body>
-  <main class="slide dusk">
+  <main class="slide dusk" data-energy="5">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
     <h2>Lose a region or a cloud, and Karmada moves the work wherever the constraints still hold.</h2>
 
@@ -66,7 +66,7 @@
 
     Click. Now it's AWS itself having the bad day. Both regions dark. The constraints say "fall back to the second cloud", so all six replicas go there.
 
-    Click. And nobody edited a file. The developer didn't change a thing, nobody rewrote a list of clusters at two in the morning, and the person in orange found out from a message. Fingers uncrossed.
+    Click. And nobody edited a file. The developer didn't change a thing, nobody rewrote a list of clusters at two in the morning, and the team in orange found out from a message. Fingers uncrossed.
 
     To be honest about where this sits: it's the north star, not what we run. It needs every cluster labelled properly, it needs the data behind the app to be reachable from wherever it lands, and Karmada is one more control plane to run and upgrade. It goes through the same pipeline as everything else. Bloomberg runs their streaming platform on it, for exactly this.
 

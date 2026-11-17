@@ -1,4 +1,4 @@
-# Takeaways v3: the fleet outgrows one person, then the agents arrive
+# Takeaways v3: the fleet outgrows one team, then the agents arrive
 
 > The story comes first. No slide gets designed until this page reads like a talk someone
 > would want to sit through. The slides are the visual track of this script.
@@ -35,7 +35,8 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   who will run agents, and the people who decide what both teams work on.
 - **Setting:** live, about 32 minutes in two halves (fleet, then agents), then sent round.
   The notes carry the full argument for readers.
-- **They believe now:** upgrades are routine work one experienced person handles. Putting
+- **They believe now:** cluster and app upgrades are routine work one experienced team
+  handles. Putting
   apps across clouds is a deployment detail. AI is a separate initiative, and its risks
   are mostly about the model.
 - **They believe after:** the fleet's work grows faster than the fleet, so clusters and
@@ -44,7 +45,7 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   pick a cluster. Agents are a new kind of user that spawns on
   demand, so they arrive sandboxed, with short-lived identity, through one tool gateway,
   under the same policy and telemetry as people. We climb the AI ladder one camp at a time.
-- **The one sentence:** the fleet will outgrow one person with a runbook, and agents will
+- **The one sentence:** the fleet will outgrow one team with a runbook, and agents will
   outgrow trust by default, so clusters, tools, apps and agents all go through one
   automated path with gates, policy and telemetry.
 - **The ask:** (1) no new hand-built clusters; (2) splunk-otel-collector through the wave
@@ -55,11 +56,13 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 ## Shape
 
 - **Structure:** chronicle with a turn, told twice. The first half watches the estate
-  grow until one person's year runs out, then fixes the clusters, the tools and the app
+  grow until one team's year runs out, then fixes the clusters, the tools and the app
   placement in turn. The second half returns to the same map, adds AI, and builds the
   safety around it before climbing.
 - **Acts:**
-  - I: *watch it grow* (6): four clusters → three clouds, still one person.
+  - Open (1): the title, "KubeCon 2027 north star: managing our fleet at scale."
+  - I: *watch it grow* (6): four clusters → three clouds, apps and pods climbing, still one
+    team.
   - II: *add it up* (3): the runbook, the tools, the overrun.
   - III: *stop doing it by hand* (4): kubeadm's place, waves, gates, windows.
   - IV: *at real size* (4): twenty tools, Karmada constraints, Karmada failover, no
@@ -68,21 +71,30 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
     credentials, policy.
   - VI: *see it, then climb* (4): one view, the lake, AI resizing, the AI phases.
   - Close (2): the same person; the ask.
-- **The peak:** `karmada`, slide 16 of 29 (55%). Slide 6 says "fingers crossed for no AWS
+- **The peak:** `karmada`, slide 17 of 30 (57%). Slide 6 says "fingers crossed for no AWS
   outage". Here a region fails and the work shifts to the other region, then AWS fails and
   it shifts to the second cloud, by the developer's constraints, without a person. It pays
   off the setup; `no-cluster-names` is the release after it, closing the first half.
   `gates` (12) and `ai-phases` (27) are the secondary highs, with `twenty-tools` (14) the run-up to the peak.
-- **The close:** the deck opens on four clusters and one person. It closes on the same map,
-  seven times the size, with agents on it. The same person approves waves, while the
+- **The close:** the deck opens on four clusters and one team. It closes on the same map,
+  eight times the size, with agents on it. The same team approves waves, while the
   pipeline, the policy layer and the telemetry do the rest.
 
 ## Editorial notes
 
+- **One team, not one person (user, 2026-11-17).** One team of three owns cluster *and* app
+  upgrades; it's drawn as three climbers roped together. The toil model now includes app
+  upgrades: 6 a year per app placement at 0.5 h each by hand, plus the cluster and tool
+  hours below. Apps and pods by stage: 20 / 640 → 20 / 1,120 → 32 / 1,504 → 50 / 2,320 →
+  50 / 3,040 → 65 / 4,000 → (AI) 80 / 4,800; pods = app placements × 8 replicas.
+  Hours by stage: 480 → 786 → 1,170 → 1,728 → 2,250 → 2,862 → (AI) 4,056. The team's
+  year (3 × 850 = 2,550 h) runs out at the second cloud; a fourth hire (3,400 h) holds
+  until AI. Team size is our assumption; replace it.
 - **The toil and placement numbers are illustrative models, not our measurements.**
   Toil inputs are the same as v2 (12 h per kubeadm cluster per minor, 6 h per managed
   cluster, three minors a year, 4 tools upgraded 4 times a year at 1.5 h per cluster,
-  850 h of one person's year). By stage: 240 → 366 → 606 → 858 → 1,110 → 1,362; one
+  850 h of one person's year). *Superseded by the one-team note above;* the cluster-and-tool
+  hours alone by stage: 240 → 366 → 606 → 858 → 1,110 → 1,362; one
   person is overrun at the migration. A second person holds until AI arrives (2,256 with
   three AI clusters and four more tools: AI gateway, MCP gateway, sandbox runtime, agent
   controller). **Twenty tools** (same rollout inputs): 12 on every cluster (argo-cd,
@@ -113,8 +125,12 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   heading, each with the safety gate it needs.
 - **AI resizing:** the chart is illustrative. ⚠️ In-place pod resize: the Solo.io
   abstract says GA in 1.33, which conflicts with our memory of a later GA. The slide
-  says "in-place resize, no restart" and names no version until checked. Hertz's results
-  are a vendor demo (CAST AI).
+  says "in-place resize, no restart" and names no version until checked.
+- **Hertz numbers aren't available.** The Hertz demo posted no slides (no slides_url, not
+  in MANIFEST.csv), and no public Hertz or CAST AI case study turned up. At the user's
+  request the slide keeps the 61% and labels it illustrative, "the pattern Hertz showed",
+  stating that 61% is our model, not Hertz's figure. Hertz's 80 EKS clusters is from the
+  room (⚠️, as GOALS §0.1).
 - Series rule: **no failure-case references.** The region and AWS outages on `karmada`
   and the failed canary on `gates` are our own illustrations.
 - kubeadm, stated honestly (from v2): Cluster API still runs kubeadm underneath; the
@@ -127,7 +143,7 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 
 Carried over from `takeaways-v2` (approved there): Three Peaks brand; the background range
 whose peaks emerge per topic, with each path's word at its base; survey lines for OTel;
-the estate map that grows; the one person in alpenglow; the tarn for the lake; ripple
+the estate map that grows; the one team in alpenglow; the tarn for the lake; ripple
 rings for waves and gates. See v2's narrative for the palette, type, layout and
 key-frame notes. Theme files are copied from v2 (`theme.css`, `range.js`, `estate.js`),
 with the estate table rewritten for this deck's clusters.
@@ -155,12 +171,19 @@ What v3 adds:
 - **Agents as diamonds** (teal), now only in the second half: spawning and vanishing on
   `elastic-agents`, inside nested shells on `sandbox`, behind the gateway on `mcp-tools`,
   holding a short-lived pass on `credentials`.
+- **The north star** (user, 2026-11-17): a four-pointed star in the top-right corner of
+  every slide, drawn by `range.js`. Its brightness follows the beat's Energy (1 = dim, no
+  halo; 5 = full, wide halo), read from `data-energy` on `.slide`, which
+  `theme/gen/energy.mjs` syncs from this file. **Re-run it after changing an Energy.**
+- **The team and the apps.** The one person became one team: three alpenglow climbers on
+  a rope. The strip beside them is now one lake-blue square per app (`--lake #4f8fd8`,
+  shapes only); the tally reads clusters, apps, pods.
 - **AI phases** as an expedition profile (camps 0–5): 0–2 on a surveyed, dated slope, 3–5
   pale and dashed, with each camp's safety gate written at its foot.
 
 - **As built (2026-11-17):**
-  - The corner tally counts clusters, **tools** (the four demo tools) and people. Agents
-    never appear on the map in the first half.
+  - The corner tally counts clusters, apps and pods (it counted tools and people until the
+    user asked for apps and pods). Agents never appear on the map in the first half.
   - Named clusters keep their labels at every stage. The ny4–ch4 DR label sits above its
     pair; the second exchange's DR label sits below its own pair, so the two don't read as
     one.
@@ -183,14 +206,25 @@ What v3 adds:
 
 ## Beats
 
+### title
+
+- **Act:** Open
+- **Job:** the title card: name the north star before the story starts
+- **Headline:** KubeCon 2027 north star: managing our fleet at scale.
+- **Visual:** the full range risen (fleet, delivery, agents), with the north star bright in
+  the top-right corner and the three path words at the peaks' bases. A byline: from
+  KubeCon NA 2026, Salt Lake City
+- **Energy:** 4
+- **Into next:** and it starts small.
+
 ### day-one
 
 - **Act:** I
 - **Job:** cold open: our own estate, small, and the one-person thread
-- **Headline:** Four clusters, ny4 with ch4 as its DR, and one person who upgrades them.
+- **Headline:** Four clusters, ny4 with ch4 as its DR, and one team upgrading clusters and apps.
 - **Visual:** the on-prem zone only: dev, staging, ny4, ch4, with ny4–ch4 tied in
-  lockstep. The one person with the runbook. Tally: 4 clusters, 4 apps, a handful of
-  people
+  lockstep. The one team, roped together. One square per app. Tally: 4 clusters, 20 apps,
+  640 pods
 - **Energy:** 3
 - **Into next:** then the cloud showed up, for the environments that didn't need to sit
   next to an exchange.
@@ -240,7 +274,7 @@ What v3 adds:
 - **Job:** the last growth step, and the setup the peak pays off
 - **Headline:** Hoping AWS never goes down isn't a plan, so a second cloud joined.
 - **Visual:** the second cloud's zone opens with six clusters. Pull back: 29 clusters,
-  three kinds of place, still one person, still four apps. A small line by the second
+  three kinds of place, still one team, apps and pods climbing. A small line by the second
   cloud: "fingers crossed"
 - **Energy:** 4
 - **Into next:** six reasonable steps. Now look at what one upgrade costs him.
@@ -265,17 +299,17 @@ What v3 adds:
   Argo CD, Prometheus, splunk-otel and Karpenter down the side, version skew in the cells.
   Four tools for now, to keep the picture readable; the real list comes back in Act IV
 - **Energy:** 3
-- **Into next:** add the clusters and the tools together, against one person's year.
+- **Into next:** add the clusters, the tools and the apps together, against the team's year.
 
 ### overrun
 
 - **Act:** II
 - **Job:** the turn of the first half: the work outgrows the person
-- **Headline:** Keep doing it this way, and one person's year runs out at the migration.
-- **Visual:** stacked bars for the six stages against one person's line (850 h); the
-  migration bar crosses it. Click: a second person's line (1,700 h) holds through the
-  second cloud, and a dashed seventh bar, "+ AI (part 2)", goes through both. Marked
-  illustrative
+- **Headline:** Keep doing it this way, and the team's year runs out at the second cloud.
+- **Visual:** stacked bars (clusters, tools, apps) for the six stages against the team's
+  line (3 × 850 = 2,550 h); the second-cloud bar crosses it. Click: a fourth person's
+  line (3,400 h) holds, and a dashed seventh bar, "+ AI (part 2)", goes through both.
+  Marked illustrative
 - **Energy:** 4
 - **Into next:** so what do the people with 300 clusters do?
 - **Data:** illustrative model, see Editorial notes
@@ -503,6 +537,8 @@ What v3 adds:
 - **Job:** AI reads the lake's signals and resizes pods more aggressively than VPA alone, for cost
 - **Headline:** Lakeside savings in practice.
 - **Lede (the assertion, under the title):** with the lake's signals, AI resizes pods more aggressively than VPA alone, and cuts the bill.
+- **Label:** illustrative: the pattern Hertz showed (AI agents right-sizing across 80 EKS
+  clusters); the 61% is our model, not Hertz's figure
 - **Visual:** one workload across a trading week (illustrative): actual usage, the flat
   request VPA's recommender settles on, and an AI-shaped request that follows the week:
   tight overnight and at weekends, raised ahead of the open. The shaded gap between the
@@ -535,8 +571,8 @@ What v3 adds:
 
 - **Act:** Close
 - **Job:** echo the opening, changed
-- **Headline:** Same person, seven times the clusters: he approves the waves, and the pipeline runs them.
-- **Visual:** the full map with AI and agents, every cluster lit; the one person at his
+- **Headline:** Same team, eight times the clusters: it approves the waves, and the pipeline runs them.
+- **Visual:** the full map with AI and agents, every cluster lit; the one team at its
   gate; behind it, all three peaks with survey lines and the fence line
 - **Energy:** 4
 - **Into next:** five things get us there.

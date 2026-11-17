@@ -8,7 +8,8 @@
            5 + second region · 6 + second cloud · 7 + AI (second half).
    Everything introduced at the drawn stage gets class "new" (coloured); the rest is grey.
    Cluster counts match the toil model in narrative.md (4, 7, 11, 17, 23, 29, 32).
-   People and the four tools are illustrative, like the model.
+   Apps and pods are illustrative, like the model: pods = app placements x 8 replicas.
+   One team (three, roped) owns cluster and app upgrades.
 
    Estate.slot(zone, col, row) and Estate.at() give positions so a slide can draw on top
    (replica chips on the Karmada slides, AI overlays on ai-arrives). */
@@ -38,9 +39,9 @@
     // second cloud
     ['cloud2', 0, 0, 6], ['cloud2', 1, 0, 6], ['cloud2', 2, 0, 6], ['cloud2', 0, 1, 6], ['cloud2', 1, 1, 6], ['cloud2', 2, 1, 6],
   ];
-  //            stage:  1   2   3   4   5   6   7
-  const PEOPLE = [0,    8, 10, 16, 26, 34, 44, 50];
-  const TOOLS = 4;
+  //            stage:  1     2     3     4     5     6     7
+  const APPS = [0,     20,   20,   32,   50,   50,   65,   80];
+  const PODS = [0,    640, 1120, 1504, 2320, 3040, 4000, 4800];
 
   const f = (n) => Math.round(n * 10) / 10;
   const zoneOf = (id) => ZONES.find((z) => z.id === id);
@@ -52,6 +53,12 @@
     return CLUSTERS.map(([zone, col, row, stage, name = '', ai = 0]) => ({ zone, col, row, stage, name, ai, region: zone === 'aws' ? (col < 3 ? 1 : 2) : 0, ...slot(zone, col, row) }));
   }
 
+  /** The team: three climber marks roped together, in alpenglow. (x, y) = first climber's feet. */
+  function team(x, y, s = 0.9) {
+    let out = `<path class="team-rope" d="M${f(x)} ${f(y - 34 * s)}Q${f(x + 22 * s)} ${f(y - 18 * s)} ${f(x + 44 * s)} ${f(y - 34 * s)}T${f(x + 88 * s)} ${f(y - 34 * s)}"/>`;
+    for (let i = 0; i < 3; i++) out += person(x + i * 44 * s, y, s, 'you');
+    return out;
+  }
   /** The climber mark. (x, y) = feet centre; s = scale (1 is about 64px tall). */
   function person(x, y, s = 1, cls = 'you') {
     const r = 12 * s, top = y - 64 * s;
@@ -68,14 +75,14 @@
   }
 
   function count(stage) {
-    return { clusters: CLUSTERS.filter((c) => c[3] <= stage).length, people: PEOPLE[stage], tools: TOOLS };
+    return { clusters: CLUSTERS.filter((c) => c[3] <= stage).length, apps: APPS[stage], pods: PODS[stage] };
   }
 
   /** The tally in the top-right corner: counts that changed since the last stage get class "up". */
   function census(stage, extra = '') {
     const n = count(stage), p = stage > 1 ? count(stage - 1) : n;
-    const item = (v, was, word, cls = 'up') => `<span${v !== was ? ` class="${cls}"` : ''}><b>${v}</b><span>${word}</span></span>`;
-    return item(n.clusters, p.clusters, 'clusters') + item(n.tools, n.tools, 'tools') + item(n.people, p.people, 'people') + extra;
+    const item = (v, was, word, cls = 'up') => `<span${v !== was ? ` class="${cls}"` : ''}><b>${v.toLocaleString('en-US')}</b><span>${word}</span></span>`;
+    return item(n.clusters, p.clusters, 'clusters') + item(n.apps, p.apps, 'apps') + item(n.pods, p.pods, 'pods') + extra;
   }
 
   /**
@@ -118,22 +125,22 @@
       out += Peaks.glyph({ x: c.x, y: c.y, w: 64, h: 54, cls });
       if (c.name && names) out += `<text class="cl-name${isNew(c.stage) ? ' new' : ''}" x="${c.x}" y="${c.y + 58}">${c.name}</text>`;
     }
-    // the one person, then the people who use it all
+    // the one team, then one square per app
     const n = count(stage), y0 = 488;
-    if (withYou) out += you(40, y0 + 34, 1.05);
+    if (withYou) out += team(26, y0 + 36, 0.9);
     if (!withYou) {}
-    else if (youText) out += `<text class="you-label" x="92" y="${y0 + 8}">${youText[0]}</text><text class="you-label" x="92" y="${y0 + 40}">${youText[1]}</text>`;
-    else if (youLabel) out += `<text class="you-label" x="92" y="${y0 + 8}">one person</text><text class="you-label" x="92" y="${y0 + 40}">upgrades all ${n.clusters}</text>`;
+    else if (youText) out += `<text class="you-label" x="150" y="${y0 + 8}">${youText[0]}</text><text class="you-label" x="150" y="${y0 + 40}">${youText[1]}</text>`;
+    else if (youLabel) out += `<text class="you-label" x="150" y="${y0 + 8}">one team upgrades</text><text class="you-label" x="150" y="${y0 + 40}">${n.clusters} clusters and their apps</text>`;
     if (people) {
-      const per = 48, sx = 26, px = 420;
-      for (let i = 0; i < n.people; i++) {
+      const per = 40, sx = 28, px = 470;
+      for (let i = 0; i < n.apps; i++) {
         const c = i % per, r = Math.floor(i / per);
-        const nw = !quiet && !litAll && i >= PEOPLE[stage - 1] ? ' new' : '';
-        out += person(px + c * sx, y0 + 6 + r * 34, 0.44, `user${nw}`);
+        const nw = !quiet && !litAll && i >= APPS[stage - 1] ? ' new' : '';
+        out += `<rect class="app${nw}" x="${px + c * sx}" y="${y0 - 10 + r * 30}" width="20" height="20" rx="4"/>`;
       }
     }
     return Peaks.draw(sel, out);
   }
 
-  window.Estate = { draw, census, count, person, you, agent, slot, at, ZONES, CLUSTERS, PEOPLE };
+  window.Estate = { draw, census, count, person, you, team, agent, slot, at, ZONES, CLUSTERS, APPS, PODS };
 })();

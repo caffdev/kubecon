@@ -1,29 +1,193 @@
 {
-  "note": "Illustrative model, not our measurements. Replace the inputs with real numbers before this deck goes beyond the team.",
+  "note": "Illustrative model, not our measurements. One team of 3 owns cluster and app upgrades (2,550 h a year for upgrades; a fourth person: 3,400). Replace the inputs with real numbers before this deck goes beyond the team.",
   "inputs": {
     "k8s_minors_per_year": 3,
     "hours_per_kubeadm_cluster_per_minor": 12,
     "hours_per_managed_cluster_per_minor": 6,
     "tool_upgrades_per_tool_per_year": 4,
     "hours_per_tool_per_cluster_per_upgrade": 1.5,
-    "one_person_upgrade_hours_per_year": 850
+    "one_person_upgrade_hours_per_year": 850,
+    "team_size": 3,
+    "app_upgrades_per_placement_per_year": 6,
+    "hours_per_app_upgrade": 0.5,
+    "replicas_per_placement": 8
   },
   "stages": [
-    { "stage": "day one",        "kubeadm": 4, "managed": 0,  "tools": 4, "clusters_h": 144, "tools_h": 96 },
-    { "stage": "+ cloud dev",    "kubeadm": 4, "managed": 3,  "tools": 4, "clusters_h": 198, "tools_h": 168 },
-    { "stage": "+ 2nd exchange", "kubeadm": 8, "managed": 3,  "tools": 4, "clusters_h": 342, "tools_h": 264 },
-    { "stage": "+ migration",    "kubeadm": 8, "managed": 9,  "tools": 4, "clusters_h": 450, "tools_h": 408 },
-    { "stage": "+ 2nd region",   "kubeadm": 8, "managed": 15, "tools": 4, "clusters_h": 558, "tools_h": 552 },
-    { "stage": "+ 2nd cloud",    "kubeadm": 8, "managed": 21, "tools": 4, "clusters_h": 666, "tools_h": 696 },
-    { "stage": "+ AI (part 2)",  "kubeadm": 8, "managed": 24, "tools": 8, "clusters_h": 720, "tools_h": 1536 }
+    {
+      "stage": "day one",
+      "kubeadm": 4,
+      "managed": 0,
+      "tools": 4,
+      "clusters_h": 144,
+      "tools_h": 96
+    },
+    {
+      "stage": "+ cloud dev",
+      "kubeadm": 4,
+      "managed": 3,
+      "tools": 4,
+      "clusters_h": 198,
+      "tools_h": 168
+    },
+    {
+      "stage": "+ 2nd exchange",
+      "kubeadm": 8,
+      "managed": 3,
+      "tools": 4,
+      "clusters_h": 342,
+      "tools_h": 264
+    },
+    {
+      "stage": "+ migration",
+      "kubeadm": 8,
+      "managed": 9,
+      "tools": 4,
+      "clusters_h": 450,
+      "tools_h": 408
+    },
+    {
+      "stage": "+ 2nd region",
+      "kubeadm": 8,
+      "managed": 15,
+      "tools": 4,
+      "clusters_h": 558,
+      "tools_h": 552
+    },
+    {
+      "stage": "+ 2nd cloud",
+      "kubeadm": 8,
+      "managed": 21,
+      "tools": 4,
+      "clusters_h": 666,
+      "tools_h": 696
+    },
+    {
+      "stage": "+ AI (part 2)",
+      "kubeadm": 8,
+      "managed": 24,
+      "tools": 8,
+      "clusters_h": 720,
+      "tools_h": 1536
+    }
   ],
   "twenty_tools": {
-    "everywhere_29": ["argo-cd", "prometheus", "splunk-otel", "external-secrets", "thanos", "istio / ALB", "cert-manager", "kyverno", "velero", "reloader", "argo-rollouts", "keda"],
-    "on_prem_8": ["ceph", "rook"],
-    "cloud_21": ["karpenter", "external-dns"],
-    "a_few_3": ["vault-operator", "grafana", "kafka-ui", "file-viewer"],
-    "four_tools": { "installs": 116, "rollouts_per_year": 464, "hours": 696 },
-    "twenty_tools": { "installs": 418, "rollouts_per_year": 1672, "hours": 2508 },
+    "everywhere_29": [
+      "argo-cd",
+      "prometheus",
+      "splunk-otel",
+      "external-secrets",
+      "thanos",
+      "istio / ALB",
+      "cert-manager",
+      "kyverno",
+      "velero",
+      "reloader",
+      "argo-rollouts",
+      "keda"
+    ],
+    "on_prem_8": [
+      "ceph",
+      "rook"
+    ],
+    "cloud_21": [
+      "karpenter",
+      "external-dns"
+    ],
+    "a_few_3": [
+      "vault-operator",
+      "grafana",
+      "kafka-ui",
+      "file-viewer"
+    ],
+    "four_tools": {
+      "installs": 116,
+      "rollouts_per_year": 464,
+      "hours": 696
+    },
+    "twenty_tools": {
+      "installs": 418,
+      "rollouts_per_year": 1672,
+      "hours": 2508
+    },
     "pipeline_approvals_per_year": 80
-  }
+  },
+  "team_model": [
+    {
+      "stage": "day one",
+      "clusters": 4,
+      "apps": 20,
+      "placements": 80,
+      "pods": 640,
+      "clusters_h": 144,
+      "tools_h": 96.0,
+      "apps_h": 240.0,
+      "total": 480.0
+    },
+    {
+      "stage": "+ cloud dev",
+      "clusters": 7,
+      "apps": 20,
+      "placements": 140,
+      "pods": 1120,
+      "clusters_h": 198,
+      "tools_h": 168.0,
+      "apps_h": 420.0,
+      "total": 786.0
+    },
+    {
+      "stage": "+ 2nd exchange",
+      "clusters": 11,
+      "apps": 32,
+      "placements": 188,
+      "pods": 1504,
+      "clusters_h": 342,
+      "tools_h": 264.0,
+      "apps_h": 564.0,
+      "total": 1170.0
+    },
+    {
+      "stage": "+ migration",
+      "clusters": 17,
+      "apps": 50,
+      "placements": 290,
+      "pods": 2320,
+      "clusters_h": 450,
+      "tools_h": 408.0,
+      "apps_h": 870.0,
+      "total": 1728.0
+    },
+    {
+      "stage": "+ 2nd region",
+      "clusters": 23,
+      "apps": 50,
+      "placements": 380,
+      "pods": 3040,
+      "clusters_h": 558,
+      "tools_h": 552.0,
+      "apps_h": 1140.0,
+      "total": 2250.0
+    },
+    {
+      "stage": "+ 2nd cloud",
+      "clusters": 29,
+      "apps": 65,
+      "placements": 500,
+      "pods": 4000,
+      "clusters_h": 666,
+      "tools_h": 696.0,
+      "apps_h": 1500.0,
+      "total": 2862.0
+    },
+    {
+      "stage": "+ AI (part 2)",
+      "clusters": 32,
+      "apps": 80,
+      "placements": 600,
+      "pods": 4800,
+      "clusters_h": 720,
+      "tools_h": 1536.0,
+      "apps_h": 1800.0,
+      "total": 4056.0
+    }
+  ]
 }
