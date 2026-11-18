@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>At the show: pipelines</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --topic: var(--mint); --path: var(--mint); }
+    h2 { font-size: 80px; max-width: 1680px; line-height: 1.02; }
+    .src { max-width: 560px; }
+  </style>
+</head>
+<body>
+  <main class="slide show" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>At fleet scale, nobody keeps up by hand:<br>every change rides a pipeline.</h2>
+    <svg class="show-grid" id="grid" viewBox="0 0 1920 1080" role="img" aria-label="The four days of KubeCon as boxes, one per talk, Monday to Thursday. The talks about GitOps, pipelines, progressive delivery, policy and platform engineering are lit: 122 of 501."></svg>
+    <div class="riffle" id="riffle" aria-hidden="true"></div>
+    <div class="picks" id="picks"></div>
+    <p class="src">One box per talk, Nov 9–12. Lit: GitOps, pipelines, progressive delivery, policy, platform engineering, by our keyword match on title and abstract.</p>
+  </main>
+
+  <aside class="notes">
+    Next, the platform team, who carry the most. First, the second takeaway, as the show told it.
+
+    Same four days. Lit now: GitOps, pipelines, progressive delivery, policy, platform engineering. About a hundred and twenty talks.
+
+    And the names. Apple on policy, Monday. AT&T and JPMorganChase on policy as code. NVIDIA with Upbound, Adobe, Meta's keynote, Salesforce and Heroku, Google, the Crossplane maintainers, the Argo CD maintainers with Intuit, Spotify.
+
+    Three to remember. Meta, in a keynote: a one-line Helm change used to take a working day in their Terraform pipeline, so they moved deploys to GitOps. That's the fifteen engineers running a hundred clusters. LinkedIn: their most critical cluster services ship several times a week, through a canary pipeline built for software that has no user traffic to shift. And Ford: hundreds of clusters, and CI that checks every pull request end to end before it reaches one.
+
+    None of them keep up by hand. Every change rides a pipeline. Here's what that means for our platform team.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/assets/schedule.js"></script>
+  <script src="../theme/riffle.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p1'] });
+    Riffle.draw({
+      topic: 'delivery',
+      flicks: [
+        [0, 'Rego Without Borders: Security Policy Across Languages', 'Apple'],
+        [1, 'Signed, Sealed, Denied: Attestation-Driven Admission at AT&T', 'AT&T, Nirmata'],
+        [1, 'The Next Generation of Kyverno: Policy as Code at Scale', 'JPMorganChase, Nirmata'],
+        [1, 'One Recipe, Five Clouds, One Query', 'NVIDIA, Upbound'],
+        [1, 'Ground Control to Major Tom: Public Cloud in Our Private Cloud', 'Adobe, Red Hat'],
+        [2, 'We Have GitOps at Home', 'Meta', true],
+        [2, 'Snapshot, Replay, Verify: A KWOK CI Pattern', 'Adobe'],
+        [2, 'Where Should Platform Configuration Live?', 'Salesforce, Heroku'],
+        [2, 'Goodbye Webhooks, Hello CEL', 'Google'],
+        [2, 'Crossplane: The Cloud Native Framework for Platform Engineering', 'Upbound'],
+        [3, 'Tell Us How You Use Argo CD', 'Intuit, Akuity, Red Hat'],
+        [3, 'GitOps-Driven Scheduling across GPU Fleets', 'NVIDIA'],
+        [3, "Built for What's Next: Backstage and AI-Assisted Development", 'Spotify, DoorDash'],
+      ],
+      picks: [
+        { who: 'Meta', day: 2, keynote: true, claim: 'A one-line Helm change took a day. Now: GitOps', title: 'We Have GitOps at Home: From Terraform on Cron to GitOps for AI Infra' },
+        { who: 'LinkedIn', day: 2, claim: 'Core services canaried, several releases a week', title: 'Ship Faster, Ship Safer: A K8s-Native Canary Pipeline' },
+        { who: 'Ford', day: 2, claim: 'Hundreds of clusters, every PR tested end to end', title: 'Robust CI as a Safety Net: Moving Fast at Scale' },
+      ],
+    });
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

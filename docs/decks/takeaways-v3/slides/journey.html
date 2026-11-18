@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The journey</title>
+  <title>Three takeaways</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
@@ -16,7 +16,7 @@
     .trail { fill: none; stroke: var(--you); stroke-width: 4; stroke-dasharray: 2 12; stroke-linecap: round; }
     .trail-end { fill: var(--you); }
 
-    .truth { position: absolute; top: 340px; width: 500px; }
+    .truth { position: absolute; top: 300px; width: 500px; }
     .truth.t1 { left: 120px; } .truth.t2 { left: 712px; } .truth.t3 { left: 1300px; }
     .truth .k { font: 600 30px/1 var(--font-display); letter-spacing: .04em; color: var(--c); }
     .truth .k i { font-style: normal; display: inline-block; width: 44px; height: 44px; margin-right: 12px; border: 3px solid var(--c); border-radius: 50%; text-align: center; line-height: 38px; }
@@ -33,12 +33,12 @@
   <main class="slide" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
     <svg class="scene" id="scene" viewBox="0 0 1920 1080" role="img" aria-label="The three peaks drawn large: fleet, delivery and agents, with the team's dotted trail climbing over all three, left to right. Over each peak, the thing it teaches."></svg>
-    <h2>We run a fleet, nothing manual keeps up with it,<br>and AI creates problems as it solves them.</h2>
+    <h2>Three takeaways from four days in Salt Lake City.</h2>
 
     <div class="truth t1" data-step="1">
       <p class="k"><i>1</i>fleet</p>
-      <h3>It's a fleet, so we run it as one.</h3>
-      <p>Four clusters become 29 across our own hardware and two clouds. Built, upgraded and placed from code.</p>
+      <h3>There's always another cluster.</h3>
+      <p>Treat it as the rule, not the exception: every one built, upgraded and placed from code.</p>
     </div>
     <div class="truth t2" data-step="2">
       <p class="k"><i>2</i>delivery</p>
@@ -53,15 +53,15 @@
   </main>
 
   <aside class="notes">
-    Before the story, here's where it goes, so you can hold the whole thing in your head. Three peaks, and we climb them in order, the same team the whole way.
+    Four days, five hundred talks. Here's what we brought back, in three takeaways, and we'll climb them in this order, the same team the whole way.
 
-    Click. The first is the fleet. We don't have a few clusters any more. By the end of this story we have twenty-nine, on our own hardware and in two clouds, and it keeps growing. A fleet has to be run as one: clusters built, upgraded and placed from code, not one at a time, not by name.
+    Click. The first is the fleet. There's always going to be another cluster: another environment, another exchange, another region, another cloud. So the next cluster has to be the rule, not the exception: every one built, upgraded and placed from code, never by hand and never by name.
 
     Click. The second is delivery. There is no manual way to stay on top of this. Twenty platform tools, sixty-five apps, a new Kubernetes minor three times a year, on every cluster. If a person has to touch each one, we lose, so every change rides one pipeline: in waves, behind gates, inside windows.
 
     Click. The third is agents. AI is going to solve real problems for us, and it brings new ones with it. Agents run as workloads on our nodes, act as users of our tools, and in attackers' hands they find new holes in our software every day. So we fence ours in first, and then we use them to fight back.
 
-    Let's start where we actually started: four clusters.
+    Each one gets its proof from the show before we apply it to us. The fleet first.
   </aside>
 
   <script src="../../_shared/peaks.js"></script>

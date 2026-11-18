@@ -189,3 +189,37 @@
 .snow .group-tag.g-workloads { color: var(--teal-ink); }
 .snow .group-tag.g-users { color: var(--mint-ink); }
 .snow .group-tag.g-attackers { color: var(--alpenglow-ink); }
+
+/* ---- the show-* slides: four days of talks, this topic lit, a riffle, the big names ---- */
+.show { --topic: var(--haze); }
+.show-grid { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+.show-grid .tb { fill: #16242c; }
+.show-grid .tb.lit { fill: var(--topic); }
+.show-grid .day-name { font: 600 32px var(--font-display); fill: var(--snow); }
+.show-grid .day-sub { font: 400 22px var(--font-body); fill: var(--lichen); }
+.show-grid .tally-n { font: 600 64px var(--font-display); fill: var(--topic); letter-spacing: -.02em; }
+.show-grid .tally-t { font: 400 28px var(--font-body); fill: var(--lichen); }
+.is-entered .show-grid .tb.lit { animation: tb-light 500ms ease-out both; animation-delay: var(--d); }
+@keyframes tb-light { from { fill: #16242c; } }
+
+.riffle, .picks { position: absolute; left: 1196px; top: 352px; width: 604px; }
+.picks { display: grid; gap: 14px; }
+.pick, .flick { padding: 14px 22px 14px 24px; border-radius: 12px; background: #0e1a21; border: 2px solid #26404c; border-left: 6px solid var(--topic); }
+.flick { position: absolute; left: 0; top: 0; width: 100%; opacity: 0; transform: rotate(var(--r, 0deg)); box-shadow: 0 18px 40px rgba(0, 0, 0, .45); }
+.pick .who, .flick .who { display: flex; align-items: baseline; gap: 12px; font: 600 32px/1.1 var(--font-display); color: var(--topic); }
+.pick .when, .flick .when { margin-left: auto; font: 400 22px var(--font-body); color: var(--lichen); white-space: nowrap; }
+.pick .claim { margin-top: 4px; font: 600 30px/1.15 var(--font-display); color: var(--snow); }
+.pick .title { margin-top: 2px; font-size: 22px; line-height: 1.25; color: var(--lichen); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.flick .claim { margin-top: 6px; font: 600 32px/1.15 var(--font-display); color: var(--snow); }
+.tag { font: 600 22px/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; padding: 5px 9px; border-radius: 6px; align-self: center; }
+.tag.solves { color: #0b2620; background: var(--teal); }
+.tag.creates { color: #2b1606; background: var(--alpenglow); }
+.is-entered .flick { animation: riffle 340ms linear both; animation-delay: calc(400ms + var(--i) * 200ms); }
+@keyframes riffle {
+  0% { opacity: 0; transform: translateY(40px) rotate(var(--r, 0deg)); }
+  22% { opacity: 1; transform: translateY(0) rotate(var(--r, 0deg)); }
+  78% { opacity: 1; transform: translateY(0) rotate(var(--r, 0deg)); }
+  100% { opacity: 0; transform: translateY(-40px) rotate(var(--r, 0deg)); }
+}
+.is-entered .pick { animation: pick-in 600ms var(--step-ease) both; animation-delay: calc(500ms + var(--n) * 200ms + var(--i) * 200ms); }
+@keyframes pick-in { from { opacity: 0; transform: translateY(28px); } }

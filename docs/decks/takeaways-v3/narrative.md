@@ -37,6 +37,14 @@ user's direction:
   constraints card already does its job), and the cluster admins gain an AWS slide
   (`region-claim`: a new region is one pull request, Crossplane builds it, EKS Auto Mode
   runs it). The ask's third item becomes that region, not a Karmada spike.
+- **Three takeaways, each proved by the show (user, 2026-11-18).** The intro is retitled
+  "Three takeaways from four days in Salt Lake City" (the journey headline repeated its
+  own columns), and the fleet takeaway becomes "There's always another cluster: treat it as
+  the rule, not the exception." Each portion now opens with a `show-*` slide that riffles
+  through the conference: the four days as boxes, one per talk, with that topic's talks
+  lit, a fast riffle of big-name session cards on entry, and three highlight cards that
+  stay. `show-fleet` opens the fleet story, `show-delivery` opens the platform team's
+  section, `show-agents` opens the agent half.
 - **North star over practice.** This deck may go further than GOALS (Karmada, aggressive
   AI resizing). That's deliberate: it shows where we're
   heading, not only what we've decided. Facts still carry ⚠️ until checked.
@@ -48,7 +56,7 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 
 - **Audience:** engineering, leads included: the people who run the clusters, the people
   who will run agents, and the people who decide what both teams work on.
-- **Setting:** live, about 35 minutes in two halves (fleet, then agents), then sent round.
+- **Setting:** live, about 37 minutes in two halves (fleet, then agents), then sent round.
   The notes carry the full argument for readers.
 - **They believe now:** cluster and app upgrades are routine work one experienced team
   handles. Putting
@@ -79,30 +87,30 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   safety around it before climbing.
 - **Acts:**
   - Open (2): the title, "KubeCon 2027 north star: managing our fleet at scale."; then the
-    journey, the three things the talk proves, one per peak.
-  - I: *watch it grow* (6): four clusters → three clouds, apps and pods climbing, still one
+    three takeaways, one per peak. Each portion below opens with its `show-*` slide.
+  - I: *watch it grow* (7): `show-fleet`, then four clusters → three clouds, apps and pods climbing, still one
     team.
   - II: *add it up* (3): the runbook, the tools, the overrun split three ways (cluster
     admins, platform team, developers).
   - III: *cluster admins* (2): clusters as a fleet, kubeadm from code on-prem; in AWS a
     region from one Crossplane claim, run by EKS Auto Mode.
-  - IV: *platform team* (4): twenty tools, waves, gates, windows (the time syncs).
+  - IV: *platform team* (5): `show-delivery`, then twenty tools, waves, gates, windows (the time syncs).
   - V: *developers* (2): multi-region failover by constraints (where and why, scheduling,
     DR patterns), no cluster names.
-  - VI: *the agents arrive* (7): AI on the map; three ways (workloads, users, attackers);
+  - VI: *the agents arrive* (8): `show-agents`; AI on the map; three ways (workloads, users, attackers);
     as workloads: elastic agents, sandbox; as users: MCP tools, credentials, policy.
   - VII: *see it* (3): one view (the OTel plane), the lake, lakeside savings. Untagged:
     the plane and the lake serve all three roles.
   - VIII: *agents as attackers* (2): new holes daily; close the circle (our agents patch,
     the waves roll it out).
   - Close (2): the same person; the ask.
-- **The peak:** `karmada` (slug kept; the headline no longer names Karmada), slide 18 of 33
-  (55%). Slide 6 says "fingers crossed for no AWS
+- **The peak:** `karmada` (slug kept; the headline no longer names Karmada), slide 20 of 36
+  (56%). Slide 6 says "fingers crossed for no AWS
   outage". Here a region fails and the work shifts to the other region, then AWS fails and
   it shifts to the second cloud, by the developer's constraints, without a person. It pays
   off the setup; `no-cluster-names` is the release after it, closing the first half.
-  `gates` (16) and `the-lake` (28) are the secondary highs, with `twenty-tools` (14) the
-  run-up to the peak, and `three-ways` (21) and `patch-loop` (31) the second half's turn
+  `gates` (18) and `the-lake` (31) are the secondary highs, with `twenty-tools` (16) the
+  run-up to the peak, and `three-ways` (24) and `patch-loop` (34) the second half's turn
   and its close. `the-lake` is the second half's one big picture: all three peaks,
   the plane through them, and every stream running into one lake.
 - **The close:** the deck opens on four clusters and one team. Before the close,
@@ -207,6 +215,20 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   published" to deployed in under an hour), *Welcome to the Vulnpocalypse!* (panel),
   *How Kubernetes Handles AI Generated Security Reports* (Canonical, NVIDIA). GOALS-GAPS A3
   ("the CVE firehose") is the GOALS-side home for this.
+- **The show-* slides (2026-11-18).** Boxes come from `kubecon-overview/data/sessions.json`
+  via `theme/gen/schedule.mjs` (re-run it if the pull changes): every talk with speakers,
+  Nov 9–12, 501 in all (48 / 164 / 180 / 109 by day). A talk is lit when its title or
+  abstract (or track) matches the topic's keyword pattern in that script: fleet 96, delivery
+  122, AI and agents 228. A keyword match, so approximate; the source line says so. Every
+  highlight card's claim is checked against its session abstract: LinkedIn (300 clusters,
+  ~300,000 nodes), Salesforce (1000 clusters), GEICO (no single cloud has enough GPUs;
+  multi-provider), Meta (a one-line Helm change took a working day), LinkedIn (critical
+  cluster services deploy multiple times a week, canary pipeline), Ford (hundreds of
+  clusters, every PR validated end to end), Mastercard (an LLM with the keys to 30 EKS
+  clusters, read-only by default, writes with review), Google Cloud keynote (agentic AI
+  shatters Kubernetes' static identity assumptions), *Mythos vs Maintainers* (a flood of
+  AI-found reports). Riffle titles are shortened from the schedule. Per the series rule
+  below, *GitOps Meltdown* (Nutanix) and *How Anthropic Almost Melted GKE* are left out.
 - Series rule: **no failure-case references.** The region and AWS outages on `karmada`
   and the failed canary on `gates` are our own illustrations.
 - kubeadm, stated honestly (from v2): Cluster API still runs kubeadm underneath; the
@@ -270,6 +292,13 @@ What v3 adds:
   (`Range.group('admins' | 'platform' | 'developers')`): three bars in the chart's group
   colours, this group's lit, and the group's name. Admins haze, platform mint, developers
   lake blue (darker inks on snowfield). It encodes the chart's split, so it isn't chrome.
+- **The show-* slides** (2026-11-18): `theme/riffle.js` and the `.show` block in
+  `theme.css`. Left: four day columns of boxes, ten to a row in start-time order, this
+  topic's talks lit in its peak colour (fleet haze, delivery mint, AI teal), per-day counts
+  under each day name, the total under Monday's short column. Right: the riffle (cards
+  flick past for ~200 ms each on entry, `aria-hidden`), then three highlight cards that
+  rise in and stay; the AI cards carry a "solves" or "creates" tag. Base state is the
+  finished slide: boxes lit, riffle hidden, highlights shown.
 - **The journey** (`journey`, 2026-11-18): the range drawn large, each summit under its
   truth (numbered 1–3 in its cap colour), and the team's dotted alpenglow trail climbing
   over all three toward the star. Three clicks, one truth each. No camps: the benched ladder
@@ -328,15 +357,30 @@ What v3 adds:
 - **Act:** Open
 - **Job:** make the journey plain before the story starts: three truths, one per peak,
   in the order the talk climbs them
-- **Headline:** We run a fleet, nothing manual keeps up with it, and AI creates problems as it solves them.
+- **Headline:** Three takeaways from four days in Salt Lake City.
 - **Visual:** the range drawn large: fleet, delivery, agents, each summit under its truth.
-  1 fleet: "It's a fleet, so we run it as one." (4 clusters become 29; built, upgraded and
-  placed from code). 2 delivery: "No manual way keeps up." (twenty tools, 65 apps, three
+  1 fleet: "There's always another cluster." (treat it as the rule, not the exception: every
+  one built, upgraded and placed from code). 2 delivery: "No manual way keeps up." (twenty tools, 65 apps, three
   upgrades a year; one pipeline). 3 agents: "AI brings problems as it solves them." (agents
   as workloads, users, and in attackers' hands; fence ours in, then let them fight back).
   The team's trail climbs over all three toward the star. One click per truth
 - **Energy:** 4
-- **Into next:** let's start where we actually started: four clusters.
+- **Into next:** each one gets its proof from the show before we apply it to us. The fleet first.
+
+### show-fleet
+
+- **Act:** I
+- **Job:** the first takeaway's credibility: the show was full of fleets, run by big names
+- **Headline:** The big names all run fleets: another cluster is the rule, not the exception.
+- **Visual:** the four days as boxes, fleet talks lit (96 of 501). Riffle: Bloomberg,
+  AWS keynote, NVIDIA and Salesforce, Airbnb/Apple/Pinterest/Salesforce, Microsoft and Red
+  Hat, Apple and Uber keynotes, NVIDIA, Mastercard, Anthropic/NVIDIA/Red Hat, Nutanix,
+  LinkedIn, Coinbase. Stay: LinkedIn (300 clusters, ~300,000 nodes, upgraded skip-level),
+  Salesforce (1,000 clusters, with AIOps agents), GEICO (multi-provider, because no one cloud
+  had the GPUs)
+- **Energy:** 3
+- **Into next:** now ours. It started at four.
+- **Source:** see Editorial notes (the show-* slides)
 
 ### day-one
 
@@ -464,10 +508,25 @@ What v3 adds:
   (nodes and scaling, OS patches by replacing nodes, core add-ons) and what stays ours (the
   Kubernetes version as one field; the tools and apps, in waves)
 - **Energy:** 3
-- **Into next:** that's the cluster admins. Next, the platform team, who carry the most.
+- **Into next:** that's the cluster admins. Next, the platform team, who carry the most,
+  starting with what the show said.
 - **Source:** `EKS-VS-ECS.md` §4; GOALS §10.1, §10.2; *Crossplane: The Cloud Native
   Framework for Platform Engineering* (Upbound; no deck); *What Changes When Crossplane
   Adoption Gets Real* (American Family Insurance; no deck); EKS Auto Mode user guide
+
+### show-delivery
+
+- **Act:** IV
+- **Job:** the second takeaway's credibility: nobody at fleet scale keeps up by hand
+- **Headline:** At fleet scale, nobody keeps up by hand: every change rides a pipeline.
+- **Visual:** the four days, delivery talks lit (122 of 501). Riffle: Apple, AT&T,
+  JPMorganChase, NVIDIA and Upbound, Adobe, Meta keynote, Salesforce and Heroku, Google,
+  Upbound, Intuit with the Argo CD maintainers, NVIDIA, Spotify and DoorDash. Stay: Meta (a
+  one-line Helm change took a day; now GitOps), LinkedIn (core services canaried, several
+  releases a week), Ford (hundreds of clusters, every PR tested end to end)
+- **Energy:** 3
+- **Into next:** here's what that means for our platform team.
+- **Source:** see Editorial notes (the show-* slides)
 
 ### twenty-tools
 
@@ -551,10 +610,24 @@ What v3 adds:
   Beneath it, the pack from the path decks, now empty: never learned a cluster name,
   never clicked sync, never read the policy list, never rolled back by hand
 - **Energy:** 3
-- **Into next:** that's the first half solved. Now look at the map again, because
-  something new is arriving on it.
+- **Into next:** that's the first half solved. Now the takeaway every stage was talking about.
 - **Source:** path1 `stage-e` (the empty pack) and `freeze-windows` (change record →
   CRD → policy)
+
+### show-agents
+
+- **Act:** VI
+- **Job:** the third takeaway's credibility: AI everywhere, on both sides of the problem
+- **Headline:** AI was everywhere, solving problems on one stage and creating them on the next.
+- **Visual:** the four days, AI talks lit (228 of 501, nearly half). Riffle: Uber; the
+  Anthropic/Google/Solo.io, Red Hat and NVIDIA keynotes; Verkada, Grainger, LinkedIn,
+  Ericsson; AWS and Stacklok, OpenAI, Microsoft, Huawei; Salesforce, AWS. Stay, tagged:
+  solves, Mastercard (an LLM drives 30 EKS clusters, every write reviewed); creates, Google
+  Cloud keynote (agents break Kubernetes' identity assumptions); creates, ControlPlane and
+  Docker (AI-found vulnerability reports swamp maintainers)
+- **Energy:** 4
+- **Into next:** here's how it arrived on our map.
+- **Source:** see Editorial notes (the show-* slides)
 
 ### ai-arrives
 
