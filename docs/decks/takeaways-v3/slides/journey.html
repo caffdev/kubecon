@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The journey</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 80px; max-width: 1640px; line-height: 1.02; }
+
+    .scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .scene .pk-body { fill: #15232c; stroke: #2c4350; stroke-width: 2.5; stroke-linejoin: round; }
+    .scene .pk-shadow { fill: #10202b; }
+    .scene .pk-cap { opacity: .8; }
+    .trail { fill: none; stroke: var(--you); stroke-width: 4; stroke-dasharray: 2 12; stroke-linecap: round; }
+    .trail-end { fill: var(--you); }
+
+    .truth { position: absolute; top: 340px; width: 500px; }
+    .truth.t1 { left: 120px; } .truth.t2 { left: 712px; } .truth.t3 { left: 1300px; }
+    .truth .k { font: 600 30px/1 var(--font-display); letter-spacing: .04em; color: var(--c); }
+    .truth .k i { font-style: normal; display: inline-block; width: 44px; height: 44px; margin-right: 12px; border: 3px solid var(--c); border-radius: 50%; text-align: center; line-height: 38px; }
+    .truth h3 { margin-top: 18px; font: 600 48px/1.04 var(--font-display); color: var(--ink); letter-spacing: -.005em; }
+    .truth p { margin-top: 12px; font-size: 28px; line-height: 1.32; color: var(--lichen); }
+    .t1 { --c: var(--haze); } .t2 { --c: var(--mint); } .t3 { --c: var(--teal); }
+
+    .is-entered .trail { animation: walk 2400ms var(--step-ease) both; animation-delay: 300ms; }
+    .trail { stroke-dashoffset: 0; }
+    @keyframes walk { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <svg class="scene" id="scene" viewBox="0 0 1920 1080" role="img" aria-label="The three peaks drawn large: fleet, delivery and agents, with the team's dotted trail climbing over all three, left to right. Over each peak, the thing it teaches."></svg>
+    <h2>We run a fleet, nothing manual keeps up with it,<br>and AI creates problems as it solves them.</h2>
+
+    <div class="truth t1" data-step="1">
+      <p class="k"><i>1</i>fleet</p>
+      <h3>It's a fleet, so we run it as one.</h3>
+      <p>Four clusters become 29 across our own hardware and two clouds. Built, upgraded and placed from code.</p>
+    </div>
+    <div class="truth t2" data-step="2">
+      <p class="k"><i>2</i>delivery</p>
+      <h3>No manual way keeps up.</h3>
+      <p>Twenty tools and 65 apps on every cluster, three upgrades a year. Every change rides one pipeline.</p>
+    </div>
+    <div class="truth t3" data-step="3">
+      <p class="k"><i>3</i>agents</p>
+      <h3>AI brings problems as it solves them.</h3>
+      <p>Agents as workloads, as users, and in attackers' hands. Fence ours in, then let them fight back.</p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Before the story, here's where it goes, so you can hold the whole thing in your head. Three peaks, and we climb them in order, the same team the whole way.
+
+    Click. The first is the fleet. We don't have a few clusters any more. By the end of this story we have twenty-nine, on our own hardware and in two clouds, and it keeps growing. A fleet has to be run as one: clusters built, upgraded and placed from code, not one at a time, not by name.
+
+    Click. The second is delivery. There is no manual way to stay on top of this. Twenty platform tools, sixty-five apps, a new Kubernetes minor three times a year, on every cluster. If a person has to touch each one, we lose, so every change rides one pipeline: in waves, behind gates, inside windows.
+
+    Click. The third is agents. AI is going to solve real problems for us, and it brings new ones with it. Agents run as workloads on our nodes, act as users of our tools, and in attackers' hands they find new holes in our software every day. So we fence ours in first, and then we use them to fight back.
+
+    Let's start where we actually started: four clusters.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Peaks.draw('#range', Range.star());
+    (() => {
+      // the range, large, each summit under its truth; bases run off the stage
+      const P = [
+        { x: 370,  top: 712, hw: 400, H: 620, cap: 'var(--haze)' },
+        { x: 962,  top: 668, hw: 420, H: 660, cap: 'var(--mint)' },
+        { x: 1550, top: 712, hw: 380, H: 620, cap: 'var(--teal)' },
+      ];
+      let s = '';
+      for (const p of P) s += Peaks.peak({ x: p.x, top: p.top, base: p.top + p.H, hw: p.hw, cap: p.cap, capScale: .5 });
+      // the team's trail: up the fleet, over delivery, over agents, on toward the star
+      const [a, b, c] = P;
+      const d = `M196 1062C250 980 320 780 ${a.x} ${a.top}`
+        + `C440 760 560 930 668 930C780 930 880 720 ${b.x} ${b.top}`
+        + `C1040 720 1150 930 1258 930C1370 930 1470 760 ${c.x} ${c.top}`
+        + `C1640 740 1740 700 1820 652`;
+      s += `<path class="trail" d="${d}"/>`;
+      s += `<path class="trail-end" d="M0 -12L18 0L0 12Z" transform="translate(1824 650) rotate(-34)"/>`;
+      s += Estate.team(96, 1046, 0.72);
+      Peaks.draw('#scene', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

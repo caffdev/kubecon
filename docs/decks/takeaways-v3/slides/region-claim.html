@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A region is a pull request</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--haze); }
+    h2 { font-size: 80px; max-width: 1680px; line-height: 1.02; }
+
+    .yaml-card { position: absolute; left: var(--margin); top: 360px; width: 520px; padding: 22px 32px; border-radius: 16px; background: #0b1820; border: 2px solid var(--scree); }
+    .yaml-card .code { font-size: 26px; line-height: 1.42; color: var(--snow); }
+    .yaml-card .c { color: var(--lichen); }
+    .yaml-card .k { color: var(--haze); }
+    .api-note { position: absolute; left: var(--margin); top: 742px; width: 520px; font-size: 24px; line-height: 1.3; color: var(--lichen); }
+
+    .flow { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .wire { fill: none; stroke: var(--haze); stroke-width: 2.5; opacity: .75; }
+    .xp { fill: #0b1820; stroke: var(--haze); stroke-width: 3; }
+    .xp-name { font: 600 34px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .xp-sub { font: 400 23px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .chip { fill: #102230; stroke: #33505f; stroke-width: 2; }
+    .chip-name { font: 600 28px var(--font-display); fill: var(--snow); }
+    .pk-glyph.eks { fill: var(--haze); }
+    .head-arrow { fill: var(--haze); }
+
+    .split { position: absolute; left: 1400px; top: 352px; width: 420px; }
+    .split h3 { font: 600 34px/1.1 var(--font-display); color: var(--haze); margin-bottom: 10px; }
+    .split h3.ours { color: var(--you); margin-top: 34px; }
+    .split li { list-style: none; font-size: 27px; line-height: 1.3; color: var(--lichen); padding: 5px 0 5px 18px; border-left: 3px solid #33505f; }
+    .split li b { color: var(--snow); font-weight: 600; }
+    .src { left: 1400px; width: 420px; max-width: 420px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>In AWS, a new region is one pull request:<br>Crossplane builds it, and EKS Auto Mode runs it.</h2>
+
+    <div class="yaml-card"><p class="code"><span class="c"># region 2, as a pull request</span>
+<span class="k">kind:</span> Region
+<span class="k">metadata:</span>
+  name: aws-region-2
+<span class="k">spec:</span>
+  mirror:   aws-region-1
+  clusters: 6
+  nodes:    eks-auto-mode</p></div>
+    <p class="api-note">Our own API: a Crossplane v2 composite.</p>
+
+    <svg class="flow" id="flow" viewBox="0 0 1920 1080" role="img" aria-label="The Region claim goes to Crossplane, whose composition fans out to five things: the VPC and subnets, IAM roles with Pod Identity, six EKS clusters on Auto Mode, DNS and load balancers, and an Argo CD registration with labels."></svg>
+
+    <div class="split" data-step>
+      <h3>AWS runs, with Auto Mode</h3>
+      <ul>
+        <li><b>Nodes and scaling,</b> Karpenter built in</li>
+        <li><b>OS patches:</b> every node replaced within 21 days</li>
+        <li><b>Core add-ons:</b> CNI, DNS, storage, load balancers</li>
+      </ul>
+      <h3 class="ours">Still ours</h3>
+      <ul>
+        <li><b>The Kubernetes version,</b> one field</li>
+        <li><b>The twenty tools and the apps,</b> in waves</li>
+      </ul>
+    </div>
+    <p class="src">EKS Auto Mode user guide. <i>Crossplane: The Cloud Native Framework</i> (Upbound); <i>When Crossplane Adoption Gets Real</i> (American Family).</p>
+  </main>
+
+  <aside class="notes">
+    On-prem, that's as far as it goes: the hands leave the upgrade. In AWS we can go much further, because the cluster itself can come from code.
+
+    Remember slide six? "Resilience meant a second AWS region, mirroring the first." Here's what that region costs when the admins work from code: one pull request.
+
+    On the left is all an admin writes. A Region, mirroring region one, six clusters, nodes on Auto Mode. That's our own API, a Crossplane composite. We're already on Crossplane v2 for the function work. And the accounts and the landing zone stay in CDK, below the seam.
+
+    Crossplane takes the claim and builds everything behind it: the VPC and subnets, the IAM roles with Pod Identity, six EKS clusters, the DNS and load balancers. And the last one matters most: it registers each cluster with Argo CD, labelled with its region and tier. Because the clusters arrive labelled, the waves and the placement pick them up on their own. Nobody edits a list.
+
+    Click. Then EKS Auto Mode runs them. AWS runs the nodes and the scaling, Karpenter included, so that's one tool off our twenty. It replaces every node within twenty-one days, which means the operating system patches itself, and that matters again later, when we get to the holes AI is finding. And it runs the core add-ons: networking, DNS, storage, load balancers.
+
+    What stays ours is small: the Kubernetes version, which is one field, and the tools and apps, which go through the waves like everything else.
+
+    At the show, American Family Insurance told the adoption side: going from Jira tickets to self-service infrastructure, and what it took to design composite APIs developers would actually use. And Crossplane's maintainers pitched those same APIs as the safe surface for agents. That comes back later.
+
+    That's the cluster admins: on-prem from Cluster API, AWS from a claim. Next, the platform team, who carry the most.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    Range.group('admins');
+    (() => {
+      const XB = { x: 712, y: 486, w: 220, h: 112 };
+      const CX = 1000, CW = 340, CH = 60, Y0 = 352, STEP = 82;
+      const chips = ['VPC and subnets', 'IAM, Pod Identity', '', 'DNS, load balancers', 'Argo CD, labelled'];
+      let s = '';
+      // claim card → Crossplane
+      s += `<path class="wire" d="M652 ${XB.y + XB.h / 2}H${XB.x - 4}"/>`;
+      s += `<path class="head-arrow" d="M${XB.x - 18} ${XB.y + XB.h / 2 - 10}L${XB.x} ${XB.y + XB.h / 2}L${XB.x - 18} ${XB.y + XB.h / 2 + 10}Z"/>`;
+      s += `<rect class="xp" x="${XB.x}" y="${XB.y}" width="${XB.w}" height="${XB.h}" rx="14"/>`;
+      s += `<text class="xp-name" x="${XB.x + XB.w / 2}" y="${XB.y + 50}">Crossplane</text><text class="xp-sub" x="${XB.x + XB.w / 2}" y="${XB.y + 84}">composition</text>`;
+      // Crossplane → what it builds
+      chips.forEach((name, i) => {
+        const y = Y0 + i * STEP, my = y + CH / 2;
+        const sx = XB.x + XB.w, sy = XB.y + XB.h / 2;
+        s += `<path class="wire" d="M${sx} ${sy}C${sx + 40} ${sy} ${CX - 40} ${my} ${CX} ${my}"/>`;
+        s += `<rect class="chip" x="${CX}" y="${y}" width="${CW}" height="${CH}" rx="10"/>`;
+        if (name) s += `<text class="chip-name" x="${CX + 22}" y="${my + 10}">${name}</text>`;
+        else {
+          for (let k = 0; k < 6; k++) s += Peaks.glyph({ x: CX + 34 + k * 34, y: my + 2, w: 28, h: 24, cls: 'pk-glyph eks' });
+          s += `<text class="chip-name" x="${CX + 240}" y="${my + 10}">EKS</text>`;
+        }
+      });
+      Peaks.draw('#flow', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

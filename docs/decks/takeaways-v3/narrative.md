@@ -30,6 +30,13 @@ user's direction:
   tools), and as attackers (theirs find new holes in what we run, daily). The roles become
   second-half group tags, as admins / platform / developers were in the first. The third
   role closes the circle: our agents patch what theirs find, through the first half's waves.
+- **A journey up front, and less Karmada (user, 2026-11-18).** Slide 2 (`journey`) states
+  the three things the talk proves, one per peak: it's a fleet, so run it as one; no manual
+  way keeps up; AI brings problems as it solves them. Multi-region stays the peak, but
+  Karmada drops out of the headlines: `karmada-constraints` is benched (the peak slide's
+  constraints card already does its job), and the cluster admins gain an AWS slide
+  (`region-claim`: a new region is one pull request, Crossplane builds it, EKS Auto Mode
+  runs it). The ask's third item becomes that region, not a Karmada spike.
 - **North star over practice.** This deck may go further than GOALS (Karmada, aggressive
   AI resizing). That's deliberate: it shows where we're
   heading, not only what we've decided. Facts still carry ⚠️ until checked.
@@ -41,7 +48,7 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 
 - **Audience:** engineering, leads included: the people who run the clusters, the people
   who will run agents, and the people who decide what both teams work on.
-- **Setting:** live, about 34 minutes in two halves (fleet, then agents), then sent round.
+- **Setting:** live, about 35 minutes in two halves (fleet, then agents), then sent round.
   The notes carry the full argument for readers.
 - **They believe now:** cluster and app upgrades are routine work one experienced team
   handles. Putting
@@ -59,8 +66,8 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   outgrow trust by default, so clusters, tools, apps and agents all go through one
   automated path with gates, policy and telemetry.
 - **The ask:** (1) no new hand-built clusters; (2) splunk-otel-collector through the wave
-  pipeline this quarter; (3) a Karmada spike: one app placed by constraints across both
-  regions and the second cloud; (4) agents get a sandbox, a gateway, short-lived identity and
+  pipeline this quarter; (3) AWS region 2 from one Crossplane claim, on EKS Auto Mode,
+  with one app running in both regions, placed by labels; (4) agents get a sandbox, a gateway, short-lived identity and
   Kyverno before they triage one alert; (5) explain-only alert triage by Q2 2027, reading
   the OTel plane and the lake.
 
@@ -71,15 +78,17 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   placement in turn. The second half returns to the same map, adds AI, and builds the
   safety around it before climbing.
 - **Acts:**
-  - Open (1): the title, "KubeCon 2027 north star: managing our fleet at scale."
+  - Open (2): the title, "KubeCon 2027 north star: managing our fleet at scale."; then the
+    journey, the three things the talk proves, one per peak.
   - I: *watch it grow* (6): four clusters → three clouds, apps and pods climbing, still one
     team.
   - II: *add it up* (3): the runbook, the tools, the overrun split three ways (cluster
     admins, platform team, developers).
-  - III: *cluster admins* (1): clusters as a fleet, kubeadm and Karmada from code.
+  - III: *cluster admins* (2): clusters as a fleet, kubeadm from code on-prem; in AWS a
+    region from one Crossplane claim, run by EKS Auto Mode.
   - IV: *platform team* (4): twenty tools, waves, gates, windows (the time syncs).
-  - V: *developers* (3): Karmada constraints (where and why, scheduling), Karmada failover
-    (DR patterns), no cluster names.
+  - V: *developers* (2): multi-region failover by constraints (where and why, scheduling,
+    DR patterns), no cluster names.
   - VI: *the agents arrive* (7): AI on the map; three ways (workloads, users, attackers);
     as workloads: elastic agents, sandbox; as users: MCP tools, credentials, policy.
   - VII: *see it* (3): one view (the OTel plane), the lake, lakeside savings. Untagged:
@@ -87,12 +96,13 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   - VIII: *agents as attackers* (2): new holes daily; close the circle (our agents patch,
     the waves roll it out).
   - Close (2): the same person; the ask.
-- **The peak:** `karmada`, slide 17 of 32 (53%). Slide 6 says "fingers crossed for no AWS
+- **The peak:** `karmada` (slug kept; the headline no longer names Karmada), slide 18 of 33
+  (55%). Slide 6 says "fingers crossed for no AWS
   outage". Here a region fails and the work shifts to the other region, then AWS fails and
   it shifts to the second cloud, by the developer's constraints, without a person. It pays
   off the setup; `no-cluster-names` is the release after it, closing the first half.
-  `gates` (14) and `the-lake` (27) are the secondary highs, with `twenty-tools` (12) the
-  run-up to the peak, and `three-ways` (20) and `patch-loop` (30) the second half's turn
+  `gates` (16) and `the-lake` (28) are the secondary highs, with `twenty-tools` (14) the
+  run-up to the peak, and `three-ways` (21) and `patch-loop` (31) the second half's turn
   and its close. `the-lake` is the second half's one big picture: all three peaks,
   the plane through them, and every stream running into one lake.
 - **The close:** the deck opens on four clusters and one team. Before the close,
@@ -103,8 +113,8 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 ## Editorial notes
 
 - **Three groups (user, 2026-11-17).** The overrun splits the upkeep by who carries it.
-  *Cluster admins:* kubeadm and cluster upgrades as before, plus Karmada / multi-cluster
-  upkeep at 8 h per cluster a year. *Platform team:* platform apps (the tool rollouts),
+  *Cluster admins:* kubeadm and cluster upgrades as before, plus multi-cluster upkeep
+  (labels, registrations, failover setup) at 8 h per cluster a year. *Platform team:* platform apps (the tool rollouts),
   progressive rollouts of app upgrades (6 a year per placement at 0.5 h), and time syncs
   (100 h plus 4 h per app). *Developers:* where and why (1 h per placement), scheduling
   (4 h per app), DR patterns (8 h per app with DR: 10, 10, 16, 25, 50, 65, then 80 with
@@ -137,7 +147,14 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   tools × 4 releases = 80 wave approvals a year. The eight tools after the user's list
   are our fill-in from GOALS; swap in the real list. **Replace with real numbers before
   this goes beyond the team.**
-- **Karmada is shown as the north-star option,** not reconciled with GOALS §5.1 (where it
+- **Karmada is an option, not a headline (user, 2026-11-18: "too much of a focus on
+  Karmada, although multi-region is key").** The peak keeps the failover picture, told
+  mechanism-neutral: both regions live by default, placed by labels (ApplicationSets do
+  this today), Auto Mode adding nodes in the surviving region; the second-cloud fallback is
+  a warm standby or a scheduler that moves work on its own, and Karmada is named only there,
+  in one on-screen line and in the notes, with Bloomberg as the evidence. That now sits
+  with GOALS §5.1 (⚪ Watch). `karmada-constraints` is on the bench. *Earlier framing,
+  kept for the bench slide:* **Karmada was shown as the north-star option,** not reconciled with GOALS §5.1 (where it
   is ⚪ Watch and reserved for workloads that can't run active/active). The slides present
   it as the option that lets developers think only in constraints and that routes work
   between clusters, regions and clouds as they change. The practical caveat (static
@@ -145,6 +162,12 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   to run) lives in the notes, not the headline. ⚠️ Check the PropagationPolicy snippet
   (`placement.clusterAffinities`, `affinityName`, `labelSelector`, `spreadConstraints`)
   against the Karmada docs before it goes on a shared slide.
+- **AWS automation (region-claim).** From `EKS-VS-ECS.md` §4 design rules 1–3 (clusters
+  are cattle: Auto Mode + Crossplane/CDK; push node toil to AWS; EKS Capabilities as the
+  next step) and GOALS §10.1–10.2 (Crossplane, the CDK seam). The `Region` claim is our own
+  illustrative API, not a real XRD yet. ⚠️ "Every node replaced within 21 days": Auto Mode's
+  maximum node lifetime, per `EKS-VS-ECS.md`; check against the EKS Auto Mode user guide
+  before sharing.
 - **MCP gateway:** GOALS-GAPS §3.5's line stands: decide the enforcement point first.
   Obot is open-core with directory-managed permissions; ToolHive (Stacklok) is OSS and
   pairs with the Cedar analysis work; building our own is a thin proxy plus everything
@@ -227,8 +250,8 @@ What v3 adds:
   our clusters, not cattle yet.
 - **Twenty tools as rows.** `twenty-tools` grows the four tool rows of `tools-too` to
   twenty, with the two sets of numbers side by side.
-- **Karmada as routing.** A developer's constraints on the left; on the right the map,
-  with the app's replicas as mint chips that Karmada spreads over the clusters that match.
+- **Failover as routing** (the peak). A developer's constraints on the left; on the right the map,
+  with the app's replicas as mint chips that the platform spreads over the clusters that match.
   Peak motion, three clicks: replicas spread across both AWS regions; region 1 fails (its
   half of the zone dims, alpenglow mark) and the chips slide to region 2; AWS fails and
   they slide to the second cloud. The constraints never change.
@@ -245,6 +268,10 @@ What v3 adds:
   (`Range.group('admins' | 'platform' | 'developers')`): three bars in the chart's group
   colours, this group's lit, and the group's name. Admins haze, platform mint, developers
   lake blue (darker inks on snowfield). It encodes the chart's split, so it isn't chrome.
+- **The journey** (`journey`, 2026-11-18): the range drawn large, each summit under its
+  truth (numbered 1–3 in its cap colour), and the team's dotted alpenglow trail climbing
+  over all three toward the star. Three clicks, one truth each. No camps: the benched ladder
+  confused; this is a map of the talk, not a schedule.
 - **Second-half tags** (2026-11-18): the same tag, a second set. `Range.group('workloads' |
   'users' | 'attackers')`: teal, mint, alpenglow (inks on snowfield). Alpenglow because it
   already marks danger here (the failed gate, the outage, the crossed-out path). Their
@@ -263,7 +290,7 @@ What v3 adds:
   - Named clusters keep their labels at every stage. The ny4–ch4 DR label sits above its
     pair; the second exchange's DR label sits below its own pair, so the two don't read as
     one.
-  - The Karmada slides draw the map at about 0.63 scale, with no person, no people row and
+  - The failover slide (`karmada`) draws the map at about 0.63 scale, with no person, no people row and
     no cluster names, and with zone and region names enlarged so they stay legible. The
     replicas are mint chips. On the peak, the outages are dark overlays with an alpenglow
     mark, revealed with the clicks; the finished state shows AWS down and all six chips in
@@ -292,7 +319,22 @@ What v3 adds:
   the top-right corner and the three path words at the peaks' bases. A byline: from
   KubeCon NA 2026, Salt Lake City
 - **Energy:** 4
-- **Into next:** and it starts small.
+- **Into next:** and here's the whole journey before we start.
+
+### journey
+
+- **Act:** Open
+- **Job:** make the journey plain before the story starts: three truths, one per peak,
+  in the order the talk climbs them
+- **Headline:** We run a fleet, nothing manual keeps up with it, and AI creates problems as it solves them.
+- **Visual:** the range drawn large: fleet, delivery, agents, each summit under its truth.
+  1 fleet: "It's a fleet, so we run it as one." (4 clusters become 29; built, upgraded and
+  placed from code). 2 delivery: "No manual way keeps up." (twenty tools, 65 apps, three
+  upgrades a year; one pipeline). 3 agents: "AI brings problems as it solves them." (agents
+  as workloads, users, and in attackers' hands; fence ours in, then let them fight back).
+  The team's trail climbs over all three toward the star. One click per truth
+- **Energy:** 4
+- **Into next:** let's start where we actually started: four clusters.
 
 ### day-one
 
@@ -384,7 +426,7 @@ What v3 adds:
 - **Job:** the turn of the first half: the upkeep outgrows every group, each for its own reason
 - **Headline:** Keep doing it this way, and admins, platform and developers all drown in upkeep.
 - **Visual:** three panels, each with its own scale and stacked bars for the six stages:
-  cluster admins (kubeadm upgrades, Karmada upkeep) against one admin's 850 h, out at the
+  cluster admins (kubeadm upgrades, multi-cluster upkeep) against one admin's 850 h, out at the
   second cloud; platform team (platform apps, progressive rollouts, time syncs) against
   two engineers' 1,700 h, out first at the second region; developers (where and why,
   scheduling, DR patterns), no line, 1,280 h by the second cloud, three-quarters of a
@@ -399,10 +441,27 @@ What v3 adds:
 - **Act:** III
 - **Job:** clusters managed as a fleet: kubeadm stays, driven from code instead of by hand
 - **Headline:** Clusters as a fleet, managing kubeadm from code.
-- **Visual:** as v2: 54 steps collapse into a one-line version change; Cluster API on-prem, EKS Auto Mode in AWS; plus one line: Karmada's own control plane is built and upgraded the same way
+- **Visual:** as v2: 54 steps collapse into a one-line version change; Cluster API on-prem, EKS Auto Mode in AWS
 - **Energy:** 3
-- **Into next:** that's the cluster admins, Karmada's own control plane included. Next, the platform team, who carry the most.
+- **Into next:** on-prem, the hands leave the upgrade. In AWS we can go further.
 - **Source:** LinkedIn KEP-4330; NVIDIA; Cluster API primer; Nutanix CAREN
+
+### region-claim
+
+- **Act:** III · tag: cluster admins
+- **Job:** AWS automation: the cluster, and a whole region, come from code; AWS runs the nodes
+- **Headline:** In AWS, a new region is one pull request: Crossplane builds it, and EKS Auto Mode runs it.
+- **Visual:** left, all an admin writes: a `Region` claim (mirror region 1, six clusters,
+  Auto Mode), our own Crossplane v2 composite. Middle, Crossplane's composition fans out to
+  what it builds: VPC and subnets; IAM, Pod Identity; six EKS clusters; DNS, load
+  balancers; Argo CD registration, labelled. Click: right, what AWS runs with Auto Mode
+  (nodes and scaling, OS patches by replacing nodes, core add-ons) and what stays ours (the
+  Kubernetes version as one field; the tools and apps, in waves)
+- **Energy:** 3
+- **Into next:** that's the cluster admins. Next, the platform team, who carry the most.
+- **Source:** `EKS-VS-ECS.md` §4; GOALS §10.1, §10.2; *Crossplane: The Cloud Native
+  Framework for Platform Engineering* (Upbound; no deck); *What Changes When Crossplane
+  Adoption Gets Real* (American Family Insurance; no deck); EKS Auto Mode user guide
 
 ### twenty-tools
 
@@ -458,31 +517,19 @@ What v3 adds:
 - **Into next:** that's the platform team. Now the developers.
 - **Source:** GOALS §2.3; NVIDIA; Agility Robotics
 
-### karmada-constraints
-
-- **Act:** V
-- **Job:** for developers: where and why, and scheduling, become constraints Karmada acts on
-- **Headline:** With Karmada, developers state constraints, and it picks the clusters and regions.
-- **Visual:** left, what a developer writes: constraints (regions, compliance, capability,
-  residency) and asks (replicas, spread across two regions, a fallback cloud). Right, the
-  map: Karmada matches the constraints against cluster labels and capacity and spreads the
-  app's replicas, as mint chips, over the clusters that fit. Nothing on the left names a
-  cluster
-- **Energy:** 3
-- **Into next:** and the constraints keep holding when the clusters underneath them don't.
-- **Source:** path1 `no-cluster-names` and path3 `thirty-first` (the constraint
-  vocabulary); GOALS §5.1 (clusterAffinities, Divided replica scheduling); *Karmada
-  Updates and Use Cases* (Bloomberg, Huawei; no deck)
-
 ### karmada
 
 - **Act:** V
-- **Job:** the peak, for developers: DR patterns done by policy, routing between clusters, regions and clouds
-- **Headline:** Lose a region or a cloud, and Karmada moves the work wherever the constraints still hold.
-- **Visual:** the same map and constraints. Click: replicas spread across both AWS
-  regions. Click: region 1 fails (dimmed, alpenglow mark); its replicas slide to region
-  2. Click: AWS fails; the replicas slide to the second cloud. The constraints on the left
-  never change
+- **Job:** the peak, for developers: multi-region by default; DR patterns done by the
+  platform, routing between regions and clouds; also carries the constraints (where and
+  why, scheduling) now that `karmada-constraints` is benched
+- **Headline:** Lose a region, or all of AWS, and the work moves wherever the constraints still hold.
+- **Visual:** a developer's constraints on the left (no cluster names), the map on the
+  right with six replicas across both AWS regions. Click: region 1 fails (dimmed,
+  alpenglow mark); region 2 takes all six, Auto Mode adding the nodes. Click: AWS fails;
+  the replicas slide to the second cloud. The constraints never change. One line: placement
+  follows labels, not cluster names; both regions run by default; Karmada is the option if
+  work should move on its own
 - **Energy:** 5
 - **Into next:** so what does a developer actually have to know now?
 - **Source:** GOALS §5.1 (cluster taints on NotReady drive rescheduling; application
@@ -709,7 +756,8 @@ What v3 adds:
 - **Job:** the ask
 - **Headline:** Stop building clusters by hand, pipeline one tool this quarter, and gate agents before they scale.
 - **Visual:** five numbered lines in path colours: no new hand-built clusters; splunk-otel
-  through the pipeline this quarter; a Karmada spike placing one app by constraints;
+  through the pipeline this quarter; AWS region 2 from one Crossplane claim on Auto Mode,
+  one app in both regions by labels;
   sandbox + gateway + short-lived identity + Kyverno before they triage one alert; alert triage by
   Q2 2027
 - **Energy:** 3
@@ -733,3 +781,20 @@ Slides kept in `slides/` but out of the draft. Restore with `deck move` and a be
 - **Energy:** 4
 - **Into next:** so here's the same person, with the same map.
 - **Source:** GOALS §6; Verkada ($0.33 an alert); Salesforce's honest 25% first try
+
+**karmada-constraints** (benched 2026-11-18: too much Karmada; the failover slide's constraints card does its job)
+
+
+- **Act:** V
+- **Job:** for developers: where and why, and scheduling, become constraints Karmada acts on
+- **Headline:** With Karmada, developers state constraints, and it picks the clusters and regions.
+- **Visual:** left, what a developer writes: constraints (regions, compliance, capability,
+  residency) and asks (replicas, spread across two regions, a fallback cloud). Right, the
+  map: Karmada matches the constraints against cluster labels and capacity and spreads the
+  app's replicas, as mint chips, over the clusters that fit. Nothing on the left names a
+  cluster
+- **Energy:** 3
+- **Into next:** and the constraints keep holding when the clusters underneath them don't.
+- **Source:** path1 `no-cluster-names` and path3 `thirty-first` (the constraint
+  vocabulary); GOALS §5.1 (clusterAffinities, Divided replica scheduling); *Karmada
+  Updates and Use Cases* (Bloomberg, Huawei; no deck)

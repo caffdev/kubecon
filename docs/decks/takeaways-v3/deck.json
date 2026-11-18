@@ -4,6 +4,7 @@
   "drafts": {
     "main": [
       "title",
+      "journey",
       "day-one",
       "cloud-dev",
       "second-exchange",
@@ -14,11 +15,11 @@
       "tools-too",
       "overrun",
       "kubeadm-past",
+      "region-claim",
       "twenty-tools",
       "waves",
       "gates",
       "change-windows",
-      "karmada-constraints",
       "karmada",
       "no-cluster-names",
       "ai-arrives",

@@ -27,7 +27,7 @@
   <main class="slide" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
     <h2>Keep doing it this way, and admins, platform and developers all drown in upkeep.</h2>
-    <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="Three panels, hours a year by growth stage. Cluster admins (kubeadm upgrades, Karmada upkeep) pass one admin's 850 hours at the second cloud. The platform team (platform apps, progressive rollouts, time syncs) passes two engineers' 1,700 hours at the second region. Developers (what runs where and why, scheduling, DR patterns) reach 1,280 hours by the second cloud. AI adds more to all three. Illustrative."></svg>
+    <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="Three panels, hours a year by growth stage. Cluster admins (kubeadm upgrades, multi-cluster upkeep) pass one admin's 850 hours at the second cloud. The platform team (platform apps, progressive rollouts, time syncs) passes two engineers' 1,700 hours at the second region. Developers (what runs where and why, scheduling, DR patterns) reach 1,280 hours by the second cloud. AI adds more to all three. Illustrative."></svg>
     <p class="model-tag"><b>Illustrative model, not our measurements.</b> One admin and two platform engineers, half their year each. Each panel has its own scale.</p>
   </main>
 
@@ -53,7 +53,7 @@
       // illustrative: assets/toil-model.json "groups" (inlined so the slide works from file://)
       const G = [
         { name: 'Cluster admins', col: 'var(--haze)', cap: 850, capName: '1 admin: 850 h', max: 1200,
-          keys: [['kubeadm upgrades', '#68b6c3'], ['Karmada upkeep', '#a9d8e0']],
+          keys: [['kubeadm upgrades', '#68b6c3'], ['multi-cluster upkeep', '#a9d8e0']],
           rows: [[144, 32], [198, 56], [342, 88], [450, 136], [558, 184], [666, 232], [720, 256]],
           call: ['Out at the second cloud', '898 h, past one admin’s year'], out: true },
         { name: 'Platform team', col: 'var(--mint)', cap: 1700, capName: '2 engineers: 1,700 h', max: 4000,

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Karmada moves the work</title>
+  <title>Lose a region, the work moves</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
@@ -35,7 +35,7 @@
 <body>
   <main class="slide dusk" data-energy="5">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h2>Lose a region or a cloud, and Karmada moves the work wherever the constraints still hold.</h2>
+    <h2>Lose a region, or all of AWS, and the work moves wherever the constraints still hold.</h2>
 
     <div class="yaml-card"><p class="code"><span class="c"># unchanged, start to finish</span>
 <span class="k">constraints:</span>
@@ -48,21 +48,21 @@
   fallback:   second cloud</p></div>
 
     <ol class="log">
-      <li data-step="1"><i>✗</i><span><b>Region 1 fails.</b> Its three replicas move to region 2.</span></li>
+      <li data-step="1"><i>✗</i><span><b>Region 1 fails.</b> Region 2 takes all six; Auto Mode adds the nodes.</span></li>
       <li data-step="2"><i>✗</i><span><b>AWS fails.</b> All six move to the second cloud.</span></li>
       <li class="ok" data-step="3"><i>✓</i><span><b>Nobody edited a file.</b> Fingers uncrossed.</span></li>
     </ol>
 
     <svg class="kmap" id="kmap" viewBox="0 0 1680 540" role="img" aria-label="The estate map. Six replicas start spread across AWS region 1 and region 2. Region 1 fails and its replicas move to region 2; then AWS fails and all six move to the second cloud. The developer's constraints never change."></svg>
-    <p class="still"><b>Placement follows the constraints,</b> not a list of clusters, so it keeps working as clusters come and go.</p>
+    <p class="still"><b>Placement follows labels, not cluster names.</b> Both regions run by default; Karmada is the option if work should move on its own.</p>
   </main>
 
   <aside class="notes">
     Remember "fingers crossed"? Here's the day it matters.
 
-    Same constraints on the left, same map on the right. Six replicas, three in each AWS region, exactly where Karmada put them.
+    This is why multi-region is the part we can't skip. On the left is all a developer writes: constraints and asks, no cluster names. The platform matches them against cluster labels, and the region claim we just saw hands out those labels for free. Six replicas, three in each AWS region, both regions live.
 
-    Click. Region one goes down. Karmada sees those clusters go unhealthy, and the constraint still says "two regions if you can, the cloud, PCI, US". So the three replicas from region one land in region two. The app keeps running.
+    Click. Region one goes down. Region two is already running half the app, so the traffic shifts there, and Auto Mode adds the nodes for the other half. Nobody pre-sized region two for the whole load. The constraint still holds: the cloud, PCI, US. The app keeps running.
 
     Click. Now it's AWS itself having the bad day. Both regions dark. The constraints say "fall back to the second cloud", so all six replicas go there.
 
@@ -70,7 +70,7 @@
 
     Click. And nobody edited a file. The developer didn't change a thing, nobody rewrote a list of clusters at two in the morning, and the team in orange found out from a message. Fingers uncrossed.
 
-    To be honest about where this sits: it's the north star, not what we run. It needs every cluster labelled properly, it needs the data behind the app to be reachable from wherever it lands, and Karmada is one more control plane to run and upgrade. It goes through the same pipeline as everything else. Bloomberg runs their streaming platform on it, for exactly this.
+    How we get there, honestly. The first click, both regions live and placement by labels, is Argo CD ApplicationSets and cluster labels: we can do that now. The second cloud needs either a warm standby placed the same way, or something that moves work on its own. Karmada is that option; Bloomberg runs their streaming platform on it. It's one more control plane to run, so it earns its place with a spike, not a mandate. And the real work in all of it is the data: it has to be reachable from wherever the app lands.
 
     So what does a developer actually have to know now?
   </aside>
