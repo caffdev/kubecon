@@ -25,6 +25,11 @@ user's direction:
   benched: the user didn't follow it. In its place, OTel is drawn as one plane across all
   three peaks, and the lake sits low in the valley between delivery and agents, fed by a
   stream from every mountain and one more through the OTel plane.
+- **Agents arrive three ways (user, 2026-11-18).** The turn into the second half names the
+  three roles agents play: as workloads (they run on our nodes), as users (they call our
+  tools), and as attackers (theirs find new holes in what we run, daily). The roles become
+  second-half group tags, as admins / platform / developers were in the first. The third
+  role closes the circle: our agents patch what theirs find, through the first half's waves.
 - **North star over practice.** This deck may go further than GOALS (Karmada, aggressive
   AI resizing). That's deliberate: it shows where we're
   heading, not only what we've decided. Facts still carry ⚠️ until checked.
@@ -36,7 +41,7 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 
 - **Audience:** engineering, leads included: the people who run the clusters, the people
   who will run agents, and the people who decide what both teams work on.
-- **Setting:** live, about 32 minutes in two halves (fleet, then agents), then sent round.
+- **Setting:** live, about 34 minutes in two halves (fleet, then agents), then sent round.
   The notes carry the full argument for readers.
 - **They believe now:** cluster and app upgrades are routine work one experienced team
   handles. Putting
@@ -45,9 +50,10 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 - **They believe after:** the fleet's work grows faster than the fleet, so clusters and
   platform tools roll out like software (in waves, behind gates, inside windows), and
   work is placed by constraints across clusters, regions and clouds, so developers never
-  pick a cluster. Agents are a new kind of user that spawns on
-  demand, so they arrive sandboxed, with short-lived identity, through one tool gateway,
-  under the same policy and telemetry as people. Every peak feeds one read-only lake,
+  pick a cluster. Agents arrive three ways at once: as workloads that spawn on
+  demand, so they run sandboxed; as users, so they get short-lived identity, one tool gateway,
+  and the same policy and telemetry as people; and in attackers' hands, finding new holes
+  daily, so our own agents patch through the same waves. Every peak feeds one read-only lake,
   directly and through one OTel plane, and agents decide from the lake, not from production.
 - **The one sentence:** the fleet will outgrow one team with a runbook, and agents will
   outgrow trust by default, so clusters, tools, apps and agents all go through one
@@ -74,19 +80,24 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   - IV: *platform team* (4): twenty tools, waves, gates, windows (the time syncs).
   - V: *developers* (3): Karmada constraints (where and why, scheduling), Karmada failover
     (DR patterns), no cluster names.
-  - VI: *the agents arrive* (6): AI on the map, elastic agents, sandbox, MCP tools,
-    credentials, policy.
-  - VII: *see it* (3): one view (the OTel plane), the lake, lakeside savings.
+  - VI: *the agents arrive* (7): AI on the map; three ways (workloads, users, attackers);
+    as workloads: elastic agents, sandbox; as users: MCP tools, credentials, policy.
+  - VII: *see it* (3): one view (the OTel plane), the lake, lakeside savings. Untagged:
+    the plane and the lake serve all three roles.
+  - VIII: *agents as attackers* (2): new holes daily; close the circle (our agents patch,
+    the waves roll it out).
   - Close (2): the same person; the ask.
-- **The peak:** `karmada`, slide 17 of 29 (59%). Slide 6 says "fingers crossed for no AWS
+- **The peak:** `karmada`, slide 17 of 32 (53%). Slide 6 says "fingers crossed for no AWS
   outage". Here a region fails and the work shifts to the other region, then AWS fails and
   it shifts to the second cloud, by the developer's constraints, without a person. It pays
   off the setup; `no-cluster-names` is the release after it, closing the first half.
-  `gates` (14) and `the-lake` (26) are the secondary highs, with `twenty-tools` (12) the
-  run-up to the peak. `the-lake` is the second half's one big picture: all three peaks,
+  `gates` (14) and `the-lake` (27) are the secondary highs, with `twenty-tools` (12) the
+  run-up to the peak, and `three-ways` (20) and `patch-loop` (30) the second half's turn
+  and its close. `the-lake` is the second half's one big picture: all three peaks,
   the plane through them, and every stream running into one lake.
-- **The close:** the deck opens on four clusters and one team. It closes on the same map,
-  eight times the size, with agents on it. The same team approves waves, while the
+- **The close:** the deck opens on four clusters and one team. Before the close,
+  `patch-loop` joins the halves: the agents of the second half drive the waves of the first.
+  It closes on the same map, eight times the size, with agents on it. The same team approves waves, while the
   pipeline, the policy layer and the telemetry do the rest.
 
 ## Editorial notes
@@ -151,6 +162,28 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   request the slide keeps the 61% and labels it illustrative, "the pattern Hertz showed",
   stating that 61% is our model, not Hertz's figure. Hertz's 80 EKS clusters is from the
   room (⚠️, as GOALS §0.1).
+- **The CVE numbers (new-holes).** CVEs a year are read off OpenCVE's yearly chart as shown
+  on p6 of *Mythos vs Maintainers* (ControlPlane, Docker; 📎
+  `2026-11-10_mythos-vs-maintainers-drowning-in-the-vulnerability-tsunami.pdf`), measured
+  from the rendered page: 2016 ≈ 10.3k, 2017 16.7k, 2018 17.4k, 2019 17.3k, 2020 20.8k, 2021
+  23.1k, 2022 27.2k, 2023 31.1k, 2024 38.9k, 2025 ≈ 45.0k, 2026 ≈ 78.7k (the year to the talk,
+  Nov 2026). ⚠️ Check against app.opencve.io/statistics before this goes beyond the team;
+  "over 200 a day" holds whether 2026 counts 300 or 365 days. **220 findings, 22 real** is
+  Metal3's 2026 triage tracker (📎 `2026-11-10_ai-found-a-0-day-in-metal3-what-happens-next.pdf`:
+  220 findings, 79 invalid or duplicate, 31 hardening, 22 bugs, 22 security, 51 open). Its
+  first takeaway, "AI finds bugs fast, and not only for us. Shorten your upgrade cycle", is
+  quoted in the notes. **61 days** is our arithmetic: a hole landing on a random day waits on
+  average half of a four-month gap (three upgrades a year).
+- **Close the circle (patch-loop).** NVIDIA: 16 clusters, ~5,600 nodes converged in 30
+  minutes, agent-driven, two kernel CVEs days apart through one controller, "the next CVE is
+  a YAML change" (🖼 `12-fleet-node-changes/p07`). KubeEdge: *Fighting Fire with Fire* (no
+  deck; abstract: AI review agents interpret disclosures, propose patches, automate
+  regression tests). The middle of the loop says **days**, not hours: our own waves run test,
+  canary, prod inside windows (see `change-windows`), so hours would contradict the deck.
+  Also at the show, for the notes: *Gone in 60 Minutes* (ARMO; Kubescape rule CRD from "CVE
+  published" to deployed in under an hour), *Welcome to the Vulnpocalypse!* (panel),
+  *How Kubernetes Handles AI Generated Security Reports* (Canonical, NVIDIA). GOALS-GAPS A3
+  ("the CVE firehose") is the GOALS-side home for this.
 - Series rule: **no failure-case references.** The region and AWS outages on `karmada`
   and the failed canary on `gates` are our own illustrations.
 - kubeadm, stated honestly (from v2): Cluster API still runs kubeadm underneath; the
@@ -212,6 +245,14 @@ What v3 adds:
   (`Range.group('admins' | 'platform' | 'developers')`): three bars in the chart's group
   colours, this group's lit, and the group's name. Admins haze, platform mint, developers
   lake blue (darker inks on snowfield). It encodes the chart's split, so it isn't chrome.
+- **Second-half tags** (2026-11-18): the same tag, a second set. `Range.group('workloads' |
+  'users' | 'attackers')`: teal, mint, alpenglow (inks on snowfield). Alpenglow because it
+  already marks danger here (the failed gate, the outage, the crossed-out path). Their
+  agents are alpenglow diamonds; ours stay teal. `one-view`, `the-lake` and `ai-resize`
+  carry no tag: the plane and the lake serve all three roles.
+- **The loop** (`patch-loop`): a full ring, the waves' ripple closed into a circle, five
+  stations clockwise from the top (their agent's hole, the lake, our agent's PR, the team,
+  the waves), "days" in the middle. The ring draws itself on entry.
 - **The team and the apps.** The one person became one team: three alpenglow climbers on
   a rope. The strip beside them is now one lake-blue square per app (`--lake #4f8fd8`,
   shapes only); the tally reads clusters, apps, pods.
@@ -405,7 +446,12 @@ What v3 adds:
 
 - **Act:** IV
 - **Job:** time gating by policy: the platform team's time syncs, replaced by a window everyone shares
-- **Headline:** Nothing rolls during a freeze, because the window is a policy, not a promise.
+- **Headline:** A wave that reaches Thursday's close waits for Monday on its own.
+- **Headline variants** (2026-11-18; "a policy, not a promise" didn't land): forks on the
+  bench, same slide, different headline. `-b` "The cluster keeps the freeze now, so nobody
+  has to remember it." `-c` "The window is the sync: the cluster keeps the freeze, so nobody
+  meets about it." (calls back to the overrun's time-syncs bar) `-d` "One freeze window stops
+  everything: the pipeline, kubectl, every operator." Swap with `deck swap`.
 - **Visual:** as v2: an eight-day strip; the prod wave pauses at Thursday's close and
   resumes Monday
 - **Energy:** 2
@@ -466,12 +512,29 @@ What v3 adds:
   teal. Click: AWS dev turns teal and three AI clusters appear in region 2. Tally adds
   them
 - **Energy:** 3
-- **Into next:** and with AI come users that aren't people.
+- **Into next:** and it doesn't arrive as one thing.
+
+### three-ways
+
+- **Act:** VI
+- **Job:** the turn into the agent half: agents arrive three ways at once, each needing its
+  own answer; the three roles become the second half's tags
+- **Headline:** Agents arrive three ways: as workloads, as users, and as attackers finding new holes daily.
+- **Visual:** three columns, one click each, echoing the overrun's three panels. As
+  workloads (teal): a node whose pods hold apps and agents side by side, one spawning. As
+  users (mint): agents with passes through one gate in a fence to git, infra, kubectl. As
+  attackers (alpenglow): their agents probing the tools we run, three rows holed. Under each,
+  one sentence and "what answers it": elastic nodes · a sandbox; one gateway · short-lived
+  identity · one policy layer; the lake · our own agents · the waves
+- **Energy:** 4
+- **Into next:** workloads first: how they spawn.
+- **Source:** *Mythos vs Maintainers* (ControlPlane, Docker); *Welcome to the Vulnpocalypse!*
+  (panel; no deck); GOALS-GAPS A3
 
 ### elastic-agents
 
-- **Act:** VI
-- **Job:** autonomous agents as a new kind of user: spawned on demand, on elastic compute
+- **Act:** VI · tag: agents as workloads
+- **Job:** agents as workloads: spawned on demand, on elastic compute
 - **Headline:** Autonomous agents spawn on elastic nodes on demand, and nobody approves each one.
 - **Visual:** a day on a time axis. The node count rises and falls as Karpenter/Auto Mode
   adds and removes nodes; teal agent diamonds spawn on the nodes when events fire
@@ -483,7 +546,7 @@ What v3 adds:
 
 ### sandbox
 
-- **Act:** VI
+- **Act:** VI · tag: agents as workloads
 - **Job:** containment: a container shares a kernel
 - **Headline:** A container is not a cage, so agents run in gVisor or Kata.
 - **Visual:** an agent diamond inside nested shells, from container (shared kernel)
@@ -491,13 +554,14 @@ What v3 adds:
   each with what it stops and what it costs (start-up time, overhead). Kata snapshots
   are how Microsoft made start-up acceptable
 - **Energy:** 4
-- **Into next:** caged, it still has to do things, and it does them through tools.
+- **Into next:** that's agents as workloads. As users: caged, it still has to do things,
+  and it does them through tools.
 - **Source:** GOALS §3.1; "Sandbox Your Agents" keynote (Red Hat); *Groundhog Pod*
   (Microsoft, Kata pod snapshots); *Untrusted Code on Secure Runtimes* (Google; no deck)
 
 ### mcp-tools
 
-- **Act:** VI
+- **Act:** VI · tag: agents as users
 - **Job:** agents build infra through MCP tools; one gateway is the enforcement point
 - **Headline:** Agents build infrastructure through MCP tools, so pick the gateway before the tools.
 - **Visual:** agents on the left, tools on the right (Git, Jira, read-only kubectl,
@@ -513,7 +577,7 @@ What v3 adds:
 
 ### credentials
 
-- **Act:** VI
+- **Act:** VI · tag: agents as users
 - **Job:** credential patterns that keep passwords out of the agent
 - **Headline:** Agents get a short-lived identity; the passwords never enter the agent.
 - **Visual:** the agent holds a boarding pass (a workload identity, valid minutes); at
@@ -529,7 +593,7 @@ What v3 adds:
 
 ### policy-layer
 
-- **Act:** VI
+- **Act:** VI · tag: agents as users
 - **Job:** Kyverno as a cross-cutting layer for user and AI actions
 - **Headline:** One policy layer checks every change, whether a person or an agent made it.
 - **Visual:** the fence line along the foot of all three peaks. In front: three kinds of
@@ -569,7 +633,7 @@ What v3 adds:
   stream runs from each mountain into it (fleet: cluster state; delivery: syncs, gate
   results; agents: tool calls, via the gateway), and OTel gathers traces, metrics and logs
   from all three along the plane and pours them in as a fourth stream. Agents read on the
-  shore (triage an alert, judge a canary, pick the quiet hour); the path back up to prod
+  shore (triage an alert, judge a canary, pick the quiet hour, find a vulnerable image); the path back up to prod
   is crossed out. The snapshot caveat sits bottom left
 - **Energy:** 4
 - **Into next:** and one of the first things worth deciding from it is how big every pod
@@ -592,10 +656,42 @@ What v3 adds:
   acts inside min/max bounds that policy enforces, with rollback
 - **Energy:** 3
 - **Into next:** that's the pattern for every agent on the map: read the lake, propose
-  first, act inside bounds. So here's the same team, on the same map.
+  first, act inside bounds. Which brings back the third way agents arrive, the one we
+  can't fence out.
 - **Source:** GOALS §10.3; *The New Scaling Matrix* (Solo.io); *In-Place Pod Resizing
   Like I'm 5* (AWS); Hertz + CAST AI (vendor demo); *Agentic Karpenter* (PerfectScale:
   kagent + Claude proposes, a human approves)
+
+### new-holes
+
+- **Act:** VIII · tag: agents as attackers
+- **Job:** the threat, made concrete: AI-found holes arrive daily, and our upgrade cadence
+  leaves each open for months
+- **Headline:** AI finds new holes daily, and three upgrades a year leave each one open for two months.
+- **Visual:** CVEs published a year, 2016–2026, as bars: a decade of steady climb, then the
+  2026 bar in alpenglow at ~79k, "over 200 a day, nearly double 2025". Beside it: **220**
+  findings from one maintainer's AI pipeline in one project this year, 22 real (Metal3);
+  click: **61 days**, the average wait for our next upgrade at three a year (our model)
+- **Energy:** 3
+- **Into next:** we built the shorter cycle in the first half. So who drives it?
+- **Source:** *Mythos vs Maintainers* p6 (OpenCVE chart); *AI Found a 0-Day in Metal3*
+  (Ericsson); see Editorial notes (the CVE numbers)
+
+### patch-loop
+
+- **Act:** VIII · tag: agents as attackers
+- **Job:** close the circle: our agents patch what theirs find, through the first half's
+  waves, gates and windows
+- **Headline:** Close the circle: our agents patch what theirs find, and the waves roll it out.
+- **Visual:** a ring of five stations, clockwise: a new hole lands (their agent, alpenglow);
+  the lake finds it (which images, which clusters); our agent drafts the fix (a PR with its
+  own check); the team approves (after policy checks it); the waves roll it out (a failed
+  gate rolls it back). "days, not two months" in the middle. Click: the proof, NVIDIA's
+  30 minutes for ~5,600 nodes, agent-driven, and KubeEdge's maintainers fighting fire with fire
+- **Energy:** 4
+- **Into next:** same team, same pipeline; the agents just make it go round faster.
+- **Source:** *5,000 Nodes in Minutes, Twice in a Week* (NVIDIA; GOALS §5.2); *Fighting
+  Fire with Fire* (KubeEdge maintainers; no deck); *Gone in 60 Minutes* (ARMO; no deck)
 
 ### same-person
 

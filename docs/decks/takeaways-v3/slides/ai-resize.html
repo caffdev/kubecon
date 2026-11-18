@@ -61,7 +61,7 @@
 
     And the guardrail, because this is an agent changing production. It starts by proposing the new sizes as a pull request. Only later does it act on its own, inside minimum and maximum bounds that policy enforces, with automatic rollback. Hertz showed this pattern at the show: AI agents right-sizing every workload and rearranging nodes across their EKS fleet, about eighty clusters, rolled out through Terraform. They didn't post slides, so the sixty-one percent here is our illustration of the pattern, not their number. And the "Agentic Karpenter" demo had Claude propose fixes for a human to approve.
 
-    And that's the pattern for every agent on this map: read from the lake, propose first, act only inside bounds that policy enforces. So here's the same team, on the same map.
+    And that's the pattern for every agent on this map: read from the lake, propose first, act only inside bounds that policy enforces. Which brings back the third way agents arrive, the one we can't fence out.
   </aside>
 
   <script src="../../_shared/peaks.js"></script>

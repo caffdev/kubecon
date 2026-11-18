@@ -65,7 +65,7 @@
 
     Down in the valley between delivery and agents sits the lake. Every mountain runs its own stream into it. From the fleet: cluster state, snapshotted. From delivery: every sync, every rollout, every gate result. From the agents: their tool calls, as the gateway logged them. And one more stream comes through the plane: OTel gathers traces, metrics and logs from all three and pours them in.
 
-    The agents sit on the shore and read. That's how they decide things: is this alert real, did this canary actually get worse, which hour is quiet enough to upgrade this cluster.
+    The agents sit on the shore and read. That's how they decide things: is this alert real, did this canary actually get worse, which hour is quiet enough to upgrade this cluster, and which clusters run the image with the hole in it.
 
     And here's the rule. There's no path from the shore back up the mountain. Read-only extraction is what lets us say yes to agents analysing prod without saying yes to agents holding prod credentials. That's a security control, not just plumbing.
 
@@ -132,7 +132,7 @@
         const x = LX - 140 + i * 70;
         s += `<path class="agent" d="M${x} ${shore - 15}l15 15l-15 15l-15 -15z"/>`;
       }
-      s += `<text class="shore-t" x="${LX}" y="${shore + 64}">agents read: triage an alert, judge a canary, pick the quiet hour</text>`;
+      s += `<text class="shore-t" x="${LX}" y="${shore + 64}">agents read: triage an alert, judge a canary, pick the quiet hour, find a vulnerable image</text>`;
 
       // no write path back up the mountain
       const nx = 1690;

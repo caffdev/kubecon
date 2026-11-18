@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Three ways agents arrive</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 82px; max-width: 1640px; line-height: 1.02; }
+
+    .art { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .col { position: absolute; top: 352px; width: 534px; }
+    .col.c1 { left: 120px; } .col.c2 { left: 693px; } .col.c3 { left: 1266px; }
+    .role { display: flex; align-items: center; gap: 14px; font: 600 46px/1 var(--font-display); letter-spacing: .01em; }
+    .role .g-bars { display: inline-flex; gap: 5px; align-items: flex-end; }
+    .role .g-bars i { display: block; width: 12px; height: 34px; border-radius: 2px; opacity: .25; }
+    .role .g-bars i.on { opacity: 1; }
+    .c1 .role { color: var(--teal); } .c2 .role { color: var(--mint); } .c3 .role { color: var(--alpenglow); }
+    .what { position: absolute; top: 352px; width: 500px; font-size: 30px; line-height: 1.3; color: var(--snow); }
+    .answer { position: absolute; top: 486px; width: 500px; padding-top: 14px; border-top: 2px solid var(--scree); }
+    .answer small { display: block; font: 500 24px/1.2 var(--font-body); color: var(--lichen); margin-bottom: 6px; }
+    .answer b { font: 600 32px/1.2 var(--font-display); color: var(--ink); letter-spacing: .01em; }
+
+    /* the pictures */
+    .box { fill: none; stroke: var(--scree); stroke-width: 2.5; }
+    .box-name { font: 500 24px var(--font-body); fill: var(--lichen); }
+    .pod { fill: #0d171c; stroke: var(--scree); stroke-width: 2; }
+    .pod.spawn { fill: none; stroke: var(--teal); stroke-dasharray: 6 5; }
+    .app { fill: var(--lake); }
+    .ag { fill: var(--teal); }
+    .ag.theirs { fill: var(--alpenglow); }
+    .legend { font: 400 22px var(--font-body); fill: var(--lichen); }
+    .rail { stroke: var(--snow); stroke-width: 3; opacity: .55; }
+    .post { fill: var(--snow); opacity: .55; }
+    .gate-post { fill: var(--mint); }
+    .flow { fill: none; stroke: var(--mint); stroke-width: 2.5; opacity: .8; }
+    .pass { fill: none; stroke: var(--mint); stroke-width: 2; }
+    .tool { fill: #0d171c; stroke: var(--mint); stroke-width: 2; }
+    .tool-name { font: 600 26px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .row { fill: #1a2a31; }
+    .row.hit { stroke: var(--alpenglow); stroke-width: 2; }
+    .row-name { font: 500 22px var(--font-body); fill: var(--lichen); }
+    .probe { stroke: var(--alpenglow); stroke-width: 2; stroke-dasharray: 5 6; opacity: .75; }
+    .hole { fill: var(--alpenglow); }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Agents arrive three ways: as workloads, as users,<br>and as attackers finding new holes daily.</h2>
+
+    <svg class="art" id="art" viewBox="0 0 1920 1080" role="img" aria-label="Three columns. Workloads: a node whose pods hold our apps and agents side by side, one agent spawning. Users: agents holding passes go through one gate in a fence to git, infrastructure and kubectl. Attackers: their agents, in alpenglow, probe the tools we run, and three show a new hole."></svg>
+
+    <div class="col c1" data-step="1">
+      <p class="role"><span class="g-bars"><i class="g-workloads on"></i><i class="g-users"></i><i class="g-attackers"></i></span>As workloads</p>
+      <p class="what">They run on our nodes, beside our apps, often running code they just wrote.</p>
+      <div class="answer"><small>What answers it</small><b>elastic&nbsp;nodes · a&nbsp;sandbox</b></div>
+    </div>
+    <div class="col c2" data-step="2">
+      <p class="role"><span class="g-bars"><i class="g-workloads"></i><i class="g-users on"></i><i class="g-attackers"></i></span>As users</p>
+      <p class="what">They call our tools and change our infrastructure, like engineers, but hundreds of them.</p>
+      <div class="answer"><small>What answers it</small><b>one&nbsp;gateway · short&#8209;lived&nbsp;identity · one&nbsp;policy&nbsp;layer</b></div>
+    </div>
+    <div class="col c3" data-step="3">
+      <p class="role"><span class="g-bars"><i class="g-workloads"></i><i class="g-users"></i><i class="g-attackers on"></i></span>As attackers</p>
+      <p class="what">Theirs find new holes in the software we run, every day, faster than we upgrade.</p>
+      <div class="answer"><small>What answers it</small><b>the&nbsp;lake · our&nbsp;own&nbsp;agents · the&nbsp;waves</b></div>
+    </div>
+  </main>
+
+  <aside class="notes">
+    So AI is on the map. But it doesn't arrive as one thing. Agents arrive three ways at once, and each one needs a different answer.
+
+    Click. First, as workloads. An agent is a pod. It runs on our nodes, right beside our apps, and quite often it's running code it wrote a minute ago. That's a workload problem: where does it run, and what can it break if that code is bad. Elastic nodes and a sandbox answer it.
+
+    Click. Second, as users. The same agent calls our tools: it opens pull requests, requests infrastructure, reads the cluster. It behaves like an engineer, except there are hundreds of them and none of them went through onboarding. That's an access problem: one gateway, short-lived identity, one policy layer.
+
+    Click. And third, the one nobody puts on a roadmap: attackers have agents too. They point them at the same open source we run, and they find new holes every day. CVEs nearly doubled this year. We can't fence that one out. We have to out-pace it, and the answer turns out to be our own agents, reading the lake and riding the waves we built in the first half.
+
+    Those three tags sit in the corner from here on, the way admins, platform and developers did in the first half. Workloads first: how they spawn.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2'] });
+    (() => {
+      const TOP = 456;   // pictures sit between the role name and the sentence
+      let s = '';
+
+      // 1. workloads: one node, pods holding apps and agents side by side, one agent spawning
+      {
+        const x0 = 120, W = 470, H = 230;
+        s += `<g data-step="1"><rect class="box" x="${x0}" y="${TOP}" width="${W}" height="${H}" rx="14"/>`;
+        s += `<text class="box-name" x="${x0 + 22}" y="${TOP + 36}">node</text>`;
+        s += Estate.agent(x0 + 300, TOP + 28, 18, 'ag') + `<text class="legend" x="${x0 + 316}" y="${TOP + 36}">agent</text>`;
+        s += `<rect class="app" x="${x0 + 386}" y="${TOP + 19}" width="18" height="18" rx="2"/><text class="legend" x="${x0 + 412}" y="${TOP + 36}">app</text>`;
+        const kinds = [['app', 'ag', 'app', 'ag', 'spawn'], ['ag', 'app', 'ag', 'ag', 'app']];
+        kinds.forEach((row, r) => row.forEach((k, i) => {
+          const px = x0 + 26 + i * 86, py = TOP + 62 + r * 82, cx = px + 35, cy = py + 35;
+          s += `<rect class="pod${k === 'spawn' ? ' spawn' : ''}" x="${px}" y="${py}" width="70" height="70" rx="10"/>`;
+          if (k === 'app') s += `<rect class="app" x="${cx - 14}" y="${cy - 14}" width="28" height="28" rx="3"/>`;
+          else s += Estate.agent(cx, cy, k === 'spawn' ? 26 : 34, 'ag');
+        }));
+        s += '</g>';
+      }
+
+      // 2. users: agents with passes, through one gate, to the tools
+      {
+        const x0 = 693, fx = x0 + 214, gy = TOP + 115;
+        s += `<g data-step="2">`;
+        const ys = [TOP + 30, TOP + 115, TOP + 200];
+        for (const y of ys) {
+          s += Estate.agent(x0 + 30, y, 36, 'ag') + `<rect class="pass" x="${x0 + 54}" y="${y - 12}" width="30" height="22" rx="3"/>`;
+          s += `<path class="flow" d="M${x0 + 92} ${y}C${fx - 60} ${y} ${fx - 60} ${gy} ${fx - 10} ${gy}"/>`;
+        }
+        // the fence, one gate
+        s += `<line class="rail" x1="${fx}" x2="${fx}" y1="${TOP}" y2="${gy - 26}"/><line class="rail" x1="${fx}" x2="${fx}" y1="${gy + 26}" y2="${TOP + 230}"/>`;
+        for (const y of [TOP + 8, TOP + 48, TOP + 182, TOP + 222]) s += `<rect class="post" x="${fx - 5}" y="${y - 8}" width="10" height="16" rx="2"/>`;
+        s += `<rect class="gate-post" x="${fx - 7}" y="${gy - 40}" width="14" height="16" rx="2"/><rect class="gate-post" x="${fx - 7}" y="${gy + 24}" width="14" height="16" rx="2"/>`;
+        const tools = ['git', 'infra', 'kubectl'];
+        tools.forEach((t, i) => {
+          const y = ys[i];
+          s += `<path class="flow" d="M${fx + 10} ${gy}C${fx + 70} ${gy} ${fx + 70} ${y} ${x0 + 330} ${y}"/>`;
+          s += `<rect class="tool" x="${x0 + 334}" y="${y - 27}" width="160" height="54" rx="8"/><text class="tool-name" x="${x0 + 414}" y="${y + 9}">${t}</text>`;
+        });
+        s += '</g>';
+      }
+
+      // 3. attackers: their agents probe the tools we run; three rows show a new hole
+      {
+        const x0 = 1266, rx = x0 + 176, RW = 324, RH = 30, GAP = 10;
+        const rows = ['argo-cd', 'istio', 'kafka-ui', 'vault-operator', 'ceph', 'grafana'];
+        const hit = { 1: true, 2: true, 4: true };
+        s += `<g data-step="3">`;
+        rows.forEach((n, i) => {
+          const y = TOP + 6 + i * (RH + GAP);
+          s += `<rect class="row${hit[i] ? ' hit' : ''}" x="${rx}" y="${y}" width="${RW}" height="${RH}" rx="4"/><text class="row-name" x="${rx + 16}" y="${y + 22}">${n}</text>`;
+          if (hit[i]) s += `<circle class="hole" cx="${rx + RW - 22}" cy="${y + RH / 2}" r="8"/>`;
+        });
+        const them = [TOP + 46, TOP + 126, TOP + 206];
+        const targets = [1, 2, 4];
+        them.forEach((y, i) => {
+          const ty = TOP + 6 + targets[i] * (RH + GAP) + RH / 2;
+          s += `<line class="probe" x1="${x0 + 52}" y1="${y}" x2="${rx - 8}" y2="${ty}"/>`;
+          s += Estate.agent(x0 + 30, y, 36, 'ag theirs');
+        });
+        s += '</g>';
+      }
+      Peaks.draw('#art', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

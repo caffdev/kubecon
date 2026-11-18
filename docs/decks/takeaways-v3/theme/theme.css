@@ -176,3 +176,16 @@
 .snow .group-tag.g-admins { color: var(--haze-ink); }
 .snow .group-tag.g-platform { color: var(--mint-ink); }
 .snow .group-tag.g-developers { color: #2a64a8; }
+/* the second half's three ways agents arrive: as workloads, as users, as attackers */
+.g-bars .g-workloads { background: var(--teal); }
+.g-bars .g-users { background: var(--mint); }
+.g-bars .g-attackers { background: var(--alpenglow); }
+.group-tag.g-workloads { color: var(--teal); }
+.group-tag.g-users { color: var(--mint); }
+.group-tag.g-attackers { color: var(--alpenglow); }
+.snow .g-bars .g-workloads { background: var(--teal-ink); }
+.snow .g-bars .g-users { background: var(--mint-ink); }
+.snow .g-bars .g-attackers { background: var(--alpenglow-ink); }
+.snow .group-tag.g-workloads { color: var(--teal-ink); }
+.snow .group-tag.g-users { color: var(--mint-ink); }
+.snow .group-tag.g-attackers { color: var(--alpenglow-ink); }

@@ -118,10 +118,15 @@
     return s + '</g>';
   }
 
-  /** The group a slide belongs to, after the overrun chart split the work three ways:
-      a small tag above the headline with three bars, this group's lit (its chart colour). */
+  /** The group a slide belongs to: a small tag above the headline with three bars, this
+      group's lit. First half: who carries the upkeep (the overrun's split). Second half: the
+      three ways agents arrive (the three-ways slide's split). */
+  const GROUPS = [
+    { admins: 'Cluster admins', platform: 'Platform team', developers: 'Developers' },
+    { workloads: 'Agents as workloads', users: 'Agents as users', attackers: 'Agents as attackers' },
+  ];
   function group(which) {
-    const G = { admins: 'Cluster admins', platform: 'Platform team', developers: 'Developers' };
+    const G = GROUPS.find((set) => which in set) || {};
     const el = document.querySelector('.slide');
     if (!el || !G[which]) return;
     const bars = Object.keys(G).map((k) => `<i class="g-${k}${k === which ? ' on' : ''}"></i>`).join('');

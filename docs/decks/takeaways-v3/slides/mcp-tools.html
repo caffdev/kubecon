@@ -41,7 +41,7 @@
   </main>
 
   <aside class="notes">
-    Caged, an agent still has to do things, and it does them through tools. MCP is how: the agent asks a tool server to open a pull request, request a bucket, read the cluster or file a change record.
+    Agents as users. MCP is how they act: the agent asks a tool server to open a pull request, request a bucket, read the cluster or file a change record.
 
     Notice what the agents build infrastructure with. Not a kubeconfig with admin rights. A pull request, and a Crossplane claim inside that pull request. So everything an agent builds still goes through review, the pipeline, the gates and the windows we just saw.
 
@@ -59,6 +59,7 @@
   <script src="../theme/estate.js"></script>
   <script>
     Range.draw('#range', { touch: ['p2', 'p1'] });
+    Range.group('users');
     (() => {
       const GX = 800, GY = 320, GW = 360, GH = 280, GM = GY + GH / 2;
       let s = '';

@@ -37,7 +37,7 @@
   </main>
 
   <aside class="notes">
-    Here's the new kind of user.
+    Agents as workloads, first: how they spawn.
 
     This is one day, hour by hour. The pale band is our elastic node count: Karpenter or Auto Mode adding nodes when there's work and taking them away when there isn't. Each teal diamond is one agent, spawned for one job, gone when it's done.
 
@@ -55,6 +55,7 @@
   <script src="../theme/estate.js"></script>
   <script>
     Range.draw('#range', { touch: ['p2'] });
+    Range.group('workloads');
     (() => {
       // agents per hour, illustrative: a nightly schedule at 01, an alert at 03, the working day
       const A = [2, 12, 2, 9, 2, 1, 2, 4, 9, 12, 13, 12, 10, 12, 13, 12, 11, 9, 5, 3, 2, 2, 1, 2];
