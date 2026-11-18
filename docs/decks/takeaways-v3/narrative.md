@@ -212,6 +212,8 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 - kubeadm, stated honestly (from v2): Cluster API still runs kubeadm underneath; the
   hands go, not the tool. EKS Auto Mode runs Karpenter itself.
 - ⚠️ `tools-too` release cadences are approximate (see v2's note).
+- **Ingress NGINX stays off the slides** (user, 2026-11-18): the move to Istio is already
+  in the plan, so the deck doesn't sell it.
 - ny4, ch4, dev, staging, qa, ftb are the user's names for our clusters. The second
   exchange's clusters are unnamed until the user gives names.
 
@@ -441,10 +443,14 @@ What v3 adds:
 - **Act:** III
 - **Job:** clusters managed as a fleet: kubeadm stays, driven from code instead of by hand
 - **Headline:** Clusters as a fleet, managing kubeadm from code.
-- **Visual:** as v2: 54 steps collapse into a one-line version change; Cluster API on-prem, EKS Auto Mode in AWS
+- **Visual:** as v2: 54 steps collapse into a one-line version change; Cluster API on-prem, EKS Auto Mode in AWS.
+  Under the 54 steps, a white fact square (user, 2026-11-18: peers run big fleets with small
+  teams): "From the stage: ~15 engineers run ~100 clusters at Meta. LinkedIn: 300 clusters,
+  ~300,000 nodes." Both from the session abstracts (GOALS §0.1)
 - **Energy:** 3
 - **Into next:** on-prem, the hands leave the upgrade. In AWS we can go further.
-- **Source:** LinkedIn KEP-4330; NVIDIA; Cluster API primer; Nutanix CAREN
+- **Source:** LinkedIn KEP-4330; NVIDIA; Cluster API primer; Nutanix CAREN; *We Have GitOps
+  at Home* (Meta keynote abstract: "~15 engineers run ~100 Kubernetes clusters")
 
 ### region-claim
 

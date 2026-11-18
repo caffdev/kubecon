@@ -28,8 +28,11 @@
     .routes h3 { font: 600 40px/1.05 var(--font-display); color: var(--haze-ink); margin-bottom: 8px; }
     .routes p { font-size: 28px; line-height: 1.32; color: var(--slate-quiet); }
     .src { left: 1160px; max-width: 660px; }
-    .kar { position: absolute; left: 860px; top: 800px; width: 940px; font-size: 28px; line-height: 1.3; color: var(--slate-quiet); }
-    .kar b { color: var(--haze-ink); font-weight: 600; }
+    .peers { position: absolute; left: var(--margin); top: 684px; width: 400px; padding: 22px 28px 20px; border-radius: 14px; background: #fff; border: 2px solid var(--hairline); }
+    .peers small { display: block; font: 600 24px/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--slate-quiet); }
+    .peers b { display: block; margin-top: 12px; font: 600 64px/.95 var(--font-display); color: var(--haze-ink); letter-spacing: -.01em; }
+    .peers p { margin-top: 6px; font-size: 28px; line-height: 1.25; color: var(--slate); }
+    .peers p.also { margin-top: 14px; padding-top: 12px; border-top: 2px solid var(--hairline); font-size: 24px; color: var(--slate-quiet); }
   </style>
 </head>
 <body>
@@ -54,7 +57,13 @@
       </div>
     </div>
 
-    <p class="src">LinkedIn, 300 clusters: skip-level upgrades (KEP-4330) cut three minors from six fleet waves to one. NVIDIA: about 5,600 nodes converged in 30 minutes.</p>
+    <div class="peers">
+      <small>From the stage</small>
+      <b>~15 engineers</b>
+      <p>run ~100 clusters at Meta.</p>
+      <p class="also">LinkedIn: 300 clusters, ~300,000 nodes.</p>
+    </div>
+    <p class="src">Meta: <i>We Have GitOps at Home</i> (keynote). LinkedIn: skip-level upgrades (KEP-4330) cut three minors from six fleet waves to one. NVIDIA: about 5,600 nodes converged in 30 minutes.</p>
   </main>
 
   <aside class="notes">
@@ -66,7 +75,7 @@
 
     In AWS, it's EKS Auto Mode. AWS upgrades the control plane, then replaces the nodes for us, and it runs Karpenter itself, which takes one tool off our list.
 
-    The evidence. LinkedIn runs three hundred clusters. With skip-level upgrades they took three minor versions from six fleet-wide waves down to one. NVIDIA converged about fifty-six hundred nodes in thirty minutes. Meta runs about a hundred clusters with fifteen engineers.
+    The evidence, in the square on the left. Meta runs about a hundred clusters for AI research and inference with about fifteen engineers. LinkedIn runs three hundred clusters and around three hundred thousand nodes; with skip-level upgrades they took three minor versions from six fleet-wide waves down to one. NVIDIA converged about fifty-six hundred nodes in thirty minutes. Small teams run big fleets, because nobody touches a cluster by hand.
 
     On-prem, that's the cluster admins' answer: the hands leave the upgrade. In AWS we can go further.
   </aside>
