@@ -1,0 +1,86 @@
+/* Flavor A: BAY PLAN. Under review on 2026-11-19; the chosen flavor gets merged into theme.css.
+   The world is a container terminal. A fleet is literally containers, a cluster is one box
+   in a stowage plan, and a change is cargo moving through a yard. Orange marks people,
+   wherever they appear. The five moves are five container liveries. */
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Saira+Stencil+One&display=swap");
+
+:root {
+  /* palette */
+  --c-fog: #e4e9ec;        /* ground: harbor fog */
+  --c-hull: #0e2131;       /* ink: hull navy */
+  --c-steel: #4c5c69;      /* quiet text: weathered steel */
+  --c-rail: #b9c4cc;       /* track, hairlines */
+  --c-crew: #ff4f00;       /* international orange: people, shapes only */
+  --c-crew-ink: #b13a00;   /* orange text on fog */
+
+  /* the five moves = five liveries */
+  --m-fleet: #1f5fa6;      /* container blue */
+  --m-delivery: #2a7449;   /* evergreen */
+  --m-identity: #c99512;   /* mustard */
+  --m-telemetry: #8e2c36;  /* oxblood */
+  --m-agents: #1c7880;     /* teal */
+
+  --bg: var(--c-fog);
+  --ink: var(--c-hull);
+  --muted: var(--c-steel);
+  --accent: var(--c-crew);
+  --letterbox: #cfd6db;
+
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-stencil: "Saira Stencil One", "Archivo", sans-serif;
+
+  --t-hero: 168px;
+  --t-1: 104px;
+  --t-2: 76px;
+  --t-3: 48px;
+  --t-body: 34px;
+  --t-small: 24px;
+
+  --margin: 120px;
+  --margin-y: 96px;
+  --gutter: 40px;
+}
+
+.slide {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--t-body)/1.35 var(--font-body);
+  font-variation-settings: "wdth" 100;
+  padding: var(--margin-y) var(--margin);
+  font-variant-numeric: lining-nums;
+}
+.slide h1, .slide h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: "wdth" 112;
+  letter-spacing: -0.022em;
+  line-height: .98;
+}
+.slide h1 { font-size: var(--t-1); }
+.slide h2 { font-size: var(--t-2); }
+
+/* a container: corrugated side, livery colour, stencil number */
+.box {
+  --livery: var(--m-fleet);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 9px, rgb(0 0 0 / .17) 9px 11px),
+    var(--livery);
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 2px rgb(0 0 0 / .2);
+  color: #fff;
+}
+.stencil { font-family: var(--font-stencil); font-weight: 400; letter-spacing: .02em; }
+
+.src {
+  position: absolute;
+  left: var(--margin);
+  bottom: 48px;
+  font-size: var(--t-small);
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+/* the placeholder theme.css caps h1 at 16ch; flavors set their own widths */
+.slide h1 { max-width: none; }

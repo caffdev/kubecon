@@ -1,0 +1,17 @@
+/* Flavor B: THREE PEAKS, the readout series brand (docs/decks/_shared/brand.css). Under review
+   on 2026-11-19. The big operators are peaks, a team is a rope party of dots at the summit, and
+   a loop is a closed contour with numbered camps. Teal = agents (Path 2 in the series).
+   Alpenglow = the one warm accent: here, people and the decision they make. */
+@import url("../../_shared/brand.css");
+
+:root { --path: var(--teal); --path-ink: var(--teal-ink); }
+
+.party { fill: var(--alpenglow); }
+.contour { fill: none; stroke: var(--scree); stroke-width: 2; }
+.contour.rail { stroke: var(--lichen); stroke-width: 4; }
+.lbl-name { font: 600 44px var(--font-display); fill: var(--snow); letter-spacing: -.005em; }
+.lbl-team { font: 600 34px var(--font-display); fill: var(--alpenglow); }
+.lbl-what { font: 400 28px var(--font-body); fill: var(--lichen); }
+
+/* the placeholder theme.css caps h1 at 16ch; flavors set their own widths */
+.slide h1 { max-width: none; }

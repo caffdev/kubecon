@@ -25,6 +25,14 @@
       "the-road",
       "not-building",
       "the-ask"
+    ],
+    "flavors": [
+      "cold-open",
+      "the-loop",
+      "cold-open-b",
+      "the-loop-b",
+      "cold-open-c",
+      "the-loop-c"
     ]
   }
 }

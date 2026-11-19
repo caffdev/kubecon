@@ -78,6 +78,24 @@ Written in phase 3, after the story is agreed: palette (named hexes), type, layo
 signature element, how concepts become pictures, the one motion moment, and what changed
 after checking the plan against the generic defaults.
 
+**Three candidate flavors (2026-11-19), awaiting a pick.** Each one is built on `cold-open`
+(sparse) and `the-loop` (the densest slide) and kept in the `flavors` draft. Their tokens live in
+`theme/flavor-{a,b,c}.css`; the chosen one gets merged into `theme.css`.
+- **A, bay plan:** a container terminal. Harbor fog `#e4e9ec`, hull navy `#0e2131`,
+  international orange `#ff4f00` (people only), and the five moves as five container liveries.
+  Type is Archivo (wide display) with Saira Stencil for numbers. Clusters are boxes in a stowage
+  plan, and the loop is the yard road. Files: `cold-open`, `the-loop`.
+- **B, Three Peaks:** the readout series brand (`_shared/brand.css`, Barlow). Operators are
+  peaks with rope parties of alpenglow dots, and the loop is a closed contour with camps. Teal is
+  the agent (Path 2) and alpenglow is the person. Files: `cold-open-b`, `the-loop-b`.
+- **C, scale drawing:** drafting film `#e5e9e2` with graphite, a red pencil `#d0293a` for people,
+  and non-photo blue for construction lines. Type is Schibsted Grotesk with B612. Ratios are drawn
+  to scale and break off the sheet ("≈ 40 slides wide"), and the loop is a schematic with a parts
+  list. Files: `cold-open-c`, `the-loop-c`.
+
+Every flavor uses its accent for **people**: the engineers on the cold open, and the one person
+who approves in the loop.
+
 Two decisions carried from the story:
 - **Five move colours.** These are introduced on `skip-the-gpus`, named on `five-moves`, and
   carried as a tab on every Act III slide, so the room always knows which move they're in.

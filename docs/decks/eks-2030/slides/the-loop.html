@@ -3,23 +3,99 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agents work the toil through the same rails we do</title>
+  <title>A · The loop</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
+  <link rel="stylesheet" href="../theme/flavor-a.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* Flavor A, bay plan: the loop is the yard road. Each station is a container in its
+       move's livery; the one orange container is the person. The manifest in the middle
+       lists who already runs each station. */
+    h2 { position: absolute; left: 120px; top: 96px; width: 1400px; margin: 0; }
+
+    .yard { position: absolute; inset: 0; }
+    .road { fill: none; stroke: var(--c-rail); stroke-width: 26; }
+    .lane { fill: none; stroke: #fff; stroke-width: 3; stroke-dasharray: 18 16; }
+
+    .st { position: absolute; width: 236px; height: 108px; padding: 10px 14px; display: flex; flex-direction: column; justify-content: space-between; }
+    .st .n { font: 400 26px/1 var(--font-stencil); opacity: .78; }
+    .st .l { font: 700 28px/1.05 var(--font-body); font-variation-settings: "wdth" 96; }
+    .st.person { --livery: var(--c-crew); }
+
+    .manifest { position: absolute; left: 400px; top: 470px; width: 1120px; }
+    .mrow { display: grid; grid-template-columns: 64px 220px 1fr; align-items: center; column-gap: 18px; height: 62px; border-bottom: 2px solid var(--c-rail); }
+    .mrow:first-child { border-top: 2px solid var(--c-rail); }
+    .chip { height: 40px; border-radius: 2px; display: grid; place-items: center; font: 400 24px/1 var(--font-stencil); }
+    .mrow .who { font: 800 30px/1 var(--font-display); font-variation-settings: "wdth" 108; }
+    .mrow .what { font: 400 30px/1.1 var(--font-body); }
+
+    .key { position: absolute; left: 120px; bottom: 44px; display: flex; gap: 26px; align-items: center; font: 400 24px var(--font-body); color: var(--muted); }
+    .key span { display: inline-flex; align-items: center; gap: 8px; }
+    .key i { width: 34px; height: 20px; border-radius: 2px; background: var(--k); display: block; }
+
+    /* the motion moment: one change laps the yard */
+    .token {
+      position: absolute; left: 0; top: 0; width: 60px; height: 34px; margin: -17px 0 0 -30px;
+      offset-path: path("M220 645 V420 Q220 360 280 360 H1640 Q1700 360 1700 420 V870 Q1700 930 1640 930 H280 Q220 930 220 870 Z");
+      offset-distance: 100%; offset-rotate: 0deg; opacity: 0;
+      --livery: var(--c-hull);
+      display: grid; place-items: center; font: 400 22px/1 var(--font-stencil);
+    }
+    .is-entered.at-4 .token { animation: lap 5.5s cubic-bezier(.45,.05,.4,1) both; }
+    @keyframes lap { from { offset-distance: 0%; opacity: 1; } 96% { opacity: 1; } to { offset-distance: 100%; opacity: 0; } }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Agents work the toil through the same rails we do</h1>
+    <h2>Agents work the toil through the same rails we do</h2>
+
+    <svg class="yard" viewBox="0 0 1920 1080" aria-hidden="true">
+      <rect class="road" x="220" y="360" width="1480" height="570" rx="60"/>
+      <rect class="lane" x="220" y="360" width="1480" height="570" rx="60"/>
+    </svg>
+
+    <!-- stations, clockwise from the left. Liveries are the five moves. -->
+    <div class="st box" style="left:102px;top:591px;--livery:var(--m-telemetry)" data-step="1"><span class="n">01</span><span class="l">Signal</span></div>
+    <div class="st box" style="left:300px;top:306px;--livery:var(--m-agents)" data-step="1"><span class="n">02</span><span class="l">Agent session</span></div>
+    <div class="st box" style="left:640px;top:306px;--livery:var(--m-delivery)" data-step="2"><span class="n">03</span><span class="l">Merge request</span></div>
+    <div class="st box" style="left:980px;top:306px;--livery:var(--m-delivery)" data-step="2"><span class="n">04</span><span class="l">CI gate</span></div>
+    <div class="st box person" style="left:1320px;top:306px" data-step="2"><span class="n">05</span><span class="l">A person approves</span></div>
+    <div class="st box" style="left:1582px;top:591px;--livery:var(--m-fleet)" data-step="3"><span class="n">06</span><span class="l">Argo CD syncs wave 1</span></div>
+    <div class="st box" style="left:1320px;top:876px;--livery:var(--m-delivery)" data-step="3"><span class="n">07</span><span class="l">PostSync check</span></div>
+    <div class="st box" style="left:980px;top:876px;--livery:var(--m-telemetry)" data-step="3"><span class="n">08</span><span class="l">Grafana, Splunk confirm</span></div>
+    <div class="st box" style="left:640px;top:876px;--livery:var(--m-fleet)" data-step="3"><span class="n">09</span><span class="l">Next wave, or page</span></div>
+
+    <div class="manifest">
+      <div class="mrow" data-step="1"><span class="chip box" style="--livery:var(--m-telemetry)">01</span><span class="who">Verkada</span><span class="what">4,700 alerts a month at $0.33 each</span></div>
+      <div class="mrow" data-step="2"><span class="chip box" style="--livery:var(--m-delivery)">03</span><span class="who">Mastercard</span><span class="what">150 EKS clusters, every write a merge request</span></div>
+      <div class="mrow" data-step="2"><span class="chip box" style="--livery:var(--m-delivery)">03</span><span class="who">monday.com</span><span class="what">80% of PRs zero-touch, 1% reverted</span></div>
+      <div class="mrow" data-step="3"><span class="chip box" style="--livery:var(--m-fleet)">09</span><span class="who">NVIDIA</span><span class="what">the agent stops and pages on a failed status</span></div>
+      <div class="mrow" data-step="3"><span class="chip box" style="--livery:var(--m-telemetry)">08</span><span class="who">Salesforce</span><span class="what">2,000+ clusters, 900 fewer toil hours a month</span></div>
+    </div>
+
+    <div class="token box" data-step="4" aria-hidden="true">PR</div>
+
+    <div class="key">
+      <span><i style="--k:var(--m-fleet)"></i>fleet</span>
+      <span><i style="--k:var(--m-delivery)"></i>delivery</span>
+      <span><i style="--k:var(--m-telemetry)"></i>telemetry</span>
+      <span><i style="--k:var(--m-agents)"></i>agents</span>
+      <span><i style="--k:var(--c-crew)"></i>a person</span>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    This is the slide the whole deck has been building to. Every container on this road is something we've already talked about, in its move's colour.
+
+    Click. It starts with a signal: a Prometheus alert, a CVE, a new EKS version. An agent session picks it up, in its own sandbox, with Vault keys and an Istio identity. Verkada does exactly this today: forty-seven hundred alerts a month, thirty-three cents each.
+
+    Click. The agent never touches a cluster. It opens a merge request. CI checks it like any other. And a person approves: the one orange box. Mastercard runs this across a hundred and fifty EKS clusters, and every write is a merge request. At monday.com, eighty percent of PRs are zero-touch, and one percent get reverted.
+
+    Click. Plain Argo CD syncs the first wave. The PostSync check runs. Grafana and Splunk confirm. Then the next wave, or stop and page someone. NVIDIA's agent does exactly that: it stops on a failed status and escalates. Salesforce runs this across two thousand clusters.
+
+    Sources: Verkada from its session abstract; Mastercard, monday.com, NVIDIA and Salesforce from their posted slides.
+
+    Click. Watch one change go round. These are the same rails we use. The toil curve from the start of the talk stops landing on people. That's 2030. Here's the road from where we are.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>
