@@ -44,7 +44,7 @@
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
     <h2>Close the circle: our agents patch what theirs find,<br>and the waves roll it out.</h2>
 
-    <svg class="loop" id="loop" viewBox="0 0 1920 1080" role="img" aria-label="A loop of five stations. A new hole lands, found by their agent. The lake finds which images and clusters run it. Our agent drafts the fix as a pull request with its own check. The team approves, after policy has checked it. The waves roll it out, and a failed gate rolls it back. Then the loop is ready for the next hole. In the middle: days, not two months."></svg>
+    <svg class="loop" id="loop" viewBox="0 0 1920 1080" role="img" aria-label="A loop of five stations. A new hole lands, found by their agent. The lake finds which images and clusters run it. Our agent drafts the fix as a pull request with its own check. The team approves, after policy has checked it. The waves roll it out, and a failed gate stops it. Then the loop is ready for the next hole. In the middle: days, not months."></svg>
 
     <div class="proof" data-step>
       <div class="p">
@@ -70,9 +70,9 @@
 
     Policy checks the PR in CI, the same rules as for any person. And the team approves it. One approval, not a meeting.
 
-    Then the waves we built in the first half roll it out: test, canary, prod, each behind its gate, inside the window. A bad patch fails its gate and rolls itself back. And the lake confirms nothing is left exposed, ready for the next one.
+    Then the waves we built in the first half roll it out: test, canary, prod, each behind its gate, inside the window. A bad patch fails its gate and stops before prod. And the lake confirms nothing is left exposed, ready for the next one.
 
-    In the middle: days, not two months. Days, because the waves still go test, canary, prod, inside the window. A critical one can get an emergency window, and the numbers coming up on the right show how fast that can go.
+    In the middle: days, not months. Days, because the waves still go test, canary, prod, inside the window. A critical one can get an emergency window, and the numbers coming up on the right show how fast that can go.
 
     Click. This isn't hypothetical. NVIDIA patched about fifty-six hundred nodes for two kernel CVEs in thirty minutes, and an agent drove that rollout, cluster by cluster. Their line was: the next CVE is a YAML change. And KubeEdge's maintainers, buried under AI-found reports, are fighting fire with fire: AI agents read each disclosure, propose the patch and run the regression tests.
 
@@ -108,7 +108,7 @@
         ['lake', 'the lake finds it', 'which images, which clusters', 'right'],
         ['fix', 'our agent drafts the fix', 'a PR, with its own check', 'right'],
         ['team', 'the team approves', 'after policy checks it', 'left'],
-        ['waves', 'the waves roll it out', 'a failed gate rolls it back', 'left'],
+        ['waves', 'the waves roll it out', 'a failed gate stops it', 'left'],
       ];
       ST.forEach(([k, name, sub, side], i) => {
         const [x, y] = at(ANG[i]);
@@ -119,7 +119,7 @@
         if (side === 'left') lab = `<text class="${cls}" x="${x - 62}" y="${y - 2}" text-anchor="end">${name}</text><text class="stn-sub" x="${x - 62}" y="${y + 30}" text-anchor="end">${sub}</text>`;
         s += `<g class="st" style="--i:${i}">${icon[k](x, y)}${lab}</g>`;
       });
-      s += `<text class="mid" x="${CX}" y="${CY + 18}">days</text><text class="mid-sub" x="${CX}" y="${CY + 70}">not two months</text>`;
+      s += `<text class="mid" x="${CX}" y="${CY + 18}">days</text><text class="mid-sub" x="${CX}" y="${CY + 70}">not months</text>`;
       Peaks.draw('#loop', s);
     })();
   </script>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gates roll back</title>
+  <title>Gates stop the wave</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
@@ -22,8 +22,9 @@
     .mark { font: 700 44px var(--font-display); text-anchor: middle; }
     .mark.pass { fill: var(--mint); }
     .mark.fail { fill: var(--you); }
-    .back { fill: none; stroke: var(--you); stroke-width: 5; stroke-linecap: round; }
-    .back-head { fill: var(--you); }
+    .halt { stroke: var(--bg); stroke-width: 8; }
+    .halt-name { font: 600 28px var(--font-display); fill: var(--you); paint-order: stroke; stroke: var(--bg); stroke-width: 10px; }
+    .log .fail i { font-size: 30px; }
 
     .log { position: absolute; left: 1010px; top: 318px; width: 800px; }
     .log li { list-style: none; display: grid; grid-template-columns: 56px 1fr; align-items: baseline; margin-bottom: 14px; font-size: 30px; line-height: 1.3; color: var(--lichen); }
@@ -43,14 +44,14 @@
 <body>
   <main class="slide dusk" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h2>Every wave passes its tool’s gate, and a failed gate rolls itself back.</h2>
+    <h2>Every wave passes its tool’s gate, and a failed gate stops the rollout before prod.</h2>
 
-    <svg class="rings" id="rings" viewBox="0 0 1920 1080" role="img" aria-label="Rollout rings rippling out from the test cluster: canary, wave 1, wave 2, prod. A new Prometheus passes the test gate, fails the canary gate and rolls back; the prod rings never see it."></svg>
+    <svg class="rings" id="rings" viewBox="0 0 1920 1080" role="img" aria-label="Rollout rings rippling out from the test cluster: canary, wave 1, wave 2, prod. A new Prometheus passes the test gate, fails the canary gate and stops there; the prod rings never see it."></svg>
 
     <ol class="log">
       <li class="pass" data-step="1"><i>✓</i><span><b>Test cluster:</b> gate passed, so it moves out</span></li>
       <li class="fail" data-step="2"><i>✗</i><span><b>Canary:</b> gate failed, targets dropped</span></li>
-      <li class="fail" data-step="3"><i>↺</i><span><b>Rolled back on its own.</b> Nobody paged.</span></li>
+      <li class="fail" data-step="3"><i>■</i><span><b>Wave 1 never starts.</b> Nobody paged.</span></li>
     </ol>
 
     <div class="gatelist">
@@ -74,11 +75,11 @@
 
     Click. It reaches the canary cluster, which is a real cluster with real workloads. And this time the gate fails: targets dropped after the upgrade.
 
-    Click. And here's the point. Nobody decides anything. The pipeline rolls the canary back to the old version on its own. Wave one never started. The prod rings never saw it. Nobody got paged, and the team from the start of this talk found out from a message in the morning, not a phone call at night.
+    Click. And here's the point. Nobody decides anything. The sync fails, so the rollout stops right there. Wave one never starts. The prod rings never see it. Nobody gets paged, and the team from the start of this talk finds out from a message in the morning, not a phone call at night. Then they fix forward, or roll the canary back, and replay the gate.
 
     On the right: each tool brings its own gate. Argo CD checks every app is still synced and healthy. Prometheus checks its own targets and rules. The OTel collector checks that exports are succeeding. Karpenter checks that pending pods still get nodes. Different checks, same machinery.
 
-    This isn't our invention. LinkedIn showed it for their cluster services: the gate is just an Argo CD PostSync job. Exit zero, the wave advances. Exit one, the sync fails and it rolls back. They took a release from about a week of manual testing to about an hour.
+    This isn't our invention. LinkedIn showed it for their cluster services: the gate is just an Argo CD PostSync job. Exit zero, the wave advances. Exit one, the sync fails and the rollout stops before prod, with the failed job and its logs still there to read. They took a release from about a week of manual testing to about an hour.
 
     And the pipeline also needs to know when not to run at all.
   </aside>
@@ -125,11 +126,9 @@
       s += `<g data-step="1">${Peaks.glyph({ x: cx, y: cy, w: 60, h: 50, cls: 'pk-glyph lit' })}${gate(G[0], 'pass')}<text class="mark pass" x="${cx + G[0]}" y="${cy - 46}">✓</text></g>`;
       // 2: canary takes it, its gate fails
       s += `<g data-step="2">${Peaks.glyph({ x: cx + R.canary, y: cy, w: 60, h: 50, cls: 'pk-glyph lit' })}${gate(G[1], 'fail')}<text class="mark fail" x="${cx + G[1]}" y="${cy - 46}">✗</text></g>`;
-      // 3: the canary goes back to the old version
-      const bx = cx + R.canary, by = cy + 44;
-      s += `<g data-step="3">${Peaks.glyph({ x: bx, y: cy, w: 60, h: 50, cls: 'pk-glyph old' })}`
-        + `<path class="back" d="M${bx + 6} ${by}Q${bx - 50} ${by + 74} ${cx + 52} ${by + 18}"/>`
-        + `<path class="back-head" d="M${cx + 38} ${by + 8}l28 -4l-10 26z"/></g>`;
+      // 3: the rollout stops at the failed gate; nothing past it moves
+      s += `<g data-step="3"><line class="halt" x1="${cx + G[1] + 12}" y1="${cy}" x2="${cx + R.prod + 30}" y2="${cy}"/>`
+        + `<text class="halt-name" x="${cx + G[1]}" y="${cy + 72}" text-anchor="middle">stops here</text></g>`;
       Peaks.draw('#rings', s);
     })();
   </script>

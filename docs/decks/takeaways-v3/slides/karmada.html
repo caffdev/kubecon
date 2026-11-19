@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lose a region, the work moves</title>
+  <title>Lose a region, traffic fails over</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
@@ -35,7 +35,7 @@
 <body>
   <main class="slide dusk" data-energy="5">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h2>Lose a region, or all of AWS, and the work moves wherever the constraints still hold.</h2>
+    <h2>Lose a region, or all of AWS, and traffic fails over to wherever the constraints still hold.</h2>
 
     <div class="yaml-card"><p class="code"><span class="c"># unchanged, start to finish</span>
 <span class="k">constraints:</span>
@@ -48,13 +48,13 @@
   fallback:   second cloud</p></div>
 
     <ol class="log">
-      <li data-step="1"><i>✗</i><span><b>Region 1 fails.</b> Region 2 takes all six; Auto Mode adds the nodes.</span></li>
-      <li data-step="2"><i>✗</i><span><b>AWS fails.</b> All six move to the second cloud.</span></li>
+      <li data-step="1"><i>✗</i><span><b>Region 1 fails.</b> Traffic shifts; region 2 scales to six on Auto Mode nodes.</span></li>
+      <li data-step="2"><i>✗</i><span><b>AWS fails.</b> Traffic goes to the warm standby in the second cloud.</span></li>
       <li class="ok" data-step="3"><i>✓</i><span><b>Nobody edited a file.</b> Fingers uncrossed.</span></li>
     </ol>
 
-    <svg class="kmap" id="kmap" viewBox="0 0 1680 540" role="img" aria-label="The estate map. Six replicas start spread across AWS region 1 and region 2. Region 1 fails and its replicas move to region 2; then AWS fails and all six move to the second cloud. The developer's constraints never change."></svg>
-    <p class="still"><b>Placement follows labels, not cluster names.</b> Both regions run by default; Karmada is the option if work should move on its own.</p>
+    <svg class="kmap" id="kmap" viewBox="0 0 1680 540" role="img" aria-label="The estate map. Six replicas start spread across AWS region 1 and region 2. Region 1 fails: traffic shifts to region 2, which scales to six. Then AWS fails, and traffic goes to six replicas in the second cloud. The developer's constraints never change."></svg>
+    <p class="still"><b>Placement follows labels, not cluster names.</b> Both regions run the app, so nothing moves: traffic, capacity and data fail over. Karmada is the option if work should move on its own.</p>
   </main>
 
   <aside class="notes">
@@ -64,13 +64,13 @@
 
     Click. Region one goes down. Region two is already running half the app, so the traffic shifts there, and Auto Mode adds the nodes for the other half. Nobody pre-sized region two for the whole load. The constraint still holds: the cloud, PCI, US. The app keeps running.
 
-    Click. Now it's AWS itself having the bad day. Both regions dark. The constraints say "fall back to the second cloud", so all six replicas go there.
+    Click. Now it's AWS itself having the bad day. Both regions dark. The constraints say "fall back to the second cloud", so a warm standby there, placed by the same labels, scales up and the traffic goes to it.
 
     That's the developers' DR pattern, done by policy instead of a runbook.
 
     Click. And nobody edited a file. The developer didn't change a thing, nobody rewrote a list of clusters at two in the morning, and the team in orange found out from a message. Fingers uncrossed.
 
-    How we get there, honestly. The first click, both regions live and placement by labels, is Argo CD ApplicationSets and cluster labels: we can do that now. The second cloud needs either a warm standby placed the same way, or something that moves work on its own. Karmada is that option; Bloomberg runs their streaming platform on it. It's one more control plane to run, so it earns its place with a spike, not a mandate. And the real work in all of it is the data: it has to be reachable from wherever the app lands.
+    How we get there, honestly. The first click, both regions live and placement by labels, is Argo CD ApplicationSets and cluster labels: we can do that now. The second cloud needs either a warm standby placed the same way, or something that moves work on its own. Karmada is that option; Bloomberg runs their streaming platform on it. It's one more control plane to run, so it earns its place with a spike, not a mandate. And the real work is underneath. Traffic moves in seconds; data doesn't. Our recovery time is the sum of noticing, moving the traffic, scaling up and promoting the database, so the slowest layer sets it.
 
     So what does a developer actually have to know now?
   </aside>
@@ -92,13 +92,13 @@
       let s = '';
       // before: three replicas in each region
       for (const p of [...R1, ...R2]) s += chip(pick(...p));
-      // 1: region 1 goes dark; its replicas land in region 2
+      // 1: region 1 goes dark; traffic shifts and region 2 scales to six
       const R2b = [['aws', 3, 1], ['aws', 4, 0], ['aws', 5, 0]];
       s += `<g data-step="1"><rect class="down-zone" x="${aws.x + 4}" y="100" width="${r1w - 4}" height="316"/>`
         + `<text class="down-mark" x="${aws.x + 30}" y="170">✗</text>`
         + R2b.map((p) => chip(pick(...p))).join('')
         + `<path class="hop" d="M${aws.x + 180} 300Q${aws.x + 330} 220 ${aws.x + 410} 250"/></g>`;
-      // 2: AWS goes dark; all six land in the second cloud
+      // 2: AWS goes dark; the warm standby in the second cloud scales up and takes the traffic
       const c2 = [['cloud2', 0, 0], ['cloud2', 1, 0], ['cloud2', 2, 0], ['cloud2', 0, 1], ['cloud2', 1, 1], ['cloud2', 2, 1]];
       s += `<g data-step="2"><rect class="down-zone" x="${aws.x + 4}" y="4" width="${aws.w - 8}" height="412" rx="12"/>`
         + `<text class="down-label" x="${aws.x + aws.w / 2}" y="250" text-anchor="middle">AWS down</text>`

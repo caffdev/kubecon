@@ -37,7 +37,7 @@
       <li><b>Waves by label, not by list</b>A cluster joins a wave with <code>rollout-wave: 2</code>, so a new cluster needs no pipeline change.</li>
       <li><b>One train fewer</b>On Auto Mode clusters (outlined), AWS rolls Karpenter for us.</li>
     </ul>
-    <p class="src">LinkedIn cut cluster-service releases from about a week of manual testing to about an hour this way.</p>
+    <p class="src">Order: LinkedIn’s canary pipeline (staging, canaries in parallel, then prod cluster by cluster).</p>
   </main>
 
   <aside class="notes">
@@ -49,7 +49,7 @@
 
     And one train we can get off entirely. On EKS Auto Mode clusters, the outlined ones, AWS runs Karpenter itself. The cheapest rollout is the one somebody else does.
 
-    LinkedIn does this for their cluster services and took a release from about a week of manual testing to about an hour.
+    LinkedIn rolls their cluster services out in this order: staging first, canaries in parallel, then prod one cluster at a time.
 
     But a ring only moves outward when the tool proves itself.
   </aside>

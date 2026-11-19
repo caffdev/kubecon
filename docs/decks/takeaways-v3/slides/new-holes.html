@@ -36,21 +36,21 @@
 <body>
   <main class="slide" data-energy="3">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h2>AI finds new holes daily, and three upgrades<br>a year leave each one open for two months.</h2>
+    <h2>AI finds new holes daily, and a fix only counts<br>once it reaches our clusters.</h2>
 
     <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="CVEs published a year, 2016 to 2026: about 10,000 in 2016, climbing steadily to about 45,000 in 2025, then about 79,000 in 2026 so far, over 200 a day. Read from OpenCVE's chart as shown in the talk."></svg>
 
     <div class="facts">
       <div class="fact">
         <b>220</b>
-        <p>findings from <strong>one maintainer's AI pipeline</strong>, in one project, this year. 22 were real.</p>
+        <p>findings from <strong>one maintainer’s own AI pipeline</strong> in Metal3 this year: 22 security bugs. Attackers run the same models.</p>
       </div>
       <div class="fact us" data-step>
-        <b>61 days</b>
-        <p>the average new hole waits for our next upgrade, <strong>at three a year</strong>. Our model.</p>
+        <b>98 days</b>
+        <p>from Metal3’s advisory to the last Ericsson release that shipped the fix. <strong>Each hop runs its own clock.</strong></p>
       </div>
     </div>
-    <p class="src">CVEs a year: OpenCVE's count as shown in <i>Mythos vs Maintainers</i> (ControlPlane, Docker), read off the chart; 2026 is the year to the talk. 220: <i>AI Found a 0-Day in Metal3</i> (Ericsson).</p>
+    <p class="src">CVEs a year: OpenCVE's count as shown in <i>Mythos vs Maintainers</i> (ControlPlane, Docker), read off the chart; 2026 is the year to the talk. 220 and 98 days: <i>AI Found a 0-Day in Metal3</i> (Ericsson); GHSA-rf84-wr5g-m3rp, May 18, to CCD 2.34.4, Aug 24.</p>
   </main>
 
   <aside class="notes">
@@ -58,9 +58,9 @@
 
     This is every CVE published, year by year. For a decade it climbed steadily: ten thousand, twenty, thirty, forty-five thousand last year. And this year, seventy-nine thousand, with the year not over. That's over two hundred new holes a day.
 
-    What changed is AI. Metal3's security lead at Ericsson told this on stage: in 2026, every vulnerability disclosure Metal3 received came from his own AI pipeline. Two hundred and twenty findings in one small project. Most were noise: duplicates, hardening, things that weren't real. Twenty-two were real. And he's a defender. Mythos vs Maintainers was the other side: attackers pointing the same models at the same code, and maintainers drowning in reports that look terrifying and often aren't.
+    What changed is AI. Metal3's security lead at Ericsson told this on stage: in 2026, every vulnerability disclosure Metal3 received came from his own AI pipeline. Two hundred and twenty findings in one small project. Seventy-nine were invalid or duplicates, thirty-one were hardening, twenty-two were ordinary bugs, and twenty-two were real security bugs, with more still in triage. And he's a defender. Mythos vs Maintainers was the other side: attackers pointing the same models at the same code, and maintainers drowning in reports that look terrifying and often aren't.
 
-    Click. Now put that against how we patch. Remember the runbook: three upgrades a year. A hole that lands on a random day waits, on average, half the gap to the next one. Sixty-one days open, against exploits that get written in hours.
+    Click. And finding the hole is the fast part. He traced one of his own fixes downstream. Metal3 published the advisory on May eighteenth; the last Ericsson release that carried it shipped on August twenty-fourth. Ninety-eight days, and every hop along the way ran its own clock. We're the last hop. Our clock starts when the fix ships, and today it's a person with a runbook.
 
     His first takeaway, word for word: "AI finds bugs fast, and not only for us. Shorten your upgrade cycle." We built the shorter cycle in the first half. The waves, the gates, the windows. So the question is who drives it.
   </aside>

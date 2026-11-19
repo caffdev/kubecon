@@ -10,19 +10,29 @@
     .slide { --path: var(--teal); }
     h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
     .shells { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
-    .shell { fill: none; stroke-width: 4; }
-    .s0 { stroke: var(--lichen); stroke-dasharray: 6 10; }
-    .s1 { stroke: var(--haze); }
-    .s2 { stroke: var(--teal); stroke-width: 7; }
-    .shell-name { font: 600 30px var(--font-display); }
+    .ns { fill: none; stroke: var(--lichen); stroke-width: 3; stroke-dasharray: 6 9; }
+    .kbox { fill: #0b1820; stroke-width: 3; }
+    .kbox.gv { stroke: var(--haze); }
+    .kbox.vm { stroke: var(--teal); }
+    .vm-wall { fill: none; stroke: var(--teal); stroke-width: 7; }
+    .k-name { font: 600 26px var(--font-display); text-anchor: middle; }
+    .col-name { font: 600 34px var(--font-display); text-anchor: middle; }
+    .call { stroke-width: 4; fill: none; }
+    .call.hit { stroke: var(--you); }
+    .call.gv { stroke: var(--haze); }
+    .call.vm { stroke: var(--teal); }
+    .host { fill: #1d3442; stroke: var(--lichen); stroke-width: 2; }
+    .host-name { font: 500 26px var(--font-body); fill: var(--snow); text-anchor: middle; }
+    .hit-mark { fill: var(--you); }
     .ag { fill: var(--teal); }
     .ag-name { font: 500 26px var(--font-body); fill: var(--snow); text-anchor: middle; }
-    .levels { position: absolute; left: 860px; top: 330px; width: 960px; }
+    .levels { position: absolute; left: 880px; top: 330px; width: 940px; }
     .levels li { list-style: none; display: grid; grid-template-columns: 220px 1fr; column-gap: 28px; padding: 18px 0; border-top: 2px solid #1d3442; }
     .levels b { font: 600 40px/1.05 var(--font-display); }
     .levels p { font-size: 27px; line-height: 1.3; color: var(--lichen); }
     .levels p em { font-style: normal; color: var(--snow); }
     .levels .v { display: block; margin-top: 6px; font: 600 28px/1.1 var(--font-display); }
+    .levels .v code { font-size: 26px; }
     .l0 b { color: var(--lichen); } .l0 .v { color: var(--you); }
     .l1 b { color: var(--haze); } .l1 .v { color: var(--haze); }
     .l2 b { color: var(--teal); } .l2 .v { color: var(--teal); }
@@ -32,26 +42,26 @@
 <body>
   <main class="slide dusk" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h2>A container is not a cage, so agents run in gVisor or Kata.</h2>
-    <svg class="shells" id="shells" viewBox="0 0 1920 1080" role="img" aria-label="An agent inside three nested shells: a container sharing the host kernel, drawn dashed; gVisor, a user-space kernel in between; and Kata, its own microVM and kernel, drawn heaviest."></svg>
+    <h2>A container is not a cage, so every agent pod gets a kernel of its own.</h2>
+    <svg class="shells" id="shells" viewBox="0 0 1920 1080" role="img" aria-label="Three choices side by side, each an agent making system calls. In a plain container the calls land on the node's kernel, shared by every pod. With gVisor a user-space kernel answers them. In a microVM the agent's own guest kernel answers them, inside its own VM."></svg>
     <ol class="levels">
       <li class="l0"><b>Container</b><p>Shares the host’s kernel with every other pod. <em>A namespace, not a wall.</em><span class="v">Not for code an agent wrote</span></p></li>
-      <li class="l1"><b>gVisor</b><p>A user-space kernel answers the agent’s system calls. <em>Most kernel exploits stop there.</em> Starts fast; some syscall overhead.<span class="v">The default for agents</span></p></li>
-      <li class="l2"><b>Kata</b><p>Each pod in its own microVM, with its own kernel. <em>An escape lands in a VM, not on the node.</em> Slower start; snapshots fix most of it.<span class="v">For untrusted code and tools</span></p></li>
+      <li class="l1"><b>gVisor</b><p>A user-space kernel answers the agent’s system calls. <em>Most kernel exploits stop there.</em> Needs a node image we build, so not on Auto Mode.<span class="v">For node groups we run</span></p></li>
+      <li class="l2"><b>microVM</b><p>Each pod in its own VM, with its own kernel. <em>An escape lands in a VM, not on the node.</em> Built into Auto Mode as Nitro Sandbox; Kata elsewhere.<span class="v">Our default: <code>isolated-sandbox</code></span></p></li>
     </ol>
-    <p class="src">“Sandbox Your Agents” keynote (Red Hat); Groundhog Pod: Kata pod snapshots (Microsoft); Agent Sandboxes on Kubernetes (Google). One line picks it: <code>runtimeClassName: gvisor</code>.</p>
+    <p class="src">“Sandbox Your Agents” keynote (Red Hat); Groundhog Pod: Kata pod snapshots (Microsoft); Agent Sandboxes on Kubernetes (Google). Nitro Sandbox: EKS user guide (Auto Mode; Kubernetes 1.36+). One line per pod picks it: <code>runtimeClassName</code>.</p>
   </main>
 
   <aside class="notes">
-    Every one of those agents runs code, and often it's code the agent just wrote. So the question is what's around it.
+    Every one of those agents runs code, and often it's code the agent just wrote. So the question is what's between it and the node.
 
-    A container shares the host's kernel with every other pod on the node. It's a namespace, not a wall. That's fine for code a person reviewed. It isn't a cage for code an agent wrote thirty seconds ago. That was a keynote at the show: sandbox your agents.
+    Follow the arrows. Each one is the agent's system calls, and where it lands is the whole story. On the left, a plain container: its calls go straight to the node's kernel, the one every other pod shares. A namespace, not a wall. That's fine for code a person reviewed. It isn't a cage for code an agent wrote thirty seconds ago. That was a keynote at the show: sandbox your agents.
 
-    The next shell is gVisor: a kernel written in user space that answers the agent's system calls itself, so most kernel exploits stop there. It starts fast, with some overhead on system calls. That's our default for agents.
+    In the middle, gVisor: a kernel written in user space answers the calls itself, so most kernel exploits stop there. It starts fast. But it needs a node image we build, and Auto Mode picks its own images, so gVisor is for node groups we run ourselves.
 
-    The outer shell is Kata: every pod gets its own small virtual machine with its own kernel. If something escapes, it lands in a VM, not on the node. It starts slower, and Microsoft showed how pod snapshots take most of that cost away. That's for untrusted code and for tools that run anything they're handed.
+    On the right, a microVM: every pod gets its own small virtual machine with its own kernel. If something escapes, it lands in a VM, not on the node. In open source that's Kata, and Microsoft showed how pod snapshots take most of its start-up cost away. On EKS Auto Mode it's built in: AWS calls it Nitro Sandbox, Firecracker microVMs, with no setup. That's our default for agents.
 
-    And picking one is one line in the pod spec: a runtime class.
+    These aren't layers. They're three choices, made per pod, with one line in the spec: the runtime class.
 
     That's agents as workloads. Now agents as users: caged, an agent still has to do things, and it does them through tools.
   </aside>
@@ -63,14 +73,26 @@
     Range.draw('#range', { touch: ['p2'] });
     Range.group('workloads');
     (() => {
-      const cx = 450, cy = 590;
+      // three alternatives side by side; each arrow is the agent's system calls, ending where they're answered
+      const COL = [{ x: 230, k: 'container', c: 'var(--lichen)' }, { x: 460, k: 'gVisor', c: 'var(--haze)' }, { x: 690, k: 'microVM', c: 'var(--teal)' }];
+      const AY = 476, HY = 800, KY = 640, KH = 70;
+      const arrow = (x, y1, y2, cls) => `<path class="call ${cls}" d="M${x} ${y1}V${y2 - 14}"/><path class="hit-mark" style="fill:var(--${cls === 'hit' ? 'you' : cls === 'gv' ? 'haze' : 'teal'})" d="M${x - 11} ${y2 - 18}L${x} ${y2}L${x + 11} ${y2 - 18}Z"/>`;
       let s = '';
-      const shell = (w, h, cls, name, col) => `<rect class="shell ${cls}" x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}" rx="${h / 6}"/><text class="shell-name" x="${cx - w / 2 + h / 6 * 0.7 + 14}" y="${cy - h / 2 + 44}" style="fill:${col}">${name}</text>`;
-      s += shell(640, 480, 's2', 'Kata', 'var(--teal)');
-      s += shell(470, 336, 's1', 'gVisor', 'var(--haze)');
-      s += shell(300, 196, 's0', 'container', 'var(--lichen)');
-      s += Estate.agent(cx, cy + 4, 56, 'ag');
-      s += `<text class="ag-name" x="${cx}" y="${cy + 62}">the agent</text>`;
+      s += `<rect class="host" x="120" y="${HY}" width="680" height="64" rx="12"/><text class="host-name" x="460" y="${HY + 41}">the node’s kernel, shared by every pod</text>`;
+      COL.forEach(({ x, k, c }, i) => {
+        s += `<text class="col-name" x="${x}" y="384" style="fill:${c}">${k}</text>`;
+        if (i === 2) s += `<rect class="vm-wall" x="${x - 100}" y="${AY - 64}" width="200" height="${KY + KH + 20 - (AY - 64)}" rx="22"/>`;
+        s += `<rect class="ns" x="${x - 78}" y="${AY - 50}" width="156" height="112" rx="16"/>`;
+        s += Estate.agent(x, AY, 48, 'ag');
+      });
+      // container: straight down to the shared kernel
+      s += arrow(COL[0].x, AY + 66, HY, 'hit');
+      // gVisor: a user-space kernel answers first
+      s += `<rect class="kbox gv" x="${COL[1].x - 88}" y="${KY}" width="176" height="${KH}" rx="12"/><text class="k-name" x="${COL[1].x}" y="${KY + 45}" style="fill:var(--haze)">gVisor kernel</text>`;
+      s += arrow(COL[1].x, AY + 66, KY, 'gv');
+      // microVM: its own guest kernel, inside its own VM
+      s += `<rect class="kbox vm" x="${COL[2].x - 84}" y="${KY}" width="168" height="${KH}" rx="12"/><text class="k-name" x="${COL[2].x}" y="${KY + 45}" style="fill:var(--teal)">own kernel</text>`;
+      s += arrow(COL[2].x, AY + 66, KY, 'vm');
       Peaks.draw('#shells', s);
     })();
   </script>

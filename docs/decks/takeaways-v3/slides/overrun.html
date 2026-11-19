@@ -11,6 +11,7 @@
     .chart { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
     .p-name { font: 600 38px var(--font-display); }
     .p-key { font: 400 23px var(--font-body); fill: var(--lichen); }
+    .p-scale { font: 500 22px var(--font-body); fill: var(--muted); }
     .base { stroke: var(--scree); stroke-width: 2; }
     .stage { font: 500 22px var(--font-body); fill: var(--lichen); text-anchor: middle; }
     .total { font: 600 28px var(--font-display); fill: var(--snow); text-anchor: middle; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--bg); stroke-width: 12px; }
@@ -96,6 +97,7 @@
           if (i === 0) s += `<text class="stage" x="${cx}" y="${BASE + 30}">day one</text>`;
           if (i === 5) s += `<text class="stage" x="${cx}" y="${BASE + 30}">cloud 2</text>`;
         });
+        s += `<text class="p-scale" x="${x0 + PW - 20}" y="389" text-anchor="end">scale 0–${g.max.toLocaleString('en-US')} h</text>`;
         s += `<line class="base" x1="${x0}" x2="${x0 + PW - 20}" y1="${BASE}" y2="${BASE}"/>`;
         if (g.cap) {
           s += `<line class="cap-line" x1="${x0}" x2="${x0 + PW - 20}" y1="${y(g.cap)}" y2="${y(g.cap)}"/>`;

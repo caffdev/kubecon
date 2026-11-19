@@ -29,7 +29,7 @@
 
     And look at who gave them. Bloomberg on multi-cluster. AWS's keynote. NVIDIA and Salesforce on one kubectl across many clusters. Apple and Uber keynotes. NVIDIA again, five thousand nodes in minutes. Mastercard, thirty EKS clusters. Coinbase, Nutanix, LinkedIn.
 
-    Three to remember. LinkedIn: three hundred clusters, about three hundred thousand nodes, upgraded with skip-level upgrades. Salesforce: a thousand clusters, run with agents. And GEICO, a regulated insurer like the companies we compare ourselves to: no single cloud had enough GPUs, so they run Kubernetes across providers.
+    Three to remember. LinkedIn: more than two hundred and fifty clusters, about half a million nodes, on-prem, and they took the whole fleet up three minor versions in one wave instead of six. Salesforce: a thousand clusters, run with agents. And GEICO, a regulated insurer like the companies we compare ourselves to: no single cloud had enough GPUs, so they run Kubernetes across providers.
 
     None of them planned to have that many. Every one of those fleets grew one reasonable cluster at a time. There's always another cluster coming, so it has to be the rule, not the exception.
 
@@ -60,7 +60,7 @@
         [3, 'Modernizing Service Identity at Coinbase', 'Coinbase'],
       ],
       picks: [
-        { who: 'LinkedIn', day: 2, claim: '300 clusters, ~300,000 nodes, upgraded skip-level', title: 'Binary Version Is Not Behavior: Skip-Level Control Plane Upgrades' },
+        { who: 'LinkedIn', day: 2, claim: '250+ clusters, ~500K nodes: three minors in one wave', title: 'Binary Version Is Not Behavior: Skip-Level Control Plane Upgrades' },
         { who: 'Salesforce', day: 3, claim: '1,000 clusters, with AIOps agents helping run them', title: '1000 Clusters, 1 Smarter Brain: The Next Evolution of AIOps' },
         { who: 'GEICO', day: 3, claim: 'Multi-provider, because no one cloud had the GPUs', title: 'Follow the GPUs: When No Single Cloud Has Enough' },
       ],

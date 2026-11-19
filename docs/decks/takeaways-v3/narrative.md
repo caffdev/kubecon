@@ -17,7 +17,7 @@ user's direction:
   constraints, routing work between clusters and regions as they change. Then the point:
   a developer knows no cluster, and a merged PR plus a change record handle the rest.
 - **A second half on AI:** AI lands on the on-prem dev clusters, then AWS; autonomous
-  agents on elastic compute; sandboxing (gVisor, Kata); building infra through MCP tools
+  agents on elastic compute; sandboxing (a microVM per agent pod: Nitro Sandbox on Auto Mode, Kata elsewhere; gVisor); building infra through MCP tools
   (Obot, ToolHive, or our own); credentials kept out of the agent; Kyverno as a
   cross-cutting policy layer for people and agents alike; one view from OTel, logs,
   Prometheus and state dumps; the lake; and AI resizing pods from the lake's signals.
@@ -173,9 +173,9 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
 - **AWS automation (region-claim).** From `EKS-VS-ECS.md` §4 design rules 1–3 (clusters
   are cattle: Auto Mode + Crossplane/CDK; push node toil to AWS; EKS Capabilities as the
   next step) and GOALS §10.1–10.2 (Crossplane, the CDK seam). The `Region` claim is our own
-  illustrative API, not a real XRD yet. ⚠️ "Every node replaced within 21 days": Auto Mode's
-  maximum node lifetime, per `EKS-VS-ECS.md`; check against the EKS Auto Mode user guide
-  before sharing.
+  illustrative API, not a real XRD yet. "Every node replaced within 21 days" is checked
+  (2026-11-18) against the EKS user guide (docs.aws.amazon.com/eks/latest/userguide/automode.html):
+  "nodes launched by EKS Auto Mode have a maximum lifetime of 21 days (which you can reduce)".
 - **MCP gateway:** GOALS-GAPS §3.5's line stands: decide the enforcement point first.
   Obot is open-core with directory-managed permissions; ToolHive (Stacklok) is OSS and
   pairs with the Cedar analysis work; building our own is a thin proxy plus everything
@@ -199,12 +199,17 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   from the rendered page: 2016 ≈ 10.3k, 2017 16.7k, 2018 17.4k, 2019 17.3k, 2020 20.8k, 2021
   23.1k, 2022 27.2k, 2023 31.1k, 2024 38.9k, 2025 ≈ 45.0k, 2026 ≈ 78.7k (the year to the talk,
   Nov 2026). ⚠️ Check against app.opencve.io/statistics before this goes beyond the team;
-  "over 200 a day" holds whether 2026 counts 300 or 365 days. **220 findings, 22 real** is
+  "over 200 a day" holds whether 2026 counts 300 or 365 days. **220 findings, 22 security bugs** is
   Metal3's 2026 triage tracker (📎 `2026-11-10_ai-found-a-0-day-in-metal3-what-happens-next.pdf`:
   220 findings, 79 invalid or duplicate, 31 hardening, 22 bugs, 22 security, 51 open). Its
   first takeaway, "AI finds bugs fast, and not only for us. Shorten your upgrade cycle", is
-  quoted in the notes. **61 days** is our arithmetic: a hole landing on a random day waits on
-  average half of a four-month gap (three upgrades a year).
+  quoted in the notes. The 220 came from the maintainer's own pipeline, not an attacker's;
+  the slide says so and lets "attackers run the same models" carry the threat. **98 days**
+  is the same deck's "One Fix, Many Clocks": GHSA-rf84-wr5g-m3rp published 2026-05-18,
+  Ericsson CCD 2.34.4 shipped the backport 2026-08-24 (CCD 2.35.0 had it on 06-03). It
+  replaced "61 days" (our arithmetic: half a four-month gap at three upgrades a year) after
+  the v4 review (`takeaways-v4/v3-review.md`): image and tool patches don't wait for a minor
+  upgrade, so the model overstated it.
 - **Close the circle (patch-loop).** NVIDIA: 16 clusters, ~5,600 nodes converged in 30
   minutes, agent-driven, two kernel CVEs days apart through one controller, "the next CVE is
   a YAML change" (🖼 `12-fleet-node-changes/p07`). KubeEdge: *Fighting Fire with Fire* (no
@@ -220,8 +225,9 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   Nov 9–12, 501 in all (48 / 164 / 180 / 109 by day). A talk is lit when its title or
   abstract (or track) matches the topic's keyword pattern in that script: fleet 96, delivery
   122, AI and agents 228. A keyword match, so approximate; the source line says so. Every
-  highlight card's claim is checked against its session abstract: LinkedIn (300 clusters,
-  ~300,000 nodes), Salesforce (1000 clusters), GEICO (no single cloud has enough GPUs;
+  highlight card's claim is checked against its session abstract or deck: LinkedIn (250+
+  clusters, ~500K nodes, on-prem, v1.31 → v1.34 in one wave: their deck, 🖼 `13-skip-level-upgrades/p02`;
+  the abstract's "300 clusters, ~300,000 nodes" is older and loses), Salesforce (1000 clusters), GEICO (no single cloud has enough GPUs;
   multi-provider), Meta (a one-line Helm change took a working day), LinkedIn (critical
   cluster services deploy multiple times a week, canary pipeline), Ford (hundreds of
   clusters, every PR validated end to end), Mastercard (an LLM with the keys to 30 EKS
@@ -282,7 +288,7 @@ What v3 adds:
 - **AI on the map:** teal, as before. First the on-prem dev cluster turns teal (click),
   then AWS dev and three new AWS AI clusters.
 - **Agents as diamonds** (teal), now only in the second half: spawning and vanishing on
-  `elastic-agents`, inside nested shells on `sandbox`, behind the gateway on `mcp-tools`,
+  `elastic-agents`, in their own microVM on `sandbox`, behind the gateway on `mcp-tools`,
   holding a short-lived pass on `credentials`.
 - **The north star** (user, 2026-11-17): a four-pointed star in the top-right corner of
   every slide, drawn by `range.js`. Its brightness follows the beat's Energy (1 = dim, no
@@ -360,8 +366,8 @@ What v3 adds:
 - **Headline:** Three takeaways from four days in Salt Lake City.
 - **Visual:** the range drawn large: fleet, delivery, agents, each summit under its truth.
   1 fleet: "There's always another cluster." (treat it as the rule, not the exception: every
-  one built, upgraded and placed from code). 2 delivery: "No manual way keeps up." (twenty tools, 65 apps, three
-  upgrades a year; one pipeline). 3 agents: "AI brings problems as it solves them." (agents
+  one built, upgraded and placed from code). 2 delivery: "No manual way keeps up." (twenty tools on every cluster,
+  65 apps across them, three upgrades a year; one pipeline). 3 agents: "AI brings problems as it solves them." (agents
   as workloads, users, and in attackers' hands; fence ours in, then let them fight back).
   The team's trail climbs over all three toward the star. One click per truth
 - **Energy:** 4
@@ -375,7 +381,7 @@ What v3 adds:
 - **Visual:** the four days as boxes, fleet talks lit (96 of 501). Riffle: Bloomberg,
   AWS keynote, NVIDIA and Salesforce, Airbnb/Apple/Pinterest/Salesforce, Microsoft and Red
   Hat, Apple and Uber keynotes, NVIDIA, Mastercard, Anthropic/NVIDIA/Red Hat, Nutanix,
-  LinkedIn, Coinbase. Stay: LinkedIn (300 clusters, ~300,000 nodes, upgraded skip-level),
+  LinkedIn, Coinbase. Stay: LinkedIn (250+ clusters, ~500K nodes: three minors in one wave),
   Salesforce (1,000 clusters, with AIOps agents), GEICO (multi-provider, because no one cloud
   had the GPUs)
 - **Energy:** 3
@@ -489,8 +495,9 @@ What v3 adds:
 - **Headline:** Clusters as a fleet, managing kubeadm from code.
 - **Visual:** as v2: 54 steps collapse into a one-line version change; Cluster API on-prem, EKS Auto Mode in AWS.
   Under the 54 steps, a white fact square (user, 2026-11-18: peers run big fleets with small
-  teams): "From the stage: ~15 engineers run ~100 clusters at Meta. LinkedIn: 300 clusters,
-  ~300,000 nodes." Both from the session abstracts (GOALS §0.1)
+  teams): "From the stage: ~15 engineers run ~100 clusters at Meta. LinkedIn: 250+ clusters,
+  ~500K nodes." Meta from the keynote abstract (GOALS §0.1); LinkedIn from their skip-level
+  deck (🖼 `13-skip-level-upgrades/p02`)
 - **Energy:** 3
 - **Into next:** on-prem, the hands leave the upgrade. In AWS we can go further.
 - **Source:** LinkedIn KEP-4330; NVIDIA; Cluster API primer; Nutanix CAREN; *We Have GitOps
@@ -558,10 +565,12 @@ What v3 adds:
 ### gates
 
 - **Act:** IV
-- **Job:** automated gates and rollback
-- **Headline:** Every wave passes its tool's gate, and a failed gate rolls itself back.
-- **Visual:** as v2: a new Prometheus passes test, fails the canary gate, rolls back.
-  Three clicks
+- **Job:** automated gates
+- **Headline:** Every wave passes its tool's gate, and a failed gate stops the rollout before prod.
+- **Visual:** as v2: a new Prometheus passes test, fails the canary gate, and the rollout
+  stops there ("stops here"; wave 1 never starts). Three clicks. Not "rolls itself back":
+  LinkedIn's p22 (🖼 `02-canary-namespaces-linkedin/p22`) says exit 1 fails the sync and the
+  rollout stops before prod; then fix forward or roll the canary back and replay the gate
 - **Energy:** 4
 - **Into next:** and the pipeline knows when not to run at all.
 - **Source:** LinkedIn canary pipeline; GOALS §1.7
@@ -588,13 +597,16 @@ What v3 adds:
 - **Job:** the peak, for developers: multi-region by default; DR patterns done by the
   platform, routing between regions and clouds; also carries the constraints (where and
   why, scheduling) now that `karmada-constraints` is benched
-- **Headline:** Lose a region, or all of AWS, and the work moves wherever the constraints still hold.
+- **Headline:** Lose a region, or all of AWS, and traffic fails over to wherever the constraints still hold.
 - **Visual:** a developer's constraints on the left (no cluster names), the map on the
   right with six replicas across both AWS regions. Click: region 1 fails (dimmed,
-  alpenglow mark); region 2 takes all six, Auto Mode adding the nodes. Click: AWS fails;
-  the replicas slide to the second cloud. The constraints never change. One line: placement
-  follows labels, not cluster names; both regions run by default; Karmada is the option if
-  work should move on its own
+  alpenglow mark); traffic shifts and region 2 scales to six on Auto Mode nodes. Click: AWS
+  fails; traffic goes to the warm standby in the second cloud. The constraints never
+  change. One line: placement follows labels, not cluster names; both regions run the app,
+  so nothing moves: traffic, capacity and data fail over; Karmada is the option if work
+  should move on its own. Worded to GOALS §5.1 B (live-live is a traffic, capacity and
+  state problem; nothing moves) after the v4 review; the notes give the RTO as a sum of
+  the layers
 - **Energy:** 5
 - **Into next:** so what does a developer actually have to know now?
 - **Source:** GOALS §5.1 (cluster taints on NotReady drive rescheduling; application
@@ -674,11 +686,18 @@ What v3 adds:
 
 - **Act:** VI · tag: agents as workloads
 - **Job:** containment: a container shares a kernel
-- **Headline:** A container is not a cage, so agents run in gVisor or Kata.
-- **Visual:** an agent diamond inside nested shells, from container (shared kernel)
-  through gVisor (a user-space kernel in between) to Kata (its own microVM and kernel),
-  each with what it stops and what it costs (start-up time, overhead). Kata snapshots
-  are how Microsoft made start-up acceptable
+- **Headline:** A container is not a cage, so every agent pod gets a kernel of its own.
+- **Visual:** three choices side by side, not nested (they're alternatives, picked per
+  pod by `runtimeClassName`): an agent in a container, in gVisor, in a microVM, each with
+  an arrow for its system calls. The container's lands on the node's shared kernel
+  (alpenglow); gVisor's on its user-space kernel; the microVM's on its own kernel inside
+  the VM wall. Beside it, what each stops and where it runs: gVisor needs a node image we
+  build, so not on Auto Mode; the microVM is built into Auto Mode as Nitro Sandbox
+  (`isolated-sandbox`, Firecracker), Kata elsewhere, and is our default. Kata snapshots are
+  how Microsoft made start-up acceptable. EKS user guide, checked 2026-11-18: "AWS
+  determines the image (AMI) used for your compute nodes"; "Amazon EKS Auto Mode includes
+  Nitro Sandbox support with no additional configuration"; existing clusters need
+  Kubernetes 1.36+ for sandbox pods
 - **Energy:** 4
 - **Into next:** that's agents as workloads. As users: caged, it still has to do things,
   and it does them through tools.
@@ -791,13 +810,14 @@ What v3 adds:
 ### new-holes
 
 - **Act:** VIII · tag: agents as attackers
-- **Job:** the threat, made concrete: AI-found holes arrive daily, and our upgrade cadence
-  leaves each open for months
-- **Headline:** AI finds new holes daily, and three upgrades a year leave each one open for two months.
+- **Job:** the threat, made concrete: AI-found holes arrive daily, and a fix takes months
+  to travel hop by hop; we're the last hop
+- **Headline:** AI finds new holes daily, and a fix only counts once it reaches our clusters.
 - **Visual:** CVEs published a year, 2016–2026, as bars: a decade of steady climb, then the
   2026 bar in alpenglow at ~79k, "over 200 a day, nearly double 2025". Beside it: **220**
-  findings from one maintainer's AI pipeline in one project this year, 22 real (Metal3);
-  click: **61 days**, the average wait for our next upgrade at three a year (our model)
+  findings from one maintainer's own AI pipeline in Metal3 this year, 22 security bugs, and
+  attackers run the same models; click: **98 days** from Metal3's advisory to the last
+  Ericsson release that shipped the fix: each hop runs its own clock
 - **Energy:** 3
 - **Into next:** we built the shorter cycle in the first half. So who drives it?
 - **Source:** *Mythos vs Maintainers* p6 (OpenCVE chart); *AI Found a 0-Day in Metal3*
@@ -812,7 +832,7 @@ What v3 adds:
 - **Visual:** a ring of five stations, clockwise: a new hole lands (their agent, alpenglow);
   the lake finds it (which images, which clusters); our agent drafts the fix (a PR with its
   own check); the team approves (after policy checks it); the waves roll it out (a failed
-  gate rolls it back). "days, not two months" in the middle. Click: the proof, NVIDIA's
+  gate stops it). "days, not months" in the middle. Click: the proof, NVIDIA's
   30 minutes for ~5,600 nodes, agent-driven, and KubeEdge's maintainers fighting fire with fire
 - **Energy:** 4
 - **Into next:** same team, same pipeline; the agents just make it go round faster.

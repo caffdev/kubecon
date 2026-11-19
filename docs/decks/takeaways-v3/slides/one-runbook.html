@@ -40,7 +40,7 @@
     <div class="card"><p class="code"><span class="c"># for every node, one after another</span>
 kubectl drain node-4 --ignore-daemonsets
 apt-get install -y kubeadm='1.37.*'
-kubeadm upgrade node
+kubeadm upgrade node  <span class="c"># first control plane: apply</span>
 apt-get install -y kubelet='1.37.*' kubectl='1.37.*'
 systemctl restart kubelet
 kubectl uncordon node-4</p></div>
@@ -56,7 +56,7 @@ kubectl uncordon node-4</p></div>
   <aside class="notes">
     Here's what one upgrade actually is, on a kubeadm cluster.
 
-    In the box: the runbook for a single node. Drain it. Upgrade kubeadm. Run the upgrade. Upgrade kubelet and kubectl. Restart kubelet. Uncordon it. Then the next node. The control plane nodes go first, one at a time, then the workers, one at a time.
+    In the box: the runbook for a single node. Drain it. Upgrade kubeadm. Run the upgrade: upgrade apply on the first control-plane node, upgrade node on every other one. Upgrade kubelet and kubectl. Restart kubelet. Uncordon it. Then the next node. The control plane nodes go first, one at a time, then the workers, one at a time.
 
     Below: that's one row. Nine nodes, six steps each, fifty-four steps for one cluster, and a person waiting on every one of them. Call it a day.
 
