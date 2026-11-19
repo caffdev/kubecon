@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lakeside savings in practice</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 96px; }
+    .lede { position: absolute; left: var(--margin); top: 214px; max-width: 1500px; font-size: 34px; line-height: 1.3; color: var(--lichen); }
+    .lede b { color: var(--snow); font-weight: 500; }
+    .chart { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .grid { stroke: #1c262c; stroke-width: 1; }
+    .day-name { font: 600 26px var(--font-display); fill: var(--lichen); text-anchor: middle; }
+    .use { fill: none; stroke: var(--snow); stroke-width: 2.5; opacity: .9; }
+    .vpa { fill: none; stroke: var(--haze); stroke-width: 4; stroke-dasharray: 12 8; }
+    .ai { fill: none; stroke: var(--teal); stroke-width: 4; }
+    .saved { fill: var(--teal); opacity: .22; }
+    .key { font: 600 28px var(--font-display); }
+    .key.vpa-t { fill: var(--haze); } .key.ai-t { fill: var(--teal); } .key.use-t { fill: var(--snow); }
+    .how { position: absolute; left: var(--margin); top: 766px; width: 1100px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .how div { border-top: 3px solid var(--scree); padding-top: 8px; font-size: 24px; line-height: 1.3; color: var(--lichen); }
+    .how b { display: block; font: 600 30px/1.1 var(--font-display); color: var(--snow); }
+    .tally { position: absolute; left: 1330px; top: 316px; width: 490px; font-size: 26px; line-height: 1.3; color: var(--lichen); }
+    .tally b.big { display: block; font: 600 96px/1 var(--font-display); color: var(--teal); }
+    .guard { position: absolute; left: 1330px; top: 660px; width: 490px; font-size: 27px; line-height: 1.32; color: var(--lichen); padding-left: 18px; border-left: 4px solid var(--you); }
+    .guard b { display: block; font: 600 32px/1.1 var(--font-display); color: var(--snow); margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Lakeside savings in practice.</h2>
+    <p class="lede">With the lake’s signals, <b>AI resizes pods more aggressively than VPA alone</b>, and cuts the bill.</p>
+
+    <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="One workload across a trading week. Usage peaks in market hours and falls overnight and at the weekend. VPA's request is one flat line above the peaks; the AI's request follows the week, tight overnight and at the weekend and raised ahead of the open. The gap between them is the saving. Illustrative."></svg>
+
+    <div class="tally"><b class="big" id="pct">0%</b>fewer reserved core-hours for this workload. Illustrative: the pattern Hertz showed, AI agents right-sizing across 80 EKS clusters. The 61% is our model, not their figure.</div>
+    <div class="guard"><b>Proposes first, then acts</b>As a pull request a person approves. Later, on its own inside min and max bounds that policy enforces, with rollback.</div>
+
+    <div class="how">
+      <div><b>VPA</b>the recommender sets the floor</div>
+      <div><b>In-place resize</b>new size, no restart</div>
+      <div><b>KEDA</b>fast signals: lag, queue depth</div>
+      <div><b>Karpenter</b>consolidates the freed nodes</div>
+    </div>
+  </main>
+
+  <aside class="notes">
+    One of the first things worth deciding from the lake is how big every pod should be. This is lakeside savings, in practice.
+
+    One workload, one trading week. The white line is what it actually uses: busy in market hours, a spike at the open and the close, quiet overnight, nearly idle at the weekend.
+
+    The dashed blue line is what VPA asks for. VPA's recommender looks at history and settles on one size with headroom over the peaks, and that's a good, safe floor. But it's one number for the whole week.
+
+    The teal line is what an AI can ask for when it reads the lake: the market calendar, the deploy history, the Kafka lag, last week's same day. Tight overnight and at the weekend, raised before the open, back up for the close. The shaded gap between the two lines is reserved capacity we stop paying for. On this made-up workload it's a large share of the core-hours.
+
+    How it works without anything restarting: VPA still sets the floor; in-place resize changes the size of a running pod; KEDA reacts to fast signals like queue depth; and Karpenter consolidates the nodes that frees up. That last step is where the bill actually goes down.
+
+    And the guardrail, because this is an agent changing production. It starts by proposing the new sizes as a pull request. Only later does it act on its own, inside minimum and maximum bounds that policy enforces, with automatic rollback. Hertz showed this pattern at the show: AI agents right-sizing every workload and rearranging nodes across their EKS fleet, about eighty clusters, rolled out through Terraform. They didn't post slides, so the sixty-one percent here is our illustration of the pattern, not their number. And the "Agentic Karpenter" demo had Claude propose fixes for a human to approve.
+
+    And that's the pattern for every agent on this map: read from the lake, propose first, act only inside bounds that policy enforces. Which brings back the third way agents arrive, the one we can't fence out.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2', 'p3'] });
+    (() => {
+      // illustrative: one workload, Monday to Sunday, hourly cores
+      const use = [], ai = [];
+      for (let h = 0; h < 168; h++) {
+        const d = Math.floor(h / 24), t = h % 24, wk = d < 5;
+        let u = 1.0, a = 2.4;
+        if (wk) {
+          if (t >= 7 && t < 9) { u = 4.5; a = 6.5; }
+          if (t === 9) { u = 9.5; a = 12.5; }
+          if (t >= 10 && t < 15) { u = 7 + ((h * 37) % 5) * 0.4; a = 10.5; }
+          if (t === 15) { u = 10.2; a = 12.5; }
+          if (t >= 16 && t < 20) { u = 4; a = 6; }
+          if (t >= 20 || t < 7) { u = 1.6; a = 3; }
+        } else { u = 0.9; a = 2.2; }
+        use.push(u); ai.push(a);
+      }
+      const VPA = 12.8;
+      const X0 = 160, W = 1080, Y0 = 720, H = 360, MAX = 14;
+      const x = (h) => X0 + (h / 168) * W, y = (v) => Y0 - (v / MAX) * H;
+      let s = '';
+      for (let d = 0; d <= 7; d++) s += `<line class="grid" x1="${x(d * 24)}" x2="${x(d * 24)}" y1="${y(MAX)}" y2="${Y0}"/>`;
+      ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach((n, d) => { s += `<text class="day-name" x="${x(d * 24 + 12)}" y="${Y0 + 34}">${n}</text>`; });
+      s += `<line class="grid" x1="${X0}" x2="${X0 + W}" y1="${Y0}" y2="${Y0}"/>`;
+      // the saving: between VPA's flat request and the AI's stepped request
+      let area = `M${x(0)} ${y(VPA)}H${x(168)}`;
+      for (let h = 167; h >= 0; h--) area += `V${y(ai[h])}H${x(h)}`;
+      s += `<path class="saved" d="${area}Z"/>`;
+      // AI's stepped request
+      let ad = `M${x(0)} ${y(ai[0])}`;
+      ai.forEach((v, h) => { ad += `V${y(v)}H${x(h + 1)}`; });
+      s += `<path class="ai" d="${ad}"/>`;
+      s += `<line class="vpa" x1="${x(0)}" x2="${x(168)}" y1="${y(VPA)}" y2="${y(VPA)}"/>`;
+      let ud = '';
+      use.forEach((v, h) => { ud += `${h ? 'L' : 'M'}${x(h + 0.5)} ${y(v)}`; });
+      s += `<path class="use" d="${ud}"/>`;
+      s += `<text class="key vpa-t" x="${x(122)}" y="${y(VPA) - 14}">VPA’s request</text>`;
+      s += `<text class="key ai-t" x="${x(124)}" y="${y(3.6) - 12}">AI’s request</text>`;
+      s += `<text class="key use-t" x="${x(122)}" y="${y(1) + 30}">actual use</text>`;
+      Peaks.draw('#chart', s);
+      const vpaSum = VPA * 168, aiSum = ai.reduce((a, b) => a + b, 0);
+      document.getElementById('pct').textContent = Math.round((1 - aiSum / vpaSum) * 100) + '%';
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
