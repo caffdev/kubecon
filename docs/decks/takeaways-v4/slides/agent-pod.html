@@ -31,41 +31,41 @@
   <span class="k">ttlSecondsAfterFinished:</span> 600
   <span class="k">template:</span>
     <span class="k">spec:</span>
-<span class="hl">      <span class="k">runtimeClassName:</span> gvisor</span>
+<span class="hl">      <span class="k">runtimeClassName:</span> isolated-sandbox</span>
       <span class="k">serviceAccountName:</span> triage-agent
       <span class="k">automountServiceAccountToken:</span> false
-      <span class="k">nodeSelector:</span> {pool: agents}
+      <span class="k">nodeSelector:</span> {karpenter.sh/nodepool: agents}
       <span class="k">tolerations:</span> [{key: agents, effect: NoSchedule}]
       <span class="k">containers:</span> [{image: agents/triage:2026.11}]</pre>
     </figure>
 
     <ul class="callouts">
-      <li class="on"><b>runtimeClassName: gvisor</b>its code meets gVisor’s kernel, not the node’s</li>
+      <li class="on"><b>runtimeClassName: isolated-sandbox</b>a Firecracker microVM per pod, built into Auto Mode</li>
       <li><b>serviceAccountName</b>Pod Identity: a short-lived role, no keys in the image</li>
       <li><b>automountServiceAccountToken: false</b>no Kubernetes API token it didn’t ask for</li>
       <li><b>activeDeadlineSeconds: 900</b>killed at 15 minutes, whatever it’s doing</li>
-      <li><b>nodeSelector, tolerations</b>its own tainted pool, which Karpenter grows and empties</li>
+      <li><b>nodeSelector, tolerations</b>its own tainted node pool, grown and emptied for it</li>
     </ul>
 
-    <p class="catch">Auto Mode can’t run gVisor or Kata, because it takes no custom AMIs: <b>the agents pool is self-managed Karpenter.</b> Verify before we build it.</p>
+    <p class="catch">Nitro Sandbox needs <b>Kubernetes 1.36+</b> on existing Auto Mode clusters, and has <b>no GPU passthrough</b> yet. On-prem, the same line names gVisor or Kata.</p>
   </main>
 
   <aside class="notes">
     Workloads first. Here's one agent as Kubernetes sees it: a Job. Jenkins, an alert or a schedule creates it, it does one task, and it's gone.
 
-    Five fields matter. runtimeClassName gvisor: the code it runs talks to gVisor's kernel, not the node's. More on that next.
+    Five fields matter. runtimeClassName isolated-sandbox: in EKS Auto Mode that's Nitro Sandbox, built in. The pod runs in its own Firecracker microVM, so the code the agent just wrote never touches the node's kernel. No extra setup; AWS documents it as the simplest way to run isolated pods.
 
-    serviceAccountName: in AWS, wired to Pod Identity, so it gets a short-lived role. No keys in the image.
+    serviceAccountName: wired to Pod Identity, so it gets a short-lived role. No keys in the image.
 
     automountServiceAccountToken false: no Kubernetes API token just because it's a pod.
 
     activeDeadlineSeconds: killed at fifteen minutes, whatever it's doing; ttlSecondsAfterFinished cleans it up, and its logs are already in the lake.
 
-    nodeSelector and tolerations: agents run on their own tainted pool, which Karpenter grows for a burst and empties after. Nobody approves each agent; the spec is the approval.
+    nodeSelector and tolerations: agents run on their own tainted node pool, grown for a burst and emptied after. Nobody approves each agent; the spec is the approval.
 
     Podium runs this shape: every coding agent an isolated pod.
 
-    One catch we found writing this: Auto Mode can't run gVisor or Kata, so the agents pool is self-managed Karpenter on our own AMI. Verify before we build it.
+    The catches, from the EKS user guide: existing Auto Mode clusters need Kubernetes 1.36 for sandbox pods, and there's no GPU passthrough yet. On-prem, the same line names gVisor or Kata instead.
 
     runtimeClassName is the line that matters, because a container is not a cage.
   </aside>

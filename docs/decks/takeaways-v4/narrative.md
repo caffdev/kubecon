@@ -68,7 +68,8 @@ Sources: GOALS §0.1, §1.4, §1.7, §2.1–§2.3, §3.1, §3.4–§3.6, §4.2, 
   `Region` claim, never hand-built; (2) splunk-otel-collector through `RollingSync` waves
   this quarter; (3) AWS region 2 from one claim on Auto Mode, one app live in both,
   placed by labels; (4) agents get a runtime class, a gateway, Pod Identity and the CEL
-  rules before they triage one alert; (5) explain-only alert triage by Q2 2027, with the
+  rules before they triage one alert (in AWS the runtime class is Auto Mode's
+  `isolated-sandbox`); (5) explain-only alert triage by Q2 2027, with the
   accept/modify/reject log from day one.
 
 ## Shape
@@ -124,13 +125,21 @@ Sources: GOALS §0.1, §1.4, §1.7, §2.1–§2.3, §3.1, §3.4–§3.6, §4.2, 
     ny4/ch4 is the first question an admin will ask, and it's undecided.**
   - EKS Auto Mode fields (`computeConfig.enabled`, `nodePools: [general-purpose, system]`,
     `kubernetesNetworkConfig.elasticLoadBalancing`, `storageConfig.blockStorage`) are the
-    CreateCluster API's. ⚠️ "Every node replaced within 21 days" (max node lifetime), from
-    `EKS-VS-ECS.md`; check the Auto Mode user guide.
-  - ⚠️ **Auto Mode vs sandboxes:** Auto Mode doesn't take custom AMIs (`EKS-VS-ECS.md`
-    rule 2), so gVisor or Kata nodes likely need a self-managed Karpenter NodePool; Kata
-    on EC2 needs metal instances (or nested virtualisation where offered). AWS's own talk,
-    *Agent Sandbox on EKS: Hardware-Isolated microVM Pods for AI Agents*, presented "a
-    runtime class on a normal pod spec". Verify both before presenting; someone will ask.
+    CreateCluster API's. **Checked 2026-11-18** (EKS user guide, `automode.html`): "nodes
+    launched by EKS Auto Mode have a maximum lifetime of 21 days (which you can reduce)".
+  - **Auto Mode vs sandboxes, checked 2026-11-18** (first raised by the v3 session, then
+    read by us in the EKS user guide: `automode.html`, `automode-learn-instances.html`,
+    `sandboxing.md`, `sandboxing-limitations.md`). "With EKS Auto Mode, AWS determines the
+    image (AMI)", so gVisor or Kata would need node groups we build. But Auto Mode "includes
+    Nitro Sandbox support with no additional configuration": `runtimeClassName:
+    isolated-sandbox` (or `confidential-sandbox`), a Firecracker microVM per pod. Limits
+    that matter to us: existing Auto Mode clusters need Kubernetes 1.36+; no GPU or device
+    passthrough at launch; no `hostNetwork`; no in-place CPU/memory resize; one EBS volume
+    per pod (EFS for shared storage); total sandbox vCPUs ≤ 5× the node's; some instance
+    types excluded (`r5a`, `r5ad`, `m5ad`, multi-NUMA, GPU/Neuron AMIs, FIPS AMIs); an
+    unplaceable sandbox pod stays `Pending`. So v4's answer is: **Nitro Sandbox in AWS,
+    gVisor (or Kata on KVM) on-prem.** AWS's own talk, *Agent Sandbox on EKS*, said "a
+    runtime class on a normal pod spec", which matches.
   - ⚠️ `kubernetes-sigs/agent-sandbox` (Sandbox, warm-pool CRDs): not on the slides until
     checked.
   - ⚠️ `automountServiceAccountToken: false` on the agent Job: check that EKS Pod Identity
@@ -376,8 +385,8 @@ What v4 adds, all in `theme/theme.css`:
   labelled *our API* and the composed EKS cluster's real Auto Mode fields in a second card:
   `computeConfig: {enabled: true, nodePools: [general-purpose, system]}`,
   `kubernetesNetworkConfig.elasticLoadBalancing.enabled`, `storageConfig.blockStorage.enabled`.
-  The catch, on screen: Auto Mode takes no custom AMIs (it matters for agent sandboxes later);
-  ⚠️ 21-day node lifetime
+  The source line quotes the EKS user guide: AWS picks the node image; nodes live at most
+  21 days (checked 2026-11-18)
 - **Energy:** 3
 - **Into next:** that's the admins. The platform team carries the most, and the show
   had a lot to say about them.
@@ -529,12 +538,12 @@ What v4 adds, all in `theme/theme.css`:
 - **Act:** V · tag: agents as workloads
 - **Job:** an agent as a workload is an ordinary Job with five fields that matter
 - **Headline:** An agent is a Job: sandboxed, on its own nodes, with a deadline, and gone when it's done.
-- **Visual:** the Job spec, annotated: `runtimeClassName: gvisor`, `serviceAccountName`
-  (Pod Identity, next act), `automountServiceAccountToken: false`, `activeDeadlineSeconds`,
-  `ttlSecondsAfterFinished`, a toleration for the tainted `agents` NodePool. Callouts on
-  the right tie each field to what it stops. Under it, a day of these spawning and
-  vanishing on elastic nodes (v3's picture, small). The catch: Auto Mode can't run custom
-  runtimes; the agents NodePool is self-managed Karpenter ⚠️
+- **Visual:** the Job spec, annotated: `runtimeClassName: isolated-sandbox` (Nitro
+  Sandbox, built into Auto Mode), `serviceAccountName` (Pod Identity, next act),
+  `automountServiceAccountToken: false`, `activeDeadlineSeconds`, `ttlSecondsAfterFinished`,
+  a nodeSelector and toleration for the tainted `agents` NodePool. Callouts on the right tie
+  each field to what it does. The catch: Kubernetes 1.36+ on existing Auto Mode clusters,
+  no GPU passthrough; on-prem the same line names gVisor or Kata
 - **Energy:** 3
 - **Into next:** `runtimeClassName` is the line that matters, because a container is not a cage.
 - **Source:** `CLAUDE-AGENT-PLATFORM.md` (Jenkins-triggered agent pods); Podium (abstract);
@@ -545,17 +554,19 @@ What v4 adds, all in `theme/theme.css`:
 - **Act:** V · tag: agents as workloads
 - **Job:** containment, accurately: three runtimes are alternatives, each with a syscall
   path, a cost and a place it can run
-- **Headline:** A container shares the kernel; gVisor intercepts it, and Kata gives the agent its own.
+- **Headline:** A container shares the kernel; gVisor intercepts it, and a microVM gives the agent its own.
 - **Visual:** three columns side by side, each the path a syscall takes from the agent to
   the host: runc (straight to the host kernel); gVisor (into the Sentry, a user-space
-  kernel, then a narrow set to the host); Kata (into a guest kernel inside a microVM). Under
-  each: start-up, overhead, where it runs on AWS (any node · any node · metal or nested
-  virt). The `RuntimeClass` that selects each (`handler: runsc`, `handler: kata`). Receipt
-  line: Microsoft snapshots Kata VMs so a pod resumes instead of cold-starting
+  kernel, then a narrow set to the host); a microVM (into a guest kernel: Kata on our KVM
+  hosts on-prem, Nitro Sandbox's Firecracker in Auto Mode). Under each: start-up, cost,
+  where, and the class (`runc`, `runsc`, `kata · isolated-sandbox`). Verdicts: not for
+  agent code; our on-prem default; our default in AWS. Source line: the EKS user guide's
+  Nitro Sandbox quote; Microsoft's Kata snapshots
 - **Energy:** 4
 - **Into next:** that's agents as workloads. As users, they do things through tools.
-- **Source:** GOALS §3.1; "Sandbox Your Agents" keynote (Red Hat); *Groundhog Pod*
-  (Microsoft, pptx); *Untrusted Code on Secure Runtimes* (Google; no deck)
+- **Source:** GOALS §3.1; EKS user guide (Nitro Sandbox); "Sandbox Your Agents" keynote
+  (Red Hat); *Groundhog Pod* (Microsoft, pptx); *Untrusted Code on Secure Runtimes* (Google;
+  no deck)
 
 ### mcp-gateway
 
@@ -707,7 +718,7 @@ What v4 adds, all in `theme/theme.css`:
   path colours, each a PR with the objects it adds: (1) `clusters/<next>.yaml`, a CAPI
   Cluster or a Region claim; (2) `wave:` on 29 cluster secrets, RollingSync, a gate Job,
   for splunk-otel-collector; (3) `regions/aws-2.yaml` and `placement.yaml`; (4)
-  RuntimeClass, gateway, Pod Identity, CEL rules; (5) explain-only triage by Q2 2027, accept
+  isolated-sandbox, gateway, Pod Identity, CEL rules; (5) explain-only triage by Q2 2027, accept
   / modify / reject logged from day one. (The plane and fence from v3 collided with the
   list, so they're off this slide)
 - **Energy:** 3

@@ -40,27 +40,27 @@
 <body>
   <main class="slide dusk" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h2>A container shares the kernel; gVisor intercepts it,<br>and Kata gives the agent its own.</h2>
+    <h2>A container shares the kernel; gVisor intercepts it,<br>and a microVM gives the agent its own.</h2>
 
     <svg class="paths" id="paths" viewBox="0 0 1920 1080" role="img" aria-label="Three syscall paths side by side. A container: the agent's system calls go straight to the host kernel every pod shares. gVisor: they go to the Sentry, a kernel in user space, and only a narrow set reaches the host. Kata: they go to a guest kernel inside a microVM, and the hypervisor stands between it and the host."></svg>
 
     <div class="col c1">
       <h3>runc <small>a plain container</small></h3>
-      <dl class="facts"><dt>start</dt><dd>instant</dd><dt>cost</dt><dd>none</dd><dt>on AWS</dt><dd>any node</dd><dt>handler</dt><dd><code>runc</code></dd></dl>
+      <dl class="facts"><dt>start</dt><dd>instant</dd><dt>cost</dt><dd>none</dd><dt>where</dt><dd>anywhere</dd><dt>handler</dt><dd><code>runc</code></dd></dl>
       <p class="verdict">Not for code an agent wrote</p>
     </div>
     <div class="col c2" data-step="1">
       <h3>gVisor <small>a kernel in user space</small></h3>
-      <dl class="facts"><dt>start</dt><dd>fast</dd><dt>cost</dt><dd>syscall-heavy work slows</dd><dt>on AWS</dt><dd>any instance, own AMI</dd><dt>handler</dt><dd><code>runsc</code></dd></dl>
-      <p class="verdict">Our default for agents</p>
+      <dl class="facts"><dt>start</dt><dd>fast</dd><dt>cost</dt><dd>syscall-heavy work slows</dd><dt>where</dt><dd>any node; not Auto Mode</dd><dt>handler</dt><dd><code>runsc</code></dd></dl>
+      <p class="verdict">Our on-prem default</p>
     </div>
     <div class="col c3" data-step="2">
-      <h3>Kata <small>a microVM per pod</small></h3>
-      <dl class="facts"><dt>start</dt><dd>slower; snapshots fix most</dd><dt>cost</dt><dd>a VM’s memory per pod</dd><dt>on AWS</dt><dd>metal or nested virt</dd><dt>handler</dt><dd><code>kata</code></dd></dl>
-      <p class="verdict">For untrusted code and tools</p>
+      <h3>microVM <small>Kata · Nitro Sandbox</small></h3>
+      <dl class="facts"><dt>start</dt><dd>slower; snapshots help</dd><dt>cost</dt><dd>a VM per pod, no GPU</dd><dt>where</dt><dd>KVM on-prem · Auto Mode</dd><dt>class</dt><dd><code>kata · isolated-sandbox</code></dd></dl>
+      <p class="verdict">Our default in AWS</p>
     </div>
 
-    <p class="src">“Sandbox Your Agents” keynote (Red Hat). Microsoft, <i>Groundhog Pod</i>: Kata VM snapshots resume a pod instead of cold-starting it. AWS, <i>Agent Sandbox on EKS</i>: “a runtime class on a normal pod spec” (no deck).</p>
+    <p class="src">EKS user guide: Auto Mode “includes Nitro Sandbox support with no additional configuration” (Firecracker; Kubernetes 1.36+). “Sandbox Your Agents” keynote (Red Hat). Microsoft, <i>Groundhog Pod</i>: Kata VM snapshots. AWS, <i>Agent Sandbox on EKS</i> (no deck).</p>
   </main>
 
   <aside class="notes">
@@ -68,9 +68,9 @@
 
     On the left, a plain container. The agent's system calls go straight to the host kernel every pod on that node shares. A namespace, not a wall. Fine for code a person reviewed; not for code an agent wrote a minute ago.
 
-    Click. gVisor. The calls go to the Sentry, a kernel in user space, and only a narrow set ever reaches the host. Most kernel exploits stop there. Fast to start; syscall-heavy work pays. Runs on any EC2 instance, but on our own AMI, so not Auto Mode. Our default for agents.
+    Click. gVisor. The calls go to the Sentry, a kernel in user space, and only a narrow set reaches the host. Fast to start; syscall-heavy work pays. It needs our own node image, so it's for on-prem, not Auto Mode. Our on-prem default.
 
-    Click. Kata. Each pod gets a microVM with its own guest kernel, and an escape lands in a VM. Slower to start, a VM's memory per pod; Microsoft showed snapshots fixing most of the start-up. On AWS it needs metal or nested virtualisation. For untrusted code and tools that run whatever they're handed.
+    Click. A microVM. Each pod gets its own guest kernel behind a hypervisor, so an escape lands in a VM. On-prem that's Kata on our own KVM hosts; Microsoft showed snapshots taking away most of the start-up cost. In AWS it's already done for us: Auto Mode includes Nitro Sandbox, a Firecracker microVM per pod, selected with runtimeClassName isolated-sandbox, no setup. That's our default in AWS. The catches: Kubernetes 1.36 or later, and no GPU passthrough yet.
 
     AWS's own talk said it simply: a runtime class on a normal pod spec.
 
@@ -98,7 +98,7 @@
       // Kata: a guest kernel in a microVM
       let k = `<rect class="vm" x="${X[2] - 8}" y="${TOP - 12}" width="${W + 16}" height="${546 - TOP + 12}" rx="14"/><text class="lay-s" x="${X[2] + W - 120}" y="${TOP + 26}">microVM</text>`;
       k += agent(X[2]) + arrow(X[2] + 30, TOP + 40, 470, '');
-      k += `<rect class="lay" x="${X[2]}" y="470" width="${W}" height="64" rx="10"/><text class="lay-t" x="${X[2] + 20}" y="512">guest kernel</text><text class="lay-s" x="${X[2] + 190}" y="511">its own</text>`;
+      k += `<rect class="lay" x="${X[2]}" y="470" width="${W}" height="64" rx="10"/><text class="lay-t" x="${X[2] + 20}" y="512">guest kernel</text><text class="lay-s" x="${X[2] + 190}" y="511">its own, in Firecracker or QEMU</text>`;
       k += arrow(X[2] + 30, 546, HOST, 'hypervisor') + host(X[2], false);
       s += `<g data-step="2">${k}</g>`;
       Peaks.draw('#paths', s);

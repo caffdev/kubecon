@@ -35,7 +35,7 @@
       <li class="a1"><p class="what">No hand-built cluster, ever again</p><p class="obj">clusters/&lt;next&gt;.yaml <span>a CAPI Cluster on-prem, a Region claim in AWS</span></p></li>
       <li class="a2"><p class="what">splunk-otel-collector through the waves, this quarter</p><p class="obj">wave: on 29 cluster secrets · RollingSync · a gate Job</p></li>
       <li class="a3"><p class="what">AWS region 2 from one claim, one app live in both</p><p class="obj">regions/aws-2.yaml · placement.yaml <span>on Auto Mode</span></p></li>
-      <li class="a4"><p class="what">Agents fenced in before they touch anything</p><p class="obj">RuntimeClass · gateway · Pod Identity · CEL rules</p></li>
+      <li class="a4"><p class="what">Agents fenced in before they touch anything</p><p class="obj">isolated-sandbox · gateway · Pod Identity · CEL rules</p></li>
       <li class="a5"><p class="what">Explain-only alert triage by Q2 2027</p><p class="obj">accept / modify / reject, <span>logged from day one</span></p></li>
     </ol>
     <p class="src">Each line is a pull request someone can open next week. The objects are the ones on the slides: real kinds and fields, our values.</p>
@@ -54,7 +54,7 @@
 
     Three. AWS region two from one claim, on Auto Mode, with one app live in both regions, placed by labels.
 
-    Four. Before any agent touches anything: the runtime class and its node pool, the gateway, Pod Identity, and the CEL rules.
+    Four. Before any agent touches anything: the sandbox runtime class, which Auto Mode already has, the gateway, Pod Identity, and the CEL rules.
 
     Five. Explain-only alert triage by the second quarter of 2027, logging every accept, modify and reject from the first day, because that log is how agents earn the next job.
 

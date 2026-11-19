@@ -12,7 +12,7 @@
 
     .cc.claim { left: var(--margin); top: 330px; width: 540px; }
     .cc.eks { left: 1290px; top: 330px; width: 510px; }
-    .catch { bottom: 44px; }
+    .src { bottom: 44px; }
     .flow { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
     .wire { fill: none; stroke: var(--haze); stroke-width: 2.5; opacity: .75; }
     .xp { fill: #0b1820; stroke: var(--haze); stroke-width: 3; }
@@ -58,7 +58,7 @@
   <span class="k">blockStorage:</span>
     <span class="k">enabled:</span> true</pre>
     </figure>
-    <p class="catch">Auto Mode takes <b>no custom AMIs</b>, which matters for agent sandboxes later. Its 21-day maximum node life is still unchecked.</p>
+    <p class="src">EKS user guide: AWS determines the node image, and Auto Mode nodes live at most 21 days before they’re replaced. <i>What Changes When Crossplane Adoption Gets Real</i> (American Family Insurance; no deck).</p>
   </main>
 
   <aside class="notes">
@@ -70,7 +70,7 @@
 
     Click. What it sets on each EKS cluster, in the real API fields. The version is ours. computeConfig enabled is Auto Mode: AWS runs the nodes and Karpenter. Load balancing and block storage on, so AWS runs those add-ons too.
 
-    Two catches. Auto Mode takes no custom AMIs, which matters for agent sandboxes later. And the twenty-one-day node lifetime in our notes still needs checking.
+    And per the EKS user guide, AWS picks the node image and replaces every node within twenty-one days, so OS patches arrive on their own. It also has a sandbox runtime for agents built in; that comes back later.
 
     That's the admins. The platform team carries the most, and the show had plenty to say about them.
   </aside>
