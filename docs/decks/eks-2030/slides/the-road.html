@@ -3,25 +3,60 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Four years, four rungs, each with a test we can fail</title>
+  <title>The road</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* A stair in section: one tread per year, each with what lands and the test that says
+       we got there (red: a person checks it). */
+    #stair { position: absolute; inset: 0; }
+    .rung { position: absolute; width: 396px; }
+    .rung h3 { margin: 0; font: 800 52px/1 var(--font-display); letter-spacing: -.03em; }
+    .rung h3 span { font: 600 28px var(--font-display); letter-spacing: -.01em; color: var(--c-lead); margin-left: 10px; }
+    .rung ul { margin: 10px 0 0; padding: 0; list-style: none; }
+    .rung li { font: 400 24px/1.3 var(--font-tech); margin-top: 4px; }
+    .rung .test { margin-top: 10px; font: 700 25px/1.3 var(--font-tech); color: var(--c-red-ink); }
+    .y27 { left: 132px; bottom: 202px; } .y28 { left: 547px; bottom: 292px; } .y29 { left: 962px; bottom: 382px; } .y30 { left: 1377px; bottom: 472px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Four years, four rungs, each with a test we can fail</h1>
+    <h2 class="head" style="width:1180px">Four years, four rungs, each with a test we can fail</h2>
+    <svg id="stair" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <div class="rung y27" data-step="1"><h3>2027<span>foundation</span></h3><ul><li>Prod EKS from Git, on the contract</li><li>Vault + Istio identity; OTel in front</li><li>First agent: alert triage, read-only</li></ul><div class="test">Test: rebuild a prod cluster from Git in a day</div></div>
+    <div class="rung y28" data-step="2"><h3>2028<span>the move</span></h3><ul><li>Most apps on EKS; on-prem draining</li><li>A second AWS region</li><li>Agents open upgrade and CVE MRs</li></ul><div class="test">Test: a minor across the fleet in two weeks</div></div>
+    <div class="rung y29" data-step="3"><h3>2029<span>scale</span></h3><ul><li>Tens of clusters</li><li>Agents ship routine change, one approval</li><li>Cost per team, agent and alert</li></ul><div class="test">Test: the platform team stays flat while clusters double</div></div>
+    <div class="rung y30" data-step="4"><h3>2030<span>the ratio</span></h3><ul><li>Every line of the spec sheet</li></ul><div class="test">Test: our row sits next to Meta’s</div></div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Here's the road, one rung a year. Each rung has a test we can fail, so we'll know whether we're on it.
+
+    Click. 2027 is the foundation. The first production EKS clusters are built from Git, and apps arrive on the ten-line contract. Vault and Istio identity from day one, and the OTel tier in front of Prometheus, Grafana and Splunk. And our first agent: alert triage, read-only. The test: can we rebuild a production cluster from Git in a day?
+
+    Click. 2028 is the move. Most apps are on EKS and on-prem is draining. A second AWS region. Upgrades go in waves with checks, and agents start opening the upgrade and CVE merge requests. The test: one Kubernetes minor version across the whole fleet in two weeks.
+
+    Click. 2029 is scale. Tens of clusters. Agents ship routine change with one human approval. Cost per team, per agent and per alert is on a dashboard. The test is the one that matters: the platform team stays flat while the cluster count doubles.
+
+    Click. And 2030 is the ratio: every line of the spec sheet, met. The test: our row belongs next to Meta's.
+
+    What we don't build matters just as much.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const x = [120, 535, 950, 1365, 1800], top = [900, 810, 720, 630];
+      let d = `M${x[0]} 980 V${top[0]}`;
+      for (let i = 0; i < 4; i++) { d += ` H${x[i + 1]}`; if (i < 3) d += ` V${top[i + 1]}`; }
+      d += ` V980 Z`;
+      let s = Dwg.defs() + `<path class="hatch-ink" d="${d}"/>`;
+      for (let i = 0; i < 4; i++) s += `<line class="wire" x1="${x[i]}" y1="${top[i]}" x2="${x[i + 1]}" y2="${top[i]}"/>`;
+
+      Dwg.into('#stair', s);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

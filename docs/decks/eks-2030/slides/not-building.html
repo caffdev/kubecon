@@ -7,19 +7,48 @@
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* A deletion list: each item voided and struck, with what we do instead in blue. */
+    .del { position: absolute; left: 120px; top: 290px; width: 1680px; }
+    .row { display: grid; grid-template-columns: 820px 1fr; align-items: center; height: 108px; border-top: 2px solid var(--c-graphite); }
+    .row:last-child { border-bottom: 2px solid var(--c-graphite); }
+    .row s {
+      justify-self: start; padding: 8px 18px; font: 800 40px/1.1 var(--font-display); letter-spacing: -.02em; color: var(--c-lead);
+      text-decoration-thickness: 4px; text-decoration-color: var(--c-graphite);
+      background: repeating-linear-gradient(45deg, transparent 0 10px, rgb(93 101 107 / .14) 10px 12px);
+    }
+    .row span { font: 400 28px/1.3 var(--font-tech); color: var(--c-cyan-ink); }
+    .row span b { color: var(--c-graphite); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>What we will not build</h1>
+    <h2 class="head">What we will not build</h2>
+    <div class="del">
+      <div class="row"><s>GPUs, model serving, DRA</s><span><b>Instead:</b> we call Claude</span></div>
+      <div class="row"><s>A second orchestrator or cloud</s><span><b>Instead:</b> EKS, on AWS</span></div>
+      <div class="row"><s>Kargo, Promoter, progressive sync</s><span><b>Instead:</b> plain Argo CD, CI and hooks</span></div>
+      <div class="row"><s>Our own agent framework</s><span><b>Instead:</b> the Claude Agent SDK; we build the box, not the brain</span></div>
+      <div class="row"><s>A new observability backend</s><span><b>Instead:</b> Prometheus, Grafana and Splunk stay</span></div>
+      <div class="row"><s>An agent platform product</s><span><b>Instead:</b> compose the parts we already run</span></div>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    What we won't build matters as much as what we will. A startup's plan has to stay small enough to actually finish.
+
+    No GPUs, no model serving. We call Claude.
+
+    No second orchestrator and no second cloud. EKS, on AWS.
+
+    No Kargo, no GitOps Promoter, no progressive sync. Plain Argo CD, with CI and a PostSync hook as the gates.
+
+    No agent framework of our own. The Claude Agent SDK is the brain; we build the box it runs in.
+
+    No new observability backend. Prometheus, Grafana and Splunk stay; we put one pipeline in front of them.
+
+    And no agent platform product. IBM's point was that you already run the parts.
+
+    That leaves three things to decide today.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

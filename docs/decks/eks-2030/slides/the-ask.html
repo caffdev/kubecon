@@ -3,25 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Approve the five rules for cluster one, and start one agent</title>
+  <title>The ask</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* The cold open's ratios return, small, with our 2030 row added in dashed red: not drawn
+       until we agree the numbers. Then the three asks, red balloons: people decide. */
+    #ratios { position: absolute; inset: 0; }
+    .asks { position: absolute; left: 120px; top: 640px; width: 1680px; display: grid; gap: 18px; }
+    .ask { display: grid; grid-template-columns: 76px 1fr; align-items: center; }
+    .ask i { width: 56px; height: 56px; border-radius: 50%; background: var(--c-red); color: #fff; display: grid; place-items: center; font: 700 28px var(--font-tech); font-style: normal; }
+    .ask p { margin: 0; font: 400 32px/1.3 var(--font-body); }
+    .ask p b { font-weight: 800; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Approve the five rules for cluster one, and start one agent</h1>
+    <h2 class="head" style="width:1360px">Approve the five rules for cluster one, and start one agent</h2>
+    <svg id="ratios" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <div class="asks">
+      <div class="ask" data-step="1"><i>1</i><p><b>The five moves are the design bar</b> for the first production EKS cluster. Any exception is written down.</p></div>
+      <div class="ask" data-step="2"><i>2</i><p><b>The 2030 spec sheet is our north star,</b> reviewed once a year against its tests.</p></div>
+      <div class="ask" data-step="3"><i>3</i><p><b>One agent in Q1 2027:</b> alert triage, read-only, on EKS, with a cost per alert by the end of Q2.</p></div>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    We started with Meta, Nubank and LinkedIn: small teams, very big estates. Big is a ratio. There's a fourth row now, in dashed red, and it's ours in 2030. It's dashed because we haven't agreed the numbers yet. Agreeing them is part of the ask.
+
+    Three things.
+
+    Click. One: the five moves are the design bar for the first production EKS cluster. If we make an exception, we write it down.
+
+    Click. Two: the 2030 spec sheet is our north star, and we check it once a year against the tests on each rung.
+
+    Click. Three: one agent in the first quarter of 2027. Alert triage, read-only, running on EKS, and by the end of the second quarter we know what each alert costs us.
+
+    We're early enough to build from the first cluster what they had to retrofit. Let's do that.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const x0 = 380, u = 9, rows = [
+        { n: 'Meta', team: 15, est: 100, t: '15 engineers', e: '~100 clusters' },
+        { n: 'Nubank', team: 5, est: null, t: '5 engineers', e: '6k+ services, ~23B spans an hour' },
+        { n: 'LinkedIn', team: 10, est: null, t: '~10 lines', e: '5M+ pods' },
+      ];
+      let s = Dwg.defs();
+      rows.forEach((r, i) => {
+        const y = 300 + i * 78;
+        s += `<text class="lbl" x="120" y="${y + 34}">${r.n}</text>`;
+        s += `<rect class="hatch-red" x="${x0}" y="${y}" width="${r.team * u}" height="20"/>`;
+        s += `<text class="dim-t" x="${x0 + r.team * u + 14}" y="${y + 18}" style="font-size:22px;fill:#b31f2f">${r.t}</text>`;
+        if (r.est) s += `<rect class="hatch-ink" x="${x0}" y="${y + 28}" width="${r.est * u}" height="20"/>`;
+        else s += `<rect class="hatch-ink" x="${x0}" y="${y + 28}" width="1400" height="20"/>` + Dwg.brk(1700, y + 28, y + 48);
+        s += `<text class="dim-t quiet" x="1800" y="${y + 18}" text-anchor="end" style="font-size:22px">${r.e}</text>`;
+      });
+      const y = 300 + 3 * 78;
+      s += `<text class="lbl red" x="120" y="${y + 34}">Us, 2030</text>`;
+      s += `<rect x="${x0}" y="${y}" width="120" height="20" fill="none" stroke="#d0293a" stroke-width="2.5" stroke-dasharray="8 6"/>`;
+      s += `<rect x="${x0}" y="${y + 28}" width="1400" height="20" fill="none" stroke="#22272b" stroke-width="2.5" stroke-dasharray="8 6"/>`;
+      s += `<text class="dim-t" x="1800" y="${y + 18}" text-anchor="end" style="font-size:22px;fill:#b31f2f">drawn when we agree the numbers</text>`;
+      Dwg.into('#ratios', s);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

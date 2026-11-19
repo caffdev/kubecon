@@ -3,25 +3,70 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>With plain Argo CD, CI and one hook are the gate</title>
+  <title>CI is the gate</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* The delivery pipe with its two gates drawn as P&ID valves: CI before merge, a PostSync
+       Job after sync. Receipts as a parts list. */
+    #pipe { position: absolute; inset: 0; }
+    .rc { position: absolute; left: 120px; top: 640px; width: 1680px; }
+    .rc td { height: 76px; }
+    .rc td.name { width: 300px; }
+    .rc td.who { width: 240px; font: 800 28px var(--font-display); }
+    .rc small { color: var(--c-lead); font-size: 22px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>With plain Argo CD, CI and one hook are the gate</h1>
+    <h2 class="head" style="width:1260px">With plain Argo CD, CI and one hook are the gate</h2>
+    <div class="sheet"><b>2</b><span><em>Apps on a contract</em>sheet 2 of 5</span></div>
+
+    <svg id="pipe" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <table class="bom rc">
+      <tr><th>Gate</th><th>Run at</th><th>What it bought them</th></tr>
+      <tr data-step="1"><td class="name">CI before merge</td><td class="who">Ford</td><td>Hundreds of clusters; PRs from people, AI and bots. Reviewers read content, not syntax. <small>slides</small></td></tr>
+      <tr data-step="2"><td class="name">PostSync check</td><td class="who">LinkedIn</td><td>From a week of hoping to an hour of proof; 10+ incidents caught before prod. <small>slides</small></td></tr>
+      <tr data-step="2"><td class="name">Infra tests in GitOps</td><td class="who">EarnIn</td><td>Caught cert-manager breaking silently, and Velero backups that never ran. <small>abstract</small></td></tr>
+    </table>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    We're keeping Argo CD basic: no promotion tools, no progressive sync. So where does safety come from? Two gates, both boring.
+
+    The first gate is CI, before anything merges. It renders the chart, checks the schema, runs policy, and checks the rules the API server would reject anyway. Click. Ford runs hundreds of clusters this way, with pull requests coming from people, from AI and from bots. Deterministic CI means reviewers read the content, not the syntax.
+
+    The second gate is after the sync: an Argo CD PostSync hook, which is just a Job with one annotation. It runs a smoke test against the thing that just deployed. If it passes, the next wave goes. If it fails, the wave stops and a person gets paged; that's the red branch. Click. LinkedIn built exactly this and went from a week of hoping to an hour of proof, with more than ten incidents caught before production. EarnIn wires infrastructure tests into GitOps the same way, and caught cert-manager breaking silently and backups that never actually ran.
+
+    Now the pods are running. Who are they, and what are they allowed to touch?
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const y = 420;
+      const box = (x, w, t, sub, hatch) => `<rect class="${hatch ? 'hatch-ink' : 'paper'}" x="${x}" y="${y - 40}" width="${w}" height="80" stroke="#22272b" stroke-width="3"/>`
+        + `<rect class="paper" x="${x + 12}" y="${y - 20}" width="${w - 24}" height="40"/><text class="dim-t" style="font-weight:700" x="${x + w / 2}" y="${y + 9}" text-anchor="middle">${t}</text>`
+        + (sub ? `<text class="blue-t" x="${x + w / 2}" y="${y + 80}" text-anchor="middle">${sub}</text>` : '');
+      const pipe = (x1, x2) => `<line class="wire" x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"/>`;
+      let s = Dwg.defs();
+      s += box(120, 140, 'PR', 'people, AI, bots');
+      s += pipe(260, 394) + Dwg.valve(420, y, 26) + pipe(446, 500);
+      s += `<text class="lbl" x="420" y="${y - 58}" text-anchor="middle">CI</text>`;
+      s += `<text class="blue-t" x="420" y="${y + 80}" text-anchor="middle">render, schema,</text><text class="blue-t" x="420" y="${y + 108}" text-anchor="middle">policy, API rules</text>`;
+      s += box(500, 160, 'merge');
+      s += pipe(660, 720) + box(720, 290, 'Argo CD sync', 'plain, one wave') + pipe(1010, 1074);
+      s += Dwg.valve(1100, y, 26) + `<text class="lbl" x="1100" y="${y - 58}" text-anchor="middle">PostSync</text>`;
+      s += `<text x="1100" y="${y + 84}" text-anchor="middle" style="font:400 22px var(--font-code);fill:#2b5c9e">hook: PostSync</text>`;
+      // branch: pass -> next wave, fail -> stop and page (red: a person)
+      s += `<path class="wire" d="M1126 ${y} H1230 V${y - 70} H1330" marker-end="url(#ar)"/>`;
+      s += `<path class="wire red" d="M1230 ${y} V${y + 70} H1330" marker-end="url(#ar-red)"/>`;
+      s += `<text class="lbl" x="1346" y="${y - 60}">next wave</text>`;
+      s += `<text class="lbl red" x="1346" y="${y + 80}">stop, page a person</text>`;
+      Dwg.into('#pipe', s);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

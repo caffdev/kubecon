@@ -74,33 +74,51 @@ on screen. ⚠️ marks anything to check before it goes on a slide.
 
 ## Visual direction
 
-Written in phase 3, after the story is agreed: palette (named hexes), type, layout idea, the one
-signature element, how concepts become pictures, the one motion moment, and what changed
-after checking the plan against the generic defaults.
+**Chosen 2026-11-19: C, the scale drawing.** Flavors A (bay plan) and B (Three Peaks) were tried
+on `cold-open` and `the-loop` and are in git history (commit 22619aa).
 
-**Three candidate flavors (2026-11-19), awaiting a pick.** Each one is built on `cold-open`
-(sparse) and `the-loop` (the densest slide) and kept in the `flavors` draft. Their tokens live in
-`theme/flavor-{a,b,c}.css`; the chosen one gets merged into `theme.css`.
-- **A, bay plan:** a container terminal. Harbor fog `#e4e9ec`, hull navy `#0e2131`,
-  international orange `#ff4f00` (people only), and the five moves as five container liveries.
-  Type is Archivo (wide display) with Saira Stencil for numbers. Clusters are boxes in a stowage
-  plan, and the loop is the yard road. Files: `cold-open`, `the-loop`.
-- **B, Three Peaks:** the readout series brand (`_shared/brand.css`, Barlow). Operators are
-  peaks with rope parties of alpenglow dots, and the loop is a closed contour with camps. Teal is
-  the agent (Path 2) and alpenglow is the person. Files: `cold-open-b`, `the-loop-b`.
-- **C, scale drawing:** drafting film `#e5e9e2` with graphite, a red pencil `#d0293a` for people,
-  and non-photo blue for construction lines. Type is Schibsted Grotesk with B612. Ratios are drawn
-  to scale and break off the sheet ("≈ 40 slides wide"), and the loop is a schematic with a parts
-  list. Files: `cold-open-c`, `the-loop-c`.
-
-Every flavor uses its accent for **people**: the engineers on the cold open, and the one person
-who approves in the loop.
-
-Two decisions carried from the story:
-- **Five move colours.** These are introduced on `skip-the-gpus`, named on `five-moves`, and
-  carried as a tab on every Act III slide, so the room always knows which move they're in.
-- **Lifted slides** keep the speaker's design and carry attribution: talk, speaker, company,
-  "KubeCon + CloudNativeCon NA 2026", internal use only (per `deck-assets/MANIFEST.md`).
+- **The world:** an engineering drawing set on drafting film. "Big is a ratio", so things are
+  drawn to scale with dimension lines. Where a ratio outgrows the sheet, the drawing breaks
+  (a zigzag scale break, plus a red-pencil note on how far it would run).
+- **Palette:**
+  - drafting film `#e5e9e2`: the ground, with a 40px non-photo-blue grid
+  - graphite `#22272b`: ink
+  - 2H lead `#5d656b`: quiet text
+  - non-photo blue `#6c9bd8`, ink `#2b5c9e`: construction lines and notes
+  - red pencil `#d0293a`, ink `#b31f2f`: **people and the decisions people make**, nothing else
+- **Type:**
+  - Schibsted Grotesk 800 for headlines and labels, tight tracking
+  - B612 (the Airbus cockpit face) for dimensions, notes, tables and sources
+  - JetBrains Mono for real YAML and fields (B612 Mono spaced the periods oddly: `2. 2. 5`)
+- **Signature elements:**
+  - dimension lines with arrowheads
+  - numbered balloons for stations
+  - a parts list (BOM) for evidence
+  - a revision cloud for an open decision (🔵 in the narrative)
+  - a revision table for the retrofit tax
+- **Sheet tags:** each of the five moves is a sheet of the drawing set. Every Act III slide
+  carries a sheet tag top-right ("1 · Clusters are cattle"). This replaces the five move colours
+  planned in the story: five colours would break the three-ink restraint.
+- **Concepts as pictures:**
+  - quantities are unit squares or bars drawn to scale
+  - processes are schematics with flow arrows
+  - gates are P&ID valves
+  - a pod is a section or an exploded assembly
+  - things we skip are voided (cross-hatched)
+- **Layout:** margins 120 / 96. The headline sits top-left at 74–100px, the drawing fills the
+  rest, and the sources run in B612 at 24px along the bottom-left. Text is left-aligned throughout.
+- **Lifted slides** are framed as a "Detail" with a caption strip (talk, company, KubeCon NA
+  2026, internal use).
+- **Motion moment:** on `the-loop`, one change travels the schematic once. Elsewhere, builds
+  reveal rows and stations at the speed of speech.
+- **Anti-default check:**
+  - No cream ground and no terracotta: the film is cool green-grey.
+  - No dark ground with an acid accent.
+  - No card kit: tables and drawings carry the structure.
+  - Tracked caps appear only inside table headers, where drawings use them, and even there the
+    text stays in sentence case.
+  - Numbering appears only where a sequence is real (balloons, sheets, revisions).
+  - Drawing helpers live in `theme/draw.js` (dims, balloons, clouds, breaks, valves, unit grids).
 
 ## Beats
 
@@ -110,11 +128,10 @@ Two decisions carried from the story:
 - **Job:** earn the room's attention with the show's most useful surprise: the biggest operators
   run huge estates with small teams. "Big" is a ratio.
 - **Headline:** Fifteen engineers run Meta's hundred clusters
-- **Visual:** three ratio rows, each a small team against a huge estate, drawn to scale as dots.
-  **Meta:** ~15 engineers, ~100 clusters (abstract). **Nubank:** 5 engineers run ~23B spans an
-  hour across 6k+ services (deck). **LinkedIn:** an app team writes ~10 lines, and the platform
-  runs 5M+ pods and 110K+ deploys a week (deck). The small number is in our accent; the big one
-  is huge on the right.
+- **Visual:** the ratios drawn to scale at 13px per unit. Meta's 15 engineers (red hatch) against
+  ~100 clusters (graphite) fits on the sheet: 1 : 6.7. Nubank's 5 engineers against 6,000+ services
+  breaks the sheet ("≈ 40 slides wide at this scale"), and LinkedIn's ~10 lines against 5M+ pods
+  breaks it further ("≈ 34,000 slides wide"). Nubank and LinkedIn are builds.
 - **Energy:** 4
 - **Into next:** "None of them got there by hiring. Here's what we think that means for us."
 - **Sources:** "We Have GitOps at Home" (Meta, abstract); `2026-11-10_tracing-at-scale…nubank`
@@ -125,8 +142,9 @@ Two decisions carried from the story:
 - **Act:** I
 - **Job:** state the one sentence early. Our advantage is timing.
 - **Headline:** We can build from day one what they had to retrofit
-- **Visual:** the title slide. The deck title is small and the claim is large. An exponential
-  curve runs underneath, with a "we are here" mark at the bottom left, before the bend.
+- **Visual:** the claim at 112px. An exponential curve is plotted 2026–2030, with a red "we are
+  here, before the bend" mark and a blue note at the bend: "where they had to retrofit". The deck
+  title sits in a drawing title block, bottom-right.
 - **Energy:** 2
 - **Into next:** "First, what we're leaving on the floor in Salt Lake City."
 
@@ -136,8 +154,10 @@ Two decisions carried from the story:
 - **Job:** clear the field. Much of the show's AI content (GPUs, inference, DRA, serving,
   training) doesn't apply to us. Saying so out loud makes the rest credible.
 - **Headline:** A third of the AI talks were about running models. We never will.
-- **Visual:** the schedule as a grid of small tiles. Model-running tiles go grey. What's left
-  lights up in the five move colours: fleet, delivery, identity, telemetry, agents.
+- **Visual:** the 199 AI-titled talks as unit squares in ten rows. The 65 about running models are
+  voided (cross-hatched); the 134 kept are hatched graphite. Dimension lines span each group. A key
+  on the right says what is voided and what is kept. (The five move colours planned here became
+  sheet numbers instead; see Visual direction.)
 - **Energy:** 2
 - **Into next:** "What's left is the part that bites a company growing as fast as we plan to."
 - **Data:** 199 of 501 talks have AI, LLM, agents, GPU, inference, MCP or models in the title.
@@ -151,12 +171,9 @@ Two decisions carried from the story:
 - **Job:** set the stakes. Toil grows with clusters × releases × CVEs, which is faster than any
   team can grow. Use our own note from the show.
 - **Headline:** The work grows faster than the team ever will
-- **Visual:** our note from the floor, as a quote: *"Lots of companies are running 100s of
-  clusters, we can't keep doing manual upgrades."* Under it is LinkedIn's formula, typeset:
-  **upgrade time ≈ rollouts × ramps × (deploy + soak) ÷ daily window**, with their answer of 40
-  business days for three minors over 250+ clusters. The second build shows Mastercard's pair of
-  quotes: "With AI, we will see a 10× increase in productivity. ~ every CTO" / "…a 10× increase
-  in vulnerabilities. ~ every CISO".
+- **Visual:** an illustrative plot: work (graphite, exponential) against the team (red, linear), with
+  the gap hatched blue and labelled "toil". Notes on the right: LinkedIn's formula and its 40
+  business days, our own show-floor note in red, and Mastercard's CTO/CISO pair as a build.
 - **Energy:** 3
 - **Into next:** "Every big operator at the show hit this wall. The ones who hit it late paid
   for it."
@@ -169,15 +186,9 @@ Two decisions carried from the story:
 - **Act:** I
 - **Job:** make the cost of waiting concrete. The scale stories were retrofit stories.
 - **Headline:** Every scale story at the show was a retrofit
-- **Visual:** three cards set like invoices, headed "the retrofit tax".
-  - **Coinbase:** a homegrown service auth, "tightly coupled to AWS", replaced by SPIFFE/SPIRE
-    across 4k+ services. The legacy system reached EOL in March 2025 (deck).
-  - **Cisco Meraki:** a 20-year monolith with 500+ services, 1,000+ DB shards and 5,000+ static
-    servers, moved to Kubernetes "as a new platform contract" (abstract).
-  - **Nutanix:** one deleted root object took 39 clusters with it. Recovery took four days, and
-    the backups were 12 hours old and had never been restore-tested (deck).
-
-  A fourth card, ours, is blank: "the tax we skip".
+- **Visual:** a drawing's revision table. Rev A is Coinbase, B is Cisco Meraki and C is Nutanix,
+  each with what had to change and what it cost. Rev D, "Us", reads "not yet drawn" inside a red
+  revision cloud. Rows build one at a time.
 - **Energy:** 4
 - **Into next:** "So what does 'built for it from day one' look like by 2030?"
 
@@ -188,20 +199,9 @@ Two decisions carried from the story:
   headcount. These are **our proposed targets**, and each is set beside the peer who already
   does it.
 - **Headline:** 2030: a new cluster, service or agent is a pull request
-- **Visual:** a 2030 spec sheet, one target per line, with the peer set small to the right.
-  - **New EKS cluster:** same day, from a PR, no tickets. *Meta: infra code installs Argo CD,
-    and Argo CD does the rest.*
-  - **A Kubernetes minor across the fleet:** under two weeks, mostly unattended. *LinkedIn: 7
-    business days, 250+ clusters.*
-  - **Ship a new service:** about 10 lines from the app team. *LinkedIn.*
-  - **Long-lived secrets in pods:** zero. *Coinbase: SPIFFE everywhere.*
-  - **Every alert:** an agent's first look within minutes, for cents. *Verkada: 139 s median,
-    $0.33.*
-  - **Routine change** (upgrades, CVE bumps): opened by agents, approved by people. *Mastercard:
-    150 EKS clusters.*
-  - **Every dollar has an owner:** per team, per agent, per alert. *Adobe, Verkada.*
-  - **At least two AWS regions; on-prem exited.** *Stripe: 6 regions, 99.999%.* 🔵 Decide
-    whether on-prem is fully exited or kept as one more cluster.
+- **Visual:** a spec table with eight rows (spec, 2030 target, already done by) and a blue stamp
+  reading "Proposed targets for us to agree". The routine-change row is red (a person approves).
+  The footprint row, "on-prem exited", sits in a revision cloud: an open decision.
 - **Energy:** 3
 - **Into next:** "Five moves get us there. Each one is already running at a company that spoke
   last week."
@@ -212,18 +212,9 @@ Two decisions carried from the story:
 - **Job:** orient the bridge. Map the five moves to our stack, so the next twelve slides have a
   frame.
 - **Headline:** Five moves, all on the stack we already chose
-- **Visual:** five columns in the move colours. Each column shows the move, our tools, and the
-  peer who runs it.
-
-  | Move | Our tools | Peer |
-  |---|---|---|
-  | 1. Clusters are cattle | EKS, Karpenter / Auto Mode | Meta, NVIDIA |
-  | 2. Apps on a contract | plain Argo CD | LinkedIn, Ford |
-  | 3. Identity, not secrets | Vault + Istio | Coinbase, Yahoo |
-  | 4. One telemetry pipeline | OTel → Prometheus, Grafana, Splunk | Nubank |
-  | 5. Agents are workloads | Claude Agent SDK on EKS | Verkada, Mastercard |
-
-  A strip along the bottom reads: no new orchestrator · no promoter · no GPUs.
+- **Visual:** five drawing sheets with zero radius, a double frame and a title block. Each shows the
+  sheet number, the move, our tools and "Run at" peers. A voided strip below reads "Not in this
+  set": GPUs and model serving; Kargo, Promoter, progressive sync; a second orchestrator.
 - **Energy:** 2
 - **Into next:** "Move one: stop treating clusters as places."
 
@@ -232,12 +223,10 @@ Two decisions carried from the story:
 - **Act:** III, move 1
 - **Job:** clusters are created and rebuilt from Git. Nobody hand-builds one.
 - **Headline:** A cluster is a commit, not a ticket
-- **Visual:** Meta's split, drawn as two lanes. In the first, infra code creates the EKS cluster
-  and installs Argo CD, its only "app". In the second, Argo CD runs everything inside. Meta's
-  line: "Terraform didn't get fired, just reorged". A one-line Helm change went from up to a
-  working day to minutes. Beside it is the proof that rebuilds work: Nutanix redeployed 39 of 39
-  clusters from Git in a day. "The declarative model that amplified the failure also made the
-  rebuild repeatable."
+- **Visual:** a section through one cluster with two strata. Infra code (graphite) holds the VPC,
+  EKS, node pools and Argo CD; Argo CD (blue) holds the add-ons, Istio, Vault agent and apps. One
+  git line feeds both. A revision cloud reads "Terraform, CAPI, or ACK + kro: decide". On the
+  right: Meta's quote, and Nutanix's 39 of 39 squares redeployed from Git.
 - **Energy:** 3
 - **Into next:** "Creating clusters is the easy half. Keeping fifty of them current is where the
   hours go."
@@ -251,12 +240,10 @@ Two decisions carried from the story:
 - **Job:** upgrades and patches roll out in waves, each with a check that fails, so a person
   watches the exceptions instead of the progress.
 - **Headline:** Ship every change with the check that proves it
-- **Visual:** NVIDIA's slide, lifted: the change plus a probe that exits non-zero, then the agent
-  gating on `.status` across 16 clusters (`deck-assets/12-fleet-node-changes/p04`, `p06`). The big
-  numbers: ~5,600 nodes converged in 30 minutes across 16 clusters, unattended. Our version runs
-  underneath: dev → one prod canary cluster → the rest. On EKS, AWS upgrades the control plane.
-  We own the add-ons, the nodes (replaced, not patched, through Karpenter / Auto Mode node expiry
-  ⚠️ confirm settings) and the checks.
+- **Visual:** NVIDIA's status-gate slide, lifted as "Detail A" (`assets/nvidia-status-agent.png`,
+  from `deck-assets/12-fleet-node-changes/p06`). Next to it: "~5,600 nodes in 30 min" across 16
+  clusters. Then our waves as a schematic, dev → 1 prod canary → rest of prod, with a valve marked
+  "check" between each. An "On EKS" note says who owns what.
 - **Energy:** 3
 - **Into next:** "Waves make a good change fast. They make a bad change fast too."
 
@@ -266,16 +253,11 @@ Two decisions carried from the story:
 - **Job:** tell the cautionary tale. One wrong desired state, applied faithfully, deleted 39
   clusters. Four guards stop it, and all of them are basic Argo CD and Kubernetes.
 - **Headline:** One commit deleted 39 clusters. Four guards stop it.
-- **Visual:** Nutanix's timeline, lifted (`deck-assets/01-gitops-meltdown/p17`), then four guards
-  in our terms.
-  1. **No single root owns the fleet.** One Argo CD Application per cluster, with Argo CD itself
-     bootstrapped separately.
-  2. **Bulk delete is hard.** Prune/delete protection sync options on clusters and stateful
-     infra (⚠️ check the exact option names on our Argo CD version). Deny DELETE on critical
-     kinds with a CEL ValidatingAdmissionPolicy, which is in-tree, so no new tool.
-  3. **Data outlives objects.** `reclaimPolicy: Retain`, and Git hosted outside the clusters it
-     drives.
-  4. **Restore on a schedule.** Nutanix's new targets are RPO ≤ 1 h and RTO ≤ 30 min.
+- **Visual:** Nutanix's four days as a timeline with dimensioned gaps (12 min, ~8 h, 1–2 days,
+  ~2 days; marked not to scale), then four guards in a 2×2 grid, each with a real field or target:
+  one Application per cluster; `argocd.argoproj.io/sync-options: Prune=false` plus a CEL deny on
+  DELETE; `reclaimPolicy: Retain`; RPO ≤ 1 h, RTO ≤ 30 min. Their closing line goes in the source
+  strip.
 - **Energy:** 4
 - **Into next:** "Move two is about the apps, and about keeping Argo CD boring."
 - **Notes:** Nutanix ran Flux. The failure, a self-managing root that prunes everything under it,
@@ -288,15 +270,10 @@ Two decisions carried from the story:
 - **Job:** every app crosses to EKS on a short contract the platform owns. The migration is the
   moment to impose it.
 - **Headline:** Every app crosses to EKS on a ten-line contract
-- **Visual:** LinkedIn's ~10-line `LiDeployment` on the left and the full pod spec it expands to
-  on the right (deck). Receipts:
-  - **LinkedIn:** 5M+ pods, 3,000+ apps, 110K+ deploys a week (deck).
-  - **Meraki:** Kubernetes as "a new platform contract", not an infrastructure swap (abstract).
-  - **Meta:** an app "order form" instead of hand-written YAML (abstract).
-  - **ŌURA:** ~93% less customer-facing code (deck).
-
-  Our version: one golden Helm chart plus a short values file, delivered by a plain Argo CD
-  Application.
+- **Visual:** LinkedIn's real 10-line `LiDeployment` in a frame, with a vertical dimension
+  reading "~10 lines". An arrow leads to "The platform owns", a frame with six numbered items. On
+  the right: LinkedIn, Meraki, Meta and ŌURA as receipts. Along the bottom: "Ours: one golden Helm
+  chart…".
 - **Energy:** 2
 - **Into next:** "If app teams write ten lines, something has to catch the bad ones. With plain
   Argo CD, that's CI."
@@ -307,15 +284,9 @@ Two decisions carried from the story:
 - **Job:** without promoters or progressive sync, safety comes from deterministic CI before
   merge and a PostSync check after sync. Both are basic.
 - **Headline:** With plain Argo CD, CI and one hook are the gate
-- **Visual:** a pipe: PR → CI (render, schema, policy, API-server rules) → merge → Argo CD sync →
-  PostSync Job (smoke test) → healthy, or the wave stops. Receipts:
-  - **Ford:** hundreds of clusters, with PRs from people, AI and bots. Deterministic CI lets
-    reviewers read the content instead of the syntax (deck).
-  - **LinkedIn:** Argo CD syncs the canary, and a PostSync gate decides
-    (`deck-assets/02-canary-namespaces-linkedin/p22`). "From a week of hoping to an hour of
-    proof" (`p25`).
-  - **EarnIn:** infra tests caught cert-manager chains breaking silently and Velero backups
-    that never actually ran (abstract).
+- **Visual:** a pipe: PR → CI valve (render, schema, policy, API rules) → merge → Argo CD sync →
+  PostSync valve (`hook: PostSync`). It then branches to "next wave" (graphite) or "stop, page a
+  person" (red). Below it, a parts list of who runs each gate: Ford, LinkedIn, EarnIn.
 - **Energy:** 3
 - **Into next:** "Now the pods are running. Who are they, and what are they allowed to touch?"
 
@@ -325,14 +296,10 @@ Two decisions carried from the story:
 - **Job:** every workload, person and agent gets a short-lived identity, and secrets are issued
   late and expire. That means Vault, Istio and AWS pod identity from the first cluster.
 - **Headline:** Every pod gets an identity, not a password
-- **Visual:** Coinbase's before and after. Before: homegrown JWT auth, tied to AWS and to one
-  region. After: SPIFFE/SPIRE, with 70% less CPU, 4–10 ms faster per hop, ~50 ms off service
-  chains and 100% adoption, and ambient mesh next (deck). Our stack sits beside it:
-  - Istio mTLS gives every pod a SPIFFE ID.
-  - Vault issues short-lived credentials through Kubernetes auth.
-  - AWS access goes through pod identity, never static keys.
-
-  Pull quote: RBC, "Kubernetes Secrets Were a Bad Idea. Now What?" (abstract).
+- **Visual:** before: `DB_PASSWORD=hunter2`, voided and struck through. After: one pod with a
+  SPIFFE ID tag and three issuers that trust it (Istio for mTLS, Vault for expiring DB creds, AWS
+  through EKS Pod Identity). On the right: Coinbase's −70% CPU, 4–10 ms per hop and 100% adoption.
+  The RBC talk title is a blue note.
 - **Energy:** 3
 - **Into next:** "Istio gives us that identity. At scale it will also give us two million metric
   series, if we let it."
@@ -342,11 +309,10 @@ Two decisions carried from the story:
 - **Act:** III, move 3
 - **Job:** Istio at scale works when its config and its telemetry are scoped from the start.
 - **Headline:** Istio scales when we scope it on day one
-- **Visual:** Yahoo's slide, lifted (`deck-assets/08-otel-cardinality/p02`): 24,000 pods in the
-  mesh, 2.06M → 280K series, −86%, ~$140K a year on one cluster. Two more rules:
-  - **Rapido** (10K pods, 180K RPS): namespace-scoped config cut xDS churn (abstract).
-  - **GEICO:** Istio for identity and L7, and Cilium default-deny for what the mesh can't see
-    (UDP, sidecar bypass, system pods) (deck).
+- **Visual:** Yahoo's series drawn to scale: a 2.06M bar against a 280K bar, with a dimension line
+  reading "−86%, ~$140K a year back". Two numbered rules follow (Rapido: scope config per
+  namespace; GEICO: Cilium default-deny under the mesh). A revision cloud reads "Sidecar or
+  ambient: decide before the first prod cluster".
 - **Energy:** 4
 - **Into next:** "That cardinality lesson is the whole observability story in miniature."
 - **Notes:** 🔵 Decide sidecar vs ambient before the first prod cluster. Coinbase is moving to
@@ -358,15 +324,11 @@ Two decisions carried from the story:
 - **Job:** keep Prometheus, Grafana and Splunk, and put one OTel collector tier in front, so cost
   and backends become config instead of code.
 - **Headline:** One pipeline feeds Prometheus, Grafana and Splunk
-- **Visual:** a fan-in, fan-out diagram. Apps are instrumented once, in shared libraries. They
-  feed OTel collectors (node agent → gateway, which aggregate and sample), which feed Prometheus
-  and Grafana for metrics and Splunk for logs and traces. Receipts:
-  - **Nubank:** 5 engineers handle ~23B spans an hour. They instrumented 6 libraries instead of
-    4,000 services. Changing backends is an exporter config change, with no redeploy. They
-    tail-sample by what a trace is: slow, failing or rare (deck).
-  - **Splunk co-presented OTel Blueprints** (deck).
-  - **remberg:** a dashboard ships as a pull request, through Grafana's sidecar (deck).
-  - **Best Buy:** page on SLO burn, not CPU, and put deploys on the incident timeline (deck).
+- **Visual:** fan-in, fan-out. 49 service squares (for 4k+) converge on 6 shared-library boxes,
+  then run through the OTel agent per node and the OTel gateway (aggregate, sample), then split to
+  Prometheus and Grafana (metrics) and Splunk (logs, traces). A blue note says "a backend is exporter
+  config, no redeploy". Below, a parts list: Nubank, Splunk and New Relic (Blueprints), remberg,
+  Best Buy.
 - **Energy:** 2
 - **Into next:** "Once every signal goes through one place, so can every dollar."
 
@@ -376,13 +338,9 @@ Two decisions carried from the story:
 - **Job:** exponential growth means exponential bills. Cost is attributed per team, per agent
   and per alert from the first cluster.
 - **Headline:** Every dollar has an owner: pods, packets, series and tokens
-- **Visual:** four meters.
-  - **Pods:** team labels are mandatory and admission rejects pods without them.
-  - **Packets:** Adobe, "the bill is per account, ownership is per team", with eBPF network
-    cost attribution (deck).
-  - **Series:** Yahoo, ~$140K a year on one cluster.
-  - **Tokens:** Verkada, about $0.27 for a five-call investigation and $1.29 past twenty-five
-    (abstract). Mastercard: agents running off a laptop need budgets and attribution (deck).
+- **Visual:** Adobe's problem drawn: one "AWS bill, per account" box fanning out on dashed
+  lines to five team boxes, with their quote. Below, a meter table (pods, packets, series, tokens):
+  how each gets an owner, and who runs it.
 - **Energy:** 3
 - **Into next:** "Tokens bring us to move five: the agents."
 
@@ -392,16 +350,10 @@ Two decisions carried from the story:
 - **Job:** reframe the agent. It isn't a laptop tool; it's a workload with a pod, an identity, a
   budget, and state kept outside the pod, built from parts we already run.
 - **Headline:** An agent is a workload: a pod, an identity, a budget
-- **Visual:** GenbaNEXT's comparison, simplified. A microservice request versus an agent task:
-  milliseconds vs minutes, near-free vs paid per token, deterministic vs not, stateless vs
-  multi-step, fails fast vs fails after paid progress (deck). Then our build:
-  1. The Claude Agent SDK harness runs in our image.
-  2. Events trigger it: an alert, a webhook, a schedule.
-  3. State lives outside the pod: Postgres, as at Mastercard. Uber ran 830K+ agent runs in a
-     month on a workflow engine.
-  4. Writes happen only through merge requests.
-
-  IBM: "You probably don't need an agent platform. You already run the parts" (deck).
+- **Visual:** GenbaNEXT's comparison as a table (a request vs an agent task) on the left. On the
+  right, a section through one agent pod: alert, webhook and schedule arrows in; the Claude Agent
+  SDK harness inside; state in Postgres below ("resume, don't restart"); one arrow out, "writes:
+  merge requests only". IBM's quote and Uber's 830K+ runs build last.
 - **Energy:** 2
 - **Into next:** "A workload that writes and runs its own code needs a stronger box than a normal
   pod."
@@ -412,20 +364,10 @@ Two decisions carried from the story:
 - **Job:** each agent session gets its own sandbox, identity, credentials and egress allowlist.
   Istio and Vault do most of the work.
 - **Headline:** Each agent session gets its own box, keys and exits
-- **Visual:** one agent pod inside five controls (Infisical's five, abstract):
-  1. **An isolated runtime:** a microVM or gVisor through `runtimeClassName`. AWS demoed
-     hardware-isolated microVM pods on EKS (abstract).
-  2. **Its own ServiceAccount,** which becomes its SPIFFE ID.
-  3. **Credentials brokered by Vault,** so keys never sit in env.
-  4. **An egress allowlist** through Istio egress or NetworkPolicy, with the metadata endpoint
-     blocked.
-  5. **Per-session limits and revocation.**
-
-  Bancolombia: an Istio AuthorizationPolicy decides, per request, which agent may call which
-  tool on behalf of which user (abstract).
-
-  The honest tension: Mastercard says "tools as functions, not MCP; no shell", while Verkada
-  says "MCP is the boring substrate". Both agree the boundary matters more than the protocol.
+- **Visual:** an exploded assembly: one agent-session pod in the centre, with five numbered parts
+  on blue construction leaders. 1 its own kernel (`runtimeClassName`), 2 its own identity, 3 keys
+  it never sees (Vault), 4 an exit list, 5 limits and an off switch. A blue strip at the bottom
+  sets out the MCP disagreement (Mastercard vs Verkada).
 - **Energy:** 3
 - **Into next:** "So what do the agents do first? The thing that's eating us: toil."
 
@@ -435,20 +377,11 @@ Two decisions carried from the story:
 - **Job:** the turn. Agents work the fleet's toil through the same rails people use, so the work
   curve from `work-outgrows-us` stops landing on people.
 - **Headline:** Agents work the toil through the same rails we do
-- **Visual:** the loop, built station by station: a signal (a Prometheus alert, a CVE feed, a
-  new EKS version) → an agent session (sandboxed, Vault keys, Istio identity) → a merge request →
-  the CI gate → a person approves → Argo CD syncs wave 1 → the PostSync check → Grafana and
-  Splunk confirm → the next wave, or stop and page. Receipts are pinned to the stations:
-  - **Verkada:** ~4,700 alerts a month, $0.33 each, 139 s to a summary, on Claude, with MCP
-    servers for Argo CD and Prometheus (abstract).
-  - **Mastercard:** 25 infra systems upgraded weekly across 30 prod and 120 non-prod EKS
-    clusters. One upgrade went from weeks to 8 hours, and every write goes through an MR
-    (`deck-assets/16-llm-drives-eks/p36`).
-  - **NVIDIA:** the agent gated on status and escalated to a human (deck).
-  - **monday.com:** 80% zero-touch PRs, 1% revert rate (deck).
-  - **Salesforce:** 2,000+ clusters, −900 hours a month of toil (deck).
-
-  Motion moment: the loop runs once.
+- **Visual:** a schematic loop with nine numbered balloons; balloon 5, "Approve", is red: the one
+  person. Next to it, a parts list naming who already runs each station: Verkada, Mastercard,
+  monday.com, Ford, LinkedIn, Salesforce, NVIDIA. A title block holds the sources. Stations build in
+  three groups. On the fourth click, one change (a graphite dot) travels the loop once: the deck's
+  motion moment.
 - **Energy:** 5
 - **Into next:** "That's 2030. Here's the road from where we are."
 
@@ -457,25 +390,8 @@ Two decisions carried from the story:
 - **Act:** IV
 - **Job:** turn the 2030 picture into four yearly rungs, each with a test we can fail.
 - **Headline:** Four years, four rungs, each with a test we can fail
-- **Visual:** a staircase from 2027 to 2030.
-  - **2027, foundation:**
-    - The first prod EKS clusters are built from Git, on the ten-line contract.
-    - Vault and Istio identity are in place.
-    - The OTel pipeline sits in front of Prometheus, Grafana and Splunk.
-    - The first agent runs alert triage, read-only.
-    - *Test: rebuild a prod cluster from Git in a day.*
-  - **2028, the move:**
-    - Most apps are on EKS and on-prem is draining.
-    - A second AWS region is live.
-    - Upgrades run in waves with checks.
-    - Agents open upgrade and CVE MRs.
-    - *Test: a Kubernetes minor across the fleet in two weeks.*
-  - **2029, scale:**
-    - We run tens of clusters.
-    - Agents ship routine change with one approval.
-    - Cost per team, per agent and per alert is on a dashboard.
-    - *Test: the platform team stays flat while clusters double.*
-  - **2030, the ratio:** the spec sheet from `twenty-thirty`.
+- **Visual:** a stair drawn in section: one tread per year, rising left to right. Above each tread
+  sit the year, what lands, and a red "Test:" line (a person checks it). Rungs build one at a time.
 - **Energy:** 3
 - **Into next:** "What we don't build matters just as much."
 
@@ -484,14 +400,8 @@ Two decisions carried from the story:
 - **Act:** IV
 - **Job:** keep the plan small enough for a startup by naming what we deliberately skip.
 - **Headline:** What we will not build
-- **Visual:** a short list, struck through.
-  - ~~GPUs, model serving, DRA~~: we call Claude.
-  - ~~A second orchestrator or cloud~~.
-  - ~~Kargo, GitOps Promoter, progressive sync~~: plain Argo CD, CI and hooks.
-  - ~~Our own agent framework~~: the Claude Agent SDK. We build the harness and the box, not the
-    brain.
-  - ~~A new observability backend~~: Prometheus, Grafana and Splunk stay.
-  - ~~An agent platform product~~: compose the parts (IBM).
+- **Visual:** a deletion list. Six items are voided and struck through in graphite, each with an
+  "Instead:" note in blue.
 - **Energy:** 2
 - **Into next:** "That leaves three things to decide today."
 
@@ -501,13 +411,9 @@ Two decisions carried from the story:
 - **Job:** close by echoing the open. Put our row on the ratio chart, and ask for three concrete
   yeses.
 - **Headline:** Approve the five rules for cluster one, and start one agent
-- **Visual:** the cold open's ratio rows return, and a fourth row appears: ours in 2030, our
-  platform team against our fleet, from the spec sheet. The three asks sit below:
-  1. The five moves are the design bar for the first prod EKS cluster, and any exception gets
-     written down.
-  2. The 2030 spec sheet is our north star, reviewed once a year.
-  3. One agent starts in Q1 2027: alert triage, read-only, with a cost-per-alert number by the
-     end of Q2.
+- **Visual:** the cold open's ratio rows return, small: Meta to scale, Nubank and LinkedIn with
+  scale breaks. A fourth row, "Us, 2030", is drawn in dashed red outline and reads "drawn when we
+  agree the numbers". Below it, the three asks on red balloons, building one at a time.
 - **Energy:** 4
 - **Into next:** the end. The one sentence stays on screen for questions.
 

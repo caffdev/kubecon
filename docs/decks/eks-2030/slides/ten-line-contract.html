@@ -3,25 +3,86 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Every app crosses to EKS on a ten-line contract</title>
+  <title>Ten-line contract</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* What the app team writes (LinkedIn's real 10-line spec) against what the platform owns.
+       Receipts on the right; our version along the bottom. */
+    .frame { position: absolute; border: 3px solid var(--c-graphite); background: rgb(229 233 226 / .92); }
+    .frame .cap { position: absolute; left: -3px; top: -46px; font: 700 26px var(--font-tech); }
+    .f1 { left: 200px; top: 330px; width: 470px; height: 470px; padding: 22px 26px; }
+    .f2 { left: 800px; top: 330px; width: 480px; height: 470px; padding: 22px 26px; }
+    .f2 ul { list-style: none; margin: 0; padding: 0; }
+    .f2 li { display: grid; grid-template-columns: 52px 1fr; align-items: center; height: 70px; font: 600 28px/1.15 var(--font-display); }
+    .f2 li i { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid var(--c-graphite); display: grid; place-items: center; font: 700 22px var(--font-tech); font-style: normal; }
+    #arr { position: absolute; inset: 0; pointer-events: none; }
+    .rc { position: absolute; left: 1360px; width: 440px; }
+    .rc div { padding: 12px 0 14px; border-top: 2px solid var(--c-graphite); }
+    .rc b { display: block; font: 800 30px/1.1 var(--font-display); letter-spacing: -.01em; }
+    .rc span { display: block; margin-top: 4px; font: 400 24px/1.3 var(--font-tech); }
+    .rc small { font: 400 22px var(--font-tech); color: var(--c-lead); }
+    .ours { position: absolute; left: 120px; top: 862px; width: 1160px; font: 400 28px/1.35 var(--font-body); }
+    .ours b { font-weight: 800; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Every app crosses to EKS on a ten-line contract</h1>
+    <h2 class="head" style="width:1260px">Every app crosses to EKS on a ten-line contract</h2>
+    <div class="sheet"><b>2</b><span><em>Apps on a contract</em>sheet 2 of 5</span></div>
+
+    <div class="frame f1"><span class="cap">The app team writes</span><div class="code"><span class="k">kind:</span> LiDeployment
+<span class="k">metadata:</span>
+  <span class="k">name:</span> checkout
+<span class="k">spec:</span>
+  <span class="k">replicas:</span> 3
+  <span class="k">versions:</span>
+    <span class="k">app:</span> 2.2.5
+  <span class="k">resources:</span>
+    <span class="k">cpu:</span> 10
+    <span class="k">memory:</span> 32Gi</div></div>
+
+    <div class="frame f2"><span class="cap">The platform owns</span><ul>
+      <li><i>1</i>The pod spec’s shape</li>
+      <li><i>2</i>Injected init containers</li>
+      <li><i>3</i>The runtime contract</li>
+      <li><i>4</i>Volumes and security</li>
+      <li><i>5</i>Placement</li>
+      <li><i>6</i>No custom node selectors</li>
+    </ul></div>
+
+    <svg id="arr" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <div class="rc" style="top:320px">
+      <div><b>LinkedIn</b><span>5M+ pods, 3,000+ apps, 110K+ deploys a week</span><small>posted slides</small></div>
+      <div data-step="1"><b>Cisco Meraki</b><span>Kubernetes as “a new platform contract”, not an infrastructure swap</span><small>session abstract</small></div>
+      <div data-step="1"><b>Meta</b><span>an app “order form” instead of hand-written YAML</span><small>session abstract</small></div>
+      <div data-step="1"><b>ŌURA</b><span>~93% less customer-facing code</span><small>posted slides</small></div>
+    </div>
+
+    <p class="ours" data-step="2"><b>Ours:</b> one golden Helm chart, a short values file, and one plain Argo CD Application per app. Apps move to EKS on it, or they don’t move yet.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Move two: apps on a contract.
+
+    On the left is LinkedIn's real deployment spec. That's all an app team writes: a name, a replica count, a version, CPU and memory. About ten lines.
+
+    On the right is what the platform owns, which is everything else: the shape of the pod spec, the init containers it injects, the runtime contract, volumes, security, placement, and a policy that stops teams setting their own node selectors. Behind those ten lines LinkedIn runs five million pods and a hundred and ten thousand deploys a week.
+
+    Click. They aren't alone. Cisco Meraki's migration talk called Kubernetes a new platform contract, not an infrastructure swap. Meta replaced hand-written YAML with an order form. ŌURA cut their customer-facing code by about ninety-three percent.
+
+    Click. Ours: one golden Helm chart, a short values file, and one plain Argo CD Application per app. The migration to EKS is the moment to impose it. An app moves on the contract, or it doesn't move yet.
+
+    If app teams write ten lines, something has to catch the bad ones. With plain Argo CD, that's CI.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    Dwg.into('#arr', Dwg.defs(),
+      Dwg.vdim(160, 330, 806, '~10 lines', { side: -1 }).replace('x="144"', 'x="146"'),
+      `<path class="wire" d="M686 565 H782" marker-end="url(#ar)"/>`);
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

@@ -3,25 +3,81 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>A cluster is a commit, not a ticket</title>
+  <title>A cluster is a commit</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* Section through a cluster: two strata, each written by a different tool from the same
+       repo. The cluster-tool choice is a revision cloud. Receipts on the right. */
+    #sec { position: absolute; inset: 0; }
+    .rc { position: absolute; left: 1090px; width: 710px; }
+    .rc .who { font: 800 36px/1 var(--font-display); letter-spacing: -.02em; }
+    .rc .who small { font: 400 22px var(--font-tech); color: var(--c-lead); letter-spacing: 0; margin-left: 10px; }
+    .rc p { margin: 10px 0 0; font: 400 28px/1.35 var(--font-body); }
+    .rc q { font-weight: 700; }
+    .r1 { top: 330px; } .r2 { top: 640px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>A cluster is a commit, not a ticket</h1>
+    <h2 class="head" style="width:1240px">A cluster is a commit, not a ticket</h2>
+    <div class="sheet"><b>1</b><span><em>Clusters are cattle</em>sheet 1 of 5</span></div>
+
+    <svg id="sec" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <div class="rc r1" data-step="1">
+      <div class="who">Meta <small>session abstract</small></div>
+      <p>~15 engineers, ~100 clusters. <b>“Terraform didn’t get fired, just reorged.”</b> A one-line Helm change went from up to a working day to minutes.</p>
+    </div>
+    <div class="rc r2" data-step="2">
+      <div class="who">Nutanix <small>posted slides</small></div>
+      <svg id="n39" width="710" height="68" viewBox="0 0 710 68" style="display:block;margin-top:14px"></svg>
+      <p>39 of 39 clusters redeployed from Git by day two. The model that amplified their failure made the rebuild repeatable.</p>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Move one. A cluster is something we create from Git, and rebuild from Git, and nobody ever builds one by hand.
+
+    This is a section through one cluster. The bottom layer is infrastructure code: the VPC, the EKS cluster, the node pools, and one last thing, Argo CD. That's the only "app" the infra code ever installs. Everything above that line, the add-ons, Istio, Vault's agent, the apps, is Argo CD's job, from the same repo.
+
+    The tool for the bottom layer is a decision we still have to make: Terraform, or Cluster API, or ACK with kro. The cloud is there because it's open. The split is not open.
+
+    Click. Meta told exactly this story. About fifteen engineers, about a hundred clusters. Their line was "Terraform didn't get fired, just reorged". A one-line Helm change used to take up to a working day in their Terraform pipeline; now it's minutes.
+
+    Click. And the proof that rebuilds work: Nutanix lost thirty-nine clusters, which is coming up in two slides, and redeployed all thirty-nine from Git by day two.
+
+    Creating clusters is the easy half. Keeping fifty of them current is where the hours go.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const L = 300, R = 980, top2 = 360, mid = 600, bot = 860;
+      const items2 = ['add-ons', 'Istio', 'Vault agent', 'apps'];
+      const items1 = ['VPC', 'EKS', 'node pools', 'Argo CD'];
+      let s = Dwg.defs();
+      s += `<rect class="hatch-blue" x="${L}" y="${top2}" width="${R - L}" height="${mid - top2}"/>`;
+      s += `<rect class="hatch-ink" x="${L}" y="${mid}" width="${R - L}" height="${bot - mid}"/>`;
+      // labels in film boxes inside each stratum
+      const chip = (x, y, t, bold) => `<rect class="paper" x="${x}" y="${y - 30}" width="${t.length * 15 + 30}" height="44" stroke="#22272b" stroke-width="1.5"/><text class="dim-t" style="${bold ? 'font-weight:700' : ''}" x="${x + 15}" y="${y}">${t}</text>`;
+      items2.forEach((t, i) => s += chip(L + 30 + (i % 2) * 330, top2 + 80 + Math.floor(i / 2) * 90, t));
+      items1.forEach((t, i) => s += chip(L + 30 + (i % 2) * 330, mid + 80 + Math.floor(i / 2) * 90, t, t === 'Argo CD'));
+      // stratum names, set left of the section
+      s += `<text class="lbl" x="${L - 30}" y="${top2 + 50}" text-anchor="end">Argo CD</text><text class="blue-t" x="${L - 30}" y="${top2 + 84}" text-anchor="end">runs</text><text class="blue-t" x="${L - 30}" y="${top2 + 114}" text-anchor="end">everything</text><text class="blue-t" x="${L - 30}" y="${top2 + 144}" text-anchor="end">inside</text>`;
+      s += `<text class="lbl" x="${L - 30}" y="${mid + 50}" text-anchor="end">infra code</text><text class="blue-t" x="${L - 30}" y="${mid + 84}" text-anchor="end">builds it,</text><text class="blue-t" x="${L - 30}" y="${mid + 114}" text-anchor="end">installs</text><text class="blue-t" x="${L - 30}" y="${mid + 144}" text-anchor="end">Argo CD</text>`;
+      // the one repo feeding both strata
+      s += Dwg.balloon(R + 50, 330, '', { r: 18 }) + `<text class="dim-t" x="${R + 50}" y="300" text-anchor="middle">git</text>`;
+      s += `<path class="wire thin" d="M${R + 50} 348 V${top2 + 120} H${R + 6}" marker-end="url(#ar)"/>`;
+      s += `<path class="wire thin" d="M${R + 50} ${top2 + 120} V${mid + 130} H${R + 6}" marker-end="url(#ar)"/>`;
+      // the open decision: which tool writes the bottom layer
+      s += Dwg.cloud(L - 230, bot + 26, 680, 64, { r: 16 }) + `<text class="red-t" style="font-size:26px" x="${L - 210}" y="${bot + 68}">Terraform, CAPI, or ACK + kro: decide</text>`;
+      Dwg.into('#sec', s);
+      let b = '';
+      for (let i = 0; i < 39; i++) b += `<rect class="hatch-ink" x="${(i % 20) * 34 + 2}" y="${Math.floor(i / 20) * 34 + 2}" width="28" height="28"/>`;
+      Dwg.into('#n39', Dwg.defs(), b);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

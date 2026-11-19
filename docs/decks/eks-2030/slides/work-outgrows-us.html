@@ -3,25 +3,88 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The work grows faster than the team ever will</title>
+  <title>The work outgrows us</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* Work (graphite, exponential) against the team (red, linear). The gap between them is
+       toil. Notes on the right say why the work curve bends: LinkedIn's formula, our own note
+       from the floor, then Mastercard's CTO/CISO pair. */
+    #plot { position: absolute; inset: 0; }
+    .axis { stroke: var(--c-graphite); stroke-width: 3; fill: none; }
+    .work { stroke: var(--c-graphite); stroke-width: 5; fill: none; }
+    .team { stroke: var(--c-red); stroke-width: 5; fill: none; }
+    .gap { fill: url(#h-blue); stroke: none; }
+    .notes-col { position: absolute; left: 1220px; width: 580px; }
+    .n1 { top: 330px; } .n2 { top: 590px; } .n3 { top: 820px; }
+    .formula { font: 700 27px/1.4 var(--font-tech); color: var(--c-graphite); }
+    .notes-col p { margin: 0; font: 400 25px/1.35 var(--font-tech); color: var(--c-lead); }
+    .notes-col p b { color: var(--c-graphite); }
+    .field { font: 700 30px/1.3 var(--font-body); color: var(--c-red-ink); }
+    .field + p { margin-top: 8px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>The work grows faster than the team ever will</h1>
+    <h2 class="head" style="width:1060px">The work grows faster than the team ever will</h2>
+    <svg id="plot" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <div class="notes-col n1">
+      <p>LinkedIn’s formula for one upgrade:</p>
+      <div class="formula">time ≈ rollouts × ramps × (deploy + soak) ÷ daily window</div>
+      <p>Three minors on 250+ clusters, one at a time: <b>40 business days</b>.</p>
+    </div>
+    <div class="notes-col n2">
+      <div class="field">“Lots of companies are running 100s of clusters, we can’t keep doing manual upgrades.”</div>
+      <p>Our notes, from the show floor</p>
+    </div>
+    <div class="notes-col n3" data-step="1" data-effect="rise">
+      <p><b>“10× productivity”</b> says every CTO.<br><b>“10× vulnerabilities”</b> says every CISO. (Mastercard)</p>
+    </div>
+
+    <p class="src">LinkedIn and Mastercard: their posted slides. Curves are illustrative, not data.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    This is the problem in one picture. The black line is the work: every cluster times every release times every CVE. The red line is the team. Teams grow in a straight line, one hire at a time. The work doesn't.
+
+    The blue gap between them is toil. Someone does it by hand, or it doesn't get done.
+
+    LinkedIn put a formula on it. Upgrade time is rollouts times ramps times deploy-plus-soak, divided by your daily window. For three minor versions across two hundred and fifty clusters, done the normal way, that came to forty business days.
+
+    And this is what we wrote down ourselves on the show floor: lots of companies are running hundreds of clusters, and we can't keep doing manual upgrades.
+
+    Click. Then AI multiplies it. Mastercard's speaker had a nice pair: every CTO says AI means ten times the productivity; every CISO says it means ten times the vulnerabilities. Both are right, and both land on this curve.
+
+    Every big operator at the show hit this wall. The ones who hit it late paid for it.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const x0 = 160, x1 = 1120, yb = 940, yt = 360, k = 3.2;
+      const yw = (t) => yb - 20 - (yb - yt - 20) * (Math.exp(k * t) - 1) / (Math.exp(k) - 1);
+      const yteam = (t) => yb - 90 - 170 * t;
+      const X = (t) => x0 + (x1 - x0) * t;
+      let w = '', tm = `M${X(0)} ${yteam(0)} L${X(1)} ${yteam(1)}`;
+      for (let i = 0; i <= 120; i++) { const t = i / 120; w += `${i ? 'L' : 'M'}${X(t).toFixed(1)} ${yw(t).toFixed(1)}`; }
+      let tc = 0; for (let i = 0; i <= 1000; i++) { const t = i / 1000; if (yw(t) < yteam(t)) { tc = t; break; } }
+      let gap = `M${X(tc).toFixed(1)} ${yteam(tc).toFixed(1)}`;
+      for (let i = 0; i <= 100; i++) { const t = tc + (1 - tc) * i / 100; gap += `L${X(t).toFixed(1)} ${yw(t).toFixed(1)}`; }
+      gap += `L${X(1)} ${yteam(1)} Z`;
+      const lt = 0.86;
+      Dwg.into('#plot', Dwg.defs(),
+        `<path class="gap" d="${gap}"/>`,
+        `<path class="axis" d="M${x0} ${yt - 20} V${yb} H${x1 + 50}"/>`,
+        `<text class="blue-t" x="${x0 - 24}" y="${yt + 50}" text-anchor="end" transform="rotate(-90 ${x0 - 24} ${yt + 50})">hours of work</text>`,
+        `<text class="blue-t" x="${x1 + 50}" y="${yb + 40}" text-anchor="end">clusters × releases × CVEs</text>`,
+        `<path class="work" d="${w}"/>`, `<path class="team" d="${tm}"/>`,
+        `<text class="lbl big" x="${X(0.74) - 20}" y="${yw(0.74) - 10}" text-anchor="end">work</text>`,
+        `<text class="lbl big red" x="${X(1) - 10}" y="${yteam(1) + 52}" text-anchor="end">team</text>`,
+        `<text class="lbl big" style="fill:#2b5c9e" x="${X(lt) + 26}" y="${(yw(lt) + yteam(lt)) / 2 + 40}" text-anchor="middle">toil</text>`
+      );
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

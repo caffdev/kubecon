@@ -3,25 +3,62 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>2030: a new cluster, service or agent is a pull request</title>
+  <title>2030 spec sheet</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* 2030 as a specification sheet: our proposed targets beside the peer who already does it.
+       The on-prem line sits in a revision cloud: a decision we haven't made. */
+    .spec { position: absolute; left: 120px; top: 290px; width: 1680px; }
+    .spec td { height: 70px; }
+    .spec td.name { width: 400px; }
+    .spec td.tgt { font: 700 27px/1.2 var(--font-tech); width: 560px; }
+    .spec td.peer { font: 400 24px/1.25 var(--font-tech); color: var(--c-lead); }
+    .spec td.peer b { color: var(--c-graphite); }
+    .stamp { position: absolute; right: 120px; top: 112px; text-align: right; font: 400 24px/1.35 var(--font-tech); color: var(--c-cyan-ink); }
+    #cl { position: absolute; inset: 0; pointer-events: none; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>2030: a new cluster, service or agent is a pull request</h1>
+    <h2 class="head" style="width:1200px">2030: a new cluster, service or agent is a pull request</h2>
+    <p class="stamp">Proposed targets<br>for us to agree</p>
+
+    <table class="bom spec">
+      <tr><th>#</th><th>Spec</th><th>2030 target</th><th>Already done by</th></tr>
+      <tr><td class="n">1</td><td class="name">New EKS cluster</td><td class="tgt">Same day, from a PR, no tickets</td><td class="peer"><b>Meta</b>: infra code installs Argo CD; Argo CD does the rest</td></tr>
+      <tr><td class="n">2</td><td class="name">A Kubernetes minor, whole fleet</td><td class="tgt">Under two weeks, mostly unattended</td><td class="peer"><b>LinkedIn</b>: 7 business days, 250+ clusters</td></tr>
+      <tr><td class="n">3</td><td class="name">Ship a new service</td><td class="tgt">~10 lines from the app team</td><td class="peer"><b>LinkedIn</b>: 5M+ pods behind ~10 lines each</td></tr>
+      <tr><td class="n">4</td><td class="name">Long-lived secrets in pods</td><td class="tgt">Zero</td><td class="peer"><b>Coinbase</b>: SPIFFE identity, 4k+ services</td></tr>
+      <tr><td class="n">5</td><td class="name">First look at every alert</td><td class="tgt">An agent, in minutes, for cents</td><td class="peer"><b>Verkada</b>: 139 s median, $0.33 each</td></tr>
+      <tr class="person"><td class="n">6</td><td class="name">Routine change</td><td class="tgt">Opened by agents, approved by a person</td><td class="peer"><b>Mastercard</b>: 150 EKS clusters, by MR</td></tr>
+      <tr><td class="n">7</td><td class="name">Cost</td><td class="tgt">Every dollar has an owner</td><td class="peer"><b>Adobe</b>, <b>Verkada</b>: per team, per alert</td></tr>
+      <tr><td class="n">8</td><td class="name">Footprint</td><td class="tgt">2+ AWS regions; on-prem exited</td><td class="peer"><b>Stripe</b>: 6 regions, a 99.999% SLO</td></tr>
+    </table>
+    <svg id="cl" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <p class="src">Meta, Verkada: session abstracts. LinkedIn, Coinbase, Mastercard, Adobe, Stripe: posted slides.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Here's 2030, written as a spec sheet. These are our proposed targets, not facts, and each one sits next to a company that already does it today.
+
+    A new EKS cluster: same day, from a pull request, no tickets. Meta does that with about fifteen people.
+
+    A Kubernetes minor version across the whole fleet in under two weeks. LinkedIn does it in seven business days across two hundred and fifty clusters.
+
+    A new service is about ten lines from the app team. Zero long-lived secrets in pods. Every alert gets a first look from an agent in minutes, for cents. Routine change is opened by agents and approved by a person; that row is red because a person stays in it.
+
+    Every dollar has an owner. And the footprint: at least two AWS regions, and on-prem exited. That last one has a cloud around it because we haven't decided it. Fully exit, or keep on-prem as one more cluster run exactly like the others?
+
+    Five moves get us there. Each one is already running at a company that spoke last week.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    // revision cloud around row 8 (header 46 + 7 rows of 70, from top 290)
+    Dwg.into('#cl', Dwg.cloud(106, 290 + 46 + 7 * 70 + 8, 1708, 70, { r: 18 }));
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

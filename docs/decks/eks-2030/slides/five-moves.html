@@ -3,23 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Five moves, all on the stack we already chose</title>
+  <title>Five moves</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* The drawing set: five sheets, one per move, each with a title block. What's not in the
+       set is voided along the bottom. */
+    .set { position: absolute; left: 120px; top: 300px; width: 1680px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; }
+    .sh { position: relative; height: 470px; border: 3px solid var(--c-graphite); outline: 1.5px solid var(--c-graphite); outline-offset: -12px; background: rgb(229 233 226 / .9); padding: 30px 28px; }
+    .sh .no { font: 800 84px/1 var(--font-display); letter-spacing: -.03em; }
+    .sh h3 { margin: 14px 0 0; font: 800 34px/1.05 var(--font-display); letter-spacing: -.02em; }
+    .sh .tools { margin-top: 16px; font: 700 24px/1.3 var(--font-tech); }
+    .sh .tb { position: absolute; left: 12px; right: 12px; bottom: 12px; border-top: 1.5px solid var(--c-graphite); padding: 10px 16px 6px; font: 400 23px/1.3 var(--font-tech); color: var(--c-lead); }
+    .sh .tb b { color: var(--c-graphite); }
+    .not { position: absolute; left: 120px; top: 830px; width: 1680px; display: flex; gap: 24px; align-items: center; }
+    .not .lab { font: 700 26px var(--font-tech); color: var(--c-lead); margin-right: 6px; }
+    .not span.v {
+      padding: 10px 18px; border: 2px solid var(--c-lead); font: 400 26px var(--font-tech); color: var(--c-lead);
+      text-decoration: line-through; text-decoration-thickness: 2px;
+      background: repeating-linear-gradient(45deg, transparent 0 9px, rgb(93 101 107 / .18) 9px 11px);
+    }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Five moves, all on the stack we already chose</h1>
+    <h2 class="head">Five moves, all on the stack we already chose</h2>
+
+    <div class="set">
+      <div class="sh" data-step="1"><div class="no">1</div><h3>Clusters are cattle</h3><div class="tools">EKS, Karpenter, plain Argo CD</div><div class="tb"><b>Run at</b> Meta, NVIDIA</div></div>
+      <div class="sh" data-step="2"><div class="no">2</div><h3>Apps on a contract</h3><div class="tools">One Helm chart, CI, PostSync hooks</div><div class="tb"><b>Run at</b> LinkedIn, Ford</div></div>
+      <div class="sh" data-step="3"><div class="no">3</div><h3>Identity, not secrets</h3><div class="tools">Vault, Istio, EKS Pod Identity</div><div class="tb"><b>Run at</b> Coinbase, Yahoo</div></div>
+      <div class="sh" data-step="4"><div class="no">4</div><h3>One telemetry pipeline</h3><div class="tools">OTel into Prometheus, Grafana, Splunk</div><div class="tb"><b>Run at</b> Nubank, Yahoo</div></div>
+      <div class="sh" data-step="5"><div class="no">5</div><h3>Agents are workloads</h3><div class="tools">Claude Agent SDK, on EKS</div><div class="tb"><b>Run at</b> Verkada, Mastercard</div></div>
+    </div>
+
+    <div class="not"><span class="lab">Not in this set</span><span class="v">GPUs and model serving</span><span class="v">Kargo, Promoter, progressive sync</span><span class="v">A second orchestrator</span></div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Five moves. Think of them as the five sheets of a drawing set. Each one uses tools we already lean on, and each one is already running at a company that presented.
+
+    Click. One: clusters are cattle. EKS, Karpenter, plain Argo CD. Meta and NVIDIA.
+
+    Click. Two: apps on a contract. One Helm chart, CI, and a PostSync hook. LinkedIn and Ford.
+
+    Click. Three: identity, not secrets. Vault, Istio, EKS Pod Identity. Coinbase and Yahoo.
+
+    Click. Four: one telemetry pipeline, feeding the Prometheus, Grafana and Splunk we already have. Nubank and Yahoo.
+
+    Click. Five: agents are workloads, built on the Claude Agent SDK and run on EKS. Verkada and Mastercard.
+
+    And what's not in the set: GPUs, the advanced Argo promotion tools, and a second orchestrator.
+
+    Move one: stop treating clusters as places.
   </aside>
 
   <script src="../../_kit/runtime/slide.js"></script>

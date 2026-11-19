@@ -3,25 +3,73 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>One pipeline feeds Prometheus, Grafana and Splunk</title>
+  <title>One pipeline</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* Fan-in, fan-out: thousands of services instrumented through a handful of shared
+       libraries, one OTel tier, then the backends we already run. */
+    #pl { position: absolute; inset: 0; }
+    .rc { position: absolute; left: 120px; top: 690px; width: 1680px; }
+    .rc td.who { width: 320px; font: 800 28px var(--font-display); }
+    .rc small { color: var(--c-lead); font-size: 22px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>One pipeline feeds Prometheus, Grafana and Splunk</h1>
+    <h2 class="head" style="width:1260px">One pipeline feeds Prometheus, Grafana and Splunk</h2>
+    <div class="sheet"><b>4</b><span><em>One telemetry pipeline</em>sheet 4 of 5</span></div>
+
+    <svg id="pl" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <table class="bom rc">
+      <tr><th>Run at</th><th>What it shows</th></tr>
+      <tr data-step="1"><td class="who">Nubank</td><td>5 engineers, ~23B spans an hour. They instrumented 6 libraries, not 4k+ services. <small>slides</small></td></tr>
+      <tr data-step="2"><td class="who">Splunk, New Relic</td><td>OTel Blueprints: one prescribed collector topology for every team. <small>slides</small></td></tr>
+      <tr data-step="2"><td class="who">remberg</td><td>A Grafana dashboard ships as a pull request. <small>slides</small></td></tr>
+      <tr data-step="2"><td class="who">Best Buy</td><td>Page on SLO burn, not CPU; put deploys on the incident timeline. <small>slides</small></td></tr>
+    </table>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Move four: one telemetry pipeline. We keep Prometheus, Grafana and Splunk. What we add is one OpenTelemetry tier in front of them.
+
+    Read it left to right. Thousands of services, but they're instrumented once, in a handful of shared libraries: HTTP, Kafka, the database clients. Everything goes through an OTel agent on each node, then a gateway that aggregates and samples. Then out to the backends we already pay for: metrics to Prometheus and Grafana, logs and traces to Splunk. Changing a backend becomes exporter config. Nobody redeploys a service.
+
+    Click. Nubank runs this with five engineers at about twenty-three billion spans an hour. Their trick was instrumenting six libraries instead of four thousand services.
+
+    Click. Splunk co-presented the OTel Blueprints talk: one prescribed collector shape for every team. remberg ships Grafana dashboards as pull requests. And Best Buy's advice for incident response: page on SLO burn, not CPU, and put deploys on the timeline. That's the context our agents will need later, too.
+
+    Once every signal goes through one place, so can every dollar.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      let s = Dwg.defs();
+      // thousands of services (49 drawn, the rest implied by a break)
+      for (let i = 0; i < 49; i++) s += `<rect class="hatch-ink" x="${120 + (i % 7) * 36}" y="${300 + Math.floor(i / 7) * 36}" width="28" height="28"/>`;
+      s += `<text class="dim-t" x="120" y="${300 + 7 * 36 + 36}">4k+ services</text>`;
+      // converge into 6 shared libraries
+      const lx = 480, ly = 300;
+      for (let i = 0; i < 6; i++) {
+        s += `<path class="wire thin" style="stroke:#6c9bd8" d="M376 ${312 + i * 42} L${lx} ${ly + 18 + i * 42}"/>`;
+        s += `<rect class="paper" x="${lx}" y="${ly + i * 42}" width="150" height="34" stroke="#22272b" stroke-width="2.5"/>`;
+      }
+      s += `<text class="dim-t" x="${lx}" y="${300 + 7 * 36 + 36}">6 shared libraries</text>`;
+      const y = 425;
+      const box = (x, w, t1, t2) => `<rect class="paper" x="${x}" y="${y - 50}" width="${w}" height="100" stroke="#22272b" stroke-width="3"/><text class="lbl" x="${x + w / 2}" y="${y - 6}" text-anchor="middle">${t1}</text><text class="dim-t" x="${x + w / 2}" y="${y + 28}" text-anchor="middle">${t2}</text>`;
+      s += `<path class="wire" d="M630 ${y} H700" marker-end="url(#ar)"/>` + box(700, 220, 'OTel agent', 'per node');
+      s += `<path class="wire" d="M920 ${y} H980" marker-end="url(#ar)"/>` + box(980, 280, 'OTel gateway', 'aggregate, sample');
+      // fan out to the backends we already run
+      s += `<path class="wire" d="M1260 ${y} H1310 V340 H1370" marker-end="url(#ar)"/><path class="wire" d="M1310 ${y} V520 H1370" marker-end="url(#ar)"/>`;
+      s += `<rect class="hatch-ink" x="1370" y="300" width="430" height="80"/><rect class="paper" x="1384" y="316" width="402" height="48"/><text class="lbl" x="1400" y="350">Prometheus, Grafana</text>`;
+      s += `<rect class="hatch-ink" x="1370" y="480" width="430" height="80"/><rect class="paper" x="1384" y="496" width="402" height="48"/><text class="lbl" x="1400" y="530">Splunk</text>`;
+      s += `<text class="blue-t" x="1370" y="414">metrics</text><text class="blue-t" x="1370" y="594">logs, traces</text>`;
+      s += `<text class="blue-t" x="1370" y="640">a backend is exporter config, no redeploy</text>`;
+      Dwg.into('#pl', s);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

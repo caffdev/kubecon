@@ -3,25 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ship every change with the check that proves it</title>
+  <title>Upgrades in waves</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* NVIDIA's slide as Detail A; the number; our waves as a schematic with a check (valve)
+       between each wave. */
+    .detail { left: 120px; top: 300px; width: 860px; }
+    .big { position: absolute; left: 1060px; top: 296px; width: 740px; }
+    .big .n { font: 800 96px/1 var(--font-display); letter-spacing: -.04em; }
+    .big .n span { font-size: 52px; letter-spacing: -.02em; }
+    .big p { margin: 12px 0 0; font: 400 28px/1.35 var(--font-body); }
+    #waves { position: absolute; inset: 0; }
+    .ours { position: absolute; left: 1060px; top: 852px; width: 740px; font: 400 25px/1.35 var(--font-tech); color: var(--c-lead); }
+    .ours b { color: var(--c-graphite); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Ship every change with the check that proves it</h1>
+    <h2 class="head" style="width:1300px">Ship every change with the check that proves it</h2>
+    <div class="sheet"><b>1</b><span><em>Clusters are cattle</em>sheet 1 of 5</span></div>
+
+    <figure class="detail">
+      <img src="../assets/nvidia-status-agent.png" alt="NVIDIA's slide: kubectl apply the CR per cluster, poll the status subresource, advance to the next cluster on complete, stop and escalate to a human on erroring or blocked.">
+      <figcaption><b>Detail A</b> NVIDIA, “5,000 Nodes in Minutes, Twice in a Week”. KubeCon NA 2026, internal use</figcaption>
+    </figure>
+
+    <div class="big">
+      <div class="n">~5,600 <span>nodes in 30 min</span></div>
+      <p>across 16 clusters, unattended. The agent gates on the same status field kubectl shows, and stops for a person.</p>
+    </div>
+
+    <svg id="waves" viewBox="0 0 1920 1080" aria-hidden="true" data-step="1"></svg>
+    <p class="ours" data-step="1"><b>On EKS</b> AWS upgrades the control plane. We own the add-ons, the nodes (replaced, not patched) and every check.</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Creating clusters is the easy half. Keeping them current is where the hours go.
+
+    This is NVIDIA's slide. They had two kernel CVEs land days apart. They wrote the fix and, in the same package, the check that fails if the fix didn't take. Then an agent applied it cluster by cluster. It polled the status field, the same one kubectl shows, moved on when it said complete, and stopped and called a person when it said erroring or blocked.
+
+    About fifty-six hundred nodes converged in thirty minutes, across sixteen clusters, unattended. And the agent did stop once: some clusters had tainted control-plane nodes, so it escalated, they fixed the config, and re-applied.
+
+    Click. Our version is simple. Every change goes dev, then one production canary cluster, then the rest. Between each wave is a check that has to pass. On EKS, AWS upgrades the control plane for us. We own the add-ons, the nodes, which we replace rather than patch, and the checks.
+
+    Waves make a good change fast. They make a bad change fast too.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const y = 790, w = 190, gap = 85, x0 = 1060;
+      const names = ['dev', '1 prod canary', 'rest of prod'];
+      let s = Dwg.defs();
+      names.forEach((n, i) => {
+        const x = x0 + i * (w + gap);
+        s += `<rect class="${i === 2 ? 'hatch-ink' : 'paper'}" x="${x}" y="${y - 36}" width="${w}" height="72" stroke="#22272b" stroke-width="3"/>`;
+        s += `<rect class="paper" x="${x + 14}" y="${y - 18}" width="${w - 28}" height="36"/><text class="dim-t" style="font-weight:700" x="${x + w / 2}" y="${y + 9}" text-anchor="middle">${n}</text>`;
+        if (i < 2) {
+          const vx = x + w + gap / 2;
+          s += `<line class="wire" x1="${x + w}" y1="${y}" x2="${x + w + gap}" y2="${y}"/>` + Dwg.valve(vx, y, 20) + `<text class="blue-t" x="${vx}" y="${y - 34}" text-anchor="middle">check</text>`;
+        }
+      });
+      s += `<text class="lbl" x="${x0}" y="${y - 70}">Our waves</text>`;
+      Dwg.into('#waves', s);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

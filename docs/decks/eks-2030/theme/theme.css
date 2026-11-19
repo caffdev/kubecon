@@ -1,34 +1,42 @@
-/* Built for the curve: KubeCon 2026 takeaways for our move to EKS, and our 2030: theme
-   Placeholder values. Replace all of them with this deck's design plan
-   (narrative.md, Visual direction) before building slides. Name colors for what
-   they are in this deck's world, not "primary/secondary". */
+/* Built for the curve: theme. SCALE DRAWING (chosen 2026-11-19; see narrative.md, Visual direction).
+   The world is an engineering drawing set on drafting film. Ratios are drawn to scale, and where
+   the ratio outgrows the sheet, the drawing breaks. Graphite carries the drawing, red pencil marks
+   people and the decisions they make, and non-photo blue is for construction lines and notes.
+   Stations are numbered balloons, evidence is a parts list, and open decisions sit in revision
+   clouds. Each of the five moves is a sheet of the set. */
 
-/* @import url("https://fonts.googleapis.com/css2?family=…&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800;900&family=B612:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap");
 
 :root {
-  /* palette: 4–6 named colors */
-  --c-ground: #e9e9e6;
-  --c-ink: #1d1d1b;
-  --c-quiet: #77756f;
-  --c-signal: #3a3a37;
+  /* palette */
+  --c-film: #e5e9e2;       /* ground: drafting film */
+  --c-graphite: #22272b;   /* ink */
+  --c-lead: #5d656b;       /* quiet text: 2H lead (5.0:1 on film) */
+  --c-cyan: #6c9bd8;       /* non-photo blue: construction lines, shapes only */
+  --c-cyan-ink: #2b5c9e;   /* blue text (5.4:1) */
+  --c-red: #d0293a;        /* red pencil: people and their decisions; shapes, large text */
+  --c-red-ink: #b31f2f;    /* red text at body size (5.3:1) */
+  --c-grid: rgb(43 92 158 / .10);
+  --c-void: rgb(34 39 43 / .07);
 
-  /* roles the kit and slides use */
-  --bg: var(--c-ground);
-  --ink: var(--c-ink);
-  --muted: var(--c-quiet);
-  --accent: var(--c-signal);
-  --letterbox: var(--c-ground);
+  /* roles */
+  --bg: var(--c-film);
+  --ink: var(--c-graphite);
+  --muted: var(--c-lead);
+  --accent: var(--c-red);
+  --letterbox: #d6dbd3;
 
-  /* type: one or two families, chosen for this subject */
-  --font-display: Georgia, serif;
-  --font-body: system-ui, sans-serif;
+  /* type */
+  --font-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-tech: "B612", "Helvetica Neue", Arial, sans-serif;
+  --font-code: "JetBrains Mono", ui-monospace, Menlo, monospace;
 
-  /* scale at 1920×1080: body stays ≥ 28px for rooms, captions ≥ 22px */
-  --t-hero: 176px;
-  --t-1: 112px;
-  --t-2: 72px;
-  --t-3: 48px;
-  --t-body: 34px;
+  --t-hero: 168px;
+  --t-1: 100px;
+  --t-2: 74px;
+  --t-3: 46px;
+  --t-body: 32px;
   --t-small: 24px;
 
   /* space */
@@ -38,16 +46,105 @@
 }
 
 .slide {
-  background: var(--bg);
+  background:
+    linear-gradient(var(--c-grid) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, var(--c-grid) 1px, transparent 1px) 0 0 / 40px 40px,
+    var(--bg);
   color: var(--ink);
   font: 400 var(--t-body)/1.35 var(--font-body);
   padding: var(--margin-y) var(--margin);
+  font-variant-numeric: lining-nums proportional-nums;
 }
-.slide h1 {
-  font: 600 var(--t-1)/1 var(--font-display);
-  letter-spacing: -0.02em;
-  max-width: 16ch;
+/* tabular figures only where numbers line up; tnum also widens punctuation in these faces */
+.bom td, .bom th, .dim-t, .tick-t, .num { font-variant-numeric: lining-nums tabular-nums; }
+.slide h1, .slide h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: .98;
+  margin: 0;
+  max-width: none;
 }
+.slide h1 { font-size: var(--t-1); }
+.slide h2 { font-size: var(--t-2); }
+/* the default headline position: top-left, clear of the sheet tag */
+.slide > h2.head { position: absolute; left: var(--margin); top: var(--margin-y); width: 1340px; }
 
-/* Deck-wide pieces (an annotation style, a figure caption, a data label…) go here,
-   designed for this deck. Keep one-off compositions in each slide's <style>. */
+.tech { font-family: var(--font-tech); }
+.code { font: 400 28px/1.45 var(--font-code); white-space: pre; color: var(--ink); }
+.code .k { color: var(--c-cyan-ink); }
+.code .c { color: var(--c-lead); }
+.red { color: var(--c-red-ink); }
+.blue { color: var(--c-cyan-ink); }
+.quiet { color: var(--muted); }
+
+/* ---- SVG drawing pieces (theme/draw.js emits these) ---- */
+.dim { stroke: var(--c-graphite); stroke-width: 2; fill: none; }
+.ext { stroke: var(--c-cyan); stroke-width: 1.5; stroke-dasharray: 6 5; fill: none; }
+.wire { fill: none; stroke: var(--c-graphite); stroke-width: 3.5; }
+.wire.thin { stroke-width: 2.5; }
+.wire.red { stroke: var(--c-red); }
+.wire.blue { stroke: var(--c-cyan); stroke-dasharray: 8 6; }
+.dim-t { font: 400 26px var(--font-tech); fill: var(--c-graphite); }
+.dim-t.quiet { fill: var(--c-lead); }
+.red-t { font: 700 30px var(--font-tech); fill: var(--c-red-ink); }
+.blue-t { font: 400 24px var(--font-tech); fill: var(--c-cyan-ink); }
+.lbl { font: 600 30px var(--font-display); fill: var(--c-graphite); }
+.lbl.big { font-size: 40px; font-weight: 800; letter-spacing: -.02em; }
+.lbl.red { fill: var(--c-red-ink); }
+.bal { fill: var(--c-film); stroke: var(--c-graphite); stroke-width: 3; }
+.bal.person { fill: var(--c-red); stroke: var(--c-red); }
+.bal-n { font: 700 28px var(--font-tech); fill: var(--c-graphite); text-anchor: middle; dominant-baseline: central; }
+.bal-n.person { fill: #fff; }
+.cloud { fill: none; stroke: var(--c-red); stroke-width: 3; stroke-linejoin: round; }
+.hatch-ink { fill: url(#h-ink); stroke: var(--c-graphite); stroke-width: 2.5; }
+.hatch-red { fill: url(#h-red); stroke: var(--c-red); stroke-width: 2.5; }
+.hatch-blue { fill: url(#h-blue); stroke: var(--c-cyan); stroke-width: 2; }
+.void { fill: url(#h-void); stroke: var(--c-lead); stroke-width: 2; }
+.paper { fill: var(--c-film); }
+
+/* ---- HTML drawing pieces ---- */
+
+/* sheet tag: which move (sheet of the set) an Act III slide belongs to */
+.sheet {
+  position: absolute; right: var(--margin); top: var(--margin-y);
+  display: grid; grid-template-columns: 64px auto; border: 3px solid var(--c-graphite);
+  background: rgb(229 233 226 / .9);
+}
+.sheet b { display: grid; place-items: center; font: 700 34px/1 var(--font-tech); border-right: 2px solid var(--c-graphite); }
+.sheet span { display: grid; align-content: center; padding: 6px 16px; font: 400 22px/1.15 var(--font-tech); color: var(--c-lead); }
+.sheet span em { font-style: normal; font: 700 26px/1.15 var(--font-display); color: var(--c-graphite); }
+
+/* parts list / spec table */
+.bom { border: 3px solid var(--c-graphite); border-collapse: collapse; background: rgb(229 233 226 / .88); }
+.bom th, .bom td { border: 1.5px solid var(--c-graphite); padding: 0 14px; height: 56px; text-align: left; }
+.bom th { font: 700 24px var(--font-tech); color: var(--c-lead); height: 46px; white-space: nowrap; }
+.bom td { font: 400 26px/1.2 var(--font-tech); }
+.bom td.n { text-align: center; font-weight: 700; width: 40px; }
+.bom td.name { font: 600 28px/1.15 var(--font-display); }
+.bom tr.person td { color: var(--c-red-ink); }
+.bom b { font-weight: 700; }
+
+/* a note: blue construction-note text with a leader; or red pencil */
+.note { font: 400 26px/1.3 var(--font-tech); color: var(--c-cyan-ink); }
+.note.red { color: var(--c-red-ink); font-weight: 700; }
+
+/* a lifted slide from the show, framed as a detail */
+.detail { position: absolute; border: 3px solid var(--c-graphite); background: #fff; padding: 0; }
+.detail img { display: block; width: 100%; height: auto; }
+.detail figcaption {
+  position: absolute; left: -3px; right: -3px; top: 100%; margin-top: 0;
+  border: 3px solid var(--c-graphite); border-top-width: 0; background: var(--c-film);
+  padding: 6px 14px; font: 400 22px/1.3 var(--font-tech); color: var(--c-lead);
+}
+.detail figcaption b { color: var(--c-graphite); }
+
+/* source line */
+.src {
+  position: absolute;
+  left: var(--margin);
+  bottom: 48px;
+  font: 400 var(--t-small)/1.3 var(--font-tech);
+  color: var(--muted);
+  max-width: 1680px;
+}

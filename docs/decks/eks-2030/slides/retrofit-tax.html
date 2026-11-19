@@ -3,25 +3,63 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Every scale story at the show was a retrofit</title>
+  <title>The retrofit tax</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* The retrofit tax as a drawing's revision table: three companies' revisions after the
+       fact, and our row D left open inside a red revision cloud. */
+    .rev { position: absolute; left: 120px; top: 300px; width: 1680px; }
+    .rev td { height: 140px; vertical-align: middle; }
+    .rev td.n { font: 800 44px var(--font-display); width: 70px; }
+    .rev td.name { width: 250px; font-size: 34px; font-weight: 800; letter-spacing: -.01em; }
+    .rev td.what { font: 400 28px/1.3 var(--font-body); }
+    .rev td.cost { width: 520px; font: 400 26px/1.3 var(--font-tech); }
+    .rev td.cost b { font-weight: 700; }
+    .rev tr.ours td { color: var(--c-red-ink); }
+    .rev tr.ours td.what { font: 700 32px var(--font-body); }
+    #cl { position: absolute; inset: 0; pointer-events: none; }
+    .rev td small { display: block; margin-top: 4px; font: 400 22px var(--font-tech); color: var(--c-lead); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Every scale story at the show was a retrofit</h1>
+    <h2 class="head">Every scale story at the show was a retrofit</h2>
+
+    <table class="bom rev">
+      <tr><th>Rev</th><th>Who</th><th>What had to change, after the fact</th><th>What it cost</th></tr>
+      <tr data-step="1"><td class="n">A</td><td class="name">Coinbase</td><td class="what">A homegrown service auth, “tightly coupled to AWS”, replaced by SPIFFE across 4k+ services</td><td class="cost">After a long tail of adoption, the old system reached <b>end of life in March 2025</b><small>posted slides</small></td></tr>
+      <tr data-step="2"><td class="n">B</td><td class="name">Cisco Meraki</td><td class="what">A 20-year monolith: 500+ services, 1,000+ DB shards, 5,000+ static servers</td><td class="cost">Rebuilt as <b>“a new platform contract”</b> between infra and app teams<small>session abstract</small></td></tr>
+      <tr data-step="3"><td class="n">C</td><td class="name">Nutanix</td><td class="what">One deleted root object pruned all 39 production clusters</td><td class="cost"><b>Four days</b> to recover; backups were 12&nbsp;h old and never restore-tested<small>posted slides</small></td></tr>
+      <tr data-step="4" class="ours"><td class="n">D</td><td class="name">Us</td><td class="what">Not yet drawn</td><td class="cost"><b>The tax we skip</b>, if we build it in from cluster one</td></tr>
+    </table>
+    <svg id="cl" viewBox="0 0 1920 1080" aria-hidden="true" data-step="4"></svg>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Here's the cost of hitting that wall late. Think of it as a revision table on a drawing: the changes you make after it's built.
+
+    Click. Revision A, Coinbase. Their service-to-service auth was homegrown and tightly tied to AWS. They replaced it with SPIFFE across more than four thousand services, and after a long tail of adoption, retired the old system in March 2025.
+
+    Click. Revision B, Cisco Meraki. A twenty-year-old monolith: five hundred services, a thousand database shards, five thousand hand-provisioned servers. Moving to Kubernetes meant writing a new contract between the platform and every app team.
+
+    Click. Revision C, Nutanix. One deleted object at the top of their GitOps tree pruned all thirty-nine production clusters. Four days to recover, and the backups were twelve hours old and had never been tested.
+
+    Click. Revision D is us, and it isn't drawn yet. That's the point. The tax they paid is the tax we skip, if we build these things in from the first cluster.
+
+    So what does "built in from day one" look like by 2030?
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const row = document.querySelector('.rev tr.ours');
+      const main = document.querySelector('.slide');
+      // geometry is in stage px; table top 300 + header 46 + 3 rows of 128 (+ borders)
+      const top = 300 + 46 + 3 * 140 + 6, h = 140;
+      Dwg.into('#cl', Dwg.cloud(108, top - 8, 1704, h + 12, { r: 20 }));
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

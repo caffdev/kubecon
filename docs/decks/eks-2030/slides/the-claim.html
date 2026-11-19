@@ -3,25 +3,75 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>We can build from day one what they had to retrofit</title>
+  <title>The claim</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* Title slide: the claim large, the growth curve as a plot with "we are here" before the
+       bend, and the deck's title block in the corner, as on any drawing. */
+    h1 { position: absolute; left: 120px; top: 96px; width: 1560px; font-size: 112px; }
+    #plot { position: absolute; inset: 0; }
+    .axis { stroke: var(--c-graphite); stroke-width: 3; fill: none; }
+    .curve { stroke: var(--c-graphite); stroke-width: 5; fill: none; stroke-linecap: round; }
+    .tick-t { font: 400 24px var(--font-tech); fill: var(--c-lead); text-anchor: middle; }
+    .tblock { position: absolute; left: 1240px; top: 700px; width: 560px; border: 3px solid var(--c-graphite); background: rgb(229 233 226 / .92); }
+    .tblock .t { padding: 14px 18px 10px; border-bottom: 2px solid var(--c-graphite); }
+    .tblock .t b { display: block; font: 800 40px/1.05 var(--font-display); letter-spacing: -.02em; }
+    .tblock .t span { display: block; margin-top: 6px; font: 400 23px/1.3 var(--font-tech); color: var(--c-lead); }
+    .tblock .cells { display: grid; grid-template-columns: 1fr 1fr; }
+    .tblock .cells span { padding: 8px 18px; font: 400 22px/1.3 var(--font-tech); color: var(--c-lead); border-right: 2px solid var(--c-graphite); }
+    .tblock .cells span:last-child { border-right: 0; }
+    .tblock .cells b { color: var(--c-graphite); font-weight: 700; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
     <h1>We can build from day one what they had to retrofit</h1>
+    <svg id="plot" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+    <div class="tblock">
+      <div class="t"><b>Built for the curve</b><span>KubeCon NA 2026 takeaways for our move to EKS, and our 2030</span></div>
+      <div class="cells"><span><b>Show</b> Salt Lake City, Nov 9–12</span><span><b>Set</b> 5 sheets, 1 per move</span></div>
+    </div>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    Here's the one sentence for the whole talk. We are early enough to build, from the first EKS cluster, what the big operators had to retrofit.
+
+    This curve is the shape of the next four years if we grow the way we plan to. We are here, at the bottom left, before the bend. Every company you'll hear about today hit the bend first and fixed their platform afterwards, while it was running. That's expensive.
+
+    We get to do it the other way round: decide how a cluster, a service and an agent are made before there are a hundred of them.
+
+    First, what we're leaving on the floor in Salt Lake City.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const x0 = 160, x1 = 1160, yb = 960, yt = 430, k = 3.4;
+      const y = (t) => yb - (yb - yt) * (Math.exp(k * t) - 1) / (Math.exp(k) - 1);
+      let d = '';
+      for (let i = 0; i <= 100; i++) { const t = i / 100; d += `${i ? 'L' : 'M'}${(x0 + (x1 - x0) * t).toFixed(1)} ${y(t).toFixed(1)}`; }
+      let ticks = '';
+      [2026, 2027, 2028, 2029, 2030].forEach((yr, i) => {
+        const x = x0 + (x1 - x0) * i / 4;
+        ticks += `<line class="axis" x1="${x}" y1="${yb}" x2="${x}" y2="${yb + 12}"/><text class="tick-t" x="${x}" y="${yb + 44}">${yr}</text>`;
+      });
+      const tx = 0.06, hx = x0 + (x1 - x0) * tx, hy = y(tx);
+      const bx = x0 + (x1 - x0) * 0.8, by = y(0.8);
+      Dwg.into('#plot', Dwg.defs(),
+        `<path class="axis" d="M${x0} ${yt - 30} V${yb} H${x1 + 40}"/>`, ticks,
+        `<text class="blue-t" x="${x0 - 24}" y="${yt + 20}" text-anchor="end" transform="rotate(-90 ${x0 - 24} ${yt + 20})">work</text>`,
+        `<path class="curve" d="${d}"/>`,
+        // the bend, where the retrofits happened
+        `<line class="ext" x1="${bx}" y1="${by}" x2="${bx - 230}" y2="${by - 60}"/>`,
+        `<text class="blue-t" x="${bx - 236}" y="${by - 70}" text-anchor="end">where they had to retrofit</text>`,
+        // we are here
+        `<circle cx="${hx}" cy="${hy}" r="13" fill="#d0293a"/>`,
+        `<line class="wire red" style="stroke-width:2.5" x1="${hx + 10}" y1="${hy - 12}" x2="${hx + 110}" y2="${hy - 130}"/>`,
+        `<text class="red-t" x="${hx + 118}" y="${hy - 136}">we are here, before the bend</text>`
+      );
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

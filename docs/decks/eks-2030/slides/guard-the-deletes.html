@@ -3,25 +3,76 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>One commit deleted 39 clusters. Four guards stop it.</title>
+  <title>Guard the deletes</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* Nutanix's four days as a dimensioned timeline (not to scale), then four guards, each
+       a real field or a real target. */
+    #tl { position: absolute; inset: 0; }
+    .guards { position: absolute; left: 120px; top: 520px; width: 1680px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px 40px; }
+    .g { display: grid; grid-template-columns: 76px 1fr; border-top: 3px solid var(--c-graphite); padding-top: 18px; min-height: 196px; }
+    .g .b { width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--c-graphite); display: grid; place-items: center; font: 700 28px var(--font-tech); }
+    .g h3 { margin: 0; font: 800 36px/1.05 var(--font-display); letter-spacing: -.02em; }
+    .g .code { font-size: 25px; margin-top: 10px; }
+    .g p { margin: 8px 0 0; font: 400 26px/1.3 var(--font-body); color: var(--c-graphite); }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>One commit deleted 39 clusters. Four guards stop it.</h1>
+    <h2 class="head" style="width:1300px">One commit deleted 39 clusters. Four guards stop it.</h2>
+    <div class="sheet"><b>1</b><span><em>Clusters are cattle</em>sheet 1 of 5</span></div>
+
+    <svg id="tl" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <div class="guards">
+      <div class="g" data-step="1"><span class="b">1</span><div><h3>No single root owns the fleet</h3><p>One Argo CD Application per cluster. Argo CD is bootstrapped on its own, outside the tree it syncs.</p></div></div>
+      <div class="g" data-step="2"><span class="b">2</span><div><h3>Bulk delete is hard</h3><div class="code">argocd.argoproj.io/sync-options: Prune=false</div><p>On clusters and stateful infra, plus a CEL admission policy that denies DELETE on them.</p></div></div>
+      <div class="g" data-step="3"><span class="b">3</span><div><h3>Data outlives objects</h3><div class="code">reclaimPolicy: Retain</div><p>And Git lives outside the clusters it drives.</p></div></div>
+      <div class="g" data-step="4"><span class="b">4</span><div><h3>Restore on a schedule</h3><div class="code">RPO ≤ 1 h, RTO ≤ 30 min</div><p>Nutanix’s new targets. Game day: lose the management cluster, time the rebuild.</p></div></div>
+    </div>
+
+    <p class="src">Nutanix, “GitOps Meltdown” (posted slides; they ran Flux, the shape is the same in Argo CD). “Automation is only as safe as the desired state it trusts.”</p>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    This was the cautionary tale of the show. Nutanix ran thirty-nine production clusters from one management cluster through GitOps. An admin, changing something else, deleted the top-level object of the tree. Pruning did exactly what it was built to do: it deleted everything under it.
+
+    The timeline: twelve minutes in, the delete stalled, because the GitOps controller had deleted itself. Eight hours later they restored the controller, it read the same desired state, and finished the job: all thirty-nine clusters gone. Two days to get the clusters back, two more for the apps. And the backups were twelve hours old and had never been restore-tested.
+
+    They used Flux. The same shape exists in Argo CD's app-of-apps. Four guards, all basic.
+
+    Click. One: no single root owns the fleet. One Application per cluster, and Argo CD bootstrapped on its own.
+
+    Click. Two: make bulk delete hard. The Prune=false sync option on clusters and stateful infrastructure, and an in-tree CEL admission policy that refuses deletes on them. We'll check the exact option names against our Argo CD version.
+
+    Click. Three: data outlives objects. Retain on the storage class, and Git hosted outside the clusters it drives.
+
+    Click. Four: restore on a schedule. Their new targets are an hour of data loss and thirty minutes to restore, proven on a game day.
+
+    Move two is about the apps, and keeping Argo CD boring.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const y = 380, xs = [140, 560, 940, 1340, 1780];
+      const what = ['root object deleted', 'wave 1 stalls', 'wave 2: all 39 gone', 'clusters back', 'apps back'];
+      const when = ['day 0, 13:03', '13:15', '21:00', 'days 1–2', 'days 2–4'];
+      const dims = ['12 min', '~8 h', '1–2 days', '~2 days'];
+      let s = Dwg.defs() + `<line class="wire" x1="${xs[0]}" y1="${y}" x2="${xs[4]}" y2="${y}"/>`;
+      xs.forEach((x, i) => {
+        const bad = i < 3;
+        s += `<circle cx="${x}" cy="${y}" r="11" fill="${bad ? '#22272b' : '#e5e9e2'}" stroke="#22272b" stroke-width="3"/>`;
+        const anchor = i === 0 ? 'start' : i === 4 ? 'end' : 'middle';
+        s += `<text class="dim-t" style="font-weight:700" x="${x}" y="${y - 30}" text-anchor="${anchor}">${what[i]}</text>`;
+        s += `<text class="dim-t quiet" x="${x}" y="${y - 62}" text-anchor="${anchor}">${when[i]}</text>`;
+      });
+      for (let i = 0; i < 4; i++) s += Dwg.hdim(xs[i] + 14, xs[i + 1] - 14, y + 52, dims[i]);
+      s += `<text class="blue-t" x="1800" y="${y + 112}" text-anchor="end">not to scale</text>`;
+      Dwg.into('#tl', s);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>

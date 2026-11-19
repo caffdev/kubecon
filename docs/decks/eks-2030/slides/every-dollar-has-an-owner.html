@@ -3,25 +3,61 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Every dollar has an owner: pods, packets, series and tokens</title>
+  <title>Every dollar has an owner</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
-    /* This slide's composition. Tokens and shared pieces come from theme.css.
-       Base styles = the finished slide. Entrance motion goes under .is-entered and runs FROM hidden.
-       Builds: data-step on elements (data-effect="rise|wipe|draw|…"). */
+    /* Adobe's problem drawn: one bill per account, many teams, nothing lines up. Then the
+       four meters and how each one gets an owner. */
+    #bill { position: absolute; inset: 0; }
+    .rc { position: absolute; left: 120px; top: 620px; width: 1680px; }
+    .rc td { height: 70px; }
+    .rc td.name { width: 200px; font-size: 32px; font-weight: 800; }
+    .rc td.how { width: 640px; }
+    .rc small { color: var(--c-lead); font-size: 22px; }
   </style>
 </head>
 <body>
-  <!-- deck:unbuilt  (delete this line once the slide is designed) -->
   <main class="slide">
-    <h1>Every dollar has an owner: pods, packets, series and tokens</h1>
+    <h2 class="head" style="width:1300px">Every dollar has an owner: pods, packets, series and tokens</h2>
+    <div class="sheet"><b>4</b><span><em>One telemetry pipeline</em>sheet 4 of 5</span></div>
+
+    <svg id="bill" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <table class="bom rc">
+      <tr><th>Meter</th><th>How it gets an owner</th><th>Run at</th></tr>
+      <tr data-step="1"><td class="name">Pods</td><td class="how">A team label, required at admission</td><td>Ours, from cluster one</td></tr>
+      <tr data-step="1"><td class="name">Packets</td><td class="how">eBPF flows, priced by AZ, peering, egress</td><td><b>Adobe</b>: thousands of tenants, many bills <small>slides</small></td></tr>
+      <tr data-step="1"><td class="name">Series</td><td class="how">Aggregated before they reach the backend</td><td><b>Yahoo</b>: ~$140K a year on one cluster <small>slides</small></td></tr>
+      <tr data-step="1"><td class="name">Tokens</td><td class="how">Per agent, per alert, per task</td><td><b>Verkada</b>: ~$0.27 for 5 calls, $1.29 past 25 <small>abstract</small></td></tr>
+    </table>
   </main>
 
   <aside class="notes">
-    Say it out loud: what you will actually say over this slide, written for the ear.
+    If we grow exponentially, so does the bill. So every dollar needs an owner from the first cluster, not after the first finance review.
+
+    Adobe drew the problem at the show. The AWS bill comes per account. Ownership is per team. Teams spread across clusters and accounts, and by default nothing lines up.
+
+    Click. Four meters. Pods: a team label on everything, enforced at admission, so it's never optional. Packets: Adobe priced network flows with eBPF, because cross-AZ, peering and internet egress all cost differently. Series: Yahoo's hundred and forty thousand a year was one cluster's metrics. And tokens: Verkada's triage agent costs about twenty-seven cents for a five-call investigation and a dollar twenty-nine past twenty-five calls. Mastercard said the same thing: once agents run off a laptop, they need budgets and attribution.
+
+    Tokens bring us to move five: the agents.
   </aside>
 
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      let s = Dwg.defs();
+      s += `<rect class="hatch-ink" x="120" y="330" width="360" height="150"/><rect class="paper" x="138" y="372" width="324" height="66"/><text class="lbl" x="300" y="415" text-anchor="middle">AWS bill, per account</text>`;
+      const teams = ['team a', 'team b', 'team c', 'team d', 'team e'];
+      teams.forEach((t, i) => {
+        const tx = 700, ty = 300 + i * 56;
+        s += `<path class="wire thin" style="stroke:#6c9bd8;stroke-dasharray:8 6" d="M480 405 C 600 405, ${tx - 90} ${ty + 22}, ${tx} ${ty + 22}"/>`;
+        s += `<rect class="paper" x="${tx}" y="${ty}" width="170" height="44" stroke="#22272b" stroke-width="2.5"/><text class="dim-t" x="${tx + 85}" y="${ty + 31}" text-anchor="middle">${t}</text>`;
+      });
+      s += `<text class="lbl" x="960" y="380">“The bill is per account.</text><text class="lbl" x="960" y="420">Ownership is per team.”</text><text class="blue-t" x="960" y="460">Adobe, posted slides. Nothing lines up by default.</text>`;
+      Dwg.into('#bill', s);
+    })();
+  </script>
   <script src="../../_kit/runtime/slide.js"></script>
 </body>
 </html>
