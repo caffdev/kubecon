@@ -1,0 +1,30 @@
+{
+  "title": "Built for the curve: KubeCon 2026 takeaways for our move to EKS, and our 2030",
+  "draft": "main",
+  "drafts": {
+    "main": [
+      "cold-open",
+      "the-claim",
+      "skip-the-gpus",
+      "work-outgrows-us",
+      "retrofit-tax",
+      "twenty-thirty",
+      "five-moves",
+      "cluster-is-a-commit",
+      "upgrades-in-waves",
+      "guard-the-deletes",
+      "ten-line-contract",
+      "ci-is-the-gate",
+      "identity-not-secrets",
+      "mesh-on-a-budget",
+      "one-pipeline",
+      "every-dollar-has-an-owner",
+      "agent-is-a-workload",
+      "sandbox-per-session",
+      "the-loop",
+      "the-road",
+      "not-building",
+      "the-ask"
+    ]
+  }
+}
