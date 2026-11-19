@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New holes daily</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--alpenglow); }
+    h2 { font-size: 80px; max-width: 1640px; line-height: 1.02; }
+
+    .chart { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .chart-name { font: 500 26px var(--font-body); fill: var(--lichen); }
+    .bar { fill: var(--scree); }
+    .bar.now { fill: var(--alpenglow); }
+    .base { stroke: var(--scree); stroke-width: 2; }
+    .yr { font: 500 24px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .val { font: 600 34px var(--font-display); fill: var(--snow); text-anchor: middle; font-variant-numeric: tabular-nums; }
+    .val.now { fill: var(--alpenglow); font-size: 44px; }
+    .call { font: 600 34px var(--font-display); fill: var(--alpenglow); text-anchor: end; }
+    .call-sub { font: 400 26px var(--font-body); fill: var(--lichen); text-anchor: end; }
+    .lead { stroke: var(--alpenglow); stroke-width: 2; }
+    .is-entered .bar { animation: grow 900ms var(--step-ease) both; animation-delay: calc(300ms + var(--i) * 60ms); transform-box: fill-box; transform-origin: 50% 100%; }
+    @keyframes grow { from { transform: scaleY(0); } }
+
+    .facts { position: absolute; left: 1250px; top: 352px; width: 560px; }
+    .facts .fact + .fact { margin-top: 44px; }
+    .facts b { display: block; font: 600 112px/.92 var(--font-display); color: var(--snow); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+    .facts .fact.us b { color: var(--alpenglow); }
+    .facts b.q { font-size: 64px; line-height: 1.02; letter-spacing: -.01em; }
+    .facts p { margin-top: 10px; font-size: 28px; line-height: 1.32; color: var(--lichen); }
+    .facts p strong { color: var(--snow); font-weight: 600; }
+    .src { max-width: 1100px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>AI finds holes faster than ever: CVEs nearly doubled<br>in 2026, and one maintainer’s AI found 220 in a year.</h2>
+
+    <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="CVEs published a year, 2016 to 2026: about 10,000 in 2016, climbing steadily to about 45,000 in 2025, then about 79,000 in 2026 so far, over 200 a day. Read from OpenCVE's chart as shown in the talk."></svg>
+
+    <div class="facts">
+      <div class="fact">
+        <b>220</b>
+        <p>findings from <strong>one maintainer’s AI pipeline</strong> in Metal3 this year: <strong>22 security bugs</strong>, 79 invalid or duplicate.</p>
+      </div>
+      <div class="fact us" data-step>
+        <b class="q">“Shorten your upgrade cycle.”</b>
+        <p>His first takeaway: <strong>AI finds bugs fast, and not only for us.</strong></p>
+      </div>
+    </div>
+    <p class="src">CVEs a year: OpenCVE's count as shown in <i>Mythos vs Maintainers</i> (ControlPlane, Docker), read off the chart; 2026 is the year to the talk. 220: <i>AI Found a 0-Day in Metal3</i> (Ericsson).</p>
+  </main>
+
+  <aside class="notes">
+    Now the third way agents arrive: in attackers' hands.
+
+    This is every CVE published, year by year, as one talk showed it. For a decade, a steady climb: ten thousand, twenty, thirty, forty-five thousand last year. This year, about seventy-nine thousand, and the year isn't over. Over two hundred a day.
+
+    What changed is AI. Metal3's security lead at Ericsson told it on stage: this year, his own AI pipeline found two hundred and twenty issues in one small project. Seventy-nine were invalid or duplicates. Twenty-two were real security bugs. And he's a defender. Mythos vs Maintainers was the other side: attackers pointing the same models at the same code, and maintainers drowning in reports.
+
+    Click. His first takeaway, word for word: "AI finds bugs fast, and not only for us. Shorten your upgrade cycle."
+
+    A note on what that means for us. Most of these holes are in images and libraries, and those patches don't wait for our three Kubernetes upgrades a year; they ship through the waves like any change. So the question isn't the upgrade calendar. It's how fast a fix goes from "a hole exists" to "every cluster is patched", and who drives it.
+
+    The answer isn't more people. NVIDIA showed what it is.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2'] });
+    Range.group('attackers');
+    (() => {
+      // CVEs a year (thousands), read off OpenCVE's chart in Mythos vs Maintainers; 2026 is to the talk
+      const D = [[2016, 10.3], [2017, 16.7], [2018, 17.4], [2019, 17.3], [2020, 20.8], [2021, 23.1],
+                 [2022, 27.2], [2023, 31.1], [2024, 38.9], [2025, 45.0], [2026, 78.7]];
+      const X0 = 150, BW = 62, GAP = 26, BASE = 846, K = 5.4;   // K px per thousand
+      let s = `<text class="chart-name" x="${X0 - 30}" y="372">CVEs published a year</text>`;
+      D.forEach(([y, v], i) => {
+        const x = X0 + i * (BW + GAP), h = v * K, now = y === 2026;
+        s += `<rect class="bar${now ? ' now' : ''}" style="--i:${i}" x="${x}" y="${BASE - h}" width="${BW}" height="${h}" rx="3"/>`;
+        s += `<text class="yr" x="${x + BW / 2}" y="${BASE + 38}">${y}</text>`;
+        if (y === 2016 || y === 2025) s += `<text class="val" x="${x + BW / 2}" y="${BASE - h - 14}">${Math.round(v)}k</text>`;
+        if (now) {
+          s += `<text class="val now" x="${x + BW / 2}" y="${BASE - h - 16}">79k</text>`;
+          const ly = BASE - h + 40;
+          s += `<line class="lead" x1="${x - 14}" x2="${x - 60}" y1="${ly}" y2="${ly}"/>`;
+          s += `<text class="call" x="${x - 74}" y="${ly + 4}">over 200 a day</text>`;
+          s += `<text class="call-sub" x="${x - 74}" y="${ly + 40}">nearly double 2025</text>`;
+        }
+      });
+      s += `<line class="base" x1="${X0 - 20}" x2="${X0 + D.length * (BW + GAP)}" y1="${BASE}" y2="${BASE}"/>`;
+      Peaks.draw('#chart', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

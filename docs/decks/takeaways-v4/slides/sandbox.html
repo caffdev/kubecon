@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Three runtimes, three syscall paths</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 70px; max-width: 1680px; line-height: 1.03; margin-top: 18px; }
+    .paths { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ag { fill: var(--teal); }
+    .ag-t { font: 500 24px var(--font-body); fill: var(--snow); }
+    .sys { stroke: var(--snow); stroke-width: 3; fill: none; }
+    .sys-h { fill: var(--snow); }
+    .sys-t { font: 500 22px var(--font-code); fill: var(--lichen); }
+    .lay { fill: #10232d; stroke: var(--teal); stroke-width: 2.5; }
+    .vm { fill: none; stroke: var(--teal); stroke-width: 2.5; stroke-dasharray: 8 6; }
+    .lay-t { font: 600 28px var(--font-display); fill: var(--snow); }
+    .lay-s { font: 400 22px var(--font-body); fill: var(--lichen); }
+    .host { fill: #1c2a31; stroke: #4b5d66; stroke-width: 2.5; }
+    .host.hot { stroke: var(--alpenglow); fill: #2a1d14; }
+    .host-t { font: 600 28px var(--font-display); fill: var(--snow); }
+    .host-s { font: 400 22px var(--font-body); fill: var(--lichen); }
+    .host.hot + .host-t { fill: var(--alpenglow); }
+    .col { position: absolute; top: 300px; width: 520px; }
+    .col.c1 { left: 120px; } .col.c2 { left: 700px; } .col.c3 { left: 1280px; }
+    .col h3 { font: 600 44px/1 var(--font-display); color: var(--snow); }
+    .col h3 small { font: 400 26px var(--font-body); color: var(--lichen); margin-left: 10px; }
+    .facts { position: absolute; top: 384px; width: 520px; margin: 0; display: grid; grid-template-columns: 150px 1fr; row-gap: 6px; font-size: 26px; line-height: 1.28; }
+    .facts dt { color: var(--lichen); }
+    .facts dd { margin: 0; color: var(--snow); }
+    .facts code { font: 500 24px var(--font-code); color: var(--teal); }
+    .verdict { position: absolute; top: 560px; width: 500px; padding: 10px 16px; border-left: 6px solid var(--teal); background: #0f2129; font: 600 30px/1.2 var(--font-display); color: var(--snow); }
+    .c1 .verdict { border-left-color: var(--alpenglow); }
+    .src { bottom: 40px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>A container shares the kernel; gVisor intercepts it,<br>and Kata gives the agent its own.</h2>
+
+    <svg class="paths" id="paths" viewBox="0 0 1920 1080" role="img" aria-label="Three syscall paths side by side. A container: the agent's system calls go straight to the host kernel every pod shares. gVisor: they go to the Sentry, a kernel in user space, and only a narrow set reaches the host. Kata: they go to a guest kernel inside a microVM, and the hypervisor stands between it and the host."></svg>
+
+    <div class="col c1">
+      <h3>runc <small>a plain container</small></h3>
+      <dl class="facts"><dt>start</dt><dd>instant</dd><dt>cost</dt><dd>none</dd><dt>on AWS</dt><dd>any node</dd><dt>handler</dt><dd><code>runc</code></dd></dl>
+      <p class="verdict">Not for code an agent wrote</p>
+    </div>
+    <div class="col c2" data-step="1">
+      <h3>gVisor <small>a kernel in user space</small></h3>
+      <dl class="facts"><dt>start</dt><dd>fast</dd><dt>cost</dt><dd>syscall-heavy work slows</dd><dt>on AWS</dt><dd>any instance, own AMI</dd><dt>handler</dt><dd><code>runsc</code></dd></dl>
+      <p class="verdict">Our default for agents</p>
+    </div>
+    <div class="col c3" data-step="2">
+      <h3>Kata <small>a microVM per pod</small></h3>
+      <dl class="facts"><dt>start</dt><dd>slower; snapshots fix most</dd><dt>cost</dt><dd>a VM’s memory per pod</dd><dt>on AWS</dt><dd>metal or nested virt</dd><dt>handler</dt><dd><code>kata</code></dd></dl>
+      <p class="verdict">For untrusted code and tools</p>
+    </div>
+
+    <p class="src">“Sandbox Your Agents” keynote (Red Hat). Microsoft, <i>Groundhog Pod</i>: Kata VM snapshots resume a pod instead of cold-starting it. AWS, <i>Agent Sandbox on EKS</i>: “a runtime class on a normal pod spec” (no deck).</p>
+  </main>
+
+  <aside class="notes">
+    A container is not a cage. Here's why, as three syscall paths. These are alternatives, not layers: one runtime class per pod.
+
+    On the left, a plain container. The agent's system calls go straight to the host kernel every pod on that node shares. A namespace, not a wall. Fine for code a person reviewed; not for code an agent wrote a minute ago.
+
+    Click. gVisor. The calls go to the Sentry, a kernel in user space, and only a narrow set ever reaches the host. Most kernel exploits stop there. Fast to start; syscall-heavy work pays. Runs on any EC2 instance, but on our own AMI, so not Auto Mode. Our default for agents.
+
+    Click. Kata. Each pod gets a microVM with its own guest kernel, and an escape lands in a VM. Slower to start, a VM's memory per pod; Microsoft showed snapshots fixing most of the start-up. On AWS it needs metal or nested virtualisation. For untrusted code and tools that run whatever they're handed.
+
+    AWS's own talk said it simply: a runtime class on a normal pod spec.
+
+    That's agents as workloads. As users, they work through tools.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('workloads');
+    (() => {
+      const X = [120, 700, 1280], W = 500, TOP = 368, HOST = 592;
+      let s = '';
+      const agent = (x) => `<path class="ag" d="M${x + 30} ${TOP}l20 20l-20 20l-20 -20Z"/><text class="ag-t" x="${x + 64}" y="${TOP + 28}">agent’s code</text>`;
+      const arrow = (x, y1, y2, label) => `<path class="sys" d="M${x} ${y1}V${y2 - 12}"/><path class="sys-h" d="M${x - 9} ${y2 - 16}L${x} ${y2}L${x + 9} ${y2 - 16}Z"/>` + (label ? `<text class="sys-t" x="${x + 16}" y="${(y1 + y2) / 2 + 8}">${label}</text>` : '');
+      const host = (x, hot) => `<rect class="host${hot ? ' hot' : ''}" x="${x}" y="${HOST}" width="${W}" height="64" rx="10"/><text class="host-t" x="${x + 20}" y="${HOST + 42}">host kernel</text><text class="host-s" x="${x + 186}" y="${HOST + 41}">${hot ? 'shared by every pod' : ''}</text>`;
+      // runc: straight down
+      s += agent(X[0]) + arrow(X[0] + 30, TOP + 40, HOST, 'every syscall') + host(X[0], true);
+      // gVisor: the Sentry in between
+      let g = agent(X[1]) + arrow(X[1] + 30, TOP + 40, 470, '');
+      g += `<rect class="lay" x="${X[1]}" y="470" width="${W}" height="64" rx="10"/><text class="lay-t" x="${X[1] + 20}" y="512">Sentry</text><text class="lay-s" x="${X[1] + 130}" y="511">answers most calls itself</text>`;
+      g += arrow(X[1] + 30, 534, HOST, 'a narrow set') + host(X[1], false);
+      s += `<g data-step="1">${g}</g>`;
+      // Kata: a guest kernel in a microVM
+      let k = `<rect class="vm" x="${X[2] - 8}" y="${TOP - 12}" width="${W + 16}" height="${546 - TOP + 12}" rx="14"/><text class="lay-s" x="${X[2] + W - 120}" y="${TOP + 26}">microVM</text>`;
+      k += agent(X[2]) + arrow(X[2] + 30, TOP + 40, 470, '');
+      k += `<rect class="lay" x="${X[2]}" y="470" width="${W}" height="64" rx="10"/><text class="lay-t" x="${X[2] + 20}" y="512">guest kernel</text><text class="lay-s" x="${X[2] + 190}" y="511">its own</text>`;
+      k += arrow(X[2] + 30, 546, HOST, 'hypervisor') + host(X[2], false);
+      s += `<g data-step="2">${k}</g>`;
+      Peaks.draw('#paths', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

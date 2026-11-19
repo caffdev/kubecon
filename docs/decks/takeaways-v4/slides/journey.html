@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>North star: three takeaways</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 80px; max-width: 1640px; line-height: 1.02; }
+
+    .scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .scene .pk-body { fill: #15232c; stroke: #2c4350; stroke-width: 2.5; stroke-linejoin: round; }
+    .scene .pk-shadow { fill: #10202b; }
+    .scene .pk-cap { opacity: .8; }
+    .trail { fill: none; stroke: var(--you); stroke-width: 4; stroke-dasharray: 2 12; stroke-linecap: round; }
+    .trail-end { fill: var(--you); }
+
+    .truth { position: absolute; top: 300px; width: 500px; }
+    .truth.t1 { left: 120px; } .truth.t2 { left: 712px; } .truth.t3 { left: 1300px; }
+    .truth .k { font: 600 30px/1 var(--font-display); letter-spacing: .04em; color: var(--c); }
+    .truth .k i { font-style: normal; display: inline-block; width: 44px; height: 44px; margin-right: 12px; border: 3px solid var(--c); border-radius: 50%; text-align: center; line-height: 38px; }
+    .truth h3 { margin-top: 18px; font: 600 48px/1.04 var(--font-display); color: var(--ink); letter-spacing: -.005em; }
+    .truth p { margin-top: 12px; font-size: 28px; line-height: 1.32; color: var(--lichen); }
+    .truth p.r { margin-top: 16px; padding-left: 18px; border-left: 4px solid var(--c); }
+    .truth p.r b { color: var(--snow); font-weight: 600; }
+    .kicker { position: absolute; left: var(--margin); top: 96px; font: 600 34px/1 var(--font-display); letter-spacing: .02em; color: var(--lichen); }
+    .slide h2 { margin-top: 52px; }
+    .t1 { --c: var(--haze); } .t2 { --c: var(--mint); } .t3 { --c: var(--teal); }
+
+    .is-entered .trail { animation: walk 2400ms var(--step-ease) both; animation-delay: 300ms; }
+    .trail { stroke-dashoffset: 0; }
+    @keyframes walk { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <svg class="scene" id="scene" viewBox="0 0 1920 1080" role="img" aria-label="The three peaks drawn large: fleet, delivery and agents, with the team's dotted trail climbing over all three, left to right. Over each peak, the thing it teaches."></svg>
+    <p class="kicker">KubeCon 2027 north star</p>
+    <h2>Three takeaways from four days in Salt Lake City.</h2>
+
+    <div class="truth t1" data-step="1">
+      <p class="k"><i>1</i>fleet</p>
+      <h3>There's always another cluster.</h3>
+      <p class="r"><b>LinkedIn</b> took 250+ clusters three minors forward in one rollout: 7 business days.</p>
+    </div>
+    <div class="truth t2" data-step="2">
+      <p class="k"><i>2</i>delivery</p>
+      <h3>No manual way keeps up.</h3>
+      <p class="r"><b>LinkedIn’s</b> canary pipeline: a week of testing per release became an hour.</p>
+    </div>
+    <div class="truth t3" data-step="3">
+      <p class="k"><i>3</i>agents</p>
+      <h3>AI brings problems as it solves them.</h3>
+      <p class="r"><b>Verkada’s</b> agent explains an alert for $0.33. One maintainer’s AI found <b>220</b> holes in Metal3; attackers run the same models.</p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    That's the north star. Three takeaways from four days and five hundred talks, and each one comes with a receipt.
+
+    Click. One: there's always another cluster. Another environment, another exchange, another region. So clusters are objects, built and upgraded from code. The receipt: LinkedIn moved more than two hundred and fifty clusters three Kubernetes minors forward in one rollout, in seven business days.
+
+    Click. Two: no manual way keeps up. Every change rides one pipeline, in waves, behind gates. The receipt: LinkedIn again, whose canary pipeline turned a week of testing per release into an hour.
+
+    Click. Three: AI brings problems as it solves them. Verkada's agent explains a production alert for thirty-three cents. And on the other side, one maintainer's own AI pipeline found two hundred and twenty issues in one open-source project, Metal3, in a year. Attackers run the same models. Both are true at once.
+
+    The fleet first, and first, how many fleets were on stage.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Peaks.draw('#range', Range.star());
+    (() => {
+      // the range, large, each summit under its truth; bases run off the stage
+      const P = [
+        { x: 370,  top: 712, hw: 400, H: 620, cap: 'var(--haze)' },
+        { x: 962,  top: 668, hw: 420, H: 660, cap: 'var(--mint)' },
+        { x: 1550, top: 712, hw: 380, H: 620, cap: 'var(--teal)' },
+      ];
+      let s = '';
+      for (const p of P) s += Peaks.peak({ x: p.x, top: p.top, base: p.top + p.H, hw: p.hw, cap: p.cap, capScale: .5 });
+      // the team's trail: up the fleet, over delivery, over agents, on toward the star
+      const [a, b, c] = P;
+      const d = `M196 1062C250 980 320 780 ${a.x} ${a.top}`
+        + `C440 760 560 930 668 930C780 930 880 720 ${b.x} ${b.top}`
+        + `C1040 720 1150 930 1258 930C1370 930 1470 760 ${c.x} ${c.top}`
+        + `C1640 740 1740 700 1820 652`;
+      s += `<path class="trail" d="${d}"/>`;
+      s += `<path class="trail-end" d="M0 -12L18 0L0 12Z" transform="translate(1824 650) rotate(-34)"/>`;
+      s += Estate.team(96, 1046, 0.72);
+      Peaks.draw('#scene', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

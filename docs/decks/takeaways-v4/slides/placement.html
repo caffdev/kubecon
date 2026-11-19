@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Labels, not cluster names</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--lake); }
+    h2 { font-size: 70px; max-width: 1680px; line-height: 1.03; margin-top: 18px; }
+    .side { position: absolute; top: 292px; font: 600 36px/1 var(--font-display); }
+    .side.before { left: var(--margin); color: var(--lichen); }
+    .side.after { left: 920px; color: var(--lake); }
+    .side span { font: 400 26px var(--font-body); color: var(--lichen); margin-left: 12px; }
+    .cc.old { left: var(--margin); top: 346px; width: 740px; }
+    .cc.old .cc-body { color: var(--lichen); }
+    .cc.place { left: 920px; top: 346px; width: 880px; }
+    .cc.gen { left: 920px; top: 640px; width: 880px; }
+    .thirty { position: absolute; left: var(--margin); top: 908px; width: 1680px; font-size: 30px; line-height: 1.3; color: var(--lichen); padding-left: 22px; border-left: 6px solid var(--lake); }
+    .thirty b { color: var(--snow); font-weight: 600; }
+    .thirty code { font: 500 27px var(--font-code); color: var(--lake); }
+    .src { bottom: 40px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Developers write labels, not cluster names,<br>and the 30th cluster costs them nothing.</h2>
+
+    <p class="side before">Before<span>one file per cluster</span></p>
+    <figure class="cc old">
+      <figcaption class="cc-file">apps/<b>payments/</b></figcaption>
+      <pre class="cc-body small">application-ny4.yaml
+application-ch4.yaml
+application-aws-1-a.yaml   <span class="c"># … ×12</span>
+values-ny4.yaml
+values-ch4.yaml            <span class="c"># …</span>
+
+<span class="c"># application-ny4.yaml</span>
+<span class="k">kind:</span> Application
+<span class="k">spec:</span>
+  <span class="k">destination:</span>
+<span class="hl">    <span class="k">name:</span> ny4</span></pre>
+    </figure>
+
+    <p class="side after">After<span>one block, in the app’s repo</span></p>
+    <figure class="cc place ours">
+      <figcaption class="cc-file">apps/payments/<b>placement.yaml</b></figcaption>
+      <pre class="cc-body small"><span class="k">tier:</span> prod
+<span class="hl"><span class="k">regions:</span> [aws-1, aws-2]     <span class="c"># live in both</span></span>
+<span class="k">fallback:</span> cloud2            <span class="c"># warm standby</span>
+<span class="k">replicas:</span> 6</pre>
+    </figure>
+    <figure class="cc gen">
+      <figcaption class="cc-file">becomes the ApplicationSet’s <b>cluster generator</b></figcaption>
+      <pre class="cc-body small"><span class="k">selector:</span>
+  <span class="k">matchLabels:</span> {tier: prod}
+  <span class="k">matchExpressions:</span>
+  - {key: region, operator: In, values: [aws-1, aws-2]}</pre>
+    </figure>
+
+    <p class="thirty" data-step data-effect="rise"><b>The 30th cluster</b> arrives from a claim already labelled <code>{tier: prod, region: aws-2}</code>. Payments lands on it, and nobody opens a PR in <code>apps/payments</code>.</p>
+    <p class="src">GOALS §5.5, §5.1 A. NVIDIA and Salesforce, <i>N Clusters, One kubectl</i>: “choose where the complexity lives”, and put it in the platform.</p>
+  </main>
+
+  <aside class="notes">
+    Now developers, and the question each one asks: where does my app run?
+
+    Before, on the left: the payments repo has a file per cluster, an Argo CD Application for ny4, for ch4, a dozen for AWS, and values for each. The highlighted line: destination name ny4. Developers have to know our cluster names, and every new cluster means a PR in every app repo.
+
+    After, on the right: one block in the app's repo. Tier prod, regions aws-1 and aws-2, a warm standby in the second cloud, six replicas. No cluster names. That's our small API; the platform turns it into an ApplicationSet cluster generator selecting on labels the clusters already carry.
+
+    Click. The thirtieth cluster arrives from the Region claim already labelled. Payments lands on it, and nobody opens a PR in the payments repo.
+
+    NVIDIA and Salesforce made the same point from the other side: choose where the complexity lives, and put it in the platform.
+
+    And because it's labels, the app already runs in both regions. So what happens when one goes?
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('developers');
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

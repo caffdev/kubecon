@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A wave is a label</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); --accent: var(--mint); }
+    h2 { font-size: 72px; max-width: 1640px; line-height: 1.03; margin-top: 18px; }
+    .cc { left: var(--margin); top: 290px; width: 900px; }
+    .rings { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ring { fill: none; stroke: var(--mint); stroke-width: 2.5; opacity: .55; }
+    .ring.sub { stroke-dasharray: 6 7; opacity: .4; }
+    .ring-name { font: 600 28px var(--font-display); fill: var(--mint); paint-order: stroke; stroke: var(--bg); stroke-width: 10px; letter-spacing: .02em; }
+    .ring-code { font: 500 23px var(--font-code); fill: var(--lichen); paint-order: stroke; stroke: var(--bg); stroke-width: 8px; }
+    .ray { stroke: var(--mint); stroke-width: 3; stroke-dasharray: 4 8; opacity: .7; }
+    .pk-glyph.lit { fill: var(--mint); }
+    .is-entered .wave { animation: light 700ms var(--step-ease) both; animation-delay: calc(500ms + var(--w) * 380ms); }
+    @keyframes light { from { opacity: .15; } }
+    .catch { bottom: 44px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>A wave is a label on the cluster, and the order<br>is a dozen lines of ApplicationSet.</h2>
+
+    <figure class="cc">
+      <figcaption class="cc-file">platform/prometheus/<b>appset.yaml</b></figcaption>
+      <pre class="cc-body small"><span class="k">spec:</span>
+  <span class="k">generators:</span> [{clusters: {}}]        <span class="c"># all 29</span>
+  <span class="k">strategy:</span>
+<span class="hl">    <span class="k">type:</span> RollingSync</span>
+    <span class="k">rollingSync:</span>
+      <span class="k">steps:</span>
+      - <span class="k">matchExpressions:</span>
+        - {key: wave, operator: In, values: [test]}
+      - <span class="k">matchExpressions:</span>
+        - {key: wave, operator: In, values: [canary]}
+      - <span class="k">matchExpressions:</span>
+        - {key: wave, operator: In, values: [prod]}
+        <span class="k">maxUpdate:</span> 25%
+  <span class="k">template:</span>
+    <span class="k">metadata:</span>  <span class="c"># the cluster's label, copied to its app</span>
+      <span class="k">labels:</span> {wave: '{{metadata.labels.wave}}'}</pre>
+    </figure>
+
+    <svg class="rings" id="rings" viewBox="0 0 1920 1080" role="img" aria-label="Rollout rings rippling right from the test cluster: the canary cluster, then the twenty-seven prod clusters in four rings of a quarter each. Each ring is named by its wave label value."></svg>
+
+    <p class="catch">Progressive sync sits behind an ApplicationSet controller flag: <b>check its maturity in our Argo CD before we lean on it.</b></p>
+  </main>
+
+  <aside class="notes">
+    Twenty tools across the fleet. The pipeline that rolls them out is less than you'd think.
+
+    On the right, the order: test cluster, one canary, then prod a quarter at a time. Each ring is a label on the cluster: wave equals test, canary or prod.
+
+    On the left, the whole rollout order for Prometheus: an ApplicationSet over every registered cluster. The line that matters is RollingSync. Three steps: test; when healthy, canary; when healthy, prod, no more than twenty-five percent at a time. The template copies each cluster's label onto its app, so the steps can find it.
+
+    Same file shape for all twenty tools. A thirtieth cluster arrives labelled, from the Region claim, and joins its ring.
+
+    The catch: progressive sync sits behind a controller flag. We check its maturity in our Argo CD before we lean on it.
+
+    A ring only moves outward when its step is healthy. Healthy means a gate.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('platform');
+    (() => {
+      const cx = 1120, cy = 620, A = 42 * Math.PI / 180;
+      const R = [['canary', 160, 1, 'canary'], ['prod', 270, 7, ''], ['', 350, 7, ''], ['', 430, 7, ''], ['', 510, 6, '']];
+      const pt = (r, a) => [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+      let s = `<line class="ray" x1="${cx}" y1="${cy}" x2="${cx + 600}" y2="${cy}"/>`;
+      s += `<g class="wave" style="--w:0">${Peaks.glyph({ x: cx, y: cy, w: 58, h: 48, cls: 'pk-glyph lit' })}<text class="ring-name" x="${cx}" y="${cy + 66}" text-anchor="middle">test</text></g>`;
+      R.forEach(([k, r, n, label], w) => {
+        const [x1, y1] = pt(r, -A), [x2, y2] = pt(r, A);
+        let g = `<path class="ring${w > 1 ? ' sub' : ''}" d="M${x1} ${y1}A${r} ${r} 0 0 1 ${x2} ${y2}"/>`;
+        if (label) g += `<text class="ring-name" x="${x1 + 12}" y="${y1 - 8}">${label}</text>`;
+        if (n === 1) g += Peaks.glyph({ x: cx + r, y: cy, w: 54, h: 46, cls: 'pk-glyph lit' });
+        else for (let i = 0; i < n; i++) {
+          const a = -A + 2 * A * (i + 0.5) / n;
+          const [x, y] = pt(r, a);
+          g += Peaks.glyph({ x, y, w: 36, h: 31, cls: 'pk-glyph lit' });
+        }
+        s += `<g class="wave" style="--w:${w + 1}">${g}</g>`;
+      });
+      s += `<text class="ring-name" x="${cx + 540}" y="${cy - 52}">prod</text><text class="ring-code" x="${cx + 540}" y="${cy - 20}">25% at a time</text>`;
+      s += `<text class="ring-code" x="${cx - 40}" y="${cy + 250}">wave: test → canary → prod</text>`;
+      Peaks.draw('#rings', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP auth is three questions</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); }
+    h2 { font-size: 72px; max-width: 1640px; line-height: 1.03; margin-top: 18px; }
+    .qs { position: absolute; left: var(--margin); top: 300px; width: 900px; list-style: none; margin: 0; padding: 0; counter-reset: q; }
+    .qs li { counter-increment: q; position: relative; padding: 0 0 26px 76px; }
+    .qs li::before { content: counter(q); position: absolute; left: 0; top: 0; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--mint); text-align: center; font: 600 32px/46px var(--font-display); color: var(--mint); }
+    .qs .q { font: 600 38px/1.1 var(--font-display); color: var(--snow); }
+    .qs .a { margin-top: 6px; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .qs .a b { color: var(--mint); font-weight: 600; }
+    .cc { left: 1080px; top: 300px; width: 720px; }
+    .cedar-note { position: absolute; left: 1080px; top: 668px; width: 720px; font-size: 26px; line-height: 1.3; color: var(--lichen); }
+    .cedar-note b { color: var(--snow); font-weight: 600; }
+    .row2 { position: absolute; left: var(--margin); top: 820px; width: 1680px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .row2 p { padding: 14px 20px; border-radius: 10px; background: #0d1a22; font-size: 27px; line-height: 1.3; color: var(--lichen); border-left: 6px solid var(--mint); }
+    .row2 p.dissent { border-left-color: var(--alpenglow); }
+    .row2 b { display: block; font: 600 30px/1.15 var(--font-display); color: var(--snow); margin-bottom: 4px; }
+    .src { bottom: 36px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>MCP auth is three questions,<br>and the gateway is where we answer all three.</h2>
+
+    <ol class="qs">
+      <li><p class="q">Who is calling, and how do they prove it?</p><p class="a">The agent’s <b>workload identity</b>, not a person’s token it borrowed.</p></li>
+      <li><p class="q">Who decides what it may call?</p><p class="a">A <b>Cedar policy at the gateway</b>, with groups from the directory.</p></li>
+      <li><p class="q">What identity reaches the tool?</p><p class="a">A <b>token scoped to one call</b>, minted by the gateway. Never the agent’s.</p></li>
+    </ol>
+
+    <figure class="cc">
+      <figcaption class="cc-file">gateway/policies/<b>triage.cedar</b></figcaption>
+      <pre class="cc-body"><span class="k">permit</span> (
+  principal <span class="k">in</span> Group::"triage-agents",
+<span class="hl">  action == Action::"call_tool",</span>
+  resource <span class="k">in</span> Server::"kubernetes"
+) <span class="k">when</span> {
+  resource.readOnly
+};</pre>
+    </figure>
+    <p class="cedar-note">Cedar is analysable: <b>Stacklok and AWS proved what a policy set allows</b> before an agent ever tried it.</p>
+
+    <div class="row2" data-step data-effect="rise">
+      <p><b>The choice: Obot, ToolHive, or our own thin proxy</b>decided by where enforcement sits, in a short bake-off.</p>
+      <p class="dissent"><b>The dissent: Mastercard dropped MCP</b>for narrow built-in tools, driving 30 EKS clusters.</p>
+    </div>
+    <p class="src">Stacklok + AWS, <i>Cedar Analysis for MCP Servers</i>. Mastercard, <i>No RAG, No Regrets</i>. Entity names in the policy are ours.</p>
+  </main>
+
+  <aside class="notes">
+    As users, agents work through tools, and these days that mostly means MCP.
+
+    Stacklok and AWS framed MCP auth as three questions. Who is calling, and how do they prove it? For us, the agent's own workload identity, not a person's borrowed token. Who decides what it may call? A policy at the gateway, groups from the directory. What identity reaches the tool? A token minted for that one call, never the agent's.
+
+    On the right, question two as a Cedar policy: triage agents may call read-only tools on the Kubernetes server. Cedar can be analysed, so you can prove what a policy set allows before any agent tries it.
+
+    Click. The choice is the gateway, Obot, ToolHive or our own thin proxy, decided in a short bake-off on where enforcement sits.
+
+    And the dissent: Mastercard dropped MCP for narrow built-in tools, and drives thirty EKS clusters that way.
+
+    The scoped token in question three is the whole credentials story.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('users');
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

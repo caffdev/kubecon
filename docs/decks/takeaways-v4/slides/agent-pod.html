@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An agent is a Job</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 70px; max-width: 1680px; line-height: 1.03; margin-top: 18px; }
+    .cc { left: var(--margin); top: 290px; width: 860px; }
+    .callouts { left: 1030px; top: 300px; width: 770px; }
+    .callouts li { font-size: 27px; }
+    .catch { bottom: 44px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>An agent is a Job: sandboxed, on its own nodes,<br>with a deadline, and gone when it’s done.</h2>
+
+    <figure class="cc">
+      <figcaption class="cc-file">jenkins → <b>agents/triage-job.yaml</b></figcaption>
+      <pre class="cc-body small"><span class="k">kind:</span> Job
+<span class="k">metadata:</span>
+  <span class="k">generateName:</span> triage-
+  <span class="k">labels:</span> {workload-class: agent}
+<span class="k">spec:</span>
+  <span class="k">activeDeadlineSeconds:</span> 900
+  <span class="k">ttlSecondsAfterFinished:</span> 600
+  <span class="k">template:</span>
+    <span class="k">spec:</span>
+<span class="hl">      <span class="k">runtimeClassName:</span> gvisor</span>
+      <span class="k">serviceAccountName:</span> triage-agent
+      <span class="k">automountServiceAccountToken:</span> false
+      <span class="k">nodeSelector:</span> {pool: agents}
+      <span class="k">tolerations:</span> [{key: agents, effect: NoSchedule}]
+      <span class="k">containers:</span> [{image: agents/triage:2026.11}]</pre>
+    </figure>
+
+    <ul class="callouts">
+      <li class="on"><b>runtimeClassName: gvisor</b>its code meets gVisor’s kernel, not the node’s</li>
+      <li><b>serviceAccountName</b>Pod Identity: a short-lived role, no keys in the image</li>
+      <li><b>automountServiceAccountToken: false</b>no Kubernetes API token it didn’t ask for</li>
+      <li><b>activeDeadlineSeconds: 900</b>killed at 15 minutes, whatever it’s doing</li>
+      <li><b>nodeSelector, tolerations</b>its own tainted pool, which Karpenter grows and empties</li>
+    </ul>
+
+    <p class="catch">Auto Mode can’t run gVisor or Kata, because it takes no custom AMIs: <b>the agents pool is self-managed Karpenter.</b> Verify before we build it.</p>
+  </main>
+
+  <aside class="notes">
+    Workloads first. Here's one agent as Kubernetes sees it: a Job. Jenkins, an alert or a schedule creates it, it does one task, and it's gone.
+
+    Five fields matter. runtimeClassName gvisor: the code it runs talks to gVisor's kernel, not the node's. More on that next.
+
+    serviceAccountName: in AWS, wired to Pod Identity, so it gets a short-lived role. No keys in the image.
+
+    automountServiceAccountToken false: no Kubernetes API token just because it's a pod.
+
+    activeDeadlineSeconds: killed at fifteen minutes, whatever it's doing; ttlSecondsAfterFinished cleans it up, and its logs are already in the lake.
+
+    nodeSelector and tolerations: agents run on their own tainted pool, which Karpenter grows for a burst and empties after. Nobody approves each agent; the spec is the approval.
+
+    Podium runs this shape: every coding agent an isolated pod.
+
+    One catch we found writing this: Auto Mode can't run gVisor or Kata, so the agents pool is self-managed Karpenter on our own AMI. Verify before we build it.
+
+    runtimeClassName is the line that matters, because a container is not a cage.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('workloads');
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

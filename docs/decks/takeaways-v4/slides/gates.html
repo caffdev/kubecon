@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A gate is a Job</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); }
+    h2 { font-size: 70px; max-width: 1640px; line-height: 1.03; margin-top: 18px; }
+    .cc { left: var(--margin); top: 300px; width: 780px; }
+    .exits { position: absolute; left: var(--margin); top: 866px; width: 780px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .exit { padding: 12px 18px; border-radius: 10px; font-size: 27px; line-height: 1.25; color: var(--lichen); background: #0d1a22; border-left: 6px solid var(--mint); }
+    .exit.bad { border-left-color: var(--alpenglow); }
+    .exit b { display: block; font: 500 26px var(--font-code); color: var(--mint); }
+    .exit.bad b { color: var(--alpenglow); }
+    .receipt { left: 980px; top: 300px; width: 820px; }
+    .proof { left: 980px; top: 852px; width: 820px; display: grid; grid-template-columns: 1.25fr 1fr; column-gap: 30px; }
+    .proof .row { display: block; padding: 0; border: 0; }
+    .proof .n { display: block; font-size: 60px; }
+    .proof .t { display: block; margin-top: 6px; font-size: 26px; }
+    .catch { bottom: 44px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>A gate is a Job: exit 0 and the wave moves on,<br>exit 1 and it stops before prod.</h2>
+
+    <figure class="cc">
+      <figcaption class="cc-file">platform/prometheus/<b>gate.yaml</b></figcaption>
+      <pre class="cc-body"><span class="k">kind:</span> Job
+<span class="k">metadata:</span>
+  <span class="k">name:</span> prometheus-gate
+  <span class="k">annotations:</span>
+<span class="hl">    <span class="k">argocd.argoproj.io/hook:</span> PostSync</span>
+<span class="k">spec:</span>
+  <span class="k">backoffLimit:</span> 0
+  <span class="k">template:</span>
+    <span class="k">spec:</span>
+      <span class="k">containers:</span>
+      - <span class="k">image:</span> gates/prometheus:1.4
+        <span class="k">args:</span> [--targets-up=99%, --for=15m]</pre>
+    </figure>
+    <div class="exits">
+      <p class="exit"><b>exit 0</b>Healthy, next wave starts</p>
+      <p class="exit bad" data-step data-effect="rise"><b>exit 1</b>sync fails, the wave stops</p>
+    </div>
+
+    <figure class="receipt">
+      <div class="frame"><img src="../assets/stage/canary-namespaces-linkedin-p22.png" alt="LinkedIn's slide: Argo CD syncs the canary, then a PostSync hook decides. Exit 0 means sync succeeded and the pipeline auto-advances to the next cluster's canary; exit 1 means sync failed and the rollout stops before prod, with the reason shown in Argo CD."></div>
+      <figcaption><b>LinkedIn</b> <i>Ship Faster, Ship Safer: A K8s-Native Canary Pipeline</i> · KubeCon NA 2026</figcaption>
+    </figure>
+    <div class="proof" data-step data-effect="rise">
+      <div class="row"><span class="n">1 week → 1 h</span><span class="t">per release, <b>auto-validated</b></span></div>
+      <div class="row"><span class="n">10+</span><span class="t">potential incidents <b>caught before prod</b></span></div>
+    </div>
+
+    <p class="catch">Argo CD won’t roll back on its own: <b>a failed gate stops the wave, and the revert is one commit</b>, which a bot can open.</p>
+  </main>
+
+  <aside class="notes">
+    A ring only moves outward when its step is healthy. Healthy means a gate, and a gate is a Job.
+
+    On the left, the whole thing: a Kubernetes Job with one annotation that matters, the Argo CD PostSync hook. After Argo syncs the new Prometheus, it runs this check: are ninety-nine percent of targets up, and has that held for fifteen minutes. Every tool brings its own check.
+
+    Exit zero: the app goes healthy and the next wave starts.
+
+    Click. Exit one: the sync fails, and the next wave never starts. Prod never sees it.
+
+    On the right, LinkedIn's slide from their canary pipeline for critical cluster services. Same shape: Argo syncs the canary, a PostSync hook decides.
+
+    Click. Their result: a release went from about a week to about an hour, validated automatically, with more than ten incidents caught before production.
+
+    One correction to our earlier drafts: Argo CD doesn't roll back by itself. A failed gate stops the wave; the revert is a commit, which a bot can open.
+
+    And the pipeline also needs to know when not to run at all.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('platform');
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four clusters became 29</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 80px; max-width: 1360px; line-height: 1.02; }
+    /* one layer per stage, each opaque, stacked: the finished slide is the last stage */
+    .layer { position: absolute; left: 0; top: 330px; width: 1920px; height: 640px; background: var(--bg); }
+    .layer .map { position: absolute; left: var(--margin); top: 20px; width: 1680px; height: 540px; overflow: visible; }
+    .layer .cap { position: absolute; left: var(--margin); top: 586px; font: 600 34px/1.2 var(--font-display); color: var(--haze); }
+    .layer .cap span { font: 400 28px var(--font-body); color: var(--lichen); margin-left: 14px; }
+    .cs { position: absolute; top: 104px; right: var(--margin); width: 360px; height: 200px; background: var(--bg); }
+    .cs .census { top: 0; right: 0; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>Four clusters became 29 in five reasonable steps, and one team still upgrades them all.</h1>
+    <div id="stages"></div>
+  </main>
+
+  <aside class="notes">
+    Now ours. Four clusters, on our own hardware next to the exchange. Dev and staging, ny4 for production, and ch4 as its disaster-recovery twin, in lockstep. Built with kubeadm, by hand, which was right at the time. One team of three, in orange, owns the upgrades: the clusters and the twenty apps on them.
+
+    Click. Then EKS, for the environments that don't need to sit by an exchange: dev, qa and ftb. A different animal, so now there are two upgrade procedures.
+
+    Click. A second exchange. Everything we built for the first, again: its own clusters, its own DR pair. Eleven.
+
+    Click. The cloud migration. AWS clusters arrive in chunks of six as services move. Seventeen.
+
+    Click. Resilience. Production gets a second AWS region, mirroring the first. Twenty-three.
+
+    Click. And two regions of one provider is still one provider. So, fingers crossed for AWS, a second cloud. Twenty-nine clusters, sixty-five apps, four thousand pods. Every step was reasonable on the day. And it's still the same three people.
+
+    Two procedures, three kinds of place. Here's what one upgrade actually is.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    (() => {
+      const CAP = [
+        null,
+        ['Day one', 'dev, staging, ny4, ch4 (ny4’s DR); kubeadm, by hand'],
+        ['+ EKS', 'dev, qa, ftb: a second way to upgrade'],
+        ['+ a second exchange', 'its own clusters and DR pair'],
+        ['+ the migration', 'six AWS clusters, in a chunk'],
+        ['+ AWS region 2', 'production, mirrored'],
+        ['+ a second cloud', 'because the plan for an AWS outage was fingers crossed'],
+      ];
+      const root = document.getElementById('stages');
+      for (let st = 1; st <= 6; st++) {
+        // earlier stages are covered by later ones: hidden from the audit and screen readers
+        const step = (st > 1 ? ` data-step="${st - 1}"` : '') + (st < 6 ? ' aria-hidden="true"' : '');
+        root.insertAdjacentHTML('beforeend',
+          `<div class="layer"${step}><svg class="map" id="map${st}" viewBox="0 0 1680 540" role="img" aria-label="The estate at stage ${st}"></svg>`
+          + `<p class="cap">${CAP[st][0]}<span>${CAP[st][1]}</span></p></div>`
+          + `<div class="cs"${step}><p class="census" id="census${st}"></p></div>`);
+        Estate.draw(`#map${st}`, st);
+        document.getElementById(`census${st}`).innerHTML = Estate.census(st);
+      }
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

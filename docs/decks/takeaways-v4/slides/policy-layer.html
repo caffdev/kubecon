@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One rule set, whoever made the change</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); }
+    h2 { font-size: 72px; max-width: 1640px; line-height: 1.03; margin-top: 18px; }
+    .lanes { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .who { font: 600 32px var(--font-display); fill: var(--snow); }
+    .how { font: 400 24px var(--font-body); fill: var(--lichen); }
+    .lane { stroke: var(--lichen); stroke-width: 3; fill: none; }
+    .lane.skip { stroke-dasharray: 6 8; }
+    .gate { fill: #10232d; stroke: var(--mint); stroke-width: 3; }
+    .gate-n { font: 600 28px var(--font-display); fill: var(--mint); text-anchor: middle; }
+    .gate-s { font: 500 22px var(--font-code); fill: var(--lichen); text-anchor: middle; }
+    .x { font: 700 36px var(--font-display); fill: var(--alpenglow); }
+    .ag { fill: var(--teal); }
+    .denied { position: absolute; left: var(--margin); top: 772px; width: 860px; padding: 14px 20px; border-radius: 10px; background: #2a1d14; border-left: 6px solid var(--alpenglow); font: 500 26px/1.35 var(--font-code); color: var(--snow); }
+    .denied span { color: var(--alpenglow); }
+    .cc { left: 1050px; top: 290px; width: 750px; }
+    .src { bottom: 40px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>One rule set checks every change, in CI and<br>at admission, whoever made it.</h2>
+
+    <svg class="lanes" id="lanes" viewBox="0 0 1920 1080" role="img" aria-label="Three actors send the same change: a person with kubectl, the pipeline with a merged pull request, and an agent with a tool call. The pipeline and the agent pass through CI first, where kyverno test fails the change; the person's kubectl skips CI. All three meet admission, where the same rule denies it with the same message."></svg>
+    <p class="denied" data-step data-effect="rise"><span>✕ denied:</span> images come from our registry, by digest.<br>Same rule, same message, all three.</p>
+
+    <figure class="cc">
+      <figcaption class="cc-file">policy/<b>images-from-our-registry.yaml</b></figcaption>
+      <pre class="cc-body small"><span class="k">kind:</span> ValidatingAdmissionPolicy
+<span class="k">spec:</span>
+  <span class="k">matchConstraints:</span>
+    <span class="k">resourceRules:</span>
+    - {operations: [CREATE, UPDATE],
+       apiGroups: [""], apiVersions: [v1],
+       resources: [pods]}
+  <span class="k">validations:</span>
+  - <span class="k">expression:</span> &gt;-
+<span class="hl">      object.spec.containers.all(c,</span>
+        c.image.startsWith('registry.ours/') &amp;&amp;
+        c.image.contains('@sha256:'))
+    <span class="k">message:</span> Our registry, by digest.
+<span class="c"># + a binding with validationActions: [Deny]</span></pre>
+    </figure>
+    <p class="src">GOALS §2.1–2.2: write policies against the action, not the actor. Google, <i>Goodbye Webhooks, Hello CEL</i>: native admission policy, GA since Kubernetes 1.30; Kyverno runs the same CEL in CI.</p>
+  </main>
+
+  <aside class="notes">
+    Identity says who the agent is. Policy says what anyone may do, and the trick is to write the rule against the action, not the actor.
+
+    On the right, one CEL rule as a native ValidatingAdmissionPolicy, GA since Kubernetes 1.30, no webhook to keep alive. Every container image comes from our registry, pinned by digest. It never mentions people or agents.
+
+    On the left, three actors send the same bad change: a person with kubectl, the pipeline from a merged PR, an agent through a tool call.
+
+    The pipeline and the agent meet the rule in CI first, through kyverno test, so the PR fails before anyone reviews it. For an agent, a failed test is something it can read and fix.
+
+    The person with kubectl skips CI; that's what admission is for. Click. All three meet the same rule there, with the same message.
+
+    One rule set for people and agents. That's why agent governance mostly comes for free, if the rules are already there.
+
+    Policy stops what shouldn't happen. Telemetry shows what did.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('users');
+    (() => {
+      const L = [[372, 'a person', 'kubectl apply', 'person'], [500, 'the pipeline', 'a merged PR', 'pipe'], [628, 'an agent', 'a tool call', 'agent']];
+      const CI = 560, AD = 800, X0 = 120;
+      let s = '';
+      for (const [y, w, h, k] of L) {
+        if (k === 'person') s += Estate.person(X0 + 20, y + 30, 0.7, 'user new');
+        else if (k === 'agent') s += Estate.agent(X0 + 20, y + 4, 40, 'ag');
+        else s += `<rect x="${X0}" y="${y - 18}" width="40" height="40" rx="8" fill="none" stroke="var(--mint)" stroke-width="3"/>`;
+        s += `<text class="who" x="${X0 + 64}" y="${y + 4}">${w}</text><text class="how" x="${X0 + 64}" y="${y + 36}">${h}</text>`;
+        s += `<path class="lane${k === 'person' ? ' skip' : ''}" d="M${X0 + 290} ${y + 10}H${AD - 40}"/>`;
+        s += `<text class="x" x="${AD + 50}" y="${y + 22}">✕</text>`;
+      }
+      // CI gate: the pipeline and the agent only
+      s += `<rect class="gate" x="${CI - 40}" y="456" width="80" height="216" rx="12"/><text class="gate-n" x="${CI}" y="440">CI</text><text class="gate-s" x="${CI}" y="702">kyverno test</text>`;
+      // admission: everyone
+      s += `<rect class="gate" x="${AD - 40}" y="330" width="80" height="342" rx="12"/><text class="gate-n" x="${AD}" y="314">admission</text>`;
+      Peaks.draw('#lanes', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

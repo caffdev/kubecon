@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Five first pull requests</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 72px; max-width: 1680px; line-height: 1.03; margin-top: 18px; }
+    .echo { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .sq { fill: var(--haze); }
+    .echo-t { font: 400 26px var(--font-body); fill: var(--lichen); }
+    .echo-n { font: 600 56px var(--font-display); fill: var(--snow); letter-spacing: -.02em; }
+    .echo-n.was { fill: #4b5d66; text-decoration: line-through; }
+    .asks { position: absolute; left: 700px; top: 296px; width: 1100px; list-style: none; margin: 0; padding: 0; counter-reset: a; }
+    .asks li { counter-increment: a; position: relative; padding: 14px 0 14px 78px; border-top: 2px solid var(--scree); }
+    .asks li:first-child { border-top: 0; }
+    .asks li::before { content: counter(a); position: absolute; left: 0; top: 12px; font: 600 60px/1 var(--font-display); color: var(--c); }
+    .asks .what { font: 600 36px/1.12 var(--font-display); color: var(--snow); }
+    .asks .obj { margin-top: 4px; font: 500 24px/1.35 var(--font-code); color: var(--c); }
+    .asks .obj span { font-family: var(--font-body); font-size: 25px; color: var(--lichen); }
+    .a1 { --c: var(--haze); } .a2 { --c: var(--mint); } .a3 { --c: var(--lake); } .a4 { --c: var(--teal); } .a5 { --c: var(--alpenglow); }
+    .src { bottom: 40px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Same team, same 29 clusters:<br>five first pull requests start it this quarter.</h2>
+
+    <svg class="echo" id="echo" viewBox="0 0 1920 1080" role="img" aria-label="The opening's twenty-nine cluster squares and three people again. Under them: 1,672 hand rollouts a year struck out, replaced by 80 wave approvals."></svg>
+
+    <ol class="asks">
+      <li class="a1"><p class="what">No hand-built cluster, ever again</p><p class="obj">clusters/&lt;next&gt;.yaml <span>a CAPI Cluster on-prem, a Region claim in AWS</span></p></li>
+      <li class="a2"><p class="what">splunk-otel-collector through the waves, this quarter</p><p class="obj">wave: on 29 cluster secrets · RollingSync · a gate Job</p></li>
+      <li class="a3"><p class="what">AWS region 2 from one claim, one app live in both</p><p class="obj">regions/aws-2.yaml · placement.yaml <span>on Auto Mode</span></p></li>
+      <li class="a4"><p class="what">Agents fenced in before they touch anything</p><p class="obj">RuntimeClass · gateway · Pod Identity · CEL rules</p></li>
+      <li class="a5"><p class="what">Explain-only alert triage by Q2 2027</p><p class="obj">accept / modify / reject, <span>logged from day one</span></p></li>
+    </ol>
+    <p class="src">Each line is a pull request someone can open next week. The objects are the ones on the slides: real kinds and fields, our values.</p>
+  </main>
+
+  <aside class="notes">
+    So, back to where we started. Meta runs about a hundred clusters with fifteen engineers. We run twenty-nine with three. The difference was never headcount. It's what does the work.
+
+    Same three people on the left, same twenty-nine clusters. What changes is the job: not sixteen hundred hand rollouts a year, but about eighty wave approvals, and the pipeline does the rest.
+
+    Five first pull requests, each one an object you've already seen.
+
+    One. No hand-built cluster, ever again. The next one is a file: a Cluster API Cluster on-prem, a Region claim in AWS.
+
+    Two. One platform tool through the waves this quarter: the Splunk OTel collector. That means a wave label on twenty-nine cluster secrets, a RollingSync ApplicationSet, and one gate Job.
+
+    Three. AWS region two from one claim, on Auto Mode, with one app live in both regions, placed by labels.
+
+    Four. Before any agent touches anything: the runtime class and its node pool, the gateway, Pod Identity, and the CEL rules.
+
+    Five. Explain-only alert triage by the second quarter of 2027, logging every accept, modify and reject from the first day, because that log is how agents earn the next job.
+
+    Every claim in this talk had a receipt. These are ours to write. Thank you.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      const S = 32, G = 8, PER = 6, X0 = 130, Y0 = 330;
+      let s = '';
+      for (let k = 0; k < 29; k++) s += `<rect class="sq" x="${X0 + (k % PER) * (S + G)}" y="${Y0 + Math.floor(k / PER) * (S + G)}" width="${S}" height="${S}" rx="5"/>`;
+      s += `<text class="echo-t" x="${X0 + 270}" y="${Y0 + 26}">29 clusters</text>`;
+      for (let k = 0; k < 3; k++) s += Estate.person(X0 + 20 + k * 46, Y0 + 290, 0.8, 'you');
+      s += `<text class="echo-t" x="${X0 + 160}" y="${Y0 + 278}">the same three</text>`;
+      s += `<text class="echo-n was" x="${X0}" y="${Y0 + 380}">1,672</text><text class="echo-t" x="${X0 + 150}" y="${Y0 + 372}">hand rollouts</text>`;
+      s += `<text class="echo-n" x="${X0}" y="${Y0 + 450}">80</text><text class="echo-t" x="${X0 + 150}" y="${Y0 + 442}">wave approvals a year</text>`;
+      Peaks.draw('#echo', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
