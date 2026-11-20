@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four pieces</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1580px; }
+    .arrows path { fill: none; stroke: #9db1b3; stroke-width: 3; }
+    .arrows .head { fill: #9db1b3; stroke: none; }
+    .arrows .feed { stroke: var(--teal-ink); stroke-width: 4; }
+    .arrows .feed-head { fill: var(--teal-ink); stroke: none; }
+
+    .trig { position: absolute; left: 120px; width: 230px; font-size: 28px; line-height: 1.15; color: var(--slate-quiet); }
+
+    .box { font-size: 27px; line-height: 1.25; color: var(--slate-quiet); background: #f4f8f8; border-color: #b9c9ca; }
+    .box b { font-size: 36px; color: var(--slate); margin-bottom: 6px; }
+    .box.own { background: #d6ece7; border-color: var(--teal-ink); border-width: 5px; color: var(--slate); box-shadow: 0 10px 0 -2px rgba(15,107,91,.18); }
+    .box.own b { color: var(--teal-ink); font-size: 38px; }
+    .box.own code { font: 500 30px var(--font-code); }
+    .box, .box b { transition: background 500ms, border-color 500ms, color 500ms, box-shadow 500ms; }
+    .slide:not(.at-1) .box.own { background: #f4f8f8; border-color: #b9c9ca; border-width: 3px; box-shadow: none; color: var(--slate-quiet); }
+    .slide:not(.at-1) .box.own b { color: var(--slate); }
+
+    .enclosure { border-color: var(--teal-ink); }
+    .enc-label { position: absolute; font: 600 28px/1.1 var(--font-display); color: var(--teal-ink); }
+    .dest { position: absolute; left: 1586px; width: 220px; font-size: 28px; line-height: 1.18; color: var(--slate-quiet); }
+    .laptops { position: absolute; left: 420px; top: 872px; width: 290px; text-align: right; font: 600 30px/1.15 var(--font-display); color: var(--teal-ink); }
+
+    .key { position: absolute; left: 1260px; top: 852px; display: grid; gap: 14px; font-size: 28px; line-height: 1.2; color: var(--slate-quiet); }
+    .key p { display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 14px; }
+    .key i { display: block; width: 44px; height: 30px; border-radius: 6px; }
+    .key .t i { background: #d6ece7; border: 5px solid var(--teal-ink); }
+    .key .t { color: var(--slate); font-weight: 600; }
+    .key .g i { background: #f4f8f8; border: 3px solid #b9c9ca; }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="stage-art arrows" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path d="M330 540 H368"/><path class="head" d="M378 540 l-12 -8 v16z"/>
+      <path d="M712 540 H768"/><path class="head" d="M778 540 l-12 -8 v16z"/>
+      <path d="M1202 470 H1248"/><path class="head" d="M1258 470 l-12 -8 v16z"/>
+      <path d="M1202 560 H1248"/><path class="head" d="M1258 560 l-12 -8 v16z"/>
+      <path d="M1202 724 H1248"/><path class="head" d="M1258 724 l-12 -8 v16z"/>
+      <path d="M1532 430 H1572"/><path class="head" d="M1580 430 l-12 -8 v16z"/>
+      <path d="M1532 560 H1572"/><path class="head" d="M1580 560 l-12 -8 v16z"/>
+      <path class="feed" d="M990 840 V794"/><path class="feed-head" d="M990 784 l-9 13 h18z"/>
+      <path class="feed" d="M780 896 H732"/><path class="feed-head" d="M722 896 l13 -9 v18z"/>
+    </svg>
+
+    <h2>Don't build an agent platform: build four pieces and let Jenkins run the rest.</h2>
+
+    <p class="trig" style="top: 424px;">a PR opens</p>
+    <p class="trig" style="top: 484px;">an alert fires</p>
+    <p class="trig" style="top: 544px;">a Slack command</p>
+    <p class="trig" style="top: 604px;">the nightly cron</p>
+
+    <div class="box" style="left: 380px; top: 356px; width: 332px; height: 400px;"><b>Jenkins</b>credentials, audit log, retries, RBAC</div>
+    <div class="box own" style="left: 400px; top: 560px; width: 292px;"><b><code>claudeAgent()</code></b>the library step</div>
+
+    <div class="enclosure" style="left: 780px; top: 340px; width: 422px; height: 444px;"></div>
+    <p class="enc-label" style="left: 808px; top: 360px;">namespace claude-agents</p>
+    <div class="box own" style="left: 808px; top: 410px; width: 366px;"><b>Agent image</b><code style="font: 400 26px var(--font-code)">claude -p</code>, headless, managed settings, OTel on</div>
+
+    <div class="box own" style="left: 1260px; top: 384px; width: 272px;"><b>AI and MCP gateways</b>quota, auth and audit, in one place</div>
+    <div class="box" style="left: 1260px; top: 690px; width: 272px;"><b>OTel collector</b></div>
+
+    <p class="dest" style="top: 392px;">Claude, via the API or Bedrock</p>
+    <p class="dest" style="top: 520px;">GitHub, Jira, Grafana, k8s read-only</p>
+
+    <div class="box own" style="left: 780px; top: 840px; width: 422px;"><b>Marketplace repo</b>skills, MCP configs, settings</div>
+    <p class="laptops">and every laptop</p>
+
+    <div class="key">
+      <p class="t" data-step="1"><i></i>we build</p>
+      <p class="g"><i></i>we already run</p>
+    </div>
+
+    <p class="src">From CLAUDE-AGENT-PLATFORM.md §2. ⚠️ Claude Code flag names to be checked against current docs.</p>
+  </main>
+
+  <aside class="notes">
+    Here's the turn. Don't build an agent platform. Run Claude headless, in throwaway pods, through the CI we already trust.
+
+    This is the whole runtime, and right now it's all grey, because it's all something we already run. Something happens: a pull request opens, an alert fires, someone types a Slack command, the nightly cron runs. Jenkins picks it up, the way it already does, with credentials, an audit log, retries and access control. It starts a throwaway pod in a namespace of its own. The dashed line is that namespace's network policy: the pod can only reach the gateways and the telemetry collector. Every model call goes to Claude, through the API or Bedrock. Every tool call goes to GitHub, Jira, Grafana, or a read-only view of Kubernetes.
+
+    Click. Four pieces light up, and those four are the whole build. A Jenkins library step, claudeAgent, so a team writes one line instead of a pipeline. A hardened agent image: Claude Code headless, with managed settings baked in and telemetry on. The gateways, where quota, auth and audit live once. And a marketplace repo of skills, MCP configs and settings, which every laptop reads too.
+
+    And to be clear about scope: we run Claude. We're not hosting a model, so GPUs and serving stacks stay off the table.
+
+    Security's first question is going to be how far that pod can reach.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

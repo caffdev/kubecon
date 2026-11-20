@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>$0.33 an alert</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 120px; max-width: 1560px; line-height: .96; letter-spacing: -0.02em; }
+    .sub { margin-top: 44px; font-size: 34px; line-height: 1.34; color: var(--muted); max-width: 520px; }
+    .sub b { color: var(--snow); font-weight: 500; }
+    .field { position: absolute; left: 700px; top: 430px; }
+    .field circle { fill: var(--scree); }
+    .field .one { fill: var(--teal); }
+    .field .ring { fill: none; stroke: var(--teal); stroke-width: 3; }
+    .field .lead { stroke: var(--teal); stroke-width: 3; }
+    .count { position: absolute; left: 700px; top: 376px; font: 600 30px/1 var(--font-display); color: var(--muted); letter-spacing: .01em; }
+    .ticket {
+      position: absolute;
+      left: 1452px; top: 786px;
+      background: var(--teal);
+      color: var(--night);
+      border-radius: 12px;
+      padding: 20px 30px 24px;
+      font: 600 32px/1.1 var(--font-display);
+      box-shadow: 0 0 0 10px var(--night);
+    }
+    .ticket .price { display: block; font-size: 112px; line-height: .92; letter-spacing: -0.03em; }
+    .deck-id {
+      position: absolute;
+      left: var(--margin);
+      bottom: 72px;
+      font: 600 32px/1.2 var(--font-display);
+      color: var(--teal);
+    }
+    .deck-id span { color: var(--muted); font-weight: 500; }
+    .is-entered .ticket { animation: stamp 520ms 600ms var(--step-ease) both; }
+    @keyframes stamp { from { opacity: 0; transform: scale(1.3) rotate(-4deg); } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h1>Verkada triages 4,700 alerts a month for 33 cents each.</h1>
+    <p class="sub">Every alert across <b>nine production clusters</b>, read and explained by an agent. About $1,550 a month, by our arithmetic.</p>
+
+    <p class="count" aria-hidden="true">one month of alerts: 4,700 dots</p>
+    <svg class="field" id="field" width="1100" height="572" viewBox="0 0 1100 572" aria-label="4,700 dots, one per alert in a month; one highlighted"></svg>
+    <p class="ticket">one alert, triaged<span class="price">$0.33</span></p>
+
+    <p class="deck-id">Path 2: Claude off the laptop, into the pod<br><span>Evan and Kyle</span></p>
+  </main>
+
+  <aside class="notes">
+    Every dot on the right is one alert. Four thousand seven hundred of them: one month of alerts at Verkada, across nine production clusters.
+
+    An agent reads every one. It says whether it's real or noise, how severe and why, and it links the runbook and the deploy that correlates. Thirty-three cents each. By our arithmetic that's about fifteen hundred dollars a month for the whole pile. Their median time to a summary is a little over two minutes.
+
+    That's an operations report, not a demo. And it's exactly the work we want Claude doing for us first, because it reads and explains. It never writes to a cluster.
+
+    So that's where we want to get to. Here's where we're heading if we just let it happen.
+  </aside>
+
+  <script>
+    // 4,700 dots: 100 columns x 47 rows, one per alert in a month
+    const cols = 100, rows = 47, step = 11, r = 3.5;
+    const pick = 2862; // row 28, col 62
+    let dots = '';
+    for (let i = 0; i < cols * rows; i++) {
+      const x = 5 + (i % cols) * step, y = 5 + Math.floor(i / cols) * step;
+      if (i !== pick) dots += `<circle cx="${x}" cy="${y}" r="${r}"/>`;
+    }
+    const px = 5 + (pick % cols) * step, py = 5 + Math.floor(pick / cols) * step;
+    dots += `<line class="lead" x1="${px + 10}" y1="${py + 10}" x2="${px + 60}" y2="${py + 60}"/>`;
+    dots += `<circle class="ring" cx="${px}" cy="${py}" r="15"/><circle class="one" cx="${px}" cy="${py}" r="7"/>`;
+    document.getElementById('field').innerHTML = dots;
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

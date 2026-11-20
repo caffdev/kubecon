@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Every call is a span</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1640px; }
+    .trace { position: absolute; left: var(--margin); top: 326px; width: 1300px; }
+    .row { display: grid; grid-template-columns: 400px 1fr 120px; align-items: center; height: 60px; border-bottom: 2px solid #d3dfde; }
+    .row .name { font: 400 26px/1 var(--font-code); color: var(--slate); white-space: nowrap; }
+    .row .name.i1 { padding-left: 28px; } .row .name.i2 { padding-left: 56px; }
+    .row .lane { position: relative; height: 100%; }
+    .row .bar { position: absolute; top: 15px; height: 30px; border-radius: 6px; background: #b8c9cb; }
+    .row .bar.model { background: var(--teal-ink); }
+    .row .bar.tool { background: #86aeb8; }
+    .row .cost { text-align: right; font: 600 30px/1 var(--font-display); color: var(--slate); font-variant-numeric: tabular-nums; }
+    .row .cost.total { color: var(--teal-ink); }
+    .attrs { position: absolute; left: var(--margin); top: 892px; font: 400 26px/1.4 var(--font-code); color: var(--teal-ink); }
+    .attrs span { margin-right: 30px; }
+    .side { position: absolute; left: var(--margin); top: 950px; width: 1300px; font-size: 28px; line-height: 1.3; color: var(--muted); }
+
+    .total-card { position: absolute; left: 1500px; top: 330px; width: 300px; }
+    .total-card .n { font: 600 150px/.86 var(--font-display); letter-spacing: -0.03em; color: var(--teal-ink); font-variant-numeric: tabular-nums; }
+    .total-card .l { margin-top: 40px; font: 600 34px/1.1 var(--font-display); color: var(--slate); }
+    .total-card .q { margin-top: 10px; font-size: 28px; line-height: 1.28; color: var(--muted); }
+    .total-card hr { margin: 40px 0 30px; border: 0; border-top: 3px solid var(--hairline); }
+    .total-card .them { font: 600 34px/1.1 var(--font-display); color: var(--slate); }
+    .total-card .them span { display: block; font: 400 28px/1.28 var(--font-body); color: var(--muted); margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <h2>Every model call and tool call is a span with a team, a use case and a cost.</h2>
+
+    <div class="trace" id="trace" aria-label="An illustrative trace of one alert-triage run"></div>
+    <p class="attrs"><span>team=payments</span><span>use_case=alert-triage</span><span>jenkins.run=4127</span></p>
+    <p class="side">Illustrative, on the OTel GenAI conventions. Telemetry on is also our AI inventory.</p>
+
+    <div class="total-card">
+      <p class="n">$0.21</p>
+      <p class="l">one triage run</p>
+      <p class="q">illustrative, not measured</p>
+      <hr>
+      <p class="them">Cost per task<span>the unit Verkada reports: $0.33 an alert</span></p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    None of what we've described works unless we can see what each run did and what it cost.
+
+    This is one alert-triage run, laid out as a trace. It's illustrative, not measured. An alert fires. Jenkins starts the job. Claude runs. It calls the model, asks Grafana for a dashboard through an MCP tool, calls the model again, searches the logs, calls the model once more, and posts its note to Slack. Every one of those is a span on the OpenTelemetry pipeline we already run, and every span carries the same labels: which team, which use case, which Jenkins run. The model calls carry their token cost.
+
+    Add them up and you get a cost per task. That's the unit Verkada reports, thirty-three cents an alert, and it's the unit we'll report too.
+
+    We use the OpenTelemetry generative-AI conventions rather than inventing our own attributes, because that standard is being written right now and we don't want to redo this next year. And here's the trick: turning telemetry on is also how we answer "what are we using AI for?" The inventory falls out of the instrumentation.
+
+    With that in place, we can climb.
+  </aside>
+
+  <script>
+    // [name, indent, start, width (of 1000), kind, cost]
+    const spans = [
+      ['alertmanager webhook', 0, 0, 30, '', ''],
+      ['jenkins: claudeAgent', 0, 30, 960, '', ''],
+      ['claude -p  (run)', 1, 50, 930, '', '$0.21'],
+      ['chat  claude-sonnet', 2, 60, 160, 'model', '$0.06'],
+      ['mcp  grafana.query', 2, 230, 110, 'tool', ''],
+      ['chat  claude-sonnet', 2, 350, 200, 'model', '$0.08'],
+      ['mcp  loki.search', 2, 560, 140, 'tool', ''],
+      ['chat  claude-sonnet', 2, 710, 170, 'model', '$0.07'],
+      ['mcp  slack.post', 2, 890, 60, 'tool', ''],
+    ];
+    document.getElementById('trace').innerHTML = spans.map(([n, ind, st, w, k, c]) =>
+      `<div class="row"><span class="name i${ind}">${n}</span><span class="lane"><span class="bar ${k}" style="left:${st / 10}%; width:${w / 10}%"></span></span><span class="cost${ind === 1 ? ' total' : ''}">${c}</span></div>`).join('');
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

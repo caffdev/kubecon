@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Authority as the payload</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 92px; max-width: 1400px; }
+    .track-name { position: absolute; left: var(--margin); width: 300px; font: 600 40px/1.05 var(--font-display); }
+    .track-name small { display: block; margin-top: 6px; font: 400 28px/1.2 var(--font-body); color: var(--muted); }
+    .rail { stroke-width: 6; stroke-linecap: round; }
+    .rail.rel { stroke: #34505f; }
+    .rail.agent { stroke: var(--teal); stroke-width: 8; }
+    .link { stroke: #34505f; stroke-width: 2; stroke-dasharray: 4 8; }
+    .dot.rel { fill: var(--dusk); stroke: #557282; stroke-width: 4; }
+    .dot.agent { fill: var(--teal); stroke: var(--dusk); stroke-width: 6; }
+    .prim { position: absolute; width: 250px; font: 600 30px/1 var(--font-display); color: var(--muted); }
+    .st { position: absolute; width: 250px; }
+    .st.rel { font-size: 28px; line-height: 1.22; color: var(--lichen); }
+    .st.agent b { display: block; font: 600 38px/1.02 var(--font-display); color: var(--snow); }
+    .st.agent small { display: block; margin-top: 8px; font-size: 28px; line-height: 1.2; color: var(--lichen); }
+    .quote { position: absolute; left: var(--margin); bottom: 84px; width: 1680px; font: 600 60px/1.05 var(--font-display); letter-spacing: -0.01em; }
+    .quote small { display: block; margin-top: 14px; font: 400 26px/1.3 var(--font-body); color: var(--muted); letter-spacing: 0; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="stage-art" id="art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <g id="rel"></g>
+      <g id="agent" data-step="1" data-effect="wipe"></g>
+    </svg>
+    <h2>An agent earns the right to act the way a release earns traffic.</h2>
+
+    <p class="track-name" style="top: 410px;">A release<small>Argo Rollouts</small></p>
+    <p class="track-name" data-step="1" style="top: 616px; color: var(--teal);">An agent<small>same five steps</small></p>
+    <div id="labels"></div>
+
+    <p class="quote">“Models produce evidence. Code decides authority.”<small>Darian DeFalco, Transfix</small></p>
+  </main>
+
+  <aside class="notes">
+    This is the single most copyable idea we brought home, from Transfix's talk, Progressive Delivery for Trust: How Agents Earn the Right to Merge.
+
+    Take progressive delivery, which we already run for releases, and swap the payload. Instead of traffic, the thing being rolled out is authority.
+
+    The top row is a release in Argo Rollouts. A canary step sends a slice of traffic. Analysis queries Prometheus. Success is an error rate under a threshold. Promotion means more traffic. Abort means roll back.
+
+    Click. The bottom row is the same five steps, pointed at an agent. The canary is shadow mode: the agent decides, and the action is withheld. Analysis grades its work against outcomes. Success is an eligibility policy that gives the same answer every time. Promotion is a reviewed permission change: a pull request. And abort is revoking the grant, which we design before we grant anything.
+
+    Models produce evidence. Code decides authority. The agent never promotes itself, and the proposer can't approve its own PR. It needs nothing we don't already run: Rollouts, RBAC, and repository rules.
+
+    And none of it works unless we can see what the agent did.
+  </aside>
+
+  <script>
+    const cols = [500, 770, 1040, 1310, 1580];
+    const prim = ['Canary', 'Analysis', 'Success', 'Promotion', 'Abort'];
+    const rel = ['a slice of traffic', 'query Prometheus', 'error rate under a threshold', 'more traffic', 'roll back'];
+    const agent = [['Shadow mode', 'action withheld'], ['Grade the work', 'against outcomes'], ['Eligibility policy', 'same answer every time'], ['A permission PR', 'reviewed, then granted'], ['Revoke the grant', 'designed first']];
+    let r = `<path class="rail rel" d="M${cols[0]} 440 H${cols[4]}"/>`;
+    let a = `<path class="rail agent" d="M${cols[0]} 640 H${cols[4]}"/>`;
+    let h = '';
+    cols.forEach((x, i) => {
+      r += `<path class="link" d="M${x} 456 V622"/><circle class="dot rel" cx="${x}" cy="440" r="14"/>`;
+      a += `<circle class="dot agent" cx="${x}" cy="640" r="19"/>`;
+      h += `<p class="prim" style="left:${x - 16}px; top:360px">${prim[i]}</p>`;
+      h += `<p class="st rel" style="left:${x - 16}px; top:474px">${rel[i]}</p>`;
+      h += `<p class="st agent" data-step="1" style="left:${x - 16}px; top:680px"><b>${agent[i][0]}</b><small>${agent[i][1]}</small></p>`;
+    });
+    document.getElementById('rel').innerHTML = r;
+    document.getElementById('agent').innerHTML = a;
+    document.getElementById('labels').innerHTML = h;
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

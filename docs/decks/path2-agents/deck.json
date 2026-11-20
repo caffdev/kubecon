@@ -1,6 +1,6 @@
 {
   "title": "Path 2: Claude off the laptop, into the pod",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "cold-open",
@@ -58,6 +58,18 @@
       "ti-costpertask",
       "ti-cadence",
       "ti-spine"
+    ],
+    "ten": [
+      "cold-open-ten",
+      "the-default-ten",
+      "four-pieces",
+      "contained",
+      "authority-ten",
+      "itemize-ten",
+      "two-dates",
+      "stage-one-ten",
+      "start-on-laptops",
+      "the-ask-ten"
     ]
   }
 }

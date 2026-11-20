@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contained</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1640px; }
+    .reach { fill: rgba(159, 180, 182, .07); stroke: var(--scree); stroke-width: 3; }
+    .pod { fill: #0b1d1b; stroke: var(--teal); stroke-width: 6; stroke-dasharray: 16 10; filter: drop-shadow(0 0 22px rgba(54, 186, 162, .55)); }
+    .exit { stroke: var(--teal); stroke-width: 5; fill: none; stroke-linecap: round; }
+    .door { fill: var(--teal); }
+
+    .reach-title { position: absolute; left: 330px; top: 404px; font: 600 36px/1.1 var(--font-display); color: var(--lichen); }
+    .item { position: absolute; font-size: 30px; line-height: 1.2; color: #7f9597; }
+    .pod-l { position: absolute; left: 470px; top: 668px; width: 180px; text-align: center; font: 600 40px/1 var(--font-display); color: var(--teal); }
+    .ex { position: absolute; left: 1008px; font: 600 34px/1 var(--font-display); color: var(--teal); }
+
+    .answers { position: absolute; left: 1290px; top: 374px; width: 520px; display: grid; gap: 30px; }
+    .answers p { padding-left: 26px; border-left: 5px solid var(--teal); font-size: 30px; line-height: 1.25; color: var(--lichen); }
+    .answers b { display: block; font: 600 38px/1.05 var(--font-display); color: var(--snow); margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <circle class="reach" cx="560" cy="700" r="340"/>
+      <path class="exit" d="M648 664 C 760 620, 860 590, 990 584"/>
+      <path class="exit" d="M656 700 H990"/>
+      <path class="exit" d="M648 736 C 760 780, 860 810, 990 816"/>
+      <circle class="door" cx="990" cy="584" r="8"/><circle class="door" cx="990" cy="700" r="8"/><circle class="door" cx="990" cy="816" r="8"/>
+      <circle class="pod" cx="560" cy="700" r="96"/>
+    </svg>
+    <h2>An agent pod gets one namespace, egress to two gateways, and no cluster write credentials.</h2>
+
+    <p class="reach-title">A laptop's reach today</p>
+    <p class="item" style="left: 300px; top: 500px;">every repo</p>
+    <p class="item" style="left: 610px; top: 486px;">cloud console</p>
+    <p class="item" style="left: 262px; top: 818px;">prod kubeconfig</p>
+    <p class="item" style="left: 560px; top: 900px;">Slack, Jira, email</p>
+    <p class="pod-l">a pod</p>
+    <p class="ex" style="top: 564px;">AI gateway</p>
+    <p class="ex" style="top: 680px;">MCP gateway</p>
+    <p class="ex" style="top: 796px;">OTel</p>
+
+    <div class="answers">
+      <p><b>Identity</b>Bedrock via IRSA, or a gateway token. No static key.</p>
+      <p><b>Egress</b>Named exits only. No general internet.</p>
+      <p><b>Sandbox</b>Non-root, read-only filesystem. MicroVMs once agents fix.</p>
+      <p><b>Session</b>Thrown away when the job ends.</p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Here's the security question in one picture, roughly to scale.
+
+    The big circle is a laptop's reach today: everything one engineer's credentials touch. Every repo, the cloud console, a production kubeconfig, Slack and email. When Claude runs on that laptop, that's its blast radius.
+
+    The small glowing circle is the agent pod. One namespace. Network policy means it can only leave through named exits: the AI gateway for model calls, the MCP gateway for tools, and the telemetry collector. No general internet. That one control turns prompt injection from "exfiltrate the repo" into "post a weird PR comment", and we assume injection, because every alert body and PR description is text someone else wrote.
+
+    Four keynotes this week, among them Agent Substrate, Sandbox Your Agents and The Identity Crisis, asked the same four questions of any agent. Here are our answers. Identity: Bedrock through IRSA, or a token the gateway issues; no static key anywhere. And when it's time to write, a GitHub App token for one repository, pushing only to claude-slash branches. Egress: named exits only. Sandbox: a hardened pod now, non-root with a read-only filesystem, and microVMs once agents start fixing things. Session: the pod is thrown away when the job ends. And the cluster it only ever reads, through MCP. No write credentials at all.
+
+    That's how far it can reach. The next question is how it earns the right to do more.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

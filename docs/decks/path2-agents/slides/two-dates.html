@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two dates</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 104px; max-width: 1000px; line-height: .98; letter-spacing: -0.02em; }
+
+    .dated-fill { fill: #10302a; }
+    .undated-fill { fill: #10171b; }
+    .dated-line { fill: none; stroke: var(--teal); stroke-width: 8; stroke-linejoin: round; stroke-linecap: round; }
+    .undated-line { fill: none; stroke: var(--lichen); stroke-width: 4; stroke-dasharray: 14 12; stroke-linejoin: round; opacity: .85; }
+    .camp-on { fill: var(--teal); stroke: var(--night); stroke-width: 6; }
+    .camp-off { fill: var(--night); stroke: var(--lichen); stroke-width: 4; stroke-dasharray: 7 6; }
+    .cn { font: 600 30px var(--font-display); text-anchor: middle; dominant-baseline: central; }
+    .cn.on { fill: var(--night); }
+    .cn.off { fill: var(--lichen); }
+    .ours-pole { stroke: var(--snow); stroke-width: 4; }
+    .ours { fill: var(--alpenglow); }
+    .their-pole { stroke: var(--lichen); stroke-width: 3; }
+    .their { fill: var(--lichen); }
+
+    .lab { position: absolute; width: 300px; font-size: 28px; line-height: 1.2; color: var(--muted); }
+    .lab .when { display: block; font: 600 36px/1 var(--font-display); color: var(--alpenglow); margin-bottom: 8px; }
+    .lab .when.today { color: var(--teal); }
+    .lab .when.none { color: var(--lichen); font-weight: 500; font-size: 30px; }
+    .lab b { display: block; font: 600 40px/1.02 var(--font-display); color: var(--snow); margin-bottom: 6px; }
+    .lab.off b { color: var(--lichen); }
+
+    .who { position: absolute; font: 600 30px/1.05 var(--font-display); color: var(--snow); white-space: nowrap; }
+    .who small { display: block; font: 400 26px/1.2 var(--font-body); color: var(--lichen); }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true">
+      <!-- camps: 0 (180,820) 1 (500,720) 2 (820,600) 3 (1130,480) 4 (1430,370) 5 (1720,280) -->
+      <path class="dated-fill" d="M0 1080 L0 840 L180 820 L330 790 L500 720 L650 680 L820 600 L820 1080 Z"/>
+      <path class="undated-fill" data-step="2" d="M820 1080 L820 600 L960 550 L1130 480 L1280 430 L1430 370 L1580 330 L1720 280 L1920 250 L1920 1080 Z"/>
+      <polyline class="dated-line" points="0,840 180,820 330,790 500,720 650,680 820,600" pathLength="1" data-step="1" data-effect="draw"/>
+      <polyline class="undated-line" data-step="2" points="820,600 960,550 1130,480 1280,430 1430,370 1580,330 1720,280 1920,250"/>
+
+      <!-- our flag at camp 0 -->
+      <line class="ours-pole" x1="180" y1="798" x2="180" y2="700"/>
+      <path class="ours" d="M182 702 L244 720 L182 738 Z"/>
+
+      <!-- who from the show is already there -->
+      <g data-step="1">
+        <line class="their-pole" x1="500" y1="698" x2="500" y2="570"/><path class="their" d="M502 572 L548 586 L502 600 Z"/>
+        <line class="their-pole" x1="820" y1="578" x2="820" y2="450"/><path class="their" d="M822 452 L868 466 L822 480 Z"/>
+      </g>
+      <g data-step="2">
+        <line class="their-pole" x1="1430" y1="348" x2="1430" y2="220"/><path class="their" d="M1432 222 L1478 236 L1432 250 Z"/>
+      </g>
+
+      <circle class="camp-on" cx="180" cy="820" r="24"/><text class="cn on" x="180" y="821">0</text>
+      <circle class="camp-on" cx="500" cy="720" r="24"/><text class="cn on" x="500" y="721">1</text>
+      <circle class="camp-on" cx="820" cy="600" r="24"/><text class="cn on" x="820" y="601">2</text>
+      <g data-step="2">
+        <circle class="camp-off" cx="1130" cy="480" r="22"/><text class="cn off" x="1130" y="481">3</text>
+        <circle class="camp-off" cx="1430" cy="370" r="22"/><text class="cn off" x="1430" y="371">4</text>
+        <circle class="camp-off" cx="1720" cy="280" r="22"/><text class="cn off" x="1720" y="281">5</text>
+      </g>
+    </svg>
+
+    <h2>Six rungs, and only the next two get dates.</h2>
+
+    <p class="lab" style="left: 160px; top: 866px;"><span class="when today">Today: we are here</span><b>Local prompts</b>A human applies every change.</p>
+    <p class="lab" data-step="1" style="left: 480px; top: 766px;"><span class="when">By Q2 2027</span><b>Alert triage</b>Explains, never acts.</p>
+    <p class="lab" data-step="1" style="left: 800px; top: 646px;"><span class="when">By end of 2027</span><b>Agents open PRs</b>Needs Path 1's stage B.</p>
+    <p class="lab off" data-step="2" style="left: 1110px; top: 524px;"><span class="when none">No date</span><b>Always-on analysis</b></p>
+    <p class="lab off" data-step="2" style="left: 1410px; top: 414px;"><span class="when none">No date</span><b>Agents that fix</b></p>
+    <p class="lab off" data-step="2" style="left: 1700px; top: 324px; width: 200px;"><span class="when none">No date</span><b>Team agents</b></p>
+
+    <p class="who" data-step="1" style="left: 492px; top: 480px;">Verkada<small>$0.33 an alert</small></p>
+    <p class="who" data-step="1" style="left: 812px; top: 360px;">Podium<small>30% of merged PRs</small></p>
+    <p class="who" data-step="2" style="left: 1422px; top: 130px;">Salesforce, Mastercard<small>1,000 clusters; 30 EKS clusters</small></p>
+  </main>
+
+  <aside class="notes">
+    This is the slide we want a decision on. Our AI rollout as a climb: six camps, which the plan calls stages.
+
+    We're at camp zero, the orange flag. Engineers use Claude Code, and a human applies every change.
+
+    Click. The line draws to the next two camps, and they're the only ones with dates. Camp one, alert triage, by Q2 2027. It explains; it never acts. There's no write path anywhere, so it needs no policy gate, no sandbox and no rollback story. That's why the date is safe, and Verkada is already standing on it at thirty-three cents an alert. Camp two, agents open pull requests, by the end of 2027. Review is unchanged. Podium is there: thirty percent of their merged pull requests come from autonomous agents. Our date is a bet, because it needs Path 1's stage B, policy in CI, to land first.
+
+    Click. Above that the route is dashed. Always-on analysis that owns alert severity. Agents that fix things inside a blast radius we define; Salesforce runs agentic operations across a thousand clusters, and Mastercard lets a model drive thirty EKS clusters, read-only by default and writing only with review. Then teams writing their own agents. So the route is real. But these camps have no dates, deliberately. Dating them before the camps below exist would be fiction. If the lower route lands early, they start early; if it slips, they slip.
+
+    Camp one is close. Here's what reaching it actually means.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // the far range behind the route: brand texture, drawn first so the profile sits over it
+    const svg = document.getElementById('range');
+    const tmp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    tmp.innerHTML = Peaks.far({ y: 560, amp: 150, n: 9, seed: 21 });
+    svg.insertBefore(tmp, svg.firstChild);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

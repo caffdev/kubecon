@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stage 1, done</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1640px; }
+    .card { position: absolute; left: var(--margin); top: 330px; width: 1060px; background: #fff; border: 3px solid var(--hairline); border-radius: 18px; overflow: hidden; box-shadow: 0 18px 0 -6px rgba(15, 30, 41, .08); }
+    .alert { padding: 20px 30px; background: #f6efe6; border-bottom: 3px solid var(--hairline); font: 400 26px/1.3 var(--font-code); color: var(--alpenglow-ink); }
+    .alert b { font-family: var(--font-display); font-weight: 600; font-size: 34px; color: var(--slate); margin-right: 14px; }
+    .field { display: grid; grid-template-columns: 230px 1fr; gap: 20px; padding: 15px 30px; border-bottom: 2px solid #eef3f2; font-size: 29px; line-height: 1.28; }
+    .field .k { font: 600 30px/1.2 var(--font-display); color: var(--teal-ink); }
+    .field a { color: var(--teal-ink); text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; }
+    .verdict { display: flex; gap: 14px; align-items: center; padding: 20px 30px; background: #f2f8f6; font-size: 28px; color: var(--muted); }
+    .btn { padding: 10px 20px; border-radius: 10px; border: 2px solid var(--hairline); font: 600 28px/1 var(--font-display); color: var(--slate-quiet); }
+    .btn.on { background: var(--teal-ink); border-color: var(--teal-ink); color: #fff; }
+
+    .ledger { position: absolute; left: 1290px; top: 330px; width: 510px; }
+    .gate { position: relative; padding-bottom: 18px; border-bottom: 5px dashed var(--teal-ink); font: 600 36px/1.05 var(--font-display); color: var(--teal-ink); }
+    .gate small { display: block; margin-top: 6px; font: 400 28px/1.25 var(--font-body); color: var(--muted); }
+    .rows { margin-top: 22px; display: grid; gap: 12px; }
+    .rows p { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 16px; height: 46px; }
+    .rows .v { font: 600 26px/1 var(--font-display); text-align: center; padding: 9px 0; border-radius: 8px; color: #fff; background: var(--teal-ink); }
+    .rows .v.m { background: #5b7f88; }
+    .rows .v.r { background: var(--alpenglow-ink); }
+    .rows i { display: block; height: 12px; border-radius: 6px; background: #d3dfde; }
+    .rows p.new .v { outline: 4px solid rgba(15, 107, 91, .25); outline-offset: 3px; }
+    .src { max-width: 1100px; }
+    .wire { fill: none; stroke: var(--teal-ink); stroke-width: 4; stroke-dasharray: 2 9; stroke-linecap: round; }
+    .wire-end { fill: var(--teal-ink); }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true"><path class="wire" d="M1188 780 C 1236 780, 1232 826, 1276 826"/><circle class="wire-end" cx="1278" cy="826" r="7"/></svg>
+    <h2>Triage counts only if a responder acts on it; the accept-or-reject log is the product.</h2>
+
+    <div class="card">
+      <p class="alert"><b>HighErrorRate</b>checkout-api, prod-use1, fired 09:46</p>
+      <p class="field"><span class="k">Relevance</span><span>Real. Not a duplicate of the open incident.</span></p>
+      <p class="field"><span class="k">Severity</span><span>SEV2: 4.2% errors for 12 minutes on the payment path.</span></p>
+      <p class="field"><span class="k">Links</span><span><a>runbook</a>, <a>dashboard</a>, <a>deploy at 09:41</a> (correlates), <a>last 3 firings</a></span></p>
+      <p class="field"><span class="k">Suggested action</span><span>Roll checkout back to v1.81.</span></p>
+      <p class="verdict"><span class="btn on">Accept</span><span class="btn">Modify</span><span class="btn">Reject</span><span>logged: on-call, 09:58</span></p>
+    </div>
+
+    <div class="ledger" aria-label="A log of responder verdicts building up toward the camp 2 gate">
+      <p class="gate">Camp 2 gate<small>reads this log, not a demo</small></p>
+      <div class="rows" aria-hidden="true">
+        <p><span class="v">accepted</span><i style="width: 82%"></i></p>
+        <p><span class="v m">modified</span><i style="width: 64%"></i></p>
+        <p><span class="v">accepted</span><i style="width: 90%"></i></p>
+        <p><span class="v r">rejected</span><i style="width: 56%"></i></p>
+        <p><span class="v">accepted</span><i style="width: 74%"></i></p>
+        <p><span class="v m">modified</span><i style="width: 86%"></i></p>
+        <p class="new"><span class="v">accepted</span><i style="width: 70%"></i></p>
+      </div>
+    </div>
+    <p class="src">An illustrative triage and log, not real alerts.</p>
+  </main>
+
+  <aside class="notes">
+    Camp one is close, so let's define what reaching it means, because if the output is a summary nobody acts on, we've built a chatbot.
+
+    This is an illustrative triage, not a real one. An alert fires. The agent posts four things, and these are the acceptance criteria. A relevance call: real, noise, or a duplicate of an open incident. A severity, stated in terms a responder can disagree with. Links out: the runbook, the dashboard, the deploy that correlates, the last three times this fired. And a suggested action.
+
+    Then the responder accepts it, modifies it, or rejects it, and we log which. That log, on the right, is the product. It's the track record the camp-two gate reads before any agent gets to open a pull request. If we don't instrument it from day one, we arrive at that gate with no evidence.
+
+    We don't start from scratch, either. HolmesGPT is an open-source investigation agent built for exactly this, alert-driven and read-only, and k8sgpt is a lighter rule-based option. We still need to confirm HolmesGPT's current Claude support before we commit to it.
+
+    And none of this needs a cluster to start. It starts on laptops, this month.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
