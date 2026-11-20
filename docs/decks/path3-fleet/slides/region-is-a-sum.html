@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Losing a region</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 76px; max-width: 1500px; }
+
+    .lanes { position: absolute; left: var(--margin); top: 336px; width: 1680px; display: grid; gap: 34px; }
+    .lane { display: grid; grid-template-columns: 300px 1fr; align-items: center; column-gap: 30px; }
+    .lane-name { font: 600 44px/1 var(--font-display); }
+    .lane-name small { display: block; margin-top: 6px; font: 400 26px/1.15 var(--font-body); color: var(--muted); }
+    .bar { display: flex; gap: 6px; align-items: center; height: 96px; }
+    .seg {
+      height: 96px;
+      border-radius: 10px;
+      background: var(--haze-ink);
+      color: var(--snowfield);
+      display: flex; align-items: center;
+      padding: 0 20px;
+      font: 600 30px/1.05 var(--font-display);
+      white-space: nowrap;
+    }
+    .seg.light { background: #a9c6cc; color: var(--slate); }
+    .seg.off {
+      background: transparent;
+      border: 3px dashed var(--slate-quiet);
+      color: var(--slate-quiet);
+      text-decoration: line-through;
+    }
+    .seg.solved { width: 120px; justify-content: center; padding: 0; background: var(--snowfield); color: var(--haze-ink); border: 4px solid var(--haze-ink); }
+    .note { margin-left: 20px; font-size: 28px; line-height: 1.22; color: var(--muted); max-width: 400px; }
+
+    .sched { margin-left: 22px; display: flex; align-items: center; gap: 18px; font-size: 30px; line-height: 1.22; color: var(--slate); }
+    .sched::before { content: ""; flex: none; width: 54px; height: 4px; background: var(--haze-ink); }
+    .sched b { color: var(--haze-ink); font-weight: 600; white-space: nowrap; }
+
+    .rto { position: absolute; left: 1556px; top: 318px; width: 6px; height: 560px; background: var(--alpenglow-ink); border-radius: 3px; }
+    .rto-label { position: absolute; left: 1584px; top: 318px; width: 220px; font-size: 27px; line-height: 1.22; color: var(--alpenglow-ink); }
+    .rto-label b { display: block; font: 600 64px/1 var(--font-display); letter-spacing: -0.01em; margin-bottom: 6px; }
+
+    .src { bottom: 44px; max-width: 1680px; }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <h2>Losing a region is a sum of delays, and the scheduler's lane is already solved.</h2>
+
+    <div class="lanes">
+      <div class="lane">
+        <p class="lane-name">Placement<small>ApplicationSets</small></p>
+        <div class="bar"><span class="seg solved">solved</span><span class="sched" data-step="1"><b>The only lane a scheduler like Karmada shortens.</b></span></div>
+      </div>
+      <div class="lane">
+        <p class="lane-name">Traffic<small>edge, east-west</small></p>
+        <div class="bar"><span class="seg" style="width: 170px;">detect</span><span class="seg" style="width: 190px;">propagate</span><span class="seg off" style="width: 290px;">client DNS cache</span><span class="note">Global Accelerator takes it off the clock.</span></div>
+      </div>
+      <div class="lane">
+        <p class="lane-name">State<small>Aurora, DynamoDB global</small></p>
+        <div class="bar"><span class="seg light" style="width: 690px;">data converges in the survivor</span><span class="note">Traffic can't move faster than this.</span></div>
+      </div>
+      <div class="lane">
+        <p class="lane-name">Capacity<small>survivor takes 100%</small></p>
+        <div class="bar"><span class="seg" style="width: 1100px;">survivor scales from half to full size</span></div>
+      </div>
+    </div>
+
+    <div class="rto" aria-hidden="true"></div>
+    <p class="rto-label"><b>RTO</b>is wherever the slowest lane ends</p>
+
+    <p class="src">Lane lengths are illustrative, not measured: measuring them is decision 2b. Global Accelerator is our recommendation, not something we saw presented.</p>
+  </main>
+
+  <aside class="notes">
+    Multi-cluster has a second problem that looks like fleet toil and isn't: losing a region. Confusing the two is how you end up buying a scheduler for a traffic problem.
+
+    "No user-visible downtime" isn't a number. It's a sum of delays, and customers see the slowest one.
+
+    Placement is solved. ApplicationSets already run the same app in both regions. Click. And that's the only lane a multi-cluster scheduler like Karmada shortens. Karmada is good, Bloomberg runs it in production, but it stays on our watch list until we can name a workload that needs scheduling rather than placement. That's decision 2: which production workloads can't run active-active? If that list is empty, the decision closes.
+
+    The long lanes are somewhere else. Traffic: something has to notice the region is gone, and the change has to propagate. Then clients keep the old DNS answer cached as long as they like, which lands inside our recovery time and out of our control. That's why we recommend AWS Global Accelerator at the edge: it takes the DNS cache off the clock. Our recommendation, to be clear, not something we saw presented.
+
+    State: we can't fail traffic over faster than the data. Aurora Global or DynamoDB global tables have to converge in the survivor, and doing it in the other order is how writes split.
+
+    Capacity: the survivor inherits a hundred percent of traffic at half its size. Either we pay for permanent double headroom and this lane goes to zero, or Karpenter's scale-up time is formally part of our RTO.
+
+    The lengths are illustrative; measuring them is decision 2b. And placement being solved is the setup for the best slide in this deck.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

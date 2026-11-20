@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ship the check</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 76px; max-width: 1640px; }
+    h2 code { font-family: var(--font-code); font-size: .78em; font-weight: 500; white-space: nowrap; color: var(--haze); }
+
+    .field { position: absolute; left: var(--margin); top: 330px; }
+    .n { fill: var(--haze); } .p { fill: var(--scree); } .f { fill: var(--alpenglow); }
+    .key { position: absolute; left: var(--margin); top: 884px; display: flex; gap: 44px; font: 500 26px/1 var(--font-body); color: var(--lichen); }
+    .key span::before { content: ""; display: inline-block; width: 20px; height: 20px; margin-right: 12px; vertical-align: -3px; background: var(--c); }
+
+    .big { position: absolute; left: 1140px; top: 316px; width: 660px; }
+    .big b { display: block; font: 600 156px/0.9 var(--font-display); color: var(--haze); letter-spacing: -0.03em; font-variant-numeric: tabular-nums lining-nums; }
+    .big span { display: block; margin-top: 14px; font-size: 32px; line-height: 1.3; color: var(--snow); }
+
+    .term {
+      position: absolute;
+      left: 1140px; top: 604px; width: 660px;
+      padding: 24px 26px;
+      border-radius: 14px;
+      background: #0b1820;
+      border: 3px solid var(--scree);
+      font: 400 25px/1.55 var(--font-code);
+      white-space: pre;
+      color: var(--snow);
+    }
+    .term .q { color: var(--lichen); }
+    .term .h { color: var(--lichen); }
+    .term .s { color: var(--haze); font-weight: 500; }
+    .done { position: absolute; left: 1140px; top: 800px; width: 660px; font-size: 30px; line-height: 1.3; color: var(--lichen); }
+    .done b { color: var(--snow); font-weight: 600; }
+
+    .src { bottom: 40px; max-width: 1680px; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2>Ship every change with the check that fails without it, so <code>kubectl get</code> is the audit.</h2>
+
+    <svg class="field" id="field" width="940" height="526" viewBox="0 0 940 526" aria-label="5,600 node squares; nearly all verified, a few pending, one failed and retrying"></svg>
+    <p class="key"><span style="--c: var(--haze)">Verified</span><span style="--c: var(--scree)">Pending</span><span style="--c: var(--alpenglow)">Failed, retrying</span></p>
+
+    <p class="big"><b>~5,600</b><span>nodes converged in 30 minutes, across 16 clusters. Two kernel CVEs in one week.</span></p>
+
+    <p class="term"><span class="q">$ kubectl get nodewright</span>
+<span class="h">NAME       STATUS       COMPLETE NODES</span>
+copy-fail  <span class="s">in_progress</span>  <span class="s">4880/5000</span></p>
+    <p class="done"><b>Done is a status value on the object,</b> not a row in a spreadsheet.</p>
+
+    <p class="src">NVIDIA, "5,000 Nodes in Minutes, Twice in a Week" (deck-assets/12-fleet-node-changes, p5, p7); columns trimmed. Status mix in the field is illustrative.</p>
+  </main>
+
+  <aside class="notes">
+    The second design rule is how you know a bulk change actually landed. It has nothing to do with AI, and it's the best template we saw all week for anything we'll later want a machine to drive.
+
+    Ship every change together with the check that fails without it. NVIDIA had two kernel CVEs to fix in one week, across clouds and on-prem. The fix shipped with its own check, the check fails until the fix has really landed on that node, and every node reports a status.
+
+    So the picture on the left is the audit. Every square is a node, about fifty-six hundred of them, converged in thirty minutes across sixteen clusters. Most are verified, a few are still pending, and one failed and is being retried. The status mix is illustrative; the pattern and the numbers are theirs.
+
+    And on the right is how they read it: one kubectl get on their rollout object. Status in progress, forty-eight eighty of five thousand nodes complete. Done is an enum value on the resource, and the nodes that need attention are the failed Jobs. Where the fleet stands is a query, not a spreadsheet someone fills in. Their own line for what came next: the next CVE is a YAML change.
+
+    That's fleet toil. Losing a region looks like the same problem, and it isn't.
+  </aside>
+
+  <script>
+    // 5,600 nodes: 100 x 56, one square per node
+    const r = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+    let out = '';
+    for (let i = 0; i < 5600; i++) {
+      const x = (i % 100) * 9.4, y = Math.floor(i / 100) * 9.4;
+      const v = r();
+      const cls = i === 3333 ? 'f' : v < 0.03 ? 'p' : 'n';
+      out += `<rect class="${cls}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="7.4" height="7.4"/>`;
+    }
+    out += `<circle cx="${(3333 % 100) * 9.4 + 3.7}" cy="${Math.floor(3333 / 100) * 9.4 + 3.7}" r="16" fill="none" stroke="var(--alpenglow)" stroke-width="3"/>`;
+    document.getElementById('field').innerHTML = out;
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

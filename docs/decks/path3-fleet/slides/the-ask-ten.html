@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The ask</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 78px; max-width: 1640px; }
+    .strip { position: absolute; left: var(--margin); top: 300px; display: grid; grid-template-columns: repeat(40, 34px); gap: 8px; }
+    .strip .day { width: 34px; height: 34px; border-radius: 5px; border-width: 3px; }
+    .strip-t { position: absolute; left: var(--margin); top: 352px; font: 600 32px/1 var(--font-display); color: var(--haze); }
+    .leans { position: absolute; left: var(--margin); top: 424px; width: 1680px; display: grid; }
+    .lean { display: grid; grid-template-columns: 96px 600px 1fr; column-gap: 28px; padding: 17px 0; border-top: 2px solid var(--scree); align-items: baseline; }
+    .lean:last-child { border-bottom: 2px solid var(--scree); }
+    .lean .id { font: 600 36px/1 var(--font-display); color: var(--alpenglow); }
+    .lean p { font: 600 40px/1.05 var(--font-display); }
+    .lean span:last-child { font-size: 30px; line-height: 1.25; color: var(--lichen); }
+    .lean span:last-child b { color: var(--haze); font-weight: 600; }
+    .start { position: absolute; left: var(--margin); top: 900px; width: 1680px; font-size: 32px; line-height: 1.3; color: var(--lichen); }
+    .start b { color: var(--snow); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2>Standardise on EKS, default to Auto Mode, and name an owner for the label schema.</h2>
+
+    <div class="strip" id="strip" aria-label="40 day squares, 7 lit"></div>
+    <p class="strip-t">LinkedIn's seven days, as our policy rather than the exception</p>
+
+    <div class="leans">
+      <div class="lean"><span class="id">E1</span><p>Our container orchestrator</p><span><b>EKS.</b> No new ECS without a written exception.</span></div>
+      <div class="lean"><span class="id">E2</span><p>Nodes on new clusters</p><span><b>Auto Mode by default;</b> self-managed Karpenter by exception.</span></div>
+      <div class="lean"><span class="id">E3</span><p>Upgrade policy</p><span><b>Never in extended support;</b> a named owner per cluster.</span></div>
+      <div class="lean"><span class="id">2c</span><p>The cluster-label schema</p><span><b>An owner today.</b> It's stage 1, and three things wait on it.</span></div>
+      <div class="lean"><span class="id">2</span><p>Prod that can't run active-active</p><span><b>The list, named and counted.</b> Empty means Karmada stays on watch.</span></div>
+    </div>
+
+    <p class="start">Starting unless someone objects: <b>a skip-level upgrade pilot in non-prod, paired with a timed restore drill.</b></p>
+  </main>
+
+  <aside class="notes">
+    We opened with forty days becoming seven. The ask is to make that our policy rather than someone else's exception.
+
+    Five decisions. E1: EKS is our container orchestrator, and new ECS workloads need a written exception. E2: new clusters default to Auto Mode, with self-managed Karpenter only where it doesn't fit. E3: no cluster ever enters extended support, and every cluster has a named owner. Then the cluster-label schema needs an owner today, because it's stage 1 and three things wait on it. And decision 2: the list of production workloads that can't run active-active, named and counted. If that list is empty, Karmada stays on the watch list and the decision closes.
+
+    And one thing we're starting unless someone objects: a skip-level upgrade pilot in non-prod this quarter, paired with a timed restore drill, so we're willing to upgrade aggressively.
+
+    The fleet is going to get big whatever we decide. Let's spend the effort making it cattle, not on a second orchestrator. Thank you.
+  </aside>
+
+  <script>
+    document.getElementById('strip').innerHTML =
+      Array.from({ length: 40 }, (_, i) => `<span class="day${i < 7 ? ' lit' : ''}"></span>`).join('');
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

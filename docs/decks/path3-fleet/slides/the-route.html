@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four stages</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 72px; max-width: 860px; }
+    .why { position: absolute; left: var(--margin); top: 520px; width: 640px; }
+    .why h3 { color: var(--haze); margin-bottom: 18px; font-size: 44px; }
+    .why p { font-size: 30px; line-height: 1.3; color: var(--lichen); margin-bottom: 14px; padding-left: 24px; border-left: 5px solid var(--scree); }
+    .route { fill: none; stroke: var(--haze); stroke-width: 5; }
+    .camp-dot { fill: var(--night); stroke: var(--haze); stroke-width: 5; }
+    .camp-dot.lit { fill: var(--haze); }
+    .camp-txt { font: 600 32px var(--font-display); fill: var(--haze); text-anchor: middle; dominant-baseline: central; }
+    .camp-txt.lit { fill: var(--night); }
+    .stage { position: absolute; width: 540px; font: 600 36px/1.05 var(--font-display); }
+    .stage small { display: block; margin-top: 6px; font: 400 27px/1.25 var(--font-body); color: var(--lichen); }
+    .stage .now { color: var(--haze); font-weight: 600; }
+    .seam { fill: none; stroke: var(--alpenglow); stroke-width: 5; stroke-dasharray: 18 12; stroke-linecap: round; }
+    .seam-t { position: absolute; left: 780px; top: 478px; width: 380px; text-align: right; font-size: 28px; line-height: 1.22; color: var(--alpenglow); }
+    .seam-t b { display: block; font: 600 34px/1.05 var(--font-display); }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Four stages, and the first is nearly free: labels, fleet delivery, lifecycle, Crossplane.</h2>
+
+    <div class="why">
+      <h3>Three things wait on stage 1</h3>
+      <p>Path 1's fleet waves select on cluster labels.</p>
+      <p>Cluster 31 only joins itself if its labels exist.</p>
+      <p>Developers stop naming clusters once there's a vocabulary.</p>
+    </div>
+
+    <p class="stage" style="left: 1222px; top: 930px;">Cluster labels become an API<small><span class="now">Starts now:</span> a schema, an owner, a join policy</small></p>
+    <p class="stage" style="left: 1267px; top: 750px;">Fleet delivery in waves<small>ApplicationSets with rollingSync, as in Path 1</small></p>
+    <p class="stage" style="left: 1312px; top: 568px;">Lifecycle<small>Auto Mode by default, the window as policy, Hybrid Nodes at one site</small></p>
+    <p class="stage" style="left: 1357px; top: 360px;">Crossplane for app-owned infra<small>S3 first, above the seam</small></p>
+
+    <p class="seam-t"><b>The seam</b>CDK below, Crossplane above. Decision 3.</p>
+  </main>
+
+  <aside class="notes">
+    Four stages, and the first one is nearly free.
+
+    Stage 1, starting now: cluster labels become an API. A schema, an owner, and a policy that won't let a cluster join the fleet without its labels. It costs agreement, not a tool. And three things wait on it. Path 1's fleet waves select on cluster labels. Cluster thirty-one only joins itself if its labels exist. And developers only stop naming clusters when there's a vocabulary to use instead.
+
+    Stage 2: fleet delivery in waves, ApplicationSets with rolling sync, which we share with Path 1. Stage 3: lifecycle. Auto Mode as the default for new clusters, the support window as a policy, and Hybrid Nodes piloted at one on-prem site, so on-prem and EKS become one control-plane model.
+
+    Then the dashed line. Before anyone builds stage 4, we mark the seam. Below it, the landing zone and CDK: accounts, guardrails, VPCs, the EKS clusters themselves, things that change rarely. Above it, Crossplane and kro, starting with S3 and moving to the infrastructure app teams own, things that change constantly. Two tools fighting over one resource starts with an unmarked line. That's decision 3, and it needs a diagram with the line drawn, not a debate.
+
+    And above the seam we have no paved road yet. Our lean: build the road first, templates in Git and the label vocabulary, and buy a portal later, as a window onto it.
+
+    Before we climb, the floor under all of it.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    const camps = [[1170, 960, '1'], [1215, 780, '2'], [1260, 600, '3'], [1305, 420, '4']];
+    Peaks.draw('#range',
+      Peaks.far({ y: 820, amp: 60, n: 9, x0: 820, seed: 5 }),
+      Peaks.peak({ x: 1380, top: 120, base: 1080, hw: 480, cap: 'var(--haze)', capScale: 0.5 }),
+      `<path class="seam" d="M1150 512 H1610"/>`,
+      `<polyline class="route" points="${camps.map(c => c[0] + ',' + c[1]).join(' ')}"/>` +
+      camps.map(([x, y, t], i) => `<circle class="camp-dot${i === 0 ? ' lit' : ''}" cx="${x}" cy="${y}" r="30"/><text class="camp-txt${i === 0 ? ' lit' : ''}" x="${x}" y="${y}">${t}</text>`).join(''));
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

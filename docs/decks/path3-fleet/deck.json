@@ -1,6 +1,6 @@
 {
   "title": "Path 3: The fleet is going to get big",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "cold-open",
@@ -50,6 +50,18 @@
       "ti-kro",
       "ti-scaling",
       "ti-backstage"
+    ],
+    "ten": [
+      "cold-open",
+      "fleet-grows",
+      "two-of-everything",
+      "cattle-on-a-clock",
+      "ship-the-check-ten",
+      "region-is-a-sum",
+      "thirty-first-ten",
+      "the-route",
+      "restore-ten",
+      "the-ask-ten"
     ]
   }
 }

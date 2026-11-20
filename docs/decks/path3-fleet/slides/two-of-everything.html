@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two of everything</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 80px; max-width: 1500px; }
+
+    .grid {
+      position: absolute;
+      left: var(--margin); top: 336px; width: 1680px;
+      display: grid;
+      grid-template-columns: 330px repeat(5, 1fr);
+      column-gap: 16px;
+      row-gap: 14px;
+      align-items: stretch;
+    }
+    .hd { font: 600 32px/1.05 var(--font-display); color: var(--lichen); padding: 0 4px 6px; align-self: end; }
+
+    .rowname { display: flex; align-items: center; gap: 20px; font: 600 36px/1.05 var(--font-display); }
+    .rowname small { display: block; font: 400 26px/1.2 var(--font-body); color: var(--muted); }
+    .rowname .camp { --c: var(--haze); width: 58px; height: 58px; font-size: 32px; }
+    .rowname.three .camp { --c: var(--alpenglow); border-style: dashed; color: var(--alpenglow); }
+    .rowname.three { color: var(--alpenglow); }
+
+    .band {
+      grid-column: 2 / span 5; grid-row: 2 / span 2;
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      background: var(--haze);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .band p {
+      padding: 22px 22px;
+      font: 500 30px/1.22 var(--font-body);
+      color: var(--night);
+      border-left: 3px solid rgba(7, 11, 14, .28);
+      display: flex; align-items: center;
+    }
+    .band p:first-child { border-left: 0; }
+    .one { grid-column: 2 / span 5; font: 600 32px/1.1 var(--font-display); color: var(--haze); padding: 2px 4px 10px; }
+
+    .ecs {
+      padding: 20px 20px;
+      min-height: 150px;
+      border: 4px dashed var(--alpenglow);
+      border-radius: 16px;
+      font: 400 29px/1.22 var(--font-body);
+      color: var(--alpenglow);
+    }
+
+    .closed {
+      position: absolute;
+      left: var(--margin); top: 908px; width: 1680px;
+      font-size: 32px; line-height: 1.3;
+      color: var(--lichen);
+    }
+    .closed b { color: var(--snow); font-weight: 600; }
+    .src { bottom: 40px; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2>ECS wouldn't replace anything; it would be a third container platform.</h2>
+
+    <div class="grid">
+      <span></span>
+      <p class="hd">Deploy</p><p class="hd">Policy</p><p class="hd">Identity</p><p class="hd">Observability</p><p class="hd">Agents operating it</p>
+
+      <p class="rowname"><span class="camp lit">1</span><span>On-prem<small>Kubernetes</small></span></p>
+      <div class="band">
+        <p>Helm charts, Argo&nbsp;CD</p>
+        <p>CEL and Kyverno at admission</p>
+        <p>Pod Identity, IRSA, SPIFFE</p>
+        <p>OTel collector</p>
+        <p>one API every MCP tool speaks</p>
+      </div>
+      <p class="rowname"><span class="camp lit">2</span><span>EKS<small>two regions</small></span></p>
+
+      <span></span>
+      <p class="one">One API, one set of tools. We're building it anyway.</p>
+
+      <p class="rowname three" data-step="1"><span class="camp">3</span><span>ECS<small>if we add it</small></span></p>
+      <p class="ecs" data-step="1">task definitions, own pipelines</p>
+      <p class="ecs" data-step="1">no admission point to enforce at</p>
+      <p class="ecs" data-step="1">task roles: a second model to audit</p>
+      <p class="ecs" data-step="1">FireLens, second dashboards</p>
+      <p class="ecs" data-step="1">a second API for every agent</p>
+    </div>
+
+    <p class="closed" data-step="2"><b>And "ECS is simpler" closed in 2025:</b> on EKS Auto Mode and ECS Managed Instances alike, AWS patches the nodes.</p>
+    <p class="src">EKS-VS-ECS.md §0, §2, §3</p>
+  </main>
+
+  <aside class="notes">
+    The question isn't "EKS or ECS". It's "EKS, or EKS plus ECS". We already run two container platforms: Kubernetes on-prem, and EKS in two regions. ECS wouldn't replace either of them. It would be the third.
+
+    Across the top are the five jobs a platform does: deploy, policy, identity, observability, and the new one, agents operating it. Platforms one and two share one answer to each, the band you see, down to one API that every MCP tool already speaks. We're building that anyway.
+
+    Click. Add ECS, and every column gets a second answer, and every one of those boxes is new work. Task definitions and their own pipelines. No admission point for policy. A second identity model to audit. A second set of dashboards. And a second API for every agent and tool, which matters more each month, because the main consumer of the platform is becoming a machine, and machines are good at one well-documented API and worse at two. Two of everything, and on-call has to know both.
+
+    Click. The old argument for ECS was that it's simpler. That stopped being true in 2025. EKS Auto Mode went GA in December 2024, ECS Managed Instances in the autumn of 2025, and they're the same product shape: AWS runs and patches the nodes on both. When AWS cut GPU fees this July, it cut them on both, on the same day. What's left of the difference is the Kubernetes API, and for us that's the asset, not the cost.
+
+    So we stay on EKS. Here's how the big fleets run one.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

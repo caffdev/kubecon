@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Restore</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide h1 { font-size: 132px; line-height: .98; letter-spacing: -0.02em; max-width: 1400px; margin-top: 30px; }
+
+    .trail { position: absolute; left: 0; top: 0; }
+    .rope-line { fill: none; stroke: var(--hairline); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 2 16; }
+    .rope-line.live { stroke: var(--haze-ink); stroke-dasharray: 18 12; }
+
+    .stop { position: absolute; top: 558px; }
+    .stop .camp { --c: var(--slate-quiet); width: 84px; height: 84px; font-size: 44px; border-width: 5px; background: var(--snowfield); }
+    .stop b { display: block; margin-top: 22px; font: 600 50px/1 var(--font-display); color: var(--slate-quiet); }
+    .stop p { margin-top: 10px; font-size: 29px; line-height: 1.3; color: var(--slate-quiet); }
+
+    .stop.drill { top: 536px; }
+    .stop.drill .camp { --c: var(--haze-ink); width: 128px; height: 128px; font-size: 64px; }
+    .stop.drill .camp.lit { background: var(--haze-ink); color: var(--snowfield); }
+    .stop.drill b { font-size: 72px; color: var(--haze-ink); margin-top: 18px; }
+    .stop.drill p { font-size: 34px; color: var(--slate); }
+
+    .src { bottom: 44px; }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="trail" width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="rope-line" d="M204 600 H1300"/>
+    </svg>
+    <svg class="trail" id="floor" width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+
+    <h1>Backups are a rumor until we restore one.</h1>
+
+    <div class="stop" style="left: 120px; width: 420px;">
+      <span class="camp">1</span>
+      <b>Retain</b>
+      <p>Audit every StorageClass: Delete is the wrong default.</p>
+    </div>
+    <div class="stop" style="left: 620px; width: 420px;">
+      <span class="camp">2</span>
+      <b>Back up</b>
+      <p>Velero on a schedule. Nothing bespoke.</p>
+    </div>
+    <div class="stop drill" style="left: 1240px; width: 560px;">
+      <span class="camp lit">3</span>
+      <b>Drill</b>
+      <p>Restore into a scratch cluster, on a calendar, and time it.</p>
+    </div>
+
+    <p class="src">GOALS §8; Velero project update (Red Hat); Kubernetes Data Protection WG.</p>
+  </main>
+
+  <aside class="notes">
+    The floor is the one area where being wrong is unrecoverable.
+
+    Backups are a rumor until we restore one. Pause.
+
+    Three steps, in order. Retain: audit every storage class, because Delete is the default reclaim policy, and it's the wrong one for data we care about. Back up: Velero on a schedule, with consistent, incremental snapshots, and nothing bespoke, because there's now a Kubernetes data protection working group standardising exactly this.
+
+    And the one that's lit: drill. Restore into a scratch cluster on a calendar, and time it. The drill matters more than the backup. A cluster we can rebuild and restore is a cluster we're willing to upgrade aggressively, and that's the whole deck.
+
+    One cheap extra while we're down here: alert on etcd database size at fifty and seventy-five percent. AWS showed how pod status churn alone can push a cluster read-only with zero crashed nodes. That alert catches it in days, not minutes.
+
+    So, five decisions.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>Peaks.draw('#floor', Peaks.far({ y: 1000, amp: 46, n: 16, seed: 21 }));</script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
