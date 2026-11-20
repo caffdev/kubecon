@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinkedIn: three minors, one rollout</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--haze-ink); }
+    h2 { font-size: 72px; max-width: 1680px; line-height: 1.03; margin-top: 18px; }
+    .receipt { left: var(--margin); top: 300px; width: 1010px; }
+    .steps { position: absolute; left: 1200px; top: 300px; width: 600px; list-style: none; margin: 0; padding: 0; counter-reset: s; }
+    .steps li { counter-increment: s; position: relative; padding: 0 0 22px 64px; font-size: 29px; line-height: 1.3; color: var(--slate-quiet); }
+    .steps li::before { content: counter(s); position: absolute; left: 0; top: -2px; width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--haze-ink); text-align: center; font: 600 28px/38px var(--font-display); color: var(--haze-ink); }
+    .steps li b { color: var(--slate); font-weight: 600; }
+    .steps code { display: inline-block; margin-top: 6px; font: 500 26px var(--font-code); color: var(--slate); background: #d6e3e2; padding: 1px 8px; border-radius: 6px; }
+    .proof { left: 1200px; top: 668px; width: 600px; }
+    .proof .row { grid-template-columns: 260px 1fr; border-top-color: var(--hairline); }
+    .proof .n { font-size: 58px; color: var(--haze-ink); }
+    .catch { bottom: 44px; }
+  </style>
+</head>
+<body>
+  <main class="slide snow" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>LinkedIn took 250+ clusters from v1.31 to v1.34<br>in one rollout: 7 business days, not 40.</h2>
+
+    <figure class="receipt">
+      <div class="frame"><img src="../assets/stage/skip-level-upgrades-p02.png" alt="LinkedIn's result slide: v1.31 to v1.34 across production, 250+ clusters, about 500K nodes, on-prem. One minor at a time took six fleet waves and 40 business days; with emulated version, one rollout plus promotion took 7 business days."></div>
+      <figcaption><b>LinkedIn</b> <i>Binary Version Is Not Behavior: Skip-Level Control Plane Upgrades with KEP-4330</i> · KubeCon NA 2026</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li><b>Deploy is not release.</b> Ship the v1.34 binaries, pinned to old behaviour:<br><code>--emulated-version=1.31</code></li>
+      <li><b>Soak.</b> Rollback is a binary downgrade; behaviour never changed.</li>
+      <li><b>Release:</b> raise the emulated version. One promotion, not three upgrades.</li>
+    </ol>
+    <div class="proof">
+      <div class="row"><span class="n">6 → 1</span><span class="t">fleet waves become <b>one rollout + a promotion</b></span></div>
+      <div class="row"><span class="n">40 → 7</span><span class="t">business days for <b>three minors</b></span></div>
+    </div>
+
+    <p class="catch">LinkedIn ran it with their own tooling: <b>check kubeadm and Cluster API support for emulated versions before we promise it.</b> Patches still ship monthly through the waves.</p>
+  </main>
+
+  <aside class="notes">
+    That's on-prem from code. LinkedIn went further, at about ten times our size: more than two hundred and fifty clusters, around half a million nodes, on their own hardware. This is their result slide.
+
+    They took production from Kubernetes 1.31 to 1.34. Three minors. The old way, one minor at a time, was six fleet waves and forty business days. They did it in one rollout and a promotion, in seven.
+
+    The trick is in the title of their talk: binary version is not behaviour. It's KEP-4330, compatibility versions. You deploy the 1.34 binaries, but pinned with the emulated-version flag, so they behave like 1.31. You soak that. If anything's wrong, rollback is just a binary downgrade, because behaviour never changed. Then you release, by raising the emulated version. One promotion instead of three upgrades.
+
+    Two honest notes. LinkedIn did this with their own control-plane tooling, so before we promise it we check what kubeadm and Cluster API support. And this removes minor-version toil, not patching: security patches still ship every month, through the waves we're about to build.
+
+    That's on-prem. In AWS, the cluster itself comes from code.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('admins');
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

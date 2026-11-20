@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>At the show: fleets</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --topic: var(--haze); --path: var(--haze); }
+    h2 { font-size: 80px; max-width: 1680px; line-height: 1.02; }
+    .src { max-width: 560px; }
+  </style>
+</head>
+<body>
+  <main class="slide show" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>The big names all run fleets: another cluster<br>is the rule, not the exception.</h2>
+    <svg class="show-grid" id="grid" viewBox="0 0 1920 1080" role="img" aria-label="The four days of KubeCon as boxes, one per talk, Monday to Thursday. The talks about fleets, multi-cluster, upgrades and cluster lifecycle are lit: 96 of 501."></svg>
+    <div class="riffle" id="riffle" aria-hidden="true"></div>
+    <div class="picks" id="picks"></div>
+    <p class="src">One box per talk, Nov 9–12. Lit: fleet, multi-cluster, upgrades, cluster lifecycle, by our keyword match on title and abstract.</p>
+  </main>
+
+  <aside class="notes">
+    Before our own story, here's the first takeaway as the show told it.
+
+    These are the four days, every talk as a box, Monday's co-located day through Thursday. Lit are the talks about running fleets: multi-cluster, upgrades, cluster lifecycle. Almost a hundred of them.
+
+    And look at who gave them. Bloomberg on multi-cluster. AWS's keynote. NVIDIA and Salesforce on one kubectl across many clusters. Apple and Uber keynotes. NVIDIA again, five thousand nodes in minutes. Mastercard, thirty EKS clusters. Coinbase, Nutanix, LinkedIn.
+
+    Three to remember. LinkedIn: more than two hundred and fifty clusters, about half a million nodes, upgraded with skip-level upgrades. Salesforce: a thousand clusters, run with agents. And GEICO, a regulated insurer like the companies we compare ourselves to: no single cloud had enough GPUs, so they run Kubernetes across providers.
+
+    None of them planned to have that many. Every one of those fleets grew one reasonable cluster at a time. There's always another cluster coming, so it has to be the rule, not the exception.
+
+    Now ours. It started at four.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/assets/schedule.js"></script>
+  <script src="../theme/riffle.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    Riffle.draw({
+      topic: 'fleet',
+      flicks: [
+        [0, 'Multi-Cluster Orchestration: Karmada Updates and Use Cases', 'Bloomberg'],
+        [1, 'Engineering Kubernetes for the Next Era of Workloads', 'AWS', true],
+        [1, 'N Clusters, One kubectl: Multi-Cluster That Just Works', 'NVIDIA, Salesforce'],
+        [1, 'Why We Bet the Data Platform on Kubernetes', 'Airbnb, Apple, Pinterest, Salesforce'],
+        [1, 'Multicluster AMA: The Community Answers', 'Microsoft, Red Hat'],
+        [2, 'Code, Containers, and Clusters', 'Apple', true],
+        [2, 'Built on Kubernetes. Proven at Uber Scale.', 'Uber', true],
+        [2, '5,000 Nodes in Minutes, Twice in a Week', 'NVIDIA'],
+        [2, 'No RAG, No Regrets: an LLM Drives 30 EKS Clusters', 'Mastercard'],
+        [2, 'The Future of Kubernetes Eviction and Node Lifecycle', 'Anthropic, NVIDIA, Red Hat'],
+        [3, 'How Nutanix Is Evolving Cluster API with CAREN', 'Nutanix'],
+        [3, 'A Unified Workload API for Multi-Cluster Kubernetes', 'LinkedIn'],
+        [3, 'Modernizing Service Identity at Coinbase', 'Coinbase'],
+      ],
+      picks: [
+        { who: 'LinkedIn', day: 2, claim: '250+ clusters, ~500K nodes, upgraded skip-level', title: 'Binary Version Is Not Behavior: Skip-Level Control Plane Upgrades' },
+        { who: 'Salesforce', day: 3, claim: '1,000 clusters, with AIOps agents helping run them', title: '1000 Clusters, 1 Smarter Brain: The Next Evolution of AIOps' },
+        { who: 'GEICO', day: 3, claim: 'Multi-provider, because no one cloud had the GPUs', title: 'Follow the GPUs: When No Single Cloud Has Enough' },
+      ],
+    });
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

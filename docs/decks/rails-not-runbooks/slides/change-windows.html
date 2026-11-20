@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A freeze is config</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); --accent: var(--mint); }
+    h2 { font-size: 70px; max-width: 1640px; line-height: 1.03; margin-top: 18px; }
+    .week { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .open { fill: #16392f; }
+    .frozen { fill: url(#hatch); }
+    .hatch-line { stroke: #24343c; stroke-width: 3; }
+    .day-rule { stroke: var(--scree); stroke-width: 2; }
+    .day { font: 600 28px var(--font-display); fill: var(--snow); }
+    .band-name { font: 500 24px var(--font-body); fill: var(--lichen); }
+    .run { fill: var(--mint); }
+    .wait { fill: none; stroke: var(--mint); stroke-width: 3; stroke-dasharray: 8 7; }
+    .run-name { font: 600 27px var(--font-display); fill: var(--snow); }
+    .pause { font: 500 25px var(--font-body); fill: var(--mint); }
+    .cc.argo { left: var(--margin); top: 590px; width: 820px; }
+    .cc.cw { left: 980px; top: 590px; width: 820px; }
+    .src { bottom: 40px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="2">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>A freeze is config: Argo CD holds the waves,<br>and Kyverno holds everyone else.</h2>
+
+    <svg class="week" id="week" viewBox="0 0 1920 1080" role="img" aria-label="One week, Monday to the next Monday. Syncs are allowed Monday to Thursday, nine to five; everything else is frozen. Wave 1 runs Tuesday, wave 2 Wednesday; the prod wave starts Thursday, pauses when Thursday's window closes, and resumes Monday morning."></svg>
+
+    <figure class="cc argo">
+      <figcaption class="cc-file">platform/<b>appproject.yaml</b> · stops the pipeline</figcaption>
+      <pre class="cc-body small"><span class="k">kind:</span> AppProject
+<span class="k">spec:</span>
+  <span class="k">syncWindows:</span>
+<span class="hl">  - <span class="k">kind:</span> allow</span>
+    <span class="k">schedule:</span> "0 9 * * 1-4"   <span class="c"># Mon–Thu 09:00</span>
+    <span class="k">duration:</span> 8h              <span class="c"># to 17:00</span>
+    <span class="k">timeZone:</span> America/New_York
+    <span class="k">applications:</span> ["*"]</pre>
+    </figure>
+    <figure class="cc cw ours" data-step data-effect="rise">
+      <figcaption class="cc-file">from the change record · stops <b>everyone else</b></figcaption>
+      <pre class="cc-body small"><span class="k">kind:</span> ChangeWindow             <span class="c"># our CRD</span>
+<span class="k">metadata:</span> {name: chg-48213}
+<span class="k">spec:</span>
+  <span class="k">start:</span> 2026-11-23T09:00-05:00
+  <span class="k">end:</span>   2026-11-26T17:00-05:00
+  <span class="k">scope:</span> {tier: prod}
+<span class="hl"><span class="c"># Kyverno denies prod writes when none is open:</span></span>
+<span class="c"># kubectl, operators, agents</span></pre>
+    </figure>
+    <p class="src">NVIDIA schedules fleet maintenance around business-critical windows; Agility Robotics (<i>Look Before You Leap</i>) adds an admission gate on top of sync windows.</p>
+  </main>
+
+  <aside class="notes">
+    The pipeline also needs to know when not to run.
+
+    The strip is one week. Syncs are allowed Monday to Thursday, nine to five; everything else is frozen. Wave one Tuesday, wave two Wednesday. The prod wave starts Thursday, hits five o'clock and stops, then picks up Monday morning. Nobody had to remember, and nobody met about it. That's the platform team's time syncs, gone.
+
+    On the left, how: Argo CD's own sync windows on the AppProject. Kind allow, a cron schedule, eight hours, New York time. Built in. It stops the pipeline.
+
+    Click. But kubectl, operators and soon agents change clusters too. So the approved window from the change record is projected into the cluster as a small object of ours, and a Kyverno rule denies production writes when none is open. Admission never waits on the ticket system.
+
+    NVIDIA schedules fleet maintenance around business windows; Agility Robotics gates updates on robots mid-task.
+
+    That's the platform team's whole kit: waves, gates and windows. Which means we can finally make teams an offer.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('platform');
+    (() => {
+      const X0 = 200, W = 1600, Y = 384, H = 80, HOUR = W / 192;   // eight days: Monday to the next Monday
+      const hx = (d, h) => X0 + (d * 24 + h) * HOUR;
+      const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon'];
+      let s = `<defs><pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="hatch-line" x1="0" y1="0" x2="0" y2="14"/></pattern></defs>`;
+      s += `<rect class="frozen" x="${X0}" y="${Y}" width="${W}" height="${H}"/>`;
+      // allowed: 09:00-17:00 Mon-Thu
+      for (const d of [0, 1, 2, 3, 7]) s += `<rect class="open" x="${hx(d, 9)}" y="${Y}" width="${8 * HOUR}" height="${H}"/>`;
+      for (let d = 0; d <= 8; d++) s += `<line class="day-rule" x1="${hx(d, 0)}" x2="${hx(d, 0)}" y1="${Y - 8}" y2="${Y + H + 8}"/>`;
+      DAYS.forEach((n, d) => { s += `<text class="day" x="${hx(d, 12)}" y="${Y + H + 40}" text-anchor="middle">${n}</text>`; });
+      s += `<text class="band-name" x="${hx(0, 9) + 8}" y="${Y + 34}">open</text>`;
+      s += `<text class="band-name" x="${hx(4, 18)}" y="${Y + 34}">frozen</text>`;
+      // the runs, above the strip
+      const run = (d, h0, h1, y, name) => `<rect class="run" x="${hx(d, h0)}" y="${y}" width="${(h1 - h0) * HOUR}" height="22" rx="4"/><text class="run-name" x="${hx(d, h0)}" y="${y - 12}">${name}</text>`;
+      s += run(1, 10, 14, Y - 76, 'wave 1');
+      s += run(2, 10, 15, Y - 76, 'wave 2');
+      s += run(3, 11, 17, Y - 76, 'prod');
+      // paused across the freeze, resumed when the next window opens
+      s += `<rect class="wait" x="${hx(3, 17)}" y="${Y - 76}" width="${hx(7, 9) - hx(3, 17)}" height="22" rx="4"/>`;
+      s += `<text class="pause" x="${hx(4, 18)}" y="${Y - 88}">paused by the window</text>`;
+      s += `<rect class="run" x="${hx(7, 9)}" y="${Y - 76}" width="${3 * HOUR}" height="22" rx="4"/><text class="run-name" x="${hx(7, 9) + 3 * HOUR}" y="${Y - 88}" text-anchor="end">resumes</text>`;
+      Peaks.draw('#week', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

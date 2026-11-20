@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NVIDIA: 5,600 nodes in 30 minutes</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 70px; max-width: 1680px; line-height: 1.03; margin-top: 18px; }
+    .receipt { left: var(--margin); top: 296px; width: 1040px; }
+    .proof { left: 1230px; top: 290px; width: 570px; }
+    .proof .row { grid-template-columns: 1fr; padding: 10px 0 12px; border-top-color: var(--hairline); }
+    .proof .n { font-size: 60px; color: var(--teal-ink); }
+    .proof .t { font-size: 27px; }
+    .cc { left: 1230px; top: 688px; width: 570px; }
+    .quote { position: absolute; left: var(--margin); top: 952px; font: 600 40px/1.1 var(--font-display); color: var(--slate); }
+    .quote span { color: var(--teal-ink); }
+  </style>
+</head>
+<body>
+  <main class="slide snow" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>NVIDIA patched ~5,600 nodes in 30 minutes:<br>an agent drove it by reading one status field.</h2>
+
+    <figure class="receipt">
+      <div class="frame"><img src="../assets/stage/fleet-node-changes-p06.png" alt="NVIDIA's slide: the status enum let an agent drive the rollout. kubectl apply the CR per cluster; the agent polls the status subresource, kubectl get nodewright -o json, gating on .status.status. On complete it advances to the next cluster, sixteen clusters, unattended; on erroring or blocked it stops and escalates to a human. What it caught: some clusters had tainted control-plane nodes, the agent escalated, and tolerations were added."></div>
+      <figcaption><b>NVIDIA</b> <i>5,000 Nodes in Minutes, Twice in a Week</i> · KubeCon NA 2026</figcaption>
+    </figure>
+
+    <div class="proof">
+      <div class="row"><span class="n">16 clusters</span><span class="t">~5,600 nodes converged in <b>30 minutes</b>, agent-driven</span></div>
+      <div class="row"><span class="n">2 CVEs</span><span class="t">days apart, <b>one controller</b>, never changed</span></div>
+    </div>
+    <figure class="cc" data-step data-effect="rise">
+      <figcaption class="cc-file">what the agent reads</figcaption>
+      <pre class="cc-body small">kubectl get nodewright -o json
+<span class="hl">  <span class="c"># gate on</span> .status.status</span>
+complete · in_progress · erroring
+blocked · paused · unknown</pre>
+    </figure>
+    <p class="quote" data-step data-effect="rise">“The next CVE is <span>a YAML change.</span>”</p>
+  </main>
+
+  <aside class="notes">
+    The answer isn't more people. NVIDIA showed it, and it was the cleanest agent-safe automation at the show.
+
+    Their slide. Two kernel CVEs, days apart. Sixteen clusters, about fifty-six hundred nodes, converged in thirty minutes, and an agent drove it.
+
+    Look how little the agent was trusted with. It applies the change to a cluster and polls one status field. Complete: next cluster. Erroring or blocked: stop and escalate to a person. It caught tainted control-plane nodes, escalated instead of forcing it, and a human added the tolerations.
+
+    Underneath: ship the change with the check that fails without it, so done is a value in a field, not an opinion.
+
+    Click. All the agent reads: kubectl get, gate on status, an enum. An interface a machine can drive safely.
+
+    Click. Their line: the next CVE is a YAML change. The controller never changed between the two CVEs.
+
+    Put that next to everything we built, and the circle closes.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('attackers');
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

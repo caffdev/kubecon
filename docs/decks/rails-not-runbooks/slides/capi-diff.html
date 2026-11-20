@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An upgrade is one field</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--haze); }
+    h2 { font-size: 74px; max-width: 1640px; line-height: 1.03; margin-top: 18px; }
+    .cc { left: var(--margin); top: 300px; width: 800px; }
+    .pic { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .lab { font: 600 32px var(--font-display); fill: var(--snow); }
+    .lab.mute { fill: var(--lichen); }
+    .sub { font: 400 24px var(--font-body); fill: var(--lichen); }
+    .blk { fill: none; stroke: #3f6f79; stroke-width: 2.2; }
+    .m-old { fill: #2c3a41; }
+    .m-new { fill: var(--haze); }
+    .arrow { stroke: var(--lichen); stroke-width: 2; fill: none; }
+    .group { stroke: var(--scree); stroke-width: 2; fill: none; }
+    .big { font: 600 64px var(--font-display); fill: var(--snow); letter-spacing: -.02em; }
+    .big.hz { fill: var(--haze); }
+    .catch { bottom: 44px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>On-prem, an upgrade becomes one field,<br>and Cluster API does the 54 steps.</h2>
+
+    <figure class="cc">
+      <figcaption class="cc-file">clusters/<b>ny4.yaml</b></figcaption>
+      <pre class="cc-body"><span class="k">apiVersion:</span> cluster.x-k8s.io/v1beta1
+<span class="k">kind:</span> Cluster
+<span class="k">metadata:</span>
+  <span class="k">name:</span> ny4
+  <span class="k">labels:</span> {provider: onprem, tier: prod}
+<span class="k">spec:</span>
+  <span class="k">topology:</span>
+    <span class="k">class:</span> onprem-kubeadm
+<span class="del">    <span class="k">version:</span> v1.36.3</span>
+<span class="add">    <span class="k">version:</span> v1.37.1</span>
+    <span class="k">controlPlane:</span> {replicas: 3}
+    <span class="k">workers:</span>
+      <span class="k">machineDeployments:</span>
+      - {class: default, name: md-0, replicas: 6}</pre>
+    </figure>
+
+    <svg class="pic" id="pic" viewBox="0 0 1920 1080" role="img" aria-label="Above, by hand: a chain of 54 step blocks for one cluster. Below, with Cluster API: nine machines, three control-plane then six workers, each old machine replaced by a new one at the new version, one at a time."></svg>
+
+    <p class="catch">On bare metal, “replace a machine” means re-provisioning it: <b>Metal3, or vSphere / Nutanix if ny4 runs on VMs. Choosing the provider comes first.</b></p>
+  </main>
+
+  <aside class="notes">
+    So here's the admins' fix, on-prem. kubeadm stays. The hands go.
+
+    On the left is the whole upgrade, as a pull request. It's a Cluster API Cluster object for ny4, built from a ClusterClass we'd call onprem-kubeadm. Three control-plane machines, six workers. The upgrade is one line: version, v1.36 to v1.37. That's the diff someone reviews. The versions are illustrative.
+
+    On the right, top: what that used to be. Fifty-four hand steps for this one cluster.
+
+    Click. Bottom: what Cluster API does with the one line. The control plane first, one machine at a time: a new machine at the new version joins, the old one is drained and deleted. Then the workers, the same way, one extra machine at a time. It's still kubeadm underneath. Nobody types it.
+
+    The catch, and it's the first thing an admin will ask: replacing a machine on bare metal means re-provisioning a physical server. That's what Metal3 does. If ny4 runs on VMs, it's the vSphere or Nutanix provider instead. Picking that provider is the first decision, before any of this works.
+
+    One field per cluster. LinkedIn went a step further, and changed the upgrade itself.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('admins');
+    (() => {
+      const X0 = 1000;
+      let s = '';
+      // by hand: 54 blocks in one chain (9 nodes x 6 steps)
+      s += `<text class="lab mute" x="${X0}" y="336">By hand</text><text class="sub" x="${X0 + 128}" y="336">9 nodes × 6 steps, one cluster</text>`;
+      for (let i = 0; i < 54; i++) {
+        const x = X0 + (i % 27) * 29.5, y = 362 + Math.floor(i / 27) * 30;
+        s += `<rect class="blk" x="${x}" y="${y}" width="22" height="22" rx="3"/>`;
+      }
+      s += `<text class="big" x="${X0}" y="500">54</text><text class="sub" x="${X0 + 90}" y="492">steps, each waiting on the last</text>`;
+      // Cluster API: nine machines, replaced in order
+      let c = `<text class="lab" x="${X0}" y="600">Cluster API</text><text class="sub" x="${X0 + 172}" y="600">the controllers, from one field</text>`;
+      const M = 9;
+      for (let i = 0; i < M; i++) {
+        const x = X0 + 20 + i * 88, y = 690;
+        c += Peaks.glyph({ x, y: y - 6, w: 54, h: 46, cls: 'pk-glyph m-old' });
+        c += `<path class="arrow" d="M${x} ${y + 6}V${y + 28}"/><path d="M${x - 7} ${y + 22}L${x} ${y + 32}L${x + 7} ${y + 22}" class="arrow"/>`;
+        c += Peaks.glyph({ x, y: y + 80, w: 54, h: 46, cls: 'pk-glyph m-new' });
+      }
+      c += `<path class="group" d="M${X0 - 6} 802V812H${X0 + 3 * 88 - 30}V802"/><text class="sub" x="${X0}" y="846">control plane</text>`;
+      c += `<path class="group" d="M${X0 + 3 * 88 - 14} 802V812H${X0 + 9 * 88 - 30}V802"/><text class="sub" x="${X0 + 3 * 88 - 14}" y="846">workers, one extra machine at a time</text>`;
+      c += `<text class="big hz" x="${X0}" y="920">1 field</text><text class="sub" x="${X0 + 196}" y="912">reviewed as a pull request</text>`;
+      s += `<g data-step data-effect="rise">${c}</g>`;
+      Peaks.draw('#pic', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

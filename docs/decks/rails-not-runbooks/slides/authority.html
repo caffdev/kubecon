@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Authority is earned, like traffic</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 80px; max-width: 1500px; line-height: 1.02; }
+    .slide h2 { margin-top: 30px; }
+    .track-name { position: absolute; left: var(--margin); width: 260px; font: 600 36px/1.05 var(--font-display); }
+    .track-name small { display: block; margin-top: 6px; font: 400 24px/1.2 var(--font-body); color: var(--muted); }
+    .rail { stroke-width: 6; fill: none; }
+    .rail.rel { stroke: #3f6f7b; }
+    .rail.agent { stroke: var(--teal); }
+    .link { stroke: var(--scree); stroke-width: 2.5; stroke-dasharray: 4 7; }
+    .dot.rel { fill: var(--night); stroke: var(--haze); stroke-width: 4; }
+    .dot.agent { fill: var(--teal); }
+    .dot.agent.first { fill: var(--mint); stroke: var(--mint); stroke-width: 6; }
+    .st { position: absolute; width: 264px; font-size: 27px; line-height: 1.22; }
+    .st.rel { color: var(--lichen); }
+    .st.rel code { font: 500 24px/1.2 var(--font-code); color: var(--haze); }
+    .st.agent b { display: block; font: 600 36px/1.05 var(--font-display); color: var(--snow); }
+    .st.agent small { display: block; margin-top: 6px; font-size: 25px; line-height: 1.22; color: var(--muted); }
+    .st.agent.first b { color: var(--mint); }
+    .prim { position: absolute; width: 264px; font: 600 26px/1 var(--font-display); color: var(--muted); letter-spacing: .03em; text-transform: uppercase; }
+    .quote { position: absolute; left: var(--margin); bottom: 64px; width: 1680px; font: 600 46px/1.1 var(--font-display); color: var(--snow); }
+    .quote small { display: block; margin-top: 12px; font: 400 25px/1.3 var(--font-body); color: var(--muted); }
+    .quote small b { color: var(--snow); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <svg class="stage-art" id="art" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+    <h2>An agent earns the right to act the way a release earns a wave.</h2>
+
+    <p class="track-name" style="top: 392px; color: var(--haze);">A release<small>the waves and gates from the first half</small></p>
+    <p class="track-name" style="top: 616px; color: var(--teal);">An agent<small>same rails, authority instead of a version</small></p>
+    <div id="labels"></div>
+
+    <p class="quote">“Models produce evidence. Code decides authority.”<small><b>Transfix</b> · Darian DeFalco, <i>Progressive Delivery for Trust: How Agents Earn the Right to Merge</i> · KubeCon NA 2026. The proposer can't approve its own PR; the forge enforces merge rules.</small></p>
+  </main>
+
+  <aside class="notes">
+    Every control so far says what an agent can't do. This one says how it gets to do more, and it's the single most copyable idea we brought home, from Transfix.
+
+    Take the rails we already built for releases and swap the payload. Instead of a version rolling out, the thing being rolled out is authority.
+
+    The top row is the first half of this talk: a new version goes to the canary wave, the gate Job checks it, exit zero passes, the next wave gets it, and a failed gate stops the wave and the revert is a commit.
+
+    The bottom row is the same rails pointed at an agent. The canary is shadow mode: the agent decides, and the action is withheld; a person sees what it would have done. The gate is grading its work against what actually happened. Passing is an eligibility rule that gives the same answer every time, not a feeling. The next wave is a reviewed permission change, a pull request like any other. And the stop is revoking the grant, which we design before we grant anything.
+
+    "Models produce evidence. Code decides authority." It needs nothing we don't already run: the pipeline, RBAC for what each role can touch in a cluster, repository rules for who can merge.
+
+    Rung one, shadow mode, is where every agent starts. So here's what shadow mode looks like on a real job: the next alert.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('users');
+    (() => {
+      const cols = [480, 760, 1040, 1320, 1600];
+      const prim = ['Canary', 'Gate', 'Pass', 'Next wave', 'Stop'];
+      const rel = ['the <code>canary</code> wave gets the version', 'a PostSync Job checks it', '<code>exit 0</code>', 'the <code>prod</code> wave, 25% at a time', 'the wave stops; the revert is a commit'];
+      const agent = [['Shadow mode', 'decides; the action is withheld'], ['Grade the work', 'against what happened'], ['Eligibility rule', 'same answer every time'], ['A permission PR', 'reviewed, then granted'], ['Revoke the grant', 'designed first']];
+      const yr = 420, ya = 644;
+      let s = `<path class="rail rel" d="M${cols[0]} ${yr}H${cols[4]}"/><path class="rail agent" d="M${cols[0]} ${ya}H${cols[4]}"/>`;
+      let h = '';
+      cols.forEach((x, i) => {
+        s += `<path class="link" d="M${x} ${yr + 112}V${ya - 22}"/><circle class="dot rel" cx="${x}" cy="${yr}" r="14"/><circle class="dot agent${i === 0 ? ' first' : ''}" cx="${x}" cy="${ya}" r="16"/>`;
+        h += `<p class="prim" style="left:${x - 16}px; top:${yr - 74}px">${prim[i]}</p>`;
+        h += `<p class="st rel" style="left:${x - 16}px; top:${yr + 32}px">${rel[i]}</p>`;
+        h += `<p class="st agent${i === 0 ? ' first' : ''}" style="left:${x - 16}px; top:${ya + 34}px"><b>${agent[i][0]}</b><small>${agent[i][1]}</small></p>`;
+      });
+      document.getElementById('art').innerHTML = s;
+      document.getElementById('labels').innerHTML = h;
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+/* Takeaways v4 (from v3): the fleet outgrows one team, then the agents arrive, with the receipts.
+   v4 adds, at the end of this file: the code card (.cc), the receipt (.receipt), the catch
+   (.catch), and the rule that snowfield means "the picture is someone else's slide".
+   Takeaways v3: the fleet outgrows one person, then the agents arrive: theme.
+   Series brand (Three Peaks) plus this deck's pieces:
+     the background range (theme/range.js): three peaks that emerge when a topic touches them,
+       plus the OTel plane, one sheet across all three peaks;
+     the estate map (theme/estate.js): zones of cluster glyphs that grow slide by slide;
+     the one person: the climber mark in alpenglow. */
+
+@import url("../../_shared/brand.css");
+
+:root {
+  --path: var(--haze);
+  --path-ink: var(--haze-ink);
+  --you: var(--alpenglow);        /* the one team, its limit, the failed gate, the ask */
+  --lake: #4f8fd8;                /* apps: lake blue (shapes only) */
+}
+.slide { --accent: var(--path); }
+.slide.snow { --accent: var(--path-ink); --path: var(--path-ink); --you: var(--alpenglow-ink); }
+
+/* full-bleed layers: the range sits under everything, the stage art over the range */
+.range, .stage-art {
+  position: absolute;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ---- the background range ---- */
+.range .pk-body { fill: #12171a; }
+.range .pk-shadow { fill: #0e1c26; }
+.range .rg.sunk .pk-body { fill: #0d1114; }
+.range .rg.sunk .pk-shadow { fill: #0b141b; }
+.range .pk-cap { opacity: .5; }
+.range .pk-word {
+  font: 600 26px var(--font-display);
+  letter-spacing: .04em;
+  fill: var(--cap);
+  opacity: .9;
+}
+.snow .range .pk-body { fill: #d9e4e3; }
+.snow .range .pk-shadow { fill: #cbd9da; }
+.snow .range .rg.sunk .pk-body { fill: #e1eae9; }
+.snow .range .rg.sunk .pk-shadow { fill: #d8e3e3; }
+.snow .range #rg-p3 :is(.pk-cap, .pk-word) { fill: var(--haze-ink); }
+.snow .range #rg-p1 :is(.pk-cap, .pk-word) { fill: var(--mint-ink); }
+.snow .range #rg-p2 :is(.pk-cap, .pk-word) { fill: var(--teal-ink); }
+.dusk .range .pk-body { fill: #172a37; }
+.dusk .range .pk-shadow { fill: #13232f; }
+.dusk .range .rg.sunk .pk-body { fill: #132430; }
+.dusk .range .rg.sunk .pk-shadow { fill: #112029; }
+
+.is-entered .range .rg.up {
+  animation: emerge 1500ms 250ms var(--step-ease) both;
+}
+.is-entered .range .pk-word { animation: fade-in 600ms 1300ms both; }
+@keyframes emerge { from { transform: translateY(var(--sink, 190px)); } }
+@keyframes fade-in { from { opacity: 0; } }
+
+/* ---- the OTel plane (range.js Range.plane / { survey: true }) ---- */
+.otel-plane .pl-sheet { fill: var(--snow); opacity: .11; }
+.otel-plane .pl-grid { fill: none; stroke: var(--snow); stroke-width: 1.5; opacity: .22; }
+.otel-plane .pl-edge { fill: none; stroke: var(--snow); stroke-width: 2.5; opacity: .55; stroke-linejoin: round; }
+.pl-collar { fill: none; stroke: var(--snow); stroke-width: 3; opacity: .8; stroke-linecap: round; }
+.range .pl-above .pk-body { fill: #12171a; }
+.range .pl-above .pk-shadow { fill: #0e1c26; }
+.dusk .range .pl-above .pk-body { fill: #172a37; }
+.dusk .range .pl-above .pk-shadow { fill: #13232f; }
+.snow .otel-plane :is(.pl-sheet, .pl-grid, .pl-edge), .snow .pl-collar { fill: none; stroke: var(--slate); }
+.snow .otel-plane .pl-sheet { fill: var(--slate); stroke: none; opacity: .05; }
+.is-entered .range :is(.otel-plane, .pl-above, .pl-collar) { animation: fade-in 900ms 1500ms both; }
+
+/* ---- the estate map ---- */
+.zone-box { fill: none; stroke: var(--scree); stroke-width: 2.5; }
+.zone-box.new { stroke: var(--path); stroke-width: 3; }
+.zone-name { font: 600 32px var(--font-display); fill: var(--snow); letter-spacing: .01em; }
+.zone-name.new { fill: var(--path); }
+.zone-how { font: 400 24px var(--font-body); fill: var(--lichen); }
+
+.pk-glyph { fill: #2c3a41; }
+.pk-glyph.new { fill: var(--haze); }
+.pk-glyph.ai.new { fill: var(--teal); }
+.cl-name { font: 500 24px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+.cl-name.new { fill: var(--snow); }
+.tie { stroke: var(--haze); stroke-width: 3; stroke-dasharray: 7 6; fill: none; }
+.tie-label { font: 500 23px var(--font-body); fill: var(--haze); text-anchor: middle; }
+.region-rule { stroke: var(--scree); stroke-width: 2.5; stroke-dasharray: 8 8; }
+.region-rule.new { stroke: var(--haze); }
+.region-name { font: 500 23px var(--font-body); fill: var(--lichen); }
+.region-name.new { fill: var(--haze); }
+.pk-glyph.ai { fill: #24524a; }
+.pk-glyph.lit { fill: var(--mint); }
+.pk-glyph.ai.lit { fill: var(--teal); }
+
+.user { fill: #3d4c53; }
+.user.new { fill: var(--lichen); }
+.agent { fill: #24524a; }
+.agent.new { fill: var(--teal); }
+.move { fill: none; stroke: var(--haze); stroke-width: 4; stroke-linecap: round; }
+.move-head { fill: var(--haze); }
+
+/* the one person */
+.you { fill: var(--you); }
+.you-book { fill: none; stroke: var(--you); stroke-width: 3; }
+.you-label { font: 600 28px var(--font-display); fill: var(--you); letter-spacing: .01em; }
+.team-rope { fill: none; stroke: var(--you); stroke-width: 3; stroke-dasharray: 6 5; }
+.app { fill: #2f4a5c; }
+.app.new { fill: var(--lake, #4f8fd8); }
+
+/* the census: a tally in the top-right corner, numbers right-aligned, words left */
+.census {
+  position: absolute; top: 104px; right: var(--margin);
+  display: grid; grid-template-columns: auto auto; column-gap: 14px; row-gap: 2px;
+  align-items: baseline;
+  font: 400 30px/1.2 var(--font-body); color: var(--muted);
+}
+.census span { display: contents; }
+.census b { justify-self: end; font: 600 50px/1.05 var(--font-display); color: var(--ink); font-variant-numeric: tabular-nums lining-nums; }
+.census .up b { color: var(--path); }
+.census .ai b { color: var(--teal); }
+.move-label { font: 500 24px var(--font-body); fill: var(--haze); }
+
+/* path words in running text */
+.p1 { color: var(--mint); }
+.p2 { color: var(--teal); }
+.p3 { color: var(--haze); }
+.snow .p1 { color: var(--mint-ink); }
+.snow .p2 { color: var(--teal-ink); }
+.snow .p3 { color: var(--haze-ink); }
+.you-t { color: var(--you); }
+
+/* illustrative-model tag */
+.model-tag {
+  font: 500 24px/1.3 var(--font-body);
+  color: var(--muted);
+}
+.model-tag b { color: var(--warm); font-weight: 600; }
+
+/* ---- the policy fence (range.js { fence: true }) ---- */
+.range .fence .rail { fill: none; stroke: var(--snow); stroke-width: 3; opacity: .5; }
+.range .fence .post { fill: var(--snow); opacity: .45; }
+.range .fence .gate-post { fill: var(--snow); opacity: .8; }
+.range .fence .gate-bar { stroke: var(--snow); stroke-width: 4; opacity: .8; }
+.snow .range .fence :is(.rail, .gate-bar) { stroke: var(--slate); }
+.snow .range .fence :is(.post, .gate-post) { fill: var(--slate); }
+.is-entered .range .fence { animation: fade-in 900ms 700ms both; }
+
+/* replica chips (Karmada slides) */
+.chip { fill: var(--mint); stroke: var(--bg); stroke-width: 3; }
+.chip.moved { fill: var(--mint); }
+.down-zone { fill: #070b0e; opacity: .72; }
+.down-mark { font: 700 40px var(--font-display); fill: var(--you); }
+.down-label { font: 600 28px var(--font-display); fill: var(--you); }
+
+/* the north star (range.js): top-right corner of every slide, brightness = slide energy */
+.range .star { fill: var(--snow); }
+.range .star-glow-0, .range .star-glow-1 { stop-color: var(--snow); }
+.snow .range .star { fill: var(--slate); }
+.snow .range .star-glow-0, .snow .range .star-glow-1 { stop-color: var(--haze-ink); }
+.is-entered .range .north-star { animation: fade-in 1200ms 200ms both; }
+
+/* group tag (range.js Range.group): which of the three groups this slide's fix is for */
+.group-tag { position: absolute; left: var(--margin); top: 40px; display: flex; align-items: center; gap: 14px; font: 600 28px/1 var(--font-display); letter-spacing: .02em; }
+.group-tag .g-bars { display: inline-flex; gap: 5px; align-items: flex-end; }
+.group-tag .g-bars i { display: block; width: 10px; height: 26px; border-radius: 2px; opacity: .25; }
+.group-tag .g-bars i.on { opacity: 1; }
+.g-bars .g-admins { background: var(--haze); }
+.g-bars .g-platform { background: var(--mint); }
+.g-bars .g-developers { background: var(--lake); }
+.group-tag.g-admins { color: var(--haze); }
+.group-tag.g-platform { color: var(--mint); }
+.group-tag.g-developers { color: var(--lake); }
+.snow .g-bars .g-admins { background: var(--haze-ink); }
+.snow .g-bars .g-platform { background: var(--mint-ink); }
+.snow .g-bars .g-developers { background: #2a64a8; }
+.snow .group-tag.g-admins { color: var(--haze-ink); }
+.snow .group-tag.g-platform { color: var(--mint-ink); }
+.snow .group-tag.g-developers { color: #2a64a8; }
+/* the second half's three ways agents arrive: as workloads, as users, as attackers */
+.g-bars .g-workloads { background: var(--teal); }
+.g-bars .g-users { background: var(--mint); }
+.g-bars .g-attackers { background: var(--alpenglow); }
+.group-tag.g-workloads { color: var(--teal); }
+.group-tag.g-users { color: var(--mint); }
+.group-tag.g-attackers { color: var(--alpenglow); }
+.snow .g-bars .g-workloads { background: var(--teal-ink); }
+.snow .g-bars .g-users { background: var(--mint-ink); }
+.snow .g-bars .g-attackers { background: var(--alpenglow-ink); }
+.snow .group-tag.g-workloads { color: var(--teal-ink); }
+.snow .group-tag.g-users { color: var(--mint-ink); }
+.snow .group-tag.g-attackers { color: var(--alpenglow-ink); }
+
+/* ---- the show-* slides: four days of talks, this topic lit, a riffle, the big names ---- */
+.show { --topic: var(--haze); }
+.show-grid { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+.show-grid .tb { fill: #16242c; }
+.show-grid .tb.lit { fill: var(--topic); }
+.show-grid .day-name { font: 600 32px var(--font-display); fill: var(--snow); }
+.show-grid .day-sub { font: 400 22px var(--font-body); fill: var(--lichen); }
+.show-grid .tally-n { font: 600 64px var(--font-display); fill: var(--topic); letter-spacing: -.02em; }
+.show-grid .tally-t { font: 400 28px var(--font-body); fill: var(--lichen); }
+.is-entered .show-grid .tb.lit { animation: tb-light 500ms ease-out both; animation-delay: var(--d); }
+@keyframes tb-light { from { fill: #16242c; } }
+
+.riffle, .picks { position: absolute; left: 1196px; top: 352px; width: 604px; }
+.picks { display: grid; gap: 14px; }
+.pick, .flick { padding: 14px 22px 14px 24px; border-radius: 12px; background: #0e1a21; border: 2px solid #26404c; border-left: 6px solid var(--topic); }
+.flick { position: absolute; left: 0; top: 0; width: 100%; opacity: 0; transform: rotate(var(--r, 0deg)); box-shadow: 0 18px 40px rgba(0, 0, 0, .45); }
+.pick .who, .flick .who { display: flex; align-items: baseline; gap: 12px; font: 600 32px/1.1 var(--font-display); color: var(--topic); }
+.pick .when, .flick .when { margin-left: auto; font: 400 22px var(--font-body); color: var(--lichen); white-space: nowrap; }
+.pick .claim { margin-top: 4px; font: 600 30px/1.15 var(--font-display); color: var(--snow); }
+.pick .title { margin-top: 2px; font-size: 22px; line-height: 1.25; color: var(--lichen); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.flick .claim { margin-top: 6px; font: 600 32px/1.15 var(--font-display); color: var(--snow); }
+.tag { font: 600 22px/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; padding: 5px 9px; border-radius: 6px; align-self: center; }
+.tag.solves { color: #0b2620; background: var(--teal); }
+.tag.creates { color: #2b1606; background: var(--alpenglow); }
+.is-entered .flick { animation: riffle 340ms linear both; animation-delay: calc(400ms + var(--i) * 200ms); }
+@keyframes riffle {
+  0% { opacity: 0; transform: translateY(40px) rotate(var(--r, 0deg)); }
+  22% { opacity: 1; transform: translateY(0) rotate(var(--r, 0deg)); }
+  78% { opacity: 1; transform: translateY(0) rotate(var(--r, 0deg)); }
+  100% { opacity: 0; transform: translateY(-40px) rotate(var(--r, 0deg)); }
+}
+.is-entered .pick { animation: pick-in 600ms var(--step-ease) both; animation-delay: calc(500ms + var(--n) * 200ms + var(--i) * 200ms); }
+@keyframes pick-in { from { opacity: 0; transform: translateY(28px); } }
+
+
+/* ================= v4 additions ================= */
+
+/* ---- the code card: the real object, a dozen lines at most ----
+   <figure class="cc" style="left:…;top:…;width:…">
+     <figcaption class="cc-file">platform/prometheus/appset.yaml</figcaption>
+     <pre class="cc-body"><span class="k">kind:</span> ApplicationSet
+<span class="hl"><span class="k">type:</span> RollingSync</span>      ← the line that matters
+<span class="del">  version: v1.36.3</span>             ← a diff
+<span class="add">  version: v1.37.1</span></pre>
+   </figure>
+   Keys take the slide's path colour; comments are lichen; one .hl line per card. */
+.cc { position: absolute; margin: 0; background: #0b1820; border: 2px solid #22394a; border-radius: 14px; overflow: hidden; }
+.cc-file { font: 500 22px/1 var(--font-code); color: var(--lichen); padding: 14px 24px 13px; background: #0f2230; border-bottom: 2px solid #1c3242; white-space: nowrap; }
+.cc-file b { color: var(--snow); font-weight: 500; }
+.cc-body { margin: 0; padding: 18px 24px 20px; font: 400 26px/1.45 var(--font-code); color: var(--snow); white-space: pre; tab-size: 2; }
+.cc-body.big { font-size: 28px; }
+.cc-body.small { font-size: 24px; line-height: 1.4; }
+.cc .k { color: var(--path); }
+.cc .c { color: #7f979b; }
+.cc .v { color: var(--snow); font-weight: 500; }
+.cc .hl, .cc .add, .cc .del { display: inline-block; width: calc(100% + 48px); margin: 0 -24px; padding: 0 24px 0 18px; border-left: 6px solid transparent; }
+.cc .hl { border-left-color: var(--alpenglow); background: rgba(244, 162, 97, .12); }
+.cc .add { border-left-color: var(--mint); background: rgba(156, 240, 225, .12); color: var(--mint); }
+.cc .del { border-left-color: #8a5a3a; background: rgba(244, 162, 97, .06); color: #b98563; text-decoration: line-through; text-decoration-color: rgba(244, 162, 97, .55); text-decoration-thickness: 2px; }
+.cc .add .k, .cc .del .k { color: inherit; }
+.cc.ours .cc-file::after { content: "our API"; float: right; margin-left: 18px; color: var(--alpenglow); font: 600 22px/1 var(--font-display); letter-spacing: .03em; }
+
+/* ---- the receipt: someone else's slide from the show, attributed ----
+   <figure class="receipt" style="left:…;top:…;width:…"><img src="../assets/stage/…png" alt="…">
+     <figcaption><b>LinkedIn</b> <i>Ship Faster, Ship Safer</i> · KubeCon NA 2026</figcaption></figure>
+   .crop: a window onto part of the slide (set --x, --y as % and --zoom). .ring marks one area. */
+.receipt { position: absolute; margin: 0; }
+.receipt .frame { position: relative; border: 2px solid #2b4352; border-radius: 8px; overflow: hidden; background: #fff; }
+.receipt img { display: block; width: 100%; height: auto; }
+.receipt .crop img { width: calc(100% * var(--zoom, 1)); max-width: none; transform: translate(calc(var(--x, 0) * -1%), calc(var(--y, 0) * -1%)); }
+.receipt .ring { position: absolute; border: 4px solid var(--alpenglow); border-radius: 10px; box-shadow: 0 0 0 4px rgba(7, 11, 14, .25); }
+.receipt figcaption { margin-top: 12px; font: 400 23px/1.3 var(--font-body); color: var(--muted); }
+.receipt figcaption b { font: 600 27px/1 var(--font-display); color: var(--ink); letter-spacing: .01em; margin-right: 6px; }
+.snow .receipt .frame { border-color: #b7c9ca; }
+
+/* receipt numbers in our type, beside a lifted slide */
+.proof { position: absolute; }
+.proof .row { display: grid; grid-template-columns: auto 1fr; column-gap: 20px; align-items: baseline; padding: 12px 0; border-top: 2px solid var(--line); }
+.proof .row:first-child { border-top: 0; }
+.proof .n { font: 600 64px/1 var(--font-display); color: var(--ink); letter-spacing: -.02em; font-variant-numeric: tabular-nums lining-nums; }
+.proof .n.warm { color: var(--warm); }
+.proof .t { font-size: 28px; line-height: 1.25; color: var(--muted); }
+.proof .t b { color: var(--ink); font-weight: 600; }
+
+/* ---- the catch: what doesn't work yet, or must be checked ---- */
+.catch { position: absolute; left: var(--margin); bottom: 50px; max-width: 1680px; padding-left: 46px; font: 400 27px/1.3 var(--font-body); color: var(--muted); }
+.catch::before { content: "⚠"; position: absolute; left: 0; top: -3px; font-size: 32px; color: var(--alpenglow); }
+.catch b { color: var(--ink); font-weight: 600; }
+.snow .catch::before { color: var(--alpenglow-ink); }
+
+/* callouts tying a code line to what it does */
+.callouts { position: absolute; list-style: none; margin: 0; padding: 0; }
+.callouts li { position: relative; padding: 10px 0 10px 22px; border-left: 4px solid #2b4352; font-size: 28px; line-height: 1.28; color: var(--muted); }
+.callouts li + li { margin-top: 10px; }
+.callouts li b { display: block; font: 500 25px/1.25 var(--font-code); color: var(--path); margin-bottom: 4px; }
+.callouts li.on { border-left-color: var(--alpenglow); }
+.callouts li.on b { color: var(--alpenglow); }

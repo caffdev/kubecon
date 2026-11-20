@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A region is one claim</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--haze); }
+    h2 { font-size: 80px; max-width: 1680px; line-height: 1.02; }
+
+    .cc.claim { left: var(--margin); top: 330px; width: 540px; }
+    .cc.eks { left: 1290px; top: 330px; width: 510px; }
+    .src { bottom: 44px; }
+    .flow { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .wire { fill: none; stroke: var(--haze); stroke-width: 2.5; opacity: .75; }
+    .xp { fill: #0b1820; stroke: var(--haze); stroke-width: 3; }
+    .xp-name { font: 600 34px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .xp-sub { font: 400 23px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .chip { fill: #102230; stroke: #33505f; stroke-width: 2; }
+    .chip-name { font: 600 28px var(--font-display); fill: var(--snow); }
+    .pk-glyph.eks { fill: var(--haze); }
+    .head-arrow { fill: var(--haze); }
+
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>In AWS, a new region is one claim:<br>Crossplane builds it, and EKS Auto Mode runs it.</h2>
+
+    <figure class="cc claim ours">
+      <figcaption class="cc-file">regions/<b>aws-2.yaml</b></figcaption>
+      <pre class="cc-body"><span class="k">apiVersion:</span> platform.ours/v1
+<span class="k">kind:</span> Region
+<span class="k">metadata:</span>
+  <span class="k">name:</span> aws-2
+<span class="k">spec:</span>
+<span class="hl">  <span class="k">mirror:</span> aws-1</span>
+  <span class="k">clusters:</span> 6
+  <span class="k">labels:</span> {region: aws-2}</pre>
+    </figure>
+    <svg class="flow" id="flow" viewBox="0 0 1920 1080" role="img" aria-label="The Region claim goes to Crossplane, whose composition fans out to five things: the VPC and subnets, IAM roles with Pod Identity, six EKS clusters on Auto Mode, DNS and load balancers, and an Argo CD registration with labels."></svg>
+
+    <figure class="cc eks" data-step data-effect="rise">
+      <figcaption class="cc-file">what it sets on <b>each EKS cluster</b></figcaption>
+      <pre class="cc-body small"><span class="k">version:</span> "1.37"  <span class="c"># ours</span>
+<span class="k">computeConfig:</span>
+<span class="hl">  <span class="k">enabled:</span> true  <span class="c"># Auto Mode</span></span>
+  <span class="k">nodePools:</span>
+  - general-purpose
+  - system
+<span class="k">kubernetesNetworkConfig:</span>
+  <span class="k">elasticLoadBalancing:</span>
+    <span class="k">enabled:</span> true
+<span class="k">storageConfig:</span>
+  <span class="k">blockStorage:</span>
+    <span class="k">enabled:</span> true</pre>
+    </figure>
+    <p class="src">EKS user guide: AWS determines the node image, and Auto Mode nodes live at most 21 days before they’re replaced. <i>What Changes When Crossplane Adoption Gets Real</i> (American Family Insurance; no deck).</p>
+  </main>
+
+  <aside class="notes">
+    That's on-prem. In AWS the cluster itself can come from code.
+
+    On the left is all an admin writes for a new region: a Region claim. Mirror aws-1, six clusters, label them aws-2. That's our own API, a Crossplane composite we'd write, and the slide says so. Accounts and landing zone stay in CDK below it.
+
+    The composition builds the rest: VPC and subnets, IAM with Pod Identity, six EKS clusters, DNS and load balancers, and, most important, each cluster registered with Argo CD already labelled. So the waves and placement find them. Nobody edits a list.
+
+    Click. What it sets on each EKS cluster, in the real API fields. The version is ours. computeConfig enabled is Auto Mode: AWS runs the nodes and Karpenter. Load balancing and block storage on, so AWS runs those add-ons too.
+
+    And per the EKS user guide, AWS picks the node image and replaces every node within twenty-one days, so OS patches arrive on their own. It also has a sandbox runtime for agents built in; that comes back later.
+
+    That's the admins. The platform team carries the most, and the show had plenty to say about them.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('admins');
+    (() => {
+      const XB = { x: 700, y: 486, w: 200, h: 112 };
+      const CX = 940, CW = 310, CH = 60, Y0 = 352, STEP = 82;
+      const chips = ['VPC, subnets', 'IAM, Pod Identity', '', 'DNS, load balancers', 'Argo CD, labelled'];
+      let s = '';
+      // claim card → Crossplane
+      s += `<path class="wire" d="M662 ${XB.y + XB.h / 2}H${XB.x - 4}"/>`;
+      s += `<path class="head-arrow" d="M${XB.x - 18} ${XB.y + XB.h / 2 - 10}L${XB.x} ${XB.y + XB.h / 2}L${XB.x - 18} ${XB.y + XB.h / 2 + 10}Z"/>`;
+      s += `<rect class="xp" x="${XB.x}" y="${XB.y}" width="${XB.w}" height="${XB.h}" rx="14"/>`;
+      s += `<text class="xp-name" x="${XB.x + XB.w / 2}" y="${XB.y + 50}">Crossplane</text><text class="xp-sub" x="${XB.x + XB.w / 2}" y="${XB.y + 84}">composition</text>`;
+      // Crossplane → what it builds
+      chips.forEach((name, i) => {
+        const y = Y0 + i * STEP, my = y + CH / 2;
+        const sx = XB.x + XB.w, sy = XB.y + XB.h / 2;
+        s += `<path class="wire" d="M${sx} ${sy}C${sx + 40} ${sy} ${CX - 40} ${my} ${CX} ${my}"/>`;
+        s += `<rect class="chip" x="${CX}" y="${y}" width="${CW}" height="${CH}" rx="10"/>`;
+        if (name) s += `<text class="chip-name" x="${CX + 22}" y="${my + 10}">${name}</text>`;
+        else {
+          for (let k = 0; k < 6; k++) s += Peaks.glyph({ x: CX + 30 + k * 32, y: my + 2, w: 26, h: 22, cls: 'pk-glyph eks' });
+          s += `<text class="chip-name" x="${CX + 222}" y="${my + 10}">EKS</text>`;
+        }
+      });
+      Peaks.draw('#flow', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

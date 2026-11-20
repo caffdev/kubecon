@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Close the circle</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 80px; max-width: 1640px; line-height: 1.02; }
+
+    .loop { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ring { fill: none; stroke: var(--teal); stroke-width: 4; opacity: .7; }
+    .arrow { fill: var(--teal); }
+    .disc { fill: var(--bg); stroke: var(--scree); stroke-width: 2.5; }
+    .disc.theirs { stroke: var(--alpenglow); }
+    .disc.ours { stroke: var(--teal); }
+    .ag { fill: var(--teal); }
+    .ag.theirs { fill: var(--alpenglow); }
+    .lake { fill: var(--lake); }
+    .wave { fill: none; stroke: var(--mint); stroke-width: 3; }
+    .stn { font: 600 32px var(--font-display); fill: var(--snow); }
+    .stn.theirs { fill: var(--alpenglow); }
+    .stn-sub { font: 400 25px var(--font-body); fill: var(--lichen); }
+    .mid { font: 600 104px var(--font-display); fill: var(--teal); text-anchor: middle; letter-spacing: -.02em; }
+    .mid-sub { font: 400 28px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .ring { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    .is-entered .ring { animation: draw 1600ms var(--step-ease) both; animation-delay: 300ms; }
+    @keyframes draw { from { stroke-dashoffset: 1; } }
+    .is-entered .st { animation: fade-in 500ms both; animation-delay: calc(300ms + var(--i) * 320ms); }
+
+    .src { max-width: 1200px; }
+    .cc.pr { left: 1250px; top: 330px; width: 550px; }
+    .authority { position: absolute; left: 1250px; top: 610px; width: 550px; margin: 0; }
+    .authority p { font: 600 50px/1.06 var(--font-display); color: var(--snow); letter-spacing: -.01em; }
+    .authority footer { margin-top: 16px; font-size: 26px; line-height: 1.3; color: var(--lichen); }
+    .authority footer b { color: var(--snow); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Close the circle: our agents patch what theirs find,<br>and the waves roll it out.</h2>
+
+    <svg class="loop" id="loop" viewBox="0 0 1920 1080" role="img" aria-label="A loop of five stations. A new hole lands, found by their agent. The lake finds which images and clusters run it. Our agent drafts the fix as a pull request with its own check. The team approves, after policy has checked it. The waves roll it out, and a failed gate stops the wave. Then the loop is ready for the next hole. In the middle: days, from a CVE to every cluster."></svg>
+
+    <figure class="cc pr" data-step data-effect="rise">
+      <figcaption class="cc-file">PR #3121 · opened by <b>patch-agent</b></figcaption>
+      <pre class="cc-body small"><span class="c"># apps/payments/values-prod.yaml</span>
+<span class="del">image: payments@sha256:9f1c…</span>
+<span class="add">image: payments@sha256:4a7e…</span>
+<span class="c"># rebuilt: openssl 3.0.13 → 3.0.15</span></pre>
+    </figure>
+    <blockquote class="authority" data-step data-effect="rise">
+      <p>It proposes.<br>It never approves.</p>
+      <footer><b>Transfix’s</b> rule, from the authority rungs: the agent that opens the PR can’t approve or merge it.</footer>
+    </blockquote>
+    <p class="src"><i>Progressive Delivery for Trust: How Agents Earn the Right to Merge</i> (Transfix, deck p9, p17). <i>Fighting Fire with Fire</i> (KubeEdge maintainers; no deck). The PR is our illustration.</p>
+  </main>
+
+  <aside class="notes">
+    Put that next to everything we built, and the circle closes.
+
+    From the top. A new CVE lands, found by their agent or anyone's. The lake finds it: that query from earlier, which clusters run the image. Our agent drafts the fix.
+
+    Click. The fix is a pull request with a one-line diff: payments moves to a new image digest, rebuilt with the patched OpenSSL.
+
+    Then CI runs the same rules as anyone's change, and the team approves; the agent can't approve its own PR. Then the waves roll it out, each step gated on status, as NVIDIA showed.
+
+    Click. Remember Transfix: models produce evidence, code decides authority. This agent has climbed to the permission rung, and it still only proposes; the agent that opens the PR is never the one that approves or merges it. Authority grows from a track record read by rules, not from trust. KubeEdge's maintainers already run the attacker-side version: agents reading disclosures and proposing patches.
+
+    In the middle: days, from a CVE to every cluster. Same team, same pipeline; the agents make it go round faster.
+
+    Before the ask, one more list: what we won't build.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Range.group('attackers');
+    (() => {
+      const CX = 690, CY = 628, R = 206, D = Math.PI / 180;
+      const at = (deg, r = R) => [CX + Math.cos(deg * D) * r, CY + Math.sin(deg * D) * r];
+      let s = `<circle class="ring" cx="${CX}" cy="${CY}" r="${R}" pathLength="1" transform="rotate(-90 ${CX} ${CY})"/>`;
+      // arrowheads between stations, pointing clockwise
+      const ANG = [-90, -18, 54, 126, 198];
+      ANG.forEach((a) => {
+        const m = a + 36, [x, y] = at(m);
+        s += `<path class="arrow" d="M0 -11L16 0L0 11Z" transform="translate(${x} ${y}) rotate(${m + 90})"/>`;
+      });
+      // stations: icon on the ring, label outside
+      const icon = {
+        hole: (x, y) => `<circle class="disc theirs" cx="${x}" cy="${y}" r="40"/>` + Estate.agent(x, y, 38, 'ag theirs'),
+        lake: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/><ellipse class="lake" cx="${x}" cy="${y + 4}" rx="26" ry="12"/>`,
+        fix: (x, y) => `<circle class="disc ours" cx="${x}" cy="${y}" r="40"/>` + Estate.agent(x, y, 38, 'ag'),
+        team: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/>` + Estate.team(x - 20, y + 16, 0.46),
+        waves: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/>` + [10, 19, 28].map((r) => `<path class="wave" d="M${x - 14} ${y - r * 0.8}A${r} ${r} 0 0 1 ${x - 14} ${y + r * 0.8}"/>`).join(''),
+      };
+      const ST = [
+        ['hole', 'a new CVE lands', 'found by their agent', 'top'],
+        ['lake', 'the lake finds it', 'one query: which clusters', 'right'],
+        ['fix', 'our agent drafts the fix', 'a PR: one image digest', 'right'],
+        ['team', 'CI rules, then the team', 'it can’t approve itself', 'left'],
+        ['waves', 'the waves roll it out', 'gated on status', 'left'],
+      ];
+      ST.forEach(([k, name, sub, side], i) => {
+        const [x, y] = at(ANG[i]);
+        let lab = '';
+        const cls = k === 'hole' ? 'stn theirs' : 'stn';
+        if (side === 'top') lab = `<text class="${cls}" x="${x + 64}" y="${y - 6}">${name}</text><text class="stn-sub" x="${x + 64}" y="${y + 26}">${sub}</text>`;
+        if (side === 'right') lab = `<text class="${cls}" x="${x + 62}" y="${y - 2}">${name}</text><text class="stn-sub" x="${x + 62}" y="${y + 30}">${sub}</text>`;
+        if (side === 'left') lab = `<text class="${cls}" x="${x - 62}" y="${y - 2}" text-anchor="end">${name}</text><text class="stn-sub" x="${x - 62}" y="${y + 30}" text-anchor="end">${sub}</text>`;
+        s += `<g class="st" style="--i:${i}">${icon[k](x, y)}${lab}</g>`;
+      });
+      s += `<text class="mid" x="${CX}" y="${CY + 18}">days</text><text class="mid-sub" x="${CX}" y="${CY + 70}">CVE to every cluster</text>`;
+      Peaks.draw('#loop', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

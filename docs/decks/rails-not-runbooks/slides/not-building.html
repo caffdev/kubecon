@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What we won't build</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 80px; max-width: 1500px; line-height: 1.02; }
+    .ledger { position: absolute; left: var(--margin); top: 356px; width: 1680px; }
+    .ledger .head, .ledger .row { display: grid; grid-template-columns: 720px 1fr; column-gap: 60px; align-items: baseline; }
+    .ledger .head { padding-bottom: 14px; font: 600 26px/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .ledger .head span + span { color: var(--mint); }
+    .ledger .row { padding: 18px 0 17px; border-top: 2px solid var(--scree); }
+    .ledger s {
+      font: 600 42px/1.1 var(--font-display);
+      color: #b98563;
+      text-decoration-color: var(--alpenglow);
+      text-decoration-thickness: 4px;
+    }
+    .ledger .instead { position: relative; padding-left: 52px; font-size: 32px; line-height: 1.25; color: var(--snow); }
+    .ledger .instead::before { content: "→"; position: absolute; left: 0; top: -2px; font: 600 36px/1.2 var(--font-display); color: var(--mint); }
+    .ledger .instead code { font: 500 27px/1 var(--font-code); color: var(--mint); }
+    .ledger .instead i { font-style: normal; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="2">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>We won't build what we can call, compose or already run.</h2>
+
+    <div class="ledger">
+      <p class="head"><span>Not building</span><span>Instead</span></p>
+      <div class="row"><s>GPUs, model serving, fine-tuning</s><p class="instead">We call Claude, through the gateway</p></div>
+      <div class="row"><s>A second container orchestrator</s><p class="instead">EKS everywhere in AWS, Auto Mode by default</p></div>
+      <div class="row"><s>Our own agent framework</s><p class="instead">Claude, headless, in a Job: <i>we build the box, not the brain</i></p></div>
+      <div class="row"><s>A promotion product</s><p class="instead"><code>RollingSync</code> waves and a gate Job, in plain Argo CD</p></div>
+      <div class="row"><s>A new observability backend</s><p class="instead">OTel into Prometheus, Grafana and Splunk</p></div>
+      <div class="row"><s>A developer portal, before the road</s><p class="instead">Labels and waves first; a portal is a window onto them later</p></div>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Before the ask, what we won't build. It matters as much as what we will, because a plan has to stay small enough to finish.
+
+    No GPUs, no model serving. About a third of the AI talks at the show were about running models. We never will. We call Claude, through the same gateway every agent uses.
+
+    No second container orchestrator. ECS wouldn't replace anything; it would be a third platform to run. EKS everywhere in AWS, Auto Mode by default.
+
+    No agent framework of our own. Claude runs headless in the Job you saw; we build the box it runs in, not the brain.
+
+    No promotion product. The waves are an ApplicationSet and the gate is a Job, in the Argo CD we already run.
+
+    No new observability backend. OTel in front of Prometheus, Grafana and Splunk, which all stay.
+
+    And no developer portal before the road exists. Every company at the show that made deploying boring built the path first; the portal came after, as a window onto it.
+
+    That leaves five pull requests.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

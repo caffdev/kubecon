@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The read-only lake</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); --accent: var(--teal); }
+    h2 { font-size: 84px; max-width: 1400px; line-height: 1.02; }
+    .scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+
+    /* the range, drawn large: same three peaks, same order, same caps */
+    .scene .pk-body { fill: #1d3443; stroke: #34505f; stroke-width: 2.5; stroke-linejoin: round; }
+    .scene .pk-shadow { fill: #172b38; }
+    .scene .pk-cap { opacity: .55; }
+
+    .pl-name { font: 600 40px var(--font-display); fill: var(--snow); }
+    .pl-what { font: 400 26px var(--font-body); fill: var(--lichen); }
+    .src-name { font: 600 34px var(--font-display); }
+    .src-what { font: 400 25px var(--font-body); fill: var(--lichen); }
+
+    .stream { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+    .stream.otel { stroke: var(--snow); }
+    .gather { fill: none; stroke: var(--snow); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 11; opacity: .9; }
+    .fall { fill: none; stroke: var(--snow); stroke-width: 3; stroke-linecap: round; opacity: .7; }
+
+    .lake { fill: var(--sky); opacity: .7; }
+    .lake-rim { fill: none; stroke: #6fa8d6; stroke-width: 3; }
+    .ripple { fill: none; stroke: #9cc8ea; stroke-width: 2.5; opacity: .6; }
+    .lake-name { font: 600 42px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .lake-sub { font: 400 26px var(--font-body); fill: var(--snow); text-anchor: middle; opacity: .9; }
+    .agent { fill: var(--teal); }
+    .shore-t { font: 500 25px var(--font-body); fill: var(--snow); text-anchor: middle; }
+    .noway { fill: none; stroke: var(--you); stroke-width: 4; stroke-dasharray: 9 8; }
+    .noway-x { font: 700 44px var(--font-display); fill: var(--you); text-anchor: middle; }
+    .noway-t { font: 500 25px var(--font-body); fill: var(--you); }
+
+    .cc.sql { left: var(--margin); top: 806px; width: 520px; }
+    .cc.sql .cc-body.sq { font-size: 22px; line-height: 1.42; padding: 14px 20px 16px; }
+    .cc.sql .cc-file { font-size: 22px; padding: 12px 20px; }
+    .scene .src-what { font-family: var(--font-code); font-size: 23px; }
+    .limit { position: absolute; left: var(--margin); top: 908px; width: 520px; font-size: 26px; line-height: 1.32; color: var(--lichen); padding-left: 20px; border-left: 4px solid var(--scree); }
+    .limit b { color: var(--snow); font-weight: 500; }
+
+    /* one motion moment: the mountains' streams run, then OTel gathers and pours */
+    .stream, .gather-run { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    .is-entered .stream { animation: flow 1300ms var(--step-ease) both; animation-delay: calc(500ms + var(--i) * 220ms); }
+    .is-entered .stream.otel { animation-delay: 2100ms; }
+    .is-entered :is(.gather, .fall) { animation: fade-in 700ms 1500ms both; }
+    .is-entered :is(.lake, .lake-rim) { animation: fade-in 900ms 200ms both; }
+    @keyframes flow { from { stroke-dashoffset: 1; } }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <svg class="scene" id="scene" viewBox="0 0 1920 1080" role="img" aria-label="The three peaks, fleet, delivery and agents, pierce one OTel plane at the same altitude. Below it, a lake lies in the valley between delivery and agents. Each peak runs its own stream down into the lake: fleet's cluster state, delivery's syncs and gate results, the agents' tool calls from the gateway. The OTel plane gathers traces, metrics and logs from all three and pours them in as a fourth stream. Agents sit on the shore and read; there is no write path back to production."></svg>
+    <h2>Agents decide from a read-only lake,<br>not from credentials to production.</h2>
+
+    <figure class="cc sql" data-step data-effect="rise">
+      <figcaption class="cc-file">which clusters run the new CVE?</figcaption>
+      <pre class="cc-body sq"><span class="k">SELECT</span> cluster, namespace, image
+<span class="k">FROM</span> k8s.pods p <span class="k">JOIN</span> vuln.affected v
+  <span class="k">ON</span> p.digest = v.digest
+<span class="hl"><span class="k">WHERE</span> v.cve = 'CVE-2026-1234'</span></pre>
+    </figure>
+  </main>
+
+  <aside class="notes">
+    Telemetry shows what did, and agents read it from a lake, not from production.
+
+    The range again, OTel as one plane through all three peaks, and the lake in the valley. Every stream lands as a table. From the fleet, pods and nodes, snapshotted every fifteen minutes. From delivery, every Argo CD sync and gate result. From the agents, every MCP call the gateway logged. And through the plane, traces, metrics and logs.
+
+    Agents read from the shore, with a read-only role or a SQL tool through the gateway. No path back up the mountain. That's what lets us say yes to agents analysing prod without giving them prod credentials.
+
+    Click. One query an agent runs: a new CVE lands; which clusters run an affected image? Join the pod snapshot to the vulnerability feed by digest. No kubectl, no credentials. Hold on to it; it comes back.
+
+    Receipts: NVIDIA and Upbound showed a queryable audit layer, one query across five clouds. Mastercard answers "how many EC2 instances" from an eight-hundred-byte projection instead of forty megabytes of JSON.
+
+    The limit: a lake is a snapshot. Fine for triage and trends; a gate mid-rollout reads live metrics. The store is still a decision.
+
+    So what is an agent allowed to do with what it reads? It earns that, the same way a release does.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Peaks.draw('#range', Range.star());
+    (() => {
+      // the range, large; bases run off the bottom of the stage
+      const P = [
+        { word: 'fleet',    x: 500,  top: 470, hw: 470, H: 720, cap: 'var(--haze)', capScale: .55 },
+        { word: 'delivery', x: 1060, top: 350, hw: 540, H: 840, cap: 'var(--mint)', capScale: .5 },
+        { word: 'agents',   x: 1610, top: 490, hw: 400, H: 700, cap: 'var(--teal)', capScale: .55 },
+      ];
+      let s = '';
+      for (const p of P) s += Peaks.peak({ x: p.x, top: p.top, base: p.top + p.H, hw: p.hw, cap: p.cap, capScale: p.capScale });
+
+      // the lake, in the valley where delivery's right flank meets agents' left (≈ 1394, 869)
+      const LX = 1394, LY = 892, RX = 214, RY = 50;
+      s += `<ellipse class="lake" cx="${LX}" cy="${LY}" rx="${RX}" ry="${RY}"/>`;
+      s += `<ellipse class="lake-rim" cx="${LX}" cy="${LY}" rx="${RX}" ry="${RY}"/>`;
+      s += `<path class="ripple" d="M${LX - 196} ${LY + 18}q26 -8 52 0t52 0"/><path class="ripple" d="M${LX + 88} ${LY + 22}q26 -8 52 0t52 0"/>`;
+
+      // each mountain's own stream, from a spring below the plane down into the lake
+      const SRC = [
+        ['fleet', 'k8s.pods, k8s.nodes', 'var(--haze)', 'M590 726C618 780 690 790 742 846S840 990 990 990S1150 960 1186 906', [566, 742, 'end']],
+        ['delivery', 'argocd.syncs, gates.results', 'var(--mint)', 'M1190 726C1214 776 1252 796 1266 820S1286 846 1300 852', [1166, 742, 'end']],
+        ['agents', 'mcp.calls', 'var(--teal)', 'M1592 726C1572 776 1530 794 1512 820S1494 844 1484 850', [1618, 742, 'start']],
+      ];
+      SRC.forEach(([name, what, col, d, [tx, ty, anchor]], i) => {
+        s += `<path class="stream" pathLength="1" style="stroke:${col};--i:${i}" d="${d}"/>`;
+        s += `<circle cx="${d.match(/M(\d+) (\d+)/)[1]}" cy="${d.match(/M(\d+) (\d+)/)[2]}" r="8" style="fill:${col}"/>`;
+        s += `<text class="src-name" x="${tx}" y="${ty}" text-anchor="${anchor}" style="fill:${col}">${name}</text>`;
+        s += `<text class="src-what" x="${tx}" y="${ty + 32}" text-anchor="${anchor}">${what}</text>`;
+      });
+
+      // the OTel plane through all three peaks
+      const yb = 560, yf = 680, ym = (yb + yf) / 2, ry = (yf - yb) * 0.34;
+      s += Range.plane({ peaks: P, yb, yf, x0: 40, x1: 1880, inset: 110, cols: 26, rows: 4, cls: 'big' });
+      s += `<text class="pl-name" x="120" y="496">OTel plane</text>`;
+      s += `<text class="pl-what" x="120" y="532">into otel.traces, .metrics, .logs</text>`;
+
+      // OTel gathers from every collar to one pour point on the front edge, then falls into the lake
+      const PX = LX, PY = yf;
+      const front = (p) => [p.x, ym + ry];
+      const [fx, fy] = front(P[0]), [dx, dy] = front(P[1]), [ax, ay] = front(P[2]);
+      s += `<path class="gather" d="M${fx} ${fy}C${fx + 260} ${PY - 4} ${PX - 600} ${PY - 2} ${PX} ${PY - 2}"/>`;
+      s += `<path class="gather" d="M${dx} ${dy}C${dx + 120} ${PY - 6} ${PX - 140} ${PY - 2} ${PX} ${PY - 2}"/>`;
+      s += `<path class="gather" d="M${ax} ${ay}C${ax - 90} ${PY - 6} ${PX + 90} ${PY - 2} ${PX} ${PY - 2}"/>`;
+      s += `<path class="stream otel" pathLength="1" d="M${PX} ${PY}C${PX - 10} ${PY + 50} ${PX + 12} ${PY + 100} ${PX} ${PY + 140}S${PX - 4} ${LY - RY - 8} ${PX} ${LY - RY + 6}"/>`;
+      s += `<path class="fall" d="M${PX - 16} ${PY + 6}C${PX - 24} ${PY + 60} ${PX - 6} ${PY + 110} ${PX - 18} ${LY - RY}"/>`;
+      s += `<path class="fall" d="M${PX + 16} ${PY + 6}C${PX + 24} ${PY + 60} ${PX + 6} ${PY + 110} ${PX + 18} ${LY - RY}"/>`;
+
+      s += `<text class="lake-name" x="${LX}" y="${LY + 4}">one lake</text><text class="lake-sub" x="${LX}" y="${LY + 36}">read-only SQL</text>`;
+
+      // agents on the near shore, reading
+      const shore = LY + RY + 40;
+      for (let i = 0; i < 5; i++) {
+        const x = LX - 140 + i * 70;
+        s += `<path class="agent" d="M${x} ${shore - 15}l15 15l-15 15l-15 -15z"/>`;
+      }
+      s += `<text class="shore-t" x="${LX}" y="${shore + 64}">agents read: triage an alert, judge a canary, find a vulnerable image</text>`;
+
+      // no write path back up the mountain
+      const nx = 1690;
+      s += `<path class="noway" d="M${LX + 190} ${shore}C${nx} ${shore} ${nx + 14} ${LY + 10} ${nx} 812"/>`;
+      s += `<text class="noway-x" x="${nx + 26}" y="${LY - 4}">✗</text>`;
+      s += `<text class="noway-t" x="${nx + 58}" y="${LY - 14}">no write path</text><text class="noway-t" x="${nx + 58}" y="${LY + 16}">back to prod</text>`;
+
+      Peaks.draw('#scene', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

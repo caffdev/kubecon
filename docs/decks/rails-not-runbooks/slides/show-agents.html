@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>At the show: AI</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --topic: var(--teal); --path: var(--teal); }
+    h2 { font-size: 80px; max-width: 1680px; line-height: 1.02; }
+    .src { max-width: 560px; }
+  </style>
+</head>
+<body>
+  <main class="slide show" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>AI was everywhere, solving problems on one stage<br>and creating them on the next.</h2>
+    <svg class="show-grid" id="grid" viewBox="0 0 1920 1080" role="img" aria-label="The four days of KubeCon as boxes, one per talk, Monday to Thursday. The talks about AI, inference and agents are lit: 228 of 501, nearly half."></svg>
+    <div class="riffle" id="riffle" aria-hidden="true"></div>
+    <div class="picks" id="picks"></div>
+    <p class="src">One box per talk, Nov 9–12. Lit: AI, inference, agents, MCP, GPUs, by our keyword match on title, abstract and track.</p>
+  </main>
+
+  <aside class="notes">
+    That's the first half. Now the takeaway every stage at the show was talking about.
+
+    Same four days. Lit: AI, inference and agents. Two hundred and twenty-eight talks, nearly half the show.
+
+    The names. Uber on Monday. Tuesday's keynotes: Anthropic and Google with Agent Substrate, Red Hat's "Sandbox Your Agents", NVIDIA. Verkada triaging alerts at thirty-three cents each. Grainger, LinkedIn, Ericsson's AI-found zero-day. AWS, OpenAI, Microsoft, Huawei on Wednesday. Salesforce and AWS again on Thursday.
+
+    And look at how they split. Solving: Mastercard let an LLM drive thirty EKS clusters, read-only by default, with every write reviewed. Creating: Google's keynote said an agent isn't just another workload; it breaks the identity assumptions Kubernetes was built on. And Mythos vs Maintainers: open source maintainers drowning in AI-found vulnerability reports.
+
+    The same technology, on both sides, sometimes in the same hour. That's the third takeaway: AI brings problems as it solves them. Here's how it arrived on our map.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/assets/schedule.js"></script>
+  <script src="../theme/riffle.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2'] });
+    Riffle.draw({
+      topic: 'agents',
+      flicks: [
+        [0, 'Secure Your Agents in 5 Minutes: Durable Execution', 'Uber'],
+        [1, 'Agent Substrate: Open Layers for Agentic Systems', 'Anthropic, Google, Solo.io', true],
+        [1, 'Sandbox Your Agents', 'Red Hat', true],
+        [1, 'Building the Next Generation of AI with Open Source', 'NVIDIA', true],
+        [1, 'Triaging 4,700 Alerts a Month at $0.33 Each', 'Verkada'],
+        [1, 'Agentic Ops: Guardrails for Autonomous AI', 'W.W. Grainger'],
+        [1, 'Pre-Warmed Pod Runtimes for AI Agents', 'LinkedIn'],
+        [1, 'AI Found a 0-Day in Metal3. What Happens Next?', 'Ericsson'],
+        [2, 'Cedar Analysis for MCP Servers', 'AWS, Stacklok'],
+        [2, 'Inside the Inference Load Balancer', 'OpenAI'],
+        [2, 'Groundhog Pod: AI Inference with Kata Snapshots', 'Microsoft'],
+        [2, 'Fighting Fire with Fire: Vulnerabilities in the AI Era', 'Huawei, DaoCloud'],
+        [3, '1000 Clusters, 1 Smarter Brain', 'Salesforce'],
+        [3, 'Platform-First AI Agent Security', 'AWS'],
+      ],
+      picks: [
+        { tag: 'solves', who: 'Mastercard', day: 2, claim: 'An LLM drives 30 EKS clusters, every write reviewed', title: 'No RAG, No Regrets: Letting an LLM Drive 30 EKS Clusters' },
+        { tag: 'creates', who: 'Google Cloud', day: 1, keynote: true, claim: "Agents break Kubernetes' identity assumptions", title: 'The Identity Crisis: Who Is the AI Agent in Your Cluster?' },
+        { tag: 'creates', who: 'ControlPlane, Docker', day: 1, claim: 'AI-found vulnerability reports swamp maintainers', title: 'Mythos vs Maintainers: Drowning in the Vulnerability Tsunami' },
+      ],
+    });
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
