@@ -1,6 +1,6 @@
 {
   "title": "Takeaways v2: the fleet outgrows one person",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "two-clusters",
@@ -20,6 +20,18 @@
       "the-lake",
       "same-person",
       "the-ask"
+    ],
+    "ten": [
+      "fleet-outgrows",
+      "estate-grows",
+      "every-cluster-multiplies",
+      "overrun-ten",
+      "kubeadm-past-ten",
+      "gates-ten",
+      "change-windows-ten",
+      "one-layer-one-lake",
+      "same-person-ten",
+      "the-ask-ten"
     ]
   }
 }

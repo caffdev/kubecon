@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Same person, same fleet</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .row { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .row .pk-glyph.lit { fill: var(--mint); }
+    .gate { fill: var(--mint); }
+    .gate.his { fill: var(--you); }
+    .tick { font: 700 40px var(--font-display); fill: var(--mint); text-anchor: middle; }
+    .grp { font: 600 30px var(--font-display); fill: var(--lichen); letter-spacing: .02em; }
+    .grp-rule { stroke: var(--scree); stroke-width: 2; }
+    .you-l { font: 600 34px var(--font-display); fill: var(--you); letter-spacing: .01em; }
+    .was { font: 500 28px var(--font-body); fill: var(--lichen); }
+    .is-entered .row .pk-glyph.lit { animation: light 600ms var(--step-ease) both; animation-delay: calc(500ms + var(--d) * 1ms); }
+    @keyframes light { from { fill: #2c3a41; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Same person, fourteen times the clusters: now he approves waves, and the pipeline runs them.</h2>
+
+    <svg class="row" id="row" viewBox="0 0 1920 1080" role="img" aria-label="The row of clusters from the first slide, now all twenty-eight, all lit: grouped into test, canary, wave 1, wave 2 and prod, with a gate between each group. The same one person stands at the head of the line, approving the waves."></svg>
+  </main>
+
+  <aside class="notes">
+    Here's the picture we started with: one person, two clusters, and twenty-six dashed outlines still to come.
+
+    They came. Twenty-eight clusters, the same row. And the same one person.
+
+    What changed is what he does. He doesn't walk each cluster through a runbook any more. He approves a wave, and the pipeline runs it: test, canary, wave one, wave two, prod, with a gate between each, inside the window, rolling itself back if a gate fails. Every cluster is lit because every one is on the version the pipeline delivered, not the version someone got round to.
+
+    Fourteen times the clusters with the same person only works because he isn't doing the work by hand. For scale, Meta runs about a hundred clusters with about fifteen engineers.
+
+    Here's what gets us there.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1', 'p2'], survey: true });
+    (() => {
+      // the opening slide's row, now all twenty-eight, cut into the rollout's waves (1+1+6+9+11)
+      const Y = 576, X0 = 380, DX = 42, GAP = 56, W = 38, H = 32;
+      const GROUPS = [['test', 1], ['canary', 1], ['wave 1', 6], ['wave 2', 9], ['prod', 11]];
+      let s = Estate.you(176, Y + 22, 1.7);
+      s += `<text class="you-l" x="118" y="${Y + 90}">one person</text>`;
+      s += `<text class="you-l" x="118" y="${Y + 128}">approves</text>`;
+      // his gate: the approval at the head of the line
+      s += `<rect class="gate his" x="${X0 - 64}" y="${Y - 34}" width="12" height="68" rx="3"/>`;
+      let x = X0, n = 0;
+      GROUPS.forEach(([name, count], g) => {
+        if (g) {
+          const gx = x - (DX + GAP) / 2;
+          s += `<rect class="gate" x="${gx - 6}" y="${Y - 34}" width="12" height="68" rx="3"/><text class="tick" x="${gx}" y="${Y - 52}">✓</text>`;
+        }
+        const x0 = x;
+        for (let i = 0; i < count; i++, n++) {
+          s += Peaks.glyph({ x, y: Y, w: W, h: H, cls: 'pk-glyph lit' }).replace('<path ', `<path style="--d:${Math.round(x * 0.9)}" `);
+          x += DX;
+        }
+        const x1 = x - DX;
+        s += `<line class="grp-rule" x1="${x0 - W / 2}" x2="${x1 + W / 2}" y1="${Y + 40}" y2="${Y + 40}"/>`;
+        // one-cluster groups are narrower than their names, so centre those under the glyph
+        s += count === 1
+          ? `<text class="grp" x="${x0}" y="${Y + 80}" text-anchor="middle">${name}</text>`
+          : `<text class="grp" x="${x0 - W / 2}" y="${Y + 80}">${name}</text>`;
+        x += GAP;
+      });
+      s += `<text class="was" x="${x - GAP - DX + W / 2}" y="${Y + 128}" text-anchor="end">all 28 on the version the pipeline delivered</text>`;
+      Peaks.draw('#row', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

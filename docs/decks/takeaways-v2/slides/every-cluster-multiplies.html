@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Five trains per cluster</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1500px; line-height: 1.02; }
+    .year { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .month { font: 500 24px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .axis { stroke: var(--scree); stroke-width: 2; }
+    .lane { stroke: #1f3746; stroke-width: 2; }
+    .lane-name { font: 600 36px var(--font-display); fill: var(--snow); }
+    .lane-name.k { font-size: 40px; }
+    .lane-sub { font: 400 24px var(--font-body); fill: var(--lichen); }
+    .blk { fill: none; stroke: var(--haze); stroke-width: 2; }
+    .roll { fill: var(--mint); }
+    .note { font: 400 28px var(--font-body); fill: var(--lichen); }
+    .note tspan.b { fill: var(--snow); font-weight: 500; }
+
+    .times { position: absolute; left: 1500px; top: 352px; width: 320px; }
+    .times .num { display: block; font-size: 230px; line-height: .8; color: var(--snow); }
+    .times .num small { font-size: 150px; color: var(--lichen); margin-right: 6px; }
+    .times p { font: 600 44px/1.05 var(--font-display); color: var(--snow); margin-top: 34px; }
+    .times p span { display: block; font: 400 28px/1.3 var(--font-body); color: var(--lichen); margin-top: 10px; }
+    .model-tag { position: absolute; left: 1500px; top: 800px; width: 320px; }
+
+    .is-entered .brick { animation: wipe 900ms var(--step-ease) both; animation-delay: calc(350ms + var(--r) * 260ms); }
+    .brick { clip-path: inset(0 0 0 0); }
+    @keyframes wipe { from { clip-path: inset(0 100% 0 0); } }
+    .is-entered .roll { animation: fade-in 400ms both; animation-delay: calc(1100ms + var(--i) * 40ms); }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Every cluster carries five release trains, and each stop is done by hand.</h2>
+
+    <svg class="year" id="year" viewBox="0 0 1920 1080" role="img" aria-label="One cluster's year. The Kubernetes lane has three upgrades, in April, August and December; each is a block of 54 steps, nine nodes of six steps, done one at a time. Below, four tool lanes (Argo CD, Prometheus, splunk-otel, Karpenter) each have four rollouts, at times that line up with nothing else. Then times 28 clusters."></svg>
+
+    <div class="times">
+      <span class="num"><small>×</small>28</span>
+      <p>clusters<span>and each new one brings all five trains</span></p>
+    </div>
+    <p class="model-tag"><b>Illustrative:</b> tool rollout timing, four a year each.</p>
+  </main>
+
+  <aside class="notes">
+    Here's what one cluster costs him in a year.
+
+    The top lane is Kubernetes itself. Three minor versions a year, roughly April, August and December. On a kubeadm cluster each upgrade is that block: nine nodes, six steps a node. Drain it, upgrade kubeadm, run the upgrade, upgrade kubelet and kubectl, restart kubelet, uncordon. Then the next node. Fifty-four steps, every one waiting on the last. Call it a day. And kubeadm can't skip a minor, so all three happen, every year.
+
+    Below it, the platform on that cluster. Argo CD to deploy, Prometheus to measure, the Splunk OTel collector to ship telemetry, Karpenter to scale nodes on the cloud clusters. Each has its own release train, and they don't line up with each other or with Kubernetes. The timing here is illustrative, but the shape isn't: lots of small rollouts, all year, scattered.
+
+    That's one cluster. Now multiply by twenty-eight. Every new cluster brings all five trains with it, and on a hand-run fleet each stop is somebody's afternoon. What hand rollouts leave behind is version skew: if you asked which version of Prometheus each cluster runs, someone would have to go and look.
+
+    So add it all up, and put it against one person's year.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    (() => {
+      const LX = 120, X0 = 420, X1 = 1420, MW = (X1 - X0) / 12;
+      const mx = (m) => X0 + m * MW;            // m in months from 1 Jan, fractional
+      const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      let s = '';
+      // month axis
+      MONTHS.forEach((n, i) => { s += `<text class="month" x="${mx(i + 0.5)}" y="356">${n}</text>`; });
+      s += `<line class="axis" x1="${X0}" x2="${X1}" y1="374" y2="374"/>`;
+
+      // Kubernetes lane: three upgrades, each a 9-node x 6-step block
+      const KY = 400, CW = 12, CH = 13, G = 3;
+      const bw = 9 * (CW + G) - G, bh = 6 * (CH + G) - G;
+      s += `<text class="lane-name k" x="${LX}" y="${KY + 44}">Kubernetes</text>`;
+      s += `<text class="lane-sub" x="${LX}" y="${KY + 78}">three minors a year</text>`;
+      [3.2, 7.2, 11.2].forEach((m, r) => {   // April, August, December (centred early so December fits)
+        const x = mx(m) - bw / 2;
+        let b = '';
+        for (let n = 0; n < 9; n++) for (let k = 0; k < 6; k++) {
+          b += `<rect class="blk" x="${x + n * (CW + G)}" y="${KY + k * (CH + G)}" width="${CW}" height="${CH}" rx="2"/>`;
+        }
+        s += `<g class="brick" style="--r:${r}">${b}</g>`;
+      });
+      s += `<text class="note" x="${X0}" y="${KY + bh + 52}"><tspan class="b">54 steps each,</tspan> one node at a time. kubeadm can’t skip a minor.</text>`;
+
+      // four tool lanes: four rollouts a year each, timing illustrative
+      const TOOLS = [
+        ['Argo CD', [1.4, 4.6, 7.9, 10.7]],
+        ['Prometheus', [0.6, 3.1, 6.2, 9.4]],
+        ['splunk-otel', [2.2, 5.5, 8.6, 11.1]],
+        ['Karpenter', [1.9, 4.1, 8.3, 10.2]],
+      ];
+      const TY = 620, TH = 64;
+      let i = 0;
+      TOOLS.forEach(([name, at], t) => {
+        const y = TY + t * TH;
+        s += `<line class="lane" x1="${X0}" x2="${X1}" y1="${y}" y2="${y}"/>`;
+        s += `<text class="lane-name" x="${LX}" y="${y + 12}">${name}</text>`;
+        at.forEach((m) => { s += `<rect class="roll" style="--i:${i++}" x="${mx(m) - 9}" y="${y - 20}" width="18" height="40" rx="4"/>`; });
+      });
+      Peaks.draw('#year', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

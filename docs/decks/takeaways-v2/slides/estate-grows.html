@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Six steps, one person</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 84px; max-width: 1400px; line-height: 1; }
+
+    /* six stages of one map, stacked; the current one shows (finished slide: the sixth) */
+    .map { position: absolute; left: var(--margin); top: 360px; width: 1680px; height: 540px; overflow: visible; }
+    .map, .census { opacity: 0; visibility: hidden; transition: opacity 450ms var(--step-ease), visibility 450ms; }
+    .s1 { opacity: 1; visibility: visible; }
+    .at-1 .s2, .at-2 .s3, .at-3 .s4, .at-4 .s5, .at-5 .s6 { opacity: 1; visibility: visible; }
+    .at-1 .s1, .at-2 .s2, .at-3 .s3, .at-4 .s4, .at-5 .s5 { opacity: 0; visibility: hidden; }
+    .map[data-step]:not(.is-on) { opacity: 0; }
+
+    /* what's new drops in as each stage arrives */
+    .map .pk-glyph.new { transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .s1 .pk-glyph.new,
+    .at-1 .s2 .pk-glyph.new, .at-2 .s3 .pk-glyph.new, .at-3 .s4 .pk-glyph.new,
+    .at-4 .s5 .pk-glyph.new, .at-5 .s6 .pk-glyph.new { animation: drop 700ms var(--step-ease) both; animation-delay: 250ms; }
+    @keyframes drop { from { transform: translateY(-40px); opacity: 0; } }
+
+    /* the six steps, named as the overrun chart names them */
+    .rail { position: absolute; left: var(--margin); top: 290px; display: flex; align-items: center; gap: 0; font: 600 32px/1 var(--font-display); letter-spacing: .01em; }
+    .rail span { color: var(--scree); transition: color 450ms; }
+    .rail i { display: block; width: 44px; height: 3px; margin: 0 16px; background: var(--scree); }
+    .rail .r1 { color: var(--haze); }
+    .at-1 .r2, .at-2 .r3, .at-3 .r4, .at-4 .r5, .at-5 .r6 { color: var(--haze); }
+    .at-4 .r5 { color: var(--teal); }
+    .at-1 .r1, .at-2 .r2, .at-3 .r3, .at-4 .r4, .at-5 .r5 { color: var(--lichen); }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>Six reasonable steps turned two clusters into twenty-eight. One person still upgrades them.</h1>
+
+    <p class="rail" id="rail"><span class="r1">day one</span><i></i><span class="r2">+ DR</span><i></i><span class="r3">+ EKS</span><i></i><span class="r4">+ teams</span><i></i><span class="r5">+ AI</span><i></i><span class="r6">+ 2nd cloud</span></p>
+
+    <svg class="map s1" id="m1" viewBox="0 0 1680 540" role="img" aria-label="Day one: one on-prem zone with two clusters, test and prod, and one person who upgrades both"></svg>
+    <svg class="map s2" id="m2" data-step="1" viewBox="0 0 1680 540" role="img" aria-label="Plus DR: a third cluster in lockstep with prod"></svg>
+    <svg class="map s3" id="m3" data-step="2" viewBox="0 0 1680 540" role="img" aria-label="Plus EKS: an AWS zone with three clusters, upgraded a different way"></svg>
+    <svg class="map s4" id="m4" data-step="3" viewBox="0 0 1680 540" role="img" aria-label="Plus teams: fourteen clusters and many more people"></svg>
+    <svg class="map s5" id="m5" data-step="4" viewBox="0 0 1680 540" role="img" aria-label="Plus AI: GPU clusters and agent users join; twenty clusters"></svg>
+    <svg class="map s6" id="m6" data-step="5" viewBox="0 0 1680 540" role="img" aria-label="Plus a second cloud: apps move into it; twenty-eight clusters across three kinds of place, and still one person"></svg>
+
+    <p class="census s1" id="c1"></p>
+    <p class="census s2" id="c2"></p>
+    <p class="census s3" id="c3"></p>
+    <p class="census s4" id="c4"></p>
+    <p class="census s5" id="c5"></p>
+    <p class="census s6" id="c6"></p>
+  </main>
+
+  <aside class="notes">
+    We started small. A handful of people, two clusters on our own hardware, built with kubeadm by hand. One to test on, one to run on. And one person who upgrades them.
+
+    Click. Prod got important enough to need a twin, so DR joined. And DR only works if it matches prod version for version, so every upgrade now happens twice, in lockstep.
+
+    Click. Then AWS. A dev cluster and two prod clusters in two regions. EKS is a different animal: AWS runs the control plane, the rest is on us, and none of it looks like the kubeadm runbook. Two kinds of cluster, two runbooks.
+
+    Click. Then every new team brought apps, people and, usually, a reason for a cluster of its own. Fourteen clusters. Nobody decided that; it just happened, one reasonable request at a time.
+
+    Click. Then AI, two ways at once. GPU clusters for the workloads, in teal. And agents as users: the teal diamonds call our API, open pull requests and read our metrics. Mastercard has an LLM driving thirty EKS clusters; Salesforce runs agentic operations across a thousand.
+
+    Click. And because one provider's bad day can't be ours, a second cloud, with apps moving into it. Nearly every large fleet at the show was hybrid or multi-cloud.
+
+    Twenty-eight clusters. Three kinds of place. Every step made sense on the day. And there's still one person in orange.
+
+    So what does one upgrade actually cost him?
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    for (let k = 1; k <= 6; k++) {
+      Estate.draw('#m' + k, k);
+      document.getElementById('c' + k).innerHTML = Estate.census(k);
+    }
+    // the rail under the headline names the step, so the "apps moving" arcs above the zones go
+    document.querySelectorAll('#m6 :is(.move, .move-head, .move-label)').forEach((e) => e.remove());
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

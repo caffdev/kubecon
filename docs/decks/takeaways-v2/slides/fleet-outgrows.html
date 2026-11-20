@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The fleet outgrows one person</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 156px; max-width: 1500px; line-height: .96; letter-spacing: -.02em; }
+    .lede { position: absolute; left: var(--margin); top: 452px; max-width: 1180px; font-size: 38px; color: var(--muted); }
+    .row { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ghost { fill: none; stroke: #55707a; stroke-width: 2.5; stroke-dasharray: 6 5; }
+    .row .pk-glyph.lit { fill: var(--haze); }
+    .row-name { font: 500 28px var(--font-body); fill: var(--lichen); }
+    .row-name.you-l { font: 600 34px var(--font-display); fill: var(--you); letter-spacing: .01em; }
+    .row-name.lit { fill: var(--snow); }
+    .is-entered .ghost { animation: fade-in 500ms both; animation-delay: calc(700ms + var(--i) * 45ms); }
+    .is-entered .row .you { animation: fade-in 700ms 300ms both; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>The fleet will outgrow one person with a runbook.</h1>
+    <p class="lede">What the large fleets at KubeCon NA 2026 do instead, and what we should start this quarter.</p>
+
+    <svg class="row" id="row" viewBox="0 0 1920 1080" role="img" aria-label="One person in orange stands beside two clusters, test and prod. Twenty-six dashed outlines stretch away to the right: the clusters still to come, twenty-eight in all."></svg>
+  </main>
+
+  <aside class="notes">
+    This talk is about one person. In our story he's the one who upgrades the clusters, and he's in orange on every slide from here on.
+
+    Today he looks after two of them, test and prod, and it's fine. It takes him a couple of days, three times a year, and nobody else notices.
+
+    The dashed outlines are the clusters that are coming. Twenty-six more, in the story I'm about to tell, and every one of them arrives for a good reason.
+
+    So the claim is simple: the fleet will outgrow one person with a runbook. Then I'll show you what the fleets at KubeCon do instead, and what I think we should start this quarter.
+
+    Here's how it grows.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    (() => {
+      // two real clusters, then the twenty-six still to come, in one line toward the horizon
+      const Y = 730, X0 = 330, DX = 53, W = 46, H = 40;
+      let s = Estate.you(176, Y + 22, 1.7);
+      s += `<text class="row-name you-l" x="118" y="${Y + 90}">one person</text>`;
+      for (let i = 0; i < 28; i++) {
+        const x = X0 + i * DX;
+        if (i < 2) s += Peaks.glyph({ x, y: Y, w: W, h: H, cls: 'pk-glyph lit' });
+        else s += `<path class="ghost" style="--i:${i}" d="M${x - W / 2} ${Y + H / 2}L${x} ${Y - H / 2}L${x + W / 2} ${Y + H / 2}Z"/>`;
+      }
+      s += `<text class="row-name lit" x="${X0 - W / 2}" y="${Y + 66}">test and prod</text>`;
+      s += `<text class="row-name" x="${X0 + 27 * DX + W / 2}" y="${Y + 66}" text-anchor="end">28 by the end of this story</text>`;
+      Peaks.draw('#row', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The ask</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+
+    /* the route: two camps we commit to today, roped; two after, still open */
+    .route { position: absolute; left: var(--margin); top: 326px; width: 1400px; }
+    .route li { position: relative; list-style: none; display: grid; grid-template-columns: 100px 1fr; align-items: start; }
+    .route li + li { margin-top: 30px; }
+    .route li::after { content: ""; position: absolute; left: 30px; top: 72px; bottom: -24px; border-left: 4px solid var(--you); }
+    .route li.then::after, .route li.now:nth-child(2)::after { border-left: 4px dashed var(--scree); }
+    .route li:last-child::after { display: none; }
+    .route .camp { --path: var(--you); }
+    .route .then .camp { width: 56px; height: 56px; margin-left: 4px; font-size: 30px; }
+
+    .route .now b { display: block; font: 600 54px/1.04 var(--font-display); color: var(--snow); letter-spacing: -.005em; }
+    .route .now p { margin-top: 8px; font-size: 32px; line-height: 1.3; color: var(--lichen); max-width: 1180px; }
+    .route .then b { display: block; font: 600 40px/1.1 var(--font-display); color: var(--snow); padding-top: 4px; }
+    .route .then p { margin-top: 2px; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+
+    .is-entered .route li { animation: rise-in 600ms var(--step-ease) both; animation-delay: calc(250ms + var(--i) * 160ms); }
+    @keyframes rise-in { from { opacity: 0; transform: translateY(24px); } }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Stop building clusters by hand, and put one tool through the pipeline this quarter.</h2>
+
+    <ol class="route">
+      <li class="now" style="--i:0"><span class="camp lit">1</span><div><b>No new hand-built clusters</b><p>EKS Auto Mode in AWS, Cluster API on-prem. kubeadm stays underneath; the runbook retires.</p></div></li>
+      <li class="now" style="--i:1"><span class="camp lit">2</span><div><b>splunk-otel-collector through the pipeline, this quarter</b><p>Waves, gates and auto-rollback. Then Argo CD, Prometheus and Karpenter.</p></div></li>
+      <li class="then" style="--i:2"><span class="camp open">3</span><div><b>Change windows as policy</b><p>One window, read by Argo CD and Kyverno alike.</p></div></li>
+      <li class="then" style="--i:3"><span class="camp open">4</span><div><b>The OTel collector on every cluster</b><p>Classic and AI alike, feeding the read-only lake.</p></div></li>
+    </ol>
+  </main>
+
+  <aside class="notes">
+    Four things, and the first two are the ones I'm asking for today.
+
+    One: no new hand-built clusters. New clusters in AWS are EKS Auto Mode; new clusters on-prem come from Cluster API. kubeadm is still there underneath, but the runbook retires.
+
+    Two: one tool through the pipeline this quarter, and I'd start with the Splunk OTel collector. It's on every cluster, we can see from Splunk whether its data is arriving, so its gate is easy to write, and it's the layer we just talked about. Waves, gates, automatic rollback. Once it works, Argo CD, Prometheus and Karpenter follow the same path.
+
+    Then, three: change windows as a policy. One window, stored in the cluster, that Argo CD and Kyverno both read.
+
+    And four: the OTel collector on every cluster, AI workloads included, feeding one read-only lake that the agents read instead of holding production credentials.
+
+    One caveat before anyone quotes the hours: the chart was a model, not our measurements. The first job of the pilot is to replace it with real numbers.
+
+    The fleet is going to keep growing whatever we decide. The only question is whether the person in orange grows with it, or gets out of its way. Thanks.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>Range.draw('#range', { touch: ['p3', 'p1', 'p2'], survey: true });</script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>kubeadm by hand is the past</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .art { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .blk { fill: none; stroke: #9fb3b7; stroke-width: 2.5; }
+    .from { font: 500 28px var(--font-body); fill: var(--slate-quiet); }
+    .arrow { stroke: var(--haze-ink); stroke-width: 5; fill: none; stroke-linecap: round; }
+    .arrow-head { fill: var(--haze-ink); }
+
+    .diff {
+      position: absolute; left: 860px; top: 380px; width: 720px;
+      padding: 24px 32px; border-radius: 14px; background: #fff; border: 2px solid var(--hairline);
+    }
+    .diff .code { font-size: 30px; line-height: 1.6; color: var(--slate); }
+    .diff .c { color: var(--slate-quiet); }
+    .diff .m { color: #8a3b2e; }
+    .diff .p { color: var(--haze-ink); font-weight: 500; }
+    .diff-cap { position: absolute; left: 1540px; top: 370px; width: 280px; font: 600 40px/1.08 var(--font-display); color: var(--slate); }
+
+    .routes { position: absolute; left: 860px; top: 620px; width: 960px; display: grid; grid-template-columns: 1fr 1fr; gap: 44px; }
+    .routes h3 { font: 600 40px/1.05 var(--font-display); color: var(--haze-ink); margin-bottom: 8px; }
+    .routes p { font-size: 28px; line-height: 1.32; color: var(--slate-quiet); }
+    .src { left: 1160px; max-width: 660px; }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>kubeadm by hand is the past: the fleets on stage rebuild clusters from code.</h2>
+
+    <svg class="art" id="art" viewBox="0 0 1920 1080" role="img" aria-label="The 54-step runbook chain collapses into a two-line change to a version field."></svg>
+
+    <div class="diff"><p class="code"><span class="c"># the upgrade, as a pull request</span>
+<span class="m">-   version: v1.36.4</span>
+<span class="p">+   version: v1.37.2</span></p></div>
+
+    <div class="routes">
+      <div>
+        <h3>On-prem: Cluster API</h3>
+        <p>Still runs kubeadm underneath, but replaces machines one at a time. The tool stays; the hands go.</p>
+      </div>
+      <div>
+        <h3>AWS: EKS Auto Mode</h3>
+        <p>AWS upgrades the control plane, then replaces the nodes. Karpenter comes with it.</p>
+      </div>
+    </div>
+
+    <p class="src">LinkedIn, 300 clusters: skip-level upgrades (KEP-4330) cut three minors from six fleet waves to one. NVIDIA: about 5,600 nodes converged in 30 minutes.</p>
+  </main>
+
+  <aside class="notes">
+    Not that.
+
+    On the left, the block from two slides ago: fifty-four steps for one cluster, by hand. Nobody presenting at this scale does that any more. On the right is what they do instead: the upgrade is a change to one field in a pull request. It gets reviewed, merged, and a controller does the fifty-four steps the same way every time.
+
+    Two routes for us. On-prem, Cluster API. To be straight about it, Cluster API still runs kubeadm underneath. What goes is a person running it node by node; Cluster API replaces machines one at a time instead. The tool stays; the hands go.
+
+    In AWS, EKS Auto Mode. AWS upgrades the control plane, replaces the nodes, and runs Karpenter itself, which takes one train off our list. The cheapest rollout is the one somebody else does.
+
+    The evidence. LinkedIn runs three hundred clusters; skip-level upgrades took three minor versions from six fleet-wide waves to one. NVIDIA converged about fifty-six hundred nodes in thirty minutes.
+
+    That's the clusters. The tools on them need the same treatment.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3'] });
+    (() => {
+      // the runbook chain from one-runbook, stacked into a block: 9 nodes x 6 steps
+      const X0 = 120, Y0 = 380, BW = 30, BH = 34, G = 9, COLS = 9, ROWS = 6;
+      let s = `<text class="from" x="${X0}" y="${Y0 - 22}">by hand: 54 steps a cluster</text>`;
+      for (let n = 0; n < ROWS; n++) for (let k = 0; k < COLS; k++) {
+        s += `<rect class="blk" x="${X0 + k * (BW + G)}" y="${Y0 + n * (BH + 8)}" width="${BW}" height="${BH}" rx="4"/>`;
+      }
+      const ax = X0 + COLS * (BW + G) + 30, ay = Y0 + (ROWS * (BH + 8) - 8) / 2;
+      s += `<path class="arrow" d="M${ax} ${ay}H${ax + 330}"/><path class="arrow-head" d="M${ax + 348} ${ay}l-26 -15v30z"/>`;
+      Peaks.draw('#art', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One layer, one lake</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); --accent: var(--teal); }
+    h2 { font-size: 84px; max-width: 1560px; line-height: 1.02; }
+    .scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+
+    .group { font: 600 38px var(--font-display); }
+    .group.classic { fill: var(--haze); }
+    .group.ai { fill: var(--teal); }
+    .item { font: 400 28px var(--font-body); fill: var(--snow); }
+    .item.q { fill: var(--lichen); }
+
+    .f { fill: none; stroke-width: 4; opacity: .9; stroke-linecap: round; }
+    .f-classic { stroke: var(--haze); }
+    .f-ai { stroke: var(--teal); }
+    .f-out { stroke: var(--lichen); stroke-width: 3; opacity: .7; }
+    .stream { fill: none; stroke: #6fa8d6; stroke-width: 7; stroke-linecap: round; opacity: .85; }
+
+    .layer { fill: #0b1a24; stroke: var(--snow); stroke-width: 3; }
+    .layer-name { font: 600 42px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .layer-sub { font: 400 26px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+
+    .dest { font: 600 36px var(--font-display); fill: var(--snow); }
+    .dest-sub { font: 400 26px var(--font-body); fill: var(--lichen); }
+
+    .lake { fill: var(--sky); opacity: .6; }
+    .lake-rim { fill: none; stroke: #6fa8d6; stroke-width: 3; }
+    .ripple { fill: none; stroke: #9cc8ea; stroke-width: 2.5; opacity: .6; }
+    .lake-name { font: 600 56px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .lake-sub { font: 500 30px var(--font-body); fill: var(--snow); text-anchor: middle; }
+    .agent { fill: var(--teal); }
+    .shore { font: 500 28px var(--font-body); fill: var(--teal); }
+
+    .noway { fill: none; stroke: var(--you); stroke-width: 4; stroke-dasharray: 10 9; }
+    .noway-x { font: 700 52px var(--font-display); fill: var(--you); text-anchor: middle; paint-order: stroke; stroke: var(--bg); stroke-width: 12px; }
+    .noway-t { font: 500 28px var(--font-body); fill: var(--you); text-anchor: middle; paint-order: stroke; stroke: var(--bg); stroke-width: 10px; }
+
+    .limit { position: absolute; left: var(--margin); top: 792px; width: 470px; font-size: 26px; line-height: 1.32; color: var(--lichen); padding-left: 18px; border-left: 4px solid var(--scree); }
+    .limit b { color: var(--snow); font-weight: 500; }
+
+    .is-entered .f, .is-entered .stream { animation: draw 1200ms var(--step-ease) both; animation-delay: calc(400ms + var(--i, 0) * 110ms); }
+    .f, .stream { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    .noway { stroke-dasharray: 10 9; }
+    @keyframes draw { from { stroke-dashoffset: 1; } }
+    .is-entered .lake-g { animation: fade-in 900ms 1300ms both; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Classic and AI workloads share one OTel layer, and agents only read its lake.</h2>
+
+    <svg class="scene" id="scene" viewBox="0 0 1920 1080" role="img" aria-label="Classic workloads (services and batch jobs: metrics, logs, traces) and AI workloads (model servers and agents: tokens, tool calls, cost) flow into one OpenTelemetry collector on every cluster, which stamps cluster, namespace and team on everything. Prometheus and Splunk stay as backends. Everything also lands in one read-only lake; agents sit on its shore and read, and there is no write path from them back to production."></svg>
+
+    <p class="limit"><b>A lake is a snapshot.</b> A gate mid-rollout still reads live metrics through one narrow tool.</p>
+  </main>
+
+  <aside class="notes">
+    It's the layer that sees both kinds of workload.
+
+    This usually gets framed as OTel beating Prometheus. It isn't. Prometheus stays, top right, as a place metrics land. OTel is the layer in the middle.
+
+    On the left, classic workloads: services and batch jobs, with metrics, logs and traces. Below them, AI workloads: model servers and agents, with things classic tools have no words for: tokens, tool calls, which model answered, what it cost. IBM and JPMorgan showed inference servers that emit OTel traces and get scraped by Prometheus, both at once.
+
+    Both go through the same collector on every cluster. That's the Splunk OTel collector we already run, so it isn't a new tool, and it stamps the same cluster, namespace and team on everything.
+
+    And it all lands in one lake. The agents sit on the shore and read: is this alert real, did this canary get worse, which hour is quiet enough to upgrade. There's no path from the shore back to production. Read-only is what lets us say yes to agents analysing prod without handing them prod credentials.
+
+    The honest limit, bottom left. Mastercard argued the other side: a lake is a snapshot, and a stale index can mislead a model. They're right for live decisions, so a gate in the middle of a rollout reads live metrics through one narrow tool. The lake is for triage and trends.
+
+    So here's the same person, with the same fleet.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1', 'p2'], survey: true });
+    (() => {
+      const LX = 120, MX = 580, MW = 290, MY = 340, MH = 360, mid = MY + MH / 2;
+      let s = '';
+      // two kinds of workload
+      const SRC = [
+        ['classic', 'Classic workloads', 'services, batch jobs', 'metrics, logs, traces', 376],
+        ['ai', 'AI workloads', 'model servers, agents', 'tokens, tool calls, cost', 586],
+      ];
+      SRC.forEach(([k, name, what, emits, y], i) => {
+        s += `<text class="group ${k}" x="${LX}" y="${y}">${name}</text>`;
+        s += `<text class="item" x="${LX}" y="${y + 42}">${what}</text>`;
+        s += `<text class="item q" x="${LX}" y="${y + 78}">${emits}</text>`;
+        const x0 = LX + 350, y0 = y + 30, ty = mid - 60 + i * 120;
+        s += `<path class="f f-${k}" pathLength="1" style="--i:${i}" d="M${x0} ${y0}C${x0 + 70} ${y0} ${MX - 70} ${ty} ${MX} ${ty}"/>`;
+      });
+      // the one layer
+      s += `<rect class="layer" x="${MX}" y="${MY}" width="${MW}" height="${MH}" rx="20"/>`;
+      s += `<text class="layer-name" x="${MX + MW / 2}" y="${mid - 50}">OTel collector</text>`;
+      s += `<text class="layer-sub" x="${MX + MW / 2}" y="${mid - 10}">on every cluster</text>`;
+      s += `<text class="layer-sub" x="${MX + MW / 2}" y="${mid + 50}">stamps cluster,</text>`;
+      s += `<text class="layer-sub" x="${MX + MW / 2}" y="${mid + 84}">namespace, team</text>`;
+
+      // backends stay
+      const BX = 1060, BY = 372;
+      s += `<path class="f f-out" pathLength="1" style="--i:2" d="M${MX + MW} ${MY + 60}C${MX + MW + 60} ${MY + 60} ${BX - 80} ${BY - 12} ${BX - 20} ${BY - 12}"/>`;
+      s += `<text class="dest" x="${BX}" y="${BY}">Prometheus and Splunk</text><text class="dest-sub" x="${BX}" y="${BY + 36}">stay, as backends</text>`;
+
+      // the lake: where everything lands
+      const LCX = 1430, LCY = 588, LRX = 360, LRY = 92;
+      s += `<path class="stream" pathLength="1" style="--i:3" d="M${MX + MW} ${mid + 40}C${MX + MW + 100} ${mid + 40} ${LCX - LRX - 100} ${LCY} ${LCX - LRX} ${LCY}"/>`;
+      let lake = `<ellipse class="lake" cx="${LCX}" cy="${LCY}" rx="${LRX}" ry="${LRY}"/>`;
+      lake += `<ellipse class="lake-rim" cx="${LCX}" cy="${LCY}" rx="${LRX}" ry="${LRY}"/>`;
+      lake += `<path class="ripple" d="M${LCX - 250} ${LCY + 54}q60 -14 120 0t120 0"/><path class="ripple" d="M${LCX + 110} ${LCY + 58}q50 -12 100 0t100 0"/>`;
+      lake += `<text class="lake-name" x="${LCX}" y="${LCY - 2}">one lake</text><text class="lake-sub" x="${LCX}" y="${LCY + 40}">read-only</text>`;
+      // agents on the near shore, reading
+      const shore = LCY + LRY + 44;
+      for (let i = 0; i < 5; i++) {
+        const x = LCX - 150 + i * 75;
+        lake += `<path class="agent" d="M${x} ${shore - 17}l17 17l-17 17l-17 -17z"/>`;
+      }
+      lake += `<text class="shore" x="${LCX + 230}" y="${shore + 10}">agents read</text>`;
+      s += `<g class="lake-g">${lake}</g>`;
+
+      // no write path from the shore back to the workloads
+      const nx0 = LCX - 190, ny = shore + 4, nx1 = LX + 360;
+      s += `<path class="noway" d="M${nx0} ${ny}C${nx0 - 200} ${ny + 60} ${nx1 + 160} ${ny + 60} ${nx1} ${ny - 6}"/>`;
+      const xm = (nx0 + nx1) / 2;
+      s += `<text class="noway-x" x="${xm}" y="${ny + 62}">✗</text>`;
+      s += `<text class="noway-t" x="${xm + 40}" y="${ny + 104}" text-anchor="start">no write path back to prod</text>`;
+      Peaks.draw('#scene', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
