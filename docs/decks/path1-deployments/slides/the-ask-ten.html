@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The ask</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide h2 { max-width: 1000px; }
+    .ledger { position: absolute; left: var(--margin); top: 340px; width: 960px; }
+    .ledger-head { display: grid; grid-template-columns: 340px 1fr; font-size: 28px; color: var(--muted); padding-bottom: 14px; }
+    .lean { display: grid; grid-template-columns: 340px 1fr; align-items: baseline; padding: 32px 0; border-top: 2px solid var(--scree); }
+    .lean:last-child { border-bottom: 2px solid var(--scree); }
+    .lean b { font: 600 44px/1 var(--font-display); }
+    .lean span { font: 500 40px/1.05 var(--font-display); color: var(--mint); }
+
+    .protect {
+      position: absolute; left: 1200px; top: 96px; width: 600px; height: 888px;
+      padding: 56px 52px; border-radius: 26px;
+      background: var(--mint); color: var(--night);
+    }
+    .protect .camp { --c: var(--night); width: 132px; height: 132px; font-size: 76px; border-width: 7px; }
+    .protect .big { margin-top: 56px; font: 700 76px/1 var(--font-display); letter-spacing: -0.01em; }
+    .protect .why { margin-top: 40px; font-size: 32px; line-height: 1.32; color: #12332d; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2>Confirm five leans and protect stage B's headcount.</h2>
+
+    <div class="ledger">
+      <p class="ledger-head"><span>Decision</span><span>We lean</span></p>
+      <p class="lean"><b>Prod auto-sync</b><span>after the gating, not before</span></p>
+      <p class="lean"><b>Promotion</b><span>Promoter first, two-week spike</span></p>
+      <p class="lean"><b>Change records</b><span>projected as a CRD</span></p>
+      <p class="lean"><b>Canary</b><span>a POC per workload class</span></p>
+      <p class="lean"><b>Drift</b><span>split by resource class</span></p>
+    </div>
+
+    <div class="protect">
+      <span class="camp">B</span>
+      <p class="big">If one thing gets protected headcount, it's this.</p>
+      <p class="why">Stage B has no demo, so it's the easiest work to drop. It gates stage&nbsp;C and the agent path's pull requests.</p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Five decisions, and every one already has a lean, so this is about confirming, not deliberating. Take the objections, but let's not reopen promotion: the spike is how we test it.
+
+    Prod auto-sync comes after the change-window gating, because the gating is what buys the permission. Promoter first, Kargo as the fallback, and a two-week spike on one app. Change records projected into the cluster as a CRD, because admission can't depend on an outside service. Canary as a proof of concept per workload class, where "not yet" is an allowed answer. And drift handled both ways, split by resource class: silent self-heal for cluster-critical things, alert first where someone may have hot-fixed.
+
+    One smaller question we'd like an answer to: does any app's config genuinely need in-place refresh? We lean no, and if none does, the config-server refresh path retires.
+
+    The card on the right is the thing to repeat at the end. Stage B has no demo and no dashboard. A room that buys the trade and then funds only stage A has made things worse, because auto-sync without the policy layer is exactly the risk the guardrails exist for. It also gates the agent path's pull requests.
+
+    If we leave with one owner named, make it stage B's.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

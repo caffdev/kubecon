@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The button</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide h2 { max-width: 760px; }
+    .sync-key { position: absolute; left: var(--margin); top: 480px; }
+    .cursor { position: absolute; left: 560px; top: 610px; width: 78px; height: 110px; }
+    .cursor path { fill: var(--snow); stroke: var(--dusk); stroke-width: 5; stroke-linejoin: round; }
+    .today { position: absolute; left: var(--margin); top: 770px; width: 640px; font-size: 32px; line-height: 1.3; color: var(--muted); }
+
+    .wires path { fill: none; stroke: var(--scree); stroke-width: 3; }
+
+    .stands { position: absolute; left: 1000px; top: 112px; width: 800px; }
+    .stands-head { font-size: 28px; line-height: 1.3; color: var(--muted); margin-bottom: 30px; }
+    .row { display: grid; grid-template-columns: 1fr 64px; gap: 24px; align-items: center; height: 150px; border-top: 2px solid #22394a; }
+    .row b { display: block; font: 600 46px/1 var(--font-display); color: var(--snow); margin-bottom: 8px; }
+    .row span:first-child { font-size: 30px; line-height: 1.25; color: var(--muted); }
+    .row .camp { --c: var(--lichen); }
+
+    .is-entered .sync-key { animation: press 1300ms 700ms both; }
+    .is-entered .cursor { animation: point 1300ms 700ms both; }
+    @keyframes press { 40% { transform: translateY(10px); border-bottom-width: 10px; } 70% { transform: none; } }
+    @keyframes point { from { transform: translate(60px, 80px); opacity: 0; } 30% { transform: none; opacity: 1; } 40% { transform: translateY(10px); } 70% { transform: none; } }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="stage-art wires" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path d="M680 520 C 850 520, 840 236, 990 236"/>
+      <path d="M680 555 C 850 555, 840 386, 990 386"/>
+      <path d="M680 590 C 850 590, 840 536, 990 536"/>
+      <path d="M680 625 C 850 625, 840 686, 990 686"/>
+      <path d="M680 660 C 850 660, 840 836, 990 836"/>
+    </svg>
+
+    <h2>Today the SYNC button is the only change control we have.</h2>
+
+    <div class="sync-key" aria-hidden="true">SYNC</div>
+    <svg class="cursor" viewBox="0 0 78 110" aria-hidden="true"><path d="M6 6 L6 88 L26 70 L40 102 L56 95 L42 64 L70 64 Z"/></svg>
+    <p class="today">Argo CD is in every cluster, on manual sync: stage zero.</p>
+
+    <div class="stands">
+      <p class="stands-head">What one click stands in for, and the stage that takes it over</p>
+      <p class="row"><span><b>Drift and config</b>found by accident; pods keep the old value</span><span class="camp">A</span></p>
+      <p class="row"><span><b>Policy</b>a reviewer's memory, with no engine</span><span class="camp">B</span></p>
+      <p class="row"><span><b>The freeze</b>someone refusing to click</span><span class="camp">B</span></p>
+      <p class="row"><span><b>Promotion</b>a person edits YAML in another repo</span><span class="camp">C</span></p>
+      <p class="row"><span><b>Rollback</b>a person and a Slack thread</span><span class="camp">D</span></p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Here's where we are, and let's say it without being defensive. Argo CD is installed in every cluster, on manual sync. That's stage zero, and it's honest.
+
+    But look at what that one button is standing in for. Drift is something we find by accident, and a config change can report success while the pods keep serving the old value. Policy is a reviewer's memory; we have no engine. The freeze is someone refusing to click. Promotion is a person editing YAML in another repo. And rollback is a person and a Slack thread.
+
+    So the button isn't really a deploy button. It's the only change control we've got. That's why teams hold on to it, and they're right to.
+
+    The letter beside each one is the stage that replaces it. Hold on to those letters; they come back.
+
+    Here's what replaces it, starting with the one that matters most: rollback.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

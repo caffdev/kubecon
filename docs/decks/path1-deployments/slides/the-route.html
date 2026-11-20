@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The route</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide h2 { max-width: 980px; }
+    .leader { stroke: var(--slate-quiet); stroke-width: 3; stroke-dasharray: 2 9; stroke-linecap: round; fill: none; }
+
+    .lb { position: absolute; left: var(--margin); }
+    .lb .d { font: 600 30px/1 var(--font-display); color: var(--muted); }
+    .lb .d.dated { color: var(--alpenglow-ink); }
+    .lb .w { margin-top: 6px; font: 600 40px/1.05 var(--font-display); color: var(--slate); }
+    .lb .x { margin-top: 6px; font-size: 28px; line-height: 1.25; color: var(--muted); }
+    .lb.e { left: 1330px; }
+
+    .marker { position: absolute; left: 1190px; top: 632px; }
+    .marker .sync-key { --k: .36; opacity: .8; }
+    .notch { stroke: var(--mint-ink); stroke-width: 8; stroke-linecap: round; }
+    .tie { stroke: var(--mint-ink); stroke-width: 3; }
+    .marker p { position: absolute; left: 228px; top: 2px; width: 440px; font: 600 32px/1.08 var(--font-display); color: var(--mint-ink); }
+
+    .is-entered .marker { animation: drop-in 700ms 900ms var(--step-ease) both; }
+    @keyframes drop-in { from { opacity: 0; transform: translateY(-24px); } }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+
+    <h2>Five stages, and prod stops clicking only after the controls are in.</h2>
+
+    <div class="lb" style="top: 393px;"><p class="d">second half of 2027</p><p class="w">The fleet rolls in waves</p><p class="x">Done when the health gate has failed a bad wave</p></div>
+    <div class="lb" style="top: 553px;"><p class="d">from Q2 2027</p><p class="w">Promotion is a pull request</p></div>
+    <div class="lb" style="top: 713px;"><p class="d dated">Q1 2027</p><p class="w">One policy set; the freeze enforced</p><p class="x">Done when a freeze blocks a sync with no human</p></div>
+    <div class="lb" style="top: 873px;"><p class="d dated">by January 2027</p><p class="w">Auto-sync and self-heal in non-prod</p><p class="x">Done when non-prod goes four weeks with no manual sync</p></div>
+    <div class="lb e" style="top: 139px;"><p class="d">2028, a decision</p><p class="w">A team onboards an app with no platform ticket</p></div>
+
+    <div class="marker"><div class="sync-key struck" aria-hidden="true">SYNC</div><p>Prod auto-sync: the last item in B</p></div>
+  </main>
+
+  <aside class="notes">
+    Here's the trade as a climb: five stages up one face, and watch where the click comes off.
+
+    A, by January: auto-sync and self-heal in non-prod only, with the guardrails in the same pull request, never a follow-up ticket. Prune false on stateful and cluster-critical resources, PruneLast, a sync window on prod, and a reclaim-policy audit. Reloader goes in too, so a config change actually rolls its pods. A is done when non-prod has gone four weeks without a manual sync.
+
+    B, in the first quarter: the one policy set in CI and at admission, and the freeze enforced by the cluster. It's done when a freeze blocks a sync with no human involved. And only then, the struck button: prod auto-sync goes on as the last item in B. Offer it earlier and we trade away the only reason teams agree.
+
+    Above the button the route is dashed: that's what we trial rather than commit to. C, from the second quarter: promotion as a pull request, one app first. D, in the second half: the fleet rolls in waves with a health gate, once Path 3's cluster labels exist, and canary as a proof of concept. D is done when that gate has failed a bad wave at least once, because a gate nobody has watched fail is a gate nobody should trust.
+
+    E, 2028, is a decision, not a commitment. Which brings us back to where we started.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // one peak; camps on its face, A at the bottom. [x, y, letter, lit]
+    const camps = [[1000, 930, 'A', 1], [1120, 770, 'B', 1], [1060, 610, 'C', 0], [1180, 450, 'D', 0], [1240, 196, 'E', 0]];
+    const ends = { A: 780, B: 780, C: 650, D: 590 };   // right end of each label's leader
+    const pt = (c) => c[0] + ',' + c[1];
+    let s = '';
+    s += `<polyline class="climb-route" points="1000,1080 ${pt(camps[0])} ${pt(camps[1])} 1100,710"/>`;
+    s += `<polyline class="climb-route ahead" points="1100,710 ${camps.slice(2).map(pt).join(' ')}"/>`;
+    camps.forEach(([x, y, t, lit]) => {
+      if (ends[t]) s += `<path class="leader" d="M${ends[t]} ${y} H${x - 40}"/>`;
+      s += `<circle class="camp-dot${lit ? ' lit' : ''}" cx="${x}" cy="${y}" r="32"/><text class="camp-txt${lit ? ' lit' : ''}" x="${x}" y="${y + 1}">${t}</text>`;
+    });
+    s += `<path class="leader" d="M1290 196 H1316"/>`;
+    s += `<path class="tie" d="M1122 704 H1186"/><path class="notch" d="M1080 698 L1120 722"/>`;
+    Peaks.draw('#range',
+      Peaks.far({ y: 1010, amp: 40, n: 16, seed: 11 }),
+      Peaks.peak({ x: 1240, top: 170, base: 1080, hw: 520, cap: 'var(--mint)', capScale: 0.55 }),
+      s);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

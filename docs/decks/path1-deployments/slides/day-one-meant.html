@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What day one meant</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .lead { margin-top: 110px; font: 600 48px/1.1 var(--font-display); color: var(--mint); }
+    .nevers { margin-top: 36px; }
+    .nevers p { font: 500 104px/1.04 var(--font-display); letter-spacing: -0.012em; }
+    .stage-e { position: absolute; left: var(--margin); bottom: 96px; max-width: 1100px; font-size: 32px; line-height: 1.3; color: var(--muted); }
+    .stage-e b { color: var(--snow); font-weight: 600; }
+    .flag-pole { stroke: var(--snow); stroke-width: 4; }
+
+    .is-entered .nevers p { animation: rise 700ms var(--step-ease) both; }
+    .is-entered .nevers p:nth-child(2) { animation-delay: 150ms; }
+    .is-entered .nevers p:nth-child(3) { animation-delay: 300ms; }
+    .is-entered .nevers p:nth-child(4) { animation-delay: 450ms; }
+    .is-entered .climb-route { animation: climb 1800ms 600ms ease-out both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(30px); } }
+    @keyframes climb { from { stroke-dashoffset: 1; } }
+    .climb-route { stroke-dasharray: 1; stroke-dashoffset: 0; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+
+    <p class="lead">That's what day one meant. A developer who</p>
+    <div class="nevers">
+      <p>never learned a cluster name,</p>
+      <p>never clicked sync,</p>
+      <p>never read the policy list,</p>
+      <p>never rolled back by hand.</p>
+    </div>
+    <p class="stage-e"><b>Stage E, a decision for 2028:</b> a team onboards an app with no platform ticket.</p>
+  </main>
+
+  <aside class="notes">
+    We opened on CVS Health's sentence and a peak with no route on it. Here's the same peak, with the route drawn all the way up. Stage E is a 2028 decision, not a 2027 commitment: a team onboards an app with no platform ticket.
+
+    Land this slowly. That's what day one meant. Not trusting new hires with production. A developer who never learned a cluster name, because Path 3's labels place the app. Who never clicked sync, because stages A and B replaced the click with controls. Who never read the policy list, because a violation fails their CI build in ninety seconds. And who never rolled anything back by hand, because the gate did it.
+
+    Pause. Here's what we need from this room.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // the opening's peak, now climbed: camps A–E up the face, a flag on top
+    const camps = [[1480, 1000, 'A'], [1580, 910, 'B'], [1520, 820, 'C'], [1600, 730, 'D'], [1640, 626, 'E']];
+    let s = `<polyline class="climb-route" pathLength="1" points="1440,1080 ${camps.map(c => c[0] + ',' + c[1]).join(' ')}"/>`;
+    camps.forEach(([x, y, t]) => {
+      s += `<circle class="camp-dot lit" cx="${x}" cy="${y}" r="24"/><text class="camp-txt lit" style="font-size: 26px" x="${x}" y="${y + 1}">${t}</text>`;
+    });
+    s += `<path class="flag-pole" d="M1640 602 V520"/><path class="summit-flag" d="M1642 522 L1700 540 L1642 560 Z"/>`;
+    Peaks.draw('#range',
+      Peaks.disc({ cx: 1660, cy: 700, r: 200, opacity: 0.9 }),
+      Peaks.far({ y: 1000, amp: 46, n: 16, seed: 5 }),
+      Peaks.peak({ x: 1640, top: 610, base: 1080, hw: 400, cap: 'var(--mint)' }),
+      s);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

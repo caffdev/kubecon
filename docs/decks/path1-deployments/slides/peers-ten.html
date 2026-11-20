@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Our peers</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide h2 { max-width: 1400px; }
+    .peer { position: absolute; top: 300px; }
+    .peer.li { left: var(--margin); width: 860px; }
+    .peer.meta { left: 1140px; width: 660px; }
+    .who { font: 600 50px/1 var(--font-display); }
+    .who small { margin-left: 14px; font: 400 26px/1 var(--font-body); color: var(--muted); }
+    .said { margin-top: 14px; font: 500 italic 32px/1.25 var(--font-body); color: var(--muted); }
+
+    .art { display: block; margin-top: 34px; }
+    .hr { fill: #cbd8d8; }
+    .hr.now { fill: var(--mint-ink); }
+    .axis { font: 500 24px var(--font-body); fill: var(--slate-quiet); }
+    .cl { fill: #b9cacb; }
+    .eng { fill: var(--mint-ink); }
+
+    .reads { margin-top: 30px; font-size: 30px; line-height: 1.3; }
+    .reads b { font: 600 46px/1 var(--font-display); color: var(--mint-ink); margin-right: 10px; }
+    .reads .was b { color: var(--slate); }
+    .reads p + p { margin-top: 14px; }
+    .reads .q { color: var(--muted); }
+
+    .divider { position: absolute; left: 1060px; top: 300px; height: 640px; width: 3px; background: var(--hairline); }
+    .src { max-width: 1680px; }
+
+    .is-entered .hr.now { animation: blink 1200ms 500ms 2 both; }
+    @keyframes blink { 50% { opacity: .15; } }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <h2>Our peers already made the deploy path invisible.</h2>
+
+    <div class="peer li">
+      <p class="who">LinkedIn<small>cluster-critical services</small></p>
+      <p class="said">“From a week of hoping to an hour of proof.”</p>
+      <svg class="art" id="week" width="860" height="250" viewBox="0 0 860 250" aria-label="A week drawn as 168 hour squares, one lit"></svg>
+      <div class="reads">
+        <p class="was"><b>~1 week</b>per release before; each square is an hour</p>
+        <p><b>~1 hour</b>after, validated automatically</p>
+        <p class="q"><b>10+</b>incidents caught before prod</p>
+      </div>
+    </div>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <div class="peer meta">
+      <p class="who">Meta<small>AI research and inference</small></p>
+      <p class="said">On-prem, Argo CD and Kargo.</p>
+      <svg class="art" id="ratio" width="660" height="250" viewBox="0 0 660 250" aria-label="100 cluster peaks above 15 engineer dots"></svg>
+      <div class="reads">
+        <p class="was"><b>~100</b>clusters</p>
+        <p><b>~15</b>engineers run them</p>
+      </div>
+    </div>
+
+    <p class="src">LinkedIn, “Ship Faster, Ship Safer” canary pipeline deck; Meta, “We Have GitOps at Home” keynote abstract</p>
+  </main>
+
+  <aside class="notes">
+    Two companies, two measures, and neither of them is "we bought a tool".
+
+    LinkedIn first. Their own slide title: from a week of hoping to an hour of proof. Every square on the left is one hour. A release of their cluster-critical services used to take about a week, cluster by cluster: that's the whole grid. Now it takes about an hour, validated automatically: that's the one lit square. And the same pipeline caught more than ten incidents before they reached production. Faster and safer, not one at the expense of the other.
+
+    Meta, on the right: about fifteen engineers run about a hundred clusters, on-prem, with Argo CD and Kargo. Each little peak is a cluster, each dot is a person. That ratio is only possible if nobody is clicking anything.
+
+    And here is where we are.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // a week: 7 rows of 24 hour-squares; one lit
+    let w = '';
+    for (let d = 0; d < 7; d++) {
+      for (let h = 0; h < 24; h++) {
+        const lit = d === 0 && h === 0;
+        w += `<rect class="hr${lit ? ' now' : ''}" x="${h * 36}" y="${d * 36}" width="30" height="30" rx="4"/>`;
+      }
+    }
+    document.getElementById('week').innerHTML = w;
+
+    // 100 clusters (20 x 5 peaks) over 15 engineers
+    let s = '';
+    for (let i = 0; i < 100; i++) s += Peaks.glyph({ x: 15 + (i % 20) * 33, y: 16 + Math.floor(i / 20) * 34, w: 26, h: 22, cls: 'cl' });
+    for (let i = 0; i < 15; i++) s += `<circle class="eng" cx="${15 + i * 33}" cy="${226}" r="12"/>`;
+    Peaks.draw('#ratio', s);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day one</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .mark {
+      position: absolute;
+      left: 108px;
+      top: 70px;
+      font: 600 260px/1 var(--font-display);
+      color: var(--mint);
+    }
+    .slide blockquote {
+      margin-top: 190px;
+      max-width: 1340px;
+      font: 500 112px/1.02 var(--font-display);
+      letter-spacing: -0.012em;
+      text-wrap: balance;
+    }
+    .who {
+      margin-top: 44px;
+      font-size: 32px;
+      color: var(--muted);
+    }
+    .deck-id {
+      position: absolute;
+      right: var(--margin);
+      top: 104px;
+      font: 600 32px/1.15 var(--font-display);
+      color: var(--mint);
+      text-align: right;
+    }
+    .deck-id span { color: var(--muted); font-weight: 500; }
+
+    .is-entered blockquote { animation: rise 900ms var(--step-ease) both; }
+    .is-entered #range { animation: dawn 1600ms 300ms ease-out both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(40px); } }
+    @keyframes dawn { from { opacity: 0; transform: translateY(30px); } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+
+    <span class="mark" aria-hidden="true">“</span>
+    <blockquote>…approachable enough that someone joining the company could ship a new application on their very first day.</blockquote>
+    <p class="who">Michael Amundson and Jim Beyers, CVS Health, keynote, 11 November</p>
+
+    <p class="deck-id">Path 1: Deployments as a service<br><span>Evan and Kyle</span></p>
+  </main>
+
+  <aside class="notes">
+    This is CVS Health, on the main stage on Wednesday. Read it with me: approachable enough that someone joining the company could ship a new application on their very first day.
+
+    Our first reaction was probably the same as yours. We are never letting someone deploy to prod on day one. Day one, they can't find the bathroom.
+
+    Get the laugh. Then: that's not what they meant. Day one doesn't measure how much we trust new hires. It measures how much of our platform a person has to understand before they can ship. CVS didn't make production safer by trusting people more. They made the path so constrained that trust stopped being the variable.
+
+    That peak on the right is where this deck is going. There's no route on it yet.
+
+    And our peers have already climbed it.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    Peaks.draw('#range',
+      Peaks.disc({ cx: 1660, cy: 700, r: 200, opacity: 0.9 }),
+      Peaks.far({ y: 1000, amp: 46, n: 16, seed: 5 }),
+      Peaks.peak({ x: 1640, top: 610, base: 1080, hw: 400, cap: 'var(--mint)' })
+    );
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

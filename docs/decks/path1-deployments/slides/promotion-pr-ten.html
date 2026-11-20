@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Promotion as a PR</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide h2 { max-width: 1500px; }
+    .model { position: absolute; top: 330px; }
+    .ours { left: var(--margin); width: 980px; }
+    .theirs { left: 1220px; width: 580px; }
+    .model h3 { display: flex; align-items: center; gap: 20px; }
+    .model h3 small { font: 500 32px/1 var(--font-display); color: var(--muted); }
+    .ours h3 { color: var(--mint); }
+    .ours h3 .camp { width: 60px; height: 60px; font-size: 32px; }
+    .theirs h3 { color: var(--lichen); }
+    .art { display: block; margin-top: 22px; }
+    .model .fit { font-size: 32px; line-height: 1.3; color: var(--muted); margin-top: 22px; }
+    .ours .fit b { color: var(--snow); font-weight: 600; }
+
+    .branch { stroke: var(--mint); stroke-width: 6; fill: none; stroke-linecap: round; }
+    .merge { stroke: var(--mint); stroke-width: 5; fill: none; }
+    .pr { fill: var(--night); stroke: var(--mint); stroke-width: 5; }
+    .lab { font: 600 30px var(--font-display); fill: var(--lichen); }
+    .lab.m { fill: var(--snow); }
+    .pill { fill: var(--mint); }
+    .pill-t { font: 600 26px var(--font-display); fill: var(--night); text-anchor: middle; dominant-baseline: central; }
+    .cp { fill: none; stroke: var(--scree); stroke-width: 3; stroke-dasharray: 10 8; }
+    .stagebox { fill: var(--rock); stroke: var(--scree); stroke-width: 3; }
+    .arrow { stroke: var(--scree); stroke-width: 3; fill: none; }
+
+    .flip { position: absolute; left: var(--margin); bottom: 80px; width: 1680px; padding-top: 24px; border-top: 2px solid var(--scree); font-size: 32px; line-height: 1.35; color: var(--muted); }
+    .flip b { color: var(--snow); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2>Promotion becomes a pull request: GitOps Promoter first, Kargo as the fallback.</h2>
+
+    <div class="model ours">
+      <h3><span class="camp">C</span>GitOps Promoter <small>first</small></h3>
+      <svg class="art" width="980" height="300" viewBox="0 0 980 300" aria-label="Three environment branches; each promotion is a pull request between them">
+        <path class="branch" d="M150 50 H960 M150 150 H960 M150 250 H960"/>
+        <text class="lab m" x="0" y="60">env/dev</text><text class="lab m" x="0" y="160">env/stage</text><text class="lab m" x="0" y="260">env/prod</text>
+        <path class="merge" d="M360 50 C 360 110, 520 90, 520 150"/>
+        <path class="merge" d="M600 150 C 600 210, 760 190, 760 250"/>
+        <circle class="pr" cx="360" cy="50" r="16"/><circle class="pr" cx="520" cy="150" r="16"/>
+        <circle class="pr" cx="600" cy="150" r="16"/><circle class="pr" cx="760" cy="250" r="16"/>
+        <rect class="pill" x="408" y="80" width="64" height="40" rx="20"/><text class="pill-t" x="440" y="101">PR</text>
+        <rect class="pill" x="648" y="180" width="64" height="40" rx="20"/><text class="pill-t" x="680" y="201">PR</text>
+      </svg>
+      <p class="fit">A promotion <em>is</em> a commit and a PR. <b>No state outside Git:</b> one record for a reviewer, an agent and an auditor.</p>
+    </div>
+
+    <div class="model theirs">
+      <h3>Kargo <small>the fallback</small></h3>
+      <svg class="art" width="580" height="300" viewBox="0 0 580 300" aria-label="A separate control plane holding Warehouse, Freight and Stages">
+        <rect class="cp" x="4" y="4" width="572" height="292" rx="18"/>
+        <text class="lab" x="30" y="52">its own control plane and UI</text>
+        <rect class="stagebox" x="30" y="100" width="150" height="150" rx="12"/>
+        <rect class="stagebox" x="215" y="100" width="150" height="150" rx="12"/>
+        <rect class="stagebox" x="400" y="100" width="150" height="150" rx="12"/>
+        <text class="lab m" x="105" y="185" text-anchor="middle" style="font-size: 26px">Warehouse</text>
+        <text class="lab m" x="290" y="185" text-anchor="middle" style="font-size: 26px">Freight</text>
+        <text class="lab m" x="475" y="185" text-anchor="middle" style="font-size: 26px">Stages</text>
+      </svg>
+      <p class="fit">A second control plane for us. Meta runs it across ~100 clusters.</p>
+    </div>
+
+    <p class="flip"><b>What would flip it:</b> hand-wired rollback, no cross-app ordering, less adoption data. A two-week spike on one app decides.</p>
+  </main>
+
+  <aside class="notes">
+    Last mechanism: how a version moves from dev to stage to prod. Today that's a person editing YAML in another repo. It becomes a pull request.
+
+    On the left, GitOps Promoter, our lean, and stage C. Each environment is a branch, and a promotion is a commit and a pull request. There's no state outside Git, so the PR is the audit record that a reviewer, an agent and an auditor all read. Notice what that does to change control: the approval stops being a click and becomes a review.
+
+    On the right, Kargo, with its own control plane and UI. It's a serious option, and Meta runs Argo CD and Kargo across about a hundred clusters. For us it would be a second control plane.
+
+    What would flip it, said out loud so the decision looks as reversible as it is: Promoter's rollback per environment is hand-wired, it doesn't order across apps, and it's younger. Every published comparison is written by someone with a stake, so the answer is a two-week spike on one real app. We don't quote any Kargo adoption figure; the one in our notes came from a vendor post.
+
+    So, if all of this exists, why haven't our teams asked for any of it?
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rollback by gate</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide h2 { max-width: 1400px; }
+    .rail { stroke: var(--scree); stroke-width: 6; fill: none; }
+    .rail.bad { stroke-dasharray: 14 12; }
+    .stn { fill: var(--night); stroke: var(--lichen); stroke-width: 5; }
+    .stn.on { fill: var(--mint); stroke: var(--mint); }
+    .back { fill: none; stroke: var(--mint); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+    .x { stroke: var(--snow); stroke-width: 6; stroke-linecap: round; }
+
+    .st { position: absolute; top: 520px; width: 380px; }
+    .st b { display: block; font: 600 42px/1.05 var(--font-display); }
+    .st code { display: block; margin-top: 8px; font: 400 26px/1.2 var(--font-code); color: var(--lichen); }
+    .st.on b { color: var(--mint); }
+    .fails { position: absolute; left: 1250px; top: 398px; font: 600 32px/1 var(--font-display); color: var(--snow); }
+    .loop { position: absolute; left: 400px; top: 376px; width: 900px; text-align: center; font: 600 36px/1.1 var(--font-display); color: var(--mint); }
+
+    .why { position: absolute; left: var(--margin); top: 744px; width: 1680px; }
+    .why-head { font-size: 30px; line-height: 1.3; color: var(--muted); margin-bottom: 22px; }
+    .why-head b { color: var(--snow); font-weight: 600; }
+    .t { display: flex; align-items: center; gap: 24px; height: 68px; margin-bottom: 18px; font-size: 30px; }
+    .t i { flex: none; height: 64px; border-radius: 6px; background: var(--lichen); }
+    .t b { font: 600 40px/1 var(--font-display); margin-right: 10px; }
+    .t.silent i { width: 1400px; display: flex; align-items: center; padding-left: 26px; font-style: normal; color: var(--night); }
+    .t.silent i b { color: var(--night); }
+    .t.silent span { color: var(--muted); font-size: 28px; }
+
+    .is-entered .loop { animation: fade-in 500ms 1400ms both; }
+    @keyframes fade-in { from { opacity: 0; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="rail" d="M220 470 H1060"/>
+      <path class="rail bad" d="M1060 470 H1560"/>
+      <path class="x" d="M1294 452 l36 36 M1330 452 l-36 36"/>
+      <circle class="stn" cx="220" cy="470" r="30"/>
+      <circle class="stn" cx="640" cy="470" r="30"/>
+      <circle class="stn" cx="1060" cy="470" r="30"/>
+      <circle class="stn on" cx="1560" cy="470" r="38"/>
+      <path class="back" pathLength="1" data-step="1" data-effect="draw" d="M1560 428 C 1560 250, 220 250, 220 432"/>
+      <path class="back" data-step="1" d="M202 410 L220 434 L238 410"/>
+    </svg>
+
+    <h2>A canary without automated analysis is just a slower outage.</h2>
+
+    <p class="loop" data-step="1">back to the last good version, and nobody was paged</p>
+    <p class="fails">fails</p>
+
+    <div class="st" style="left: 190px;"><b>Rollout</b><code>kind: Rollout</code></div>
+    <div class="st" style="left: 610px;"><b>A share of traffic</b><code>setWeight, pause</code></div>
+    <div class="st" style="left: 1030px;"><b>Analysis</b><code>AnalysisRun</code></div>
+    <div class="st on" style="left: 1500px; width: 300px;"><b>Reverts itself</b><code>abort, rollback</code></div>
+
+    <div class="why">
+      <p class="why-head"><b>Why a gate, not a dashboard.</b> LinkedIn's failures, to scale: the quieter the failure, the longer it lasted.</p>
+      <p class="t"><i style="width: 15px;"></i><span><b>~30 min</b>a webhook outage, loud, caught fast</span></p>
+      <p class="t silent"><i><b>~2 days</b>a silent webhook change stripping GPUs from jobs</i></p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    If you remember one mechanism from this deck, make it this one, because rollback is the control people trust a machine with least.
+
+    A Rollout is the workload's spec, in Git. It sends a share of traffic to the new version and pauses. An AnalysisRun queries a metric, error rate or latency, and judges it against a threshold we wrote down in advance.
+
+    Click. When the analysis fails, the version goes back to the last good one. Nobody is paged to make the call and nobody has to notice a graph. A canary that waits for a human to look at a dashboard is just a slower outage.
+
+    The bars underneath are why. They're LinkedIn's, drawn to the same scale. A loud webhook outage was caught in about thirty minutes. A silent webhook change that stripped GPUs from jobs ran for about two days, eight hundred and twenty executions. Nobody watching a graph catches the quiet ones. A gate does.
+
+    Two honest notes, if asked. A weighted canary needs a traffic router, and which one is the networking thread's call; the Rollouts Gateway API plugin is unverified, so we check its docs first. And for platform services with no traffic to split, LinkedIn's answer needs no mesh: a canary in its own namespace, one label as the switch, and an Argo CD PostSync Job as the gate. That's why canary is a proof of concept per workload class, and the gate is the part that isn't optional.
+
+    That's rollback. The other two controls turn out to be one policy set.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

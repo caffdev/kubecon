@@ -56,3 +56,43 @@
 /* a gate a change passes through */
 .gate-label { font: 600 30px/1.1 var(--font-display); color: var(--accent); }
 .when { font: 600 30px/1 var(--font-display); color: var(--warm); }
+
+/* ---------------------------------------------------------------------------------
+   Added for the `ten` draft. Additive only: new classes, nothing above is changed.
+   --------------------------------------------------------------------------------- */
+
+/* the SYNC key: the deck's one object. --k scales it; .struck is "given up" */
+.sync-key {
+  --k: 1;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(560px * var(--k));
+  height: calc(220px * var(--k));
+  border: calc(8px * var(--k)) solid var(--path);
+  border-bottom-width: calc(20px * var(--k));
+  border-radius: calc(34px * var(--k));
+  font: 700 calc(140px * var(--k))/1 var(--font-display);
+  letter-spacing: .05em;
+  color: var(--path);
+}
+.sync-key.struck { opacity: .45; }
+.sync-key.struck::after {
+  content: "";
+  position: absolute;
+  left: -10%; right: -10%; top: 50%;
+  height: calc(10px * var(--k));
+  margin-top: calc(-5px * var(--k));
+  background: currentColor;
+  border-radius: 4px;
+  transform: rotate(-14deg);
+}
+
+/* the climb: a route up one peak, camps as numbered dots (SVG) */
+.climb-route { fill: none; stroke: var(--path); stroke-width: 5; stroke-linejoin: round; stroke-linecap: round; }
+.climb-route.ahead { stroke-dasharray: 2 14; }
+.camp-dot { fill: var(--bg); stroke: var(--path); stroke-width: 5; }
+.camp-dot.lit { fill: var(--path); }
+.camp-txt { font: 600 32px var(--font-display); fill: var(--path); text-anchor: middle; dominant-baseline: central; }
+.camp-txt.lit { fill: var(--bg); }
+.summit-flag { fill: var(--path); }

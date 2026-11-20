@@ -1,6 +1,6 @@
 {
   "title": "Path 1: Deployments as a service",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "day-one",
@@ -54,6 +54,18 @@
       "ti-falco",
       "ti-gatewayapi",
       "ti-istio"
+    ],
+    "ten": [
+      "day-one-ten",
+      "peers-ten",
+      "the-button",
+      "rollback-gate",
+      "one-policy-set",
+      "promotion-pr-ten",
+      "the-trade-ten",
+      "the-route",
+      "day-one-meant",
+      "the-ask-ten"
     ]
   }
 }

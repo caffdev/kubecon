@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One policy set</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide h2 { max-width: 1500px; }
+
+    .track { stroke: var(--slate); stroke-width: 5; fill: none; }
+    .drop { stroke: var(--mint-ink); stroke-width: 5; stroke-dasharray: 2 12; stroke-linecap: round; fill: none; }
+    .drop.rec { stroke: var(--slate-quiet); }
+    .gate { fill: var(--mint-ink); }
+    .token { fill: var(--slate); }
+
+    .set {
+      position: absolute; left: 300px; top: 306px; width: 900px; height: 110px;
+      border-radius: 55px; background: var(--mint-ink); color: #fff;
+      display: grid; place-items: center;
+      font: 600 40px/1 var(--font-display);
+    }
+    .rec {
+      position: absolute; left: 1300px; top: 306px; width: 500px; height: 110px;
+      border-radius: 18px; border: 4px solid var(--slate-quiet); background: #fff;
+      display: grid; place-items: center; text-align: center;
+      font: 400 28px/1.2 var(--font-body); color: var(--slate);
+    }
+    .rec b { display: block; font: 600 34px/1.05 var(--font-display); }
+    .rec-note { position: absolute; left: 1440px; top: 440px; width: 400px; font-size: 28px; line-height: 1.25; color: var(--muted); }
+
+    .end { position: absolute; top: 540px; font: 600 32px/1 var(--font-display); color: var(--slate); }
+    .g { position: absolute; top: 690px; font-size: 30px; line-height: 1.28; }
+    .g .gate-label { display: block; font-size: 40px; margin-bottom: 8px; }
+    .flag { display: block; margin-top: 10px; font-size: 26px; color: var(--alpenglow-ink); }
+
+    .rule { position: absolute; left: var(--margin); bottom: 80px; max-width: 1600px; font: 600 44px/1.15 var(--font-display); color: var(--slate); }
+    .rule span { color: var(--mint-ink); }
+  </style>
+</head>
+<body>
+  <main class="slide snow">
+    <svg class="stage-art" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="track" d="M200 600 H1700"/>
+      <path class="track" d="M1686 586 L1710 600 L1686 614"/>
+      <circle class="token" cx="200" cy="600" r="14"/>
+      <path class="drop" d="M560 420 V540 M1100 420 V540"/>
+      <path class="drop rec" d="M1450 420 L1118 540"/>
+      <rect class="gate" x="548" y="540" width="24" height="120" rx="5"/>
+      <rect class="gate" x="1088" y="540" width="24" height="120" rx="5"/>
+    </svg>
+
+    <h2>One policy set stops a bad change in CI and a frozen one at admission.</h2>
+
+    <p class="set">One Kyverno policy set in Git, with its own tests</p>
+    <p class="rec"><span><b>The freeze</b>an approved change record, as a CRD</span></p>
+    <p class="rec-note">Admission never calls ITSM.</p>
+
+    <p class="end" style="left: 120px;">commit</p>
+    <p class="end" style="left: 1600px;">running</p>
+
+    <p class="g" style="left: 420px; width: 520px;"><span class="gate-label">In CI</span>kyverno apply: a violation is a 90&#8209;second test failure</p>
+    <p class="g" style="left: 1000px; width: 600px;"><span class="gate-label">At admission</span>CEL on the hot path, Kyverno for the rest<span class="flag">⚠️ CEL generated from our set: unverified</span></p>
+
+    <p class="rule">Write policy against the action, not the actor: <span>one rule bounds people and agents.</span></p>
+  </main>
+
+  <aside class="notes">
+    The other two controls, policy and the freeze, turn out to be one machine.
+
+    One policy set, written once in Git with its own tests, so the policies are code we review. It runs in two places. First in CI: kyverno apply against the manifests before anything merges. A violation becomes a ninety-second test failure, for a person or for an agent. Nobody can iterate against a rejected sync at two in the morning.
+
+    Then at admission. The hot path is CEL admission policy, inside the API server, so there's no webhook that can be down. Be honest about the flag: generating that CEL from our Kyverno set is a documented capability we haven't run, and we verify it before anyone treats that box as a design. Kyverno keeps what CEL can't express.
+
+    Now the freeze. Today it means someone refusing to click. Instead, the change record is approved in the ITSM system exactly as today, and projected into the cluster as a custom resource that policy reads. Admission never calls the ITSM API at request time, because a policy that calls an outside service fails closed the first time that service is slow. Argo CD's sync windows already cover the calendar freeze.
+
+    And the line at the bottom is the one Path 2 depends on. Write policy against the action, not the actor, and the rule that stops a person also bounds an agent.
+
+    Last mechanism: how a version moves between environments.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
