@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Meta's ratio, and ours</title>
+  <title>Meta's fleet, and ours</title>
   <link rel="stylesheet" href="../../_kit/runtime/slide.css">
   <link rel="stylesheet" href="../theme/theme.css">
   <style>
@@ -28,20 +28,20 @@
 <body>
   <main class="slide" data-energy="4">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
-    <h1>Meta runs ~100 clusters with ~15 engineers.<br>We run 29 with three, by hand.</h1>
-    <svg class="bands" id="bands" viewBox="0 0 1920 1080" role="img" aria-label="Two bands at the same scale. Meta: fifteen engineers and a hundred cluster squares, about seven clusters per engineer. Us: three people and twenty-nine cluster squares, about ten per engineer."></svg>
-    <p class="verdict" data-step data-effect="rise">We already run more clusters per head than Meta. <span>The difference is what does the upgrades.</span></p>
-    <p class="src">Meta: <i>We Have GitOps at Home</i>, keynote abstract, KubeCon NA 2026. Our team of three is the model's assumption.</p>
+    <h1>Meta runs ~100 clusters with ~15 engineers.<br>We run 29 with a small team, by hand.</h1>
+    <svg class="bands" id="bands" viewBox="0 0 1920 1080" role="img" aria-label="Two bands at the same scale. Meta: fifteen engineers and a hundred cluster squares, about seven clusters per engineer. Us: a small team and twenty-nine cluster squares. Then what does the upgrades: code at Meta, people here."></svg>
+    <p class="verdict" data-step data-effect="rise">Fifteen engineers can run a hundred clusters. <span>The difference is what does the upgrades.</span></p>
+    <p class="src">Meta: <i>We Have GitOps at Home</i>, keynote abstract, KubeCon NA 2026.</p>
   </main>
 
   <aside class="notes">
     One number from the keynote stage to start. Meta runs about a hundred Kubernetes clusters, for AI research and inference, with about fifteen engineers. That's from their own keynote abstract.
 
-    We run twenty-nine. On our own hardware at two exchanges, in two AWS regions, and in a second cloud. And the clusters and the apps on them are upgraded by one team of three, mostly by hand.
+    We run twenty-nine. On our own hardware at two exchanges, in two AWS regions, and in a second cloud. And the clusters and the apps on them are upgraded by one small team, mostly by hand.
 
-    Click. Do the division. Meta is about seven clusters per engineer. We're about ten. We already run more clusters per head than Meta does.
+    Click. Now look at what does the upgrades. At Meta, about seven clusters per engineer, and it's code that does them: GitOps, the title of the talk. Here, it's people. It's us.
 
-    Click. So the difference isn’t headcount. It's what does the upgrades. At Meta it's code: GitOps, the title of the talk. Here, it's the three of us.
+    Click. So fifteen engineers can run a hundred clusters. The difference isn’t how many of us there are. It's what does the upgrades.
 
     That's the talk. For the next forty minutes, every claim comes with a receipt: someone at the show who already does it, and the config it takes. Here's what we brought back.
   </aside>
@@ -71,16 +71,15 @@
       s += `<text class="how" x="120" y="${MY + 80}">~100 clusters, ~15 engineers</text>`;
       people(140, MY + 158, 15, 8, 'user');
       band(MY, 100, '');
-      // us: 29 clusters, 3 people
+      // us: 29 clusters, a small team (not counted: no headcount on this slide)
       const UY = 672;
       s += `<line class="rule" x1="120" x2="1800" y1="${UY - 36}" y2="${UY - 36}"/>`;
       s += `<text class="who us" x="120" y="${UY + 40}">Us</text>`;
-      s += `<text class="how" x="120" y="${UY + 80}">29 clusters, one team of three</text>`;
-      people(140, UY + 158, 3, 7, 'you');
+      s += `<text class="how" x="120" y="${UY + 80}">29 clusters, one small team</text>`;
       band(UY, 29, 'ours');
-      // ratios (one click)
-      s += `<g data-step data-effect="rise"><text class="ratio-n" x="1800" y="${MY + 120}">~7</text><text class="ratio-t" x="1800" y="${MY + 160}">clusters per engineer</text>`;
-      s += `<text class="ratio-n us" x="1800" y="${UY + 76}">~10</text><text class="ratio-t" x="1800" y="${UY + 116}">clusters per person</text></g>`;
+      // what does the upgrades (one click)
+      s += `<g data-step data-effect="rise"><text class="ratio-n" x="1800" y="${MY + 120}">code</text><text class="ratio-t" x="1800" y="${MY + 160}">does the upgrades</text>`;
+      s += `<text class="ratio-n us" x="1800" y="${UY + 76}">people</text><text class="ratio-t" x="1800" y="${UY + 116}">do the upgrades</text></g>`;
       Peaks.draw('#bands', s);
     })();
   </script>

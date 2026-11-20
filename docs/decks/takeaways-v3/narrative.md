@@ -131,8 +131,9 @@ Sources: GOALS §0, §1.4, §1.7, §2, §3.1, §3.5, §3.6, §4.2, §5.1, §5.2,
   (AI) 976 / 3,756 / 1,560. The team of three is one admin (850 h) and two platform
   engineers (1,700 h); developers have no line. The slides after the chart are grouped
   in that order, each with a group tag.
-- **One team, not one person (user, 2026-11-17).** One team of three owns cluster *and* app
-  upgrades; it's drawn as three climbers roped together. The toil model now includes app
+- **One team, not one person (user, 2026-11-17).** One small team owns cluster *and* app
+  upgrades; it's drawn as three climbers roped together, a party, not a headcount. The
+  slides say "a small team", never a number (user, 2026-11-20). The toil model now includes app
   upgrades: 6 a year per app placement at 0.5 h each by hand, plus the cluster and tool
   hours below. Apps and pods by stage: 20 / 640 → 20 / 1,120 → 32 / 1,504 → 50 / 2,320 →
   50 / 3,040 → 65 / 4,000 → (AI) 80 / 4,800; pods = app placements × 8 replicas.

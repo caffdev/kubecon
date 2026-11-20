@@ -29,7 +29,7 @@
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
     <h2>Same team, same 29 clusters:<br>five first pull requests start it this quarter.</h2>
 
-    <svg class="echo" id="echo" viewBox="0 0 1920 1080" role="img" aria-label="The opening's twenty-nine cluster squares and three people again. Under them: 1,672 hand rollouts a year struck out, replaced by 80 wave approvals."></svg>
+    <svg class="echo" id="echo" viewBox="0 0 1920 1080" role="img" aria-label="The opening's twenty-nine cluster squares and the same roped team again. Under them: 1,672 hand rollouts a year struck out, replaced by 80 wave approvals."></svg>
 
     <ol class="asks">
       <li class="a1"><p class="what">No hand-built cluster, ever again</p><p class="obj">clusters/&lt;next&gt;.yaml <span>a CAPI Cluster on-prem, a Region claim in AWS</span></p></li>
@@ -42,9 +42,9 @@
   </main>
 
   <aside class="notes">
-    So, back to where we started. Meta runs about a hundred clusters with fifteen engineers. We run twenty-nine with three. The difference was never headcount. It's what does the work.
+    So, back to where we started. Meta runs about a hundred clusters with fifteen engineers. We run twenty-nine with a small team. The difference was never headcount. It's what does the work.
 
-    Same three people on the left, same twenty-nine clusters. What changes is the job: not sixteen hundred hand rollouts a year, but about eighty wave approvals, and the pipeline does the rest.
+    Same team on the left, same twenty-nine clusters. What changes is the job: not sixteen hundred hand rollouts a year, but about eighty wave approvals, and the pipeline does the rest.
 
     Five first pull requests, each one an object you've already seen.
 
@@ -71,8 +71,8 @@
       let s = '';
       for (let k = 0; k < 29; k++) s += `<rect class="sq" x="${X0 + (k % PER) * (S + G)}" y="${Y0 + Math.floor(k / PER) * (S + G)}" width="${S}" height="${S}" rx="5"/>`;
       s += `<text class="echo-t" x="${X0 + 270}" y="${Y0 + 26}">29 clusters</text>`;
-      for (let k = 0; k < 3; k++) s += Estate.person(X0 + 20 + k * 46, Y0 + 290, 0.8, 'you');
-      s += `<text class="echo-t" x="${X0 + 160}" y="${Y0 + 278}">the same three</text>`;
+      s += Estate.team(X0 + 20, Y0 + 290, 0.8);
+      s += `<text class="echo-t" x="${X0 + 160}" y="${Y0 + 278}">the same team</text>`;
       s += `<text class="echo-n was" x="${X0}" y="${Y0 + 380}">1,672</text><text class="echo-t" x="${X0 + 150}" y="${Y0 + 372}">hand rollouts</text>`;
       s += `<text class="echo-n" x="${X0}" y="${Y0 + 450}">80</text><text class="echo-t" x="${X0 + 150}" y="${Y0 + 442}">wave approvals a year</text>`;
       Peaks.draw('#echo', s);

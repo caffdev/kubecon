@@ -18,7 +18,7 @@
   <main class="slide" data-energy="3">
     <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
     <h1>Four clusters, ny4 with ch4 as its DR, and one team upgrading clusters and apps.</h1>
-    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The estate on day one: one on-prem zone with dev, staging, ny4 and ch4, ch4 tied to ny4 as its DR; one team of three, roped together; one square per app, twenty of them"></svg>
+    <svg class="map" id="map" viewBox="0 0 1680 540" role="img" aria-label="The estate on day one: one on-prem zone with dev, staging, ny4 and ch4, ch4 tied to ny4 as its DR; one small team, roped together; one square per app, twenty of them"></svg>
     <p class="census" id="census"></p>
   </main>
 
@@ -27,7 +27,7 @@
 
     Four clusters on our own hardware, next to the exchange. Dev and staging to build and test on. ny4 for production, and ch4 as its disaster-recovery twin, kept in lockstep with it. We built them with kubeadm, by hand, and that was the right call at the time.
 
-    And there's one team, the three in orange, roped together, who own the upgrades: the clusters and the apps on them. Kubernetes ships a new minor version three times a year, and they walk all four clusters through it, then the apps.
+    And there's one small team, in orange, roped together, who own the upgrades: the clusters and the apps on them. Kubernetes ships a new minor version three times a year, and they walk all four clusters through it, then the apps.
 
     Each little square is an app: twenty of them. The tally in the corner counts clusters, apps and pods, and all three are about to climb. Six hundred and forty pods today.
 

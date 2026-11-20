@@ -85,7 +85,7 @@ removed; `the-ask` closes on the title.
     circle.
   - Close (2): what we won't build; five first pull requests.
 - **The peak:** `failover`, slide 19 of 34 (56%). The second half's high is `triage`.
-- **The close:** the deck opens on Meta's ratio and closes on the same three people and 29
+- **The close:** the deck opens on Meta's ratio and closes on the same small team and 29
   clusters with the job changed by the pipeline, and the title said once more.
 - **Length:** 34 slides; about 40 minutes.
 
@@ -95,7 +95,7 @@ All of v4's editorial notes hold and are not repeated here: see
 `docs/decks/takeaways-v4/narrative.md`, "Editorial notes" (snippet fields are real, values
 illustrative; the ⚠️ checks on `RollingSync`, sandbox limits, `automountServiceAccountToken`
 with Pod Identity, the LinkedIn number conflict, the CVE chart; the toil model is
-illustrative and the team of three is an assumption; no failure cases from other companies;
+illustrative and its team size is an assumption, kept off the slides: "a small team", never a number; no failure cases from other companies;
 Ingress NGINX stays off the slides). Added here:
 - `tools-too`'s grid is seeded and illustrative, and says so on the slide.
 - `not-building`'s "a third of the AI talks were about running models" is eks-2030's count
@@ -137,18 +137,18 @@ Added for this deck:
 ### cold-open
 
 - **Act:** Open
-- **Job:** earn attention with the contrast an engineer can't ignore: a peer runs more
-  clusters per head than we do, and the difference is what does the work
-- **Headline:** Meta runs ~100 clusters with ~15 engineers. We run 29 with three, by hand.
-- **Visual:** two fields at the same scale, one square per cluster and one figure per
-  engineer: ours (29 squares in three zone colours, three alpenglow figures), Meta's
-  (100 squares, 15 figures). Click: the ratio under each, clusters per engineer (about 7
-  at Meta, about 10 for us): we already run more per head. The difference is what does
-  the upgrades
+- **Job:** earn attention with the contrast an engineer can't ignore: a peer runs a fleet
+  with a small team, and the difference is what does the work, not headcount
+- **Headline:** Meta runs ~100 clusters with ~15 engineers. We run 29 with a small team, by hand.
+- **Visual:** two fields at the same scale, one square per cluster: Meta's 100 squares with
+  one figure per engineer (15); ours, 29 squares and "one small team", no figures (no
+  headcount on the slide, user 2026-11-20). Click: what does the upgrades, at the right of
+  each band: "code" for Meta, "people" for us in alpenglow. Click: "Fifteen engineers can
+  run a hundred clusters. The difference is what does the upgrades."
 - **Energy:** 4
 - **Into next:** none of them got there by hiring. Here's what we brought back.
-- **Source:** GOALS §0.1 (Meta keynote abstract, *We Have GitOps at Home*). Team of three
-  is our assumption (v3 model).
+- **Source:** GOALS §0.1 (Meta keynote abstract, *We Have GitOps at Home*). Our team is
+  "a small team" on every slide; no headcount.
 
 ### journey
 
@@ -188,7 +188,7 @@ Added for this deck:
 - **Visual:** the estate map at stage 1 (dev, staging, ny4, ch4; ny4–ch4 tied as DR). Five
   clicks, each a stage: EKS for dev, qa, ftb; the second exchange; the migration's six;
   region 2's six; the second cloud's six, with "fingers crossed for AWS" beside it. The
-  tally climbs: 4 → 29 clusters, 20 → 65 apps, 640 → 4,000 pods. The team stays three
+  tally climbs: 4 → 29 clusters, 20 → 65 apps, 640 → 4,000 pods. The team stays the same
 - **Energy:** 3
 - **Into next:** two ways to upgrade, three kinds of place. Here's one upgrade.
 
@@ -636,7 +636,7 @@ Added for this deck:
 - **Job:** echo the opening with the ratio changed by the pipeline, then the ask as five
   first PRs
 - **Headline:** Same team, same 29 clusters: five first pull requests start it this quarter.
-- **Visual:** left, the opening's echo: 29 squares, the same three people, "1,672 hand
+- **Visual:** left, the opening's echo: 29 squares, the same roped team, "1,672 hand
   rollouts" struck and "80 wave approvals a year" under it. Right, five numbered lines in the
   path colours, each a PR with the objects it adds: (1) `clusters/<next>.yaml`, a CAPI
   Cluster or a Region claim; (2) `wave:` on 29 cluster secrets, RollingSync, a gate Job,
