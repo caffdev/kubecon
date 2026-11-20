@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Field, label, Job</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); }
+    h2 { font-size: 80px; max-width: 1640px; line-height: 1.02; }
+    .art { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+
+    .cc.change { left: var(--margin); top: 438px; width: 560px; }
+    .cc.change .cc-file { color: var(--lichen); }
+    .what { position: absolute; left: var(--margin); top: 704px; width: 520px; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .what b { color: var(--snow); font-weight: 600; }
+
+    .cl { fill: var(--haze); }
+    .wave-l { font: 500 28px var(--font-code); fill: var(--mint); text-anchor: middle; }
+    .wave-s { font: 400 24px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .job { fill: var(--bg); stroke: var(--snow); stroke-width: 3; }
+    .job-t { font: 500 26px var(--font-code); fill: var(--snow); text-anchor: middle; }
+    .hook { font: 400 24px var(--font-code); fill: var(--lichen); text-anchor: middle; }
+    .exit0 { font: 500 28px var(--font-code); fill: var(--mint); text-anchor: middle; }
+    .exit0-s { font: 400 24px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .exit1 { font: 500 28px var(--font-code); fill: var(--alpenglow); }
+    .exit1-s { font: 400 26px var(--font-body); fill: var(--snow); }
+    .buffer { fill: var(--alpenglow); }
+    .wheel { fill: var(--dusk); stroke: var(--mint); stroke-width: 4; }
+
+    .pay { position: absolute; left: var(--margin); top: 886px; font: 600 50px/1.05 var(--font-display); color: var(--snow); letter-spacing: -.005em; }
+    .pay s { color: #7d6a5c; text-decoration-color: var(--alpenglow); text-decoration-thickness: 4px; }
+    .pay b { color: var(--mint); font-weight: 600; }
+    .pay small { font: 400 24px var(--font-body); color: var(--lichen); letter-spacing: 0; margin-left: 10px; }
+    .catch { bottom: 44px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>On rails, a change is one field,<br>a wave is a label, and a gate is a Job.</h2>
+
+    <svg class="art" id="art" viewBox="0 0 1920 1080" role="img" aria-label="One track across the slide. At the left, the change: a one-line diff to an app's image, sitting on the track. Three stations follow: wave test with one cluster, wave canary with three, wave prod with twenty-five, a quarter at a time, Monday to Thursday. Between the stations, a gate: a PostSync Job. Exit 0 and the next wave starts. At the canary gate, exit 1 turns off onto a short siding: the wave stops before prod, and the revert is one commit."></svg>
+
+    <figure class="cc change">
+      <figcaption class="cc-file">apps/payments/<b>values-prod.yaml</b></figcaption>
+      <pre class="cc-body"><span class="del">image: payments@sha256:9f1c…</span>
+<span class="add">image: payments@sha256:4a7e…</span></pre>
+    </figure>
+    <p class="what">One line in Git. <b>Or a cluster’s version, or a tool’s release.</b></p>
+
+    <p class="pay" data-step="3" data-effect="rise">Nobody clicks sync: <s>1,672 hand rollouts</s> become <b>80 wave approvals</b> a year. <small>illustrative model</small></p>
+    <p class="catch">RollingSync sits behind an ApplicationSet controller flag: <b>check its maturity in our Argo CD before we lean on it.</b></p>
+  </main>
+
+  <aside class="notes">
+    Here's the turn. On rails, a rollout stops being a procedure and becomes three objects.
+
+    One: a change is one field. On the left, a pull request that moves payments to a new image digest. It's the same shape for a cluster's Kubernetes version in a Cluster API object, or a platform tool's release. One line in Git, reviewed like any other.
+
+    Click. Two: a wave is a label. Every cluster carries a wave label: test, canary or prod. One ApplicationSet with a RollingSync strategy rolls the change to the test cluster, then the canaries, then prod a quarter at a time, and only inside the change window, Monday to Thursday, nine to five. That window is a syncWindows block in the Argo CD project, not a calendar invite.
+
+    Click. Three: a gate is a Job. After each sync, a PostSync hook runs our check: targets up, rule errors zero, for fifteen minutes. Exit zero, and the next wave starts. Exit one, and the sync fails and the wave stops before prod. Argo CD doesn't roll back by itself; the revert is one commit, and a bot can open it.
+
+    Click. So nobody clicks sync. Teams hold on to manual sync because today it's their only change control. The window, the gate and a policy test in CI give them that control back. In our illustrative model, sixteen hundred hand rollouts become about eighty wave approvals a year.
+
+    One catch: progressive sync sits behind a controller flag in Argo CD, so we check it on a test ApplicationSet before we lean on it.
+
+    That's the shape. Here's a peer who already runs it, at about ten times our size.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/rails.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      const TY = 656;                                   // the track's centre line
+      const ST = { test: 772, canary: 1078, prod: 1600 };
+      const GATES = [925, 1250];
+      const tri = (x, y, w = 40) => `<path class="cl" d="M${x - w / 2} ${y}L${x} ${y - w * 0.86}L${x + w / 2} ${y}Z"/>`;
+      let s = `<g class="rl-lay">${Rails.h({ x1: 120, x2: 1800, y: TY })}</g>`;
+      // the change rides the track: wheels under the card
+      s += `<circle class="wheel" cx="210" cy="622" r="14"/><circle class="wheel" cx="570" cy="622" r="14"/>`;
+
+      // ---- step 1: the waves (clusters above, label over the stop)
+      let w = '';
+      w += tri(ST.test, 556);
+      [-56, 0, 56].forEach((dx) => { w += tri(ST.canary + dx, 556); });
+      // prod: the other 25, in three rows
+      [9, 8, 8].forEach((n, r) => { for (let c = 0; c < n; c++) w += tri(ST.prod - 184 + c * 46 + (r ? 23 : 0), 556 - (2 - r) * 44, 34); });
+      w += `<text class="wave-s" x="${ST.prod}" y="440">25% at a time, Mon–Thu</text>`;
+      w += `<text class="wave-l" x="${ST.test}" y="604">wave: test</text>`;
+      w += `<text class="wave-l" x="${ST.canary}" y="604">wave: canary</text>`;
+      w += `<text class="wave-l" x="${ST.prod}" y="604">wave: prod</text>`;
+      for (const x of Object.values(ST)) w += Rails.stop(x, TY, { w: 56, hgt: 70, lit: true });
+      s += `<g data-step="1">${w}</g>`;
+
+      // ---- step 2: the gates, each a Job; exit 1 turns off onto a siding after the canary gate
+      let g = '';
+      for (const x of GATES) {
+        g += `<rect class="job" x="${x - 52}" y="${TY - 32}" width="104" height="64" rx="10"/><text class="job-t" x="${x}" y="${TY + 9}">Job</text>`;
+        g += `<text class="exit0" x="${x}" y="${TY + 84}">exit 0</text><text class="exit0-s" x="${x}" y="${TY + 116}">next wave</text>`;
+      }
+      const sx = GATES[1] + 56, sy = TY + 15, ey = TY + 160;
+      g += `<g class="rl-track warm"><path class="rl-rail" d="M${sx} ${sy}C${sx + 60} ${sy} ${sx + 70} ${ey} ${sx + 150} ${ey}H${sx + 196}"/></g>`;
+      g += `<rect class="buffer" x="${sx + 196}" y="${ey - 22}" width="12" height="44" rx="3"/>`;
+      g += `<text class="exit1" x="${sx + 232}" y="${ey + 10}">exit 1</text><text class="exit1-s" x="${sx + 342}" y="${ey + 10}">stops before prod</text>`;
+      s += `<g data-step="2">${g}</g>`;
+      Peaks.draw('#art', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

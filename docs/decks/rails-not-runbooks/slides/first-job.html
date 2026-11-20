@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rung one: explain the alert</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 76px; max-width: 1700px; line-height: 1.02; }
+    .art { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .rung { font: 600 34px var(--font-display); fill: var(--lichen); text-anchor: middle; }
+    .rung.on { fill: var(--mint); }
+    .rung-s { font: 400 24px var(--font-body); fill: #7f979b; text-anchor: middle; }
+    .rung-s.on { fill: var(--snow); }
+    .zoom { fill: var(--mint); opacity: .06; }
+    .rl-stop.quiet-stop { stroke: #4b6470; }
+    .zoom-edge { stroke: var(--mint); stroke-width: 2; opacity: .45; fill: none; }
+
+    .card { position: absolute; top: 530px; border-radius: 14px; background: #0d1a22; border: 2px solid #22394a; overflow: hidden; }
+    .card h4 { font: 600 26px/1 var(--font-display); letter-spacing: .03em; padding: 14px 22px 12px; background: #0f2230; border-bottom: 2px solid #1c3242; color: var(--lichen); }
+    .card h4 b { color: var(--snow); font-weight: 600; }
+    .alert { left: var(--margin); width: 410px; }
+    .alert h4 { color: var(--alpenglow); }
+    .alert pre { margin: 0; padding: 16px 22px 18px; font: 400 25px/1.5 var(--font-code); color: var(--snow); white-space: pre; }
+    .alert pre i { font-style: normal; color: var(--lichen); }
+    .agent { left: 580px; width: 740px; border-color: var(--teal); }
+    .agent h4 { color: var(--teal); }
+    .agent ul { list-style: none; margin: 0; padding: 10px 22px 14px; }
+    .agent li { display: grid; grid-template-columns: 180px 1fr; column-gap: 14px; padding: 9px 0; border-top: 1px solid #1c3242; font-size: 28px; line-height: 1.25; color: var(--snow); }
+    .agent li:first-child { border-top: 0; }
+    .agent li i { font: 500 24px/1.4 var(--font-body); font-style: normal; color: var(--lichen); }
+    .agent li.act { color: var(--alpenglow); }
+    .human { left: 1380px; width: 420px; }
+    .human .btns { padding: 16px 22px 6px; display: grid; grid-template-columns: repeat(3, auto); gap: 10px; justify-content: start; }
+    .human .btn { padding: 8px 14px; border-radius: 10px; border: 2px solid var(--scree); font: 600 28px var(--font-display); color: var(--lichen); }
+    .human .btn.on { border-color: var(--teal); background: #0f2b28; color: var(--snow); }
+    .human p { padding: 10px 22px 18px; font-size: 26px; line-height: 1.3; color: var(--lichen); }
+    .human p b { color: var(--snow); font-weight: 600; }
+    .arrow { position: absolute; top: 610px; font: 600 44px var(--font-display); color: var(--lichen); }
+
+    .rx { position: absolute; left: var(--margin); top: 838px; width: 1680px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .rx div { display: grid; grid-template-columns: auto 1fr; column-gap: 22px; align-items: center; padding-top: 14px; border-top: 2px solid var(--scree); }
+    .rx .n { font: 600 76px/1 var(--font-display); color: var(--snow); letter-spacing: -.02em; }
+    .rx .n.warm { color: var(--alpenglow); }
+    .rx p { font-size: 27px; line-height: 1.28; color: var(--lichen); }
+    .rx p b { color: var(--snow); font-weight: 600; }
+    .src { bottom: 34px; font-size: 22px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Agents earn authority the way releases earn waves,<br>and rung one only explains alerts.</h2>
+
+    <svg class="art" id="art" viewBox="0 0 1920 1080" role="img" aria-label="A track of five rungs: shadow mode, graded, eligible, a permission PR, revocable. The first is lit; the rest are ahead and dim. Rung one, magnified below: an alert, the agent's explanation, and the responder's accept, modify or reject, logged."></svg>
+
+    <div class="card alert" data-step="1" data-effect="rise">
+      <h4>ALERT · <b>firing</b></h4>
+      <pre>KubePodCrashLooping
+<i>aws-1-prod</i> · payments
+<i>for</i> 6m</pre>
+    </div>
+    <span class="arrow" style="left:534px" data-step="1">→</span>
+    <div class="card agent" data-step="1" data-effect="rise">
+      <h4>THE AGENT · <b>explains, never acts</b></h4>
+      <ul>
+        <li><i>verdict</i>Real, not noise.</li>
+        <li><i>what changed</i>Argo CD synced payments 12 min ago.</li>
+        <li class="act"><i>suggests</i>Roll back: one revert PR.</li>
+      </ul>
+    </div>
+    <span class="arrow" style="left:1334px" data-step="2">→</span>
+    <div class="card human" data-step="2" data-effect="rise">
+      <h4>THE RESPONDER</h4>
+      <div class="btns"><span class="btn on">✓ accept</span><span class="btn">modify</span><span class="btn">reject</span></div>
+      <p><b>Every choice is logged:</b> the record that earns rung two.</p>
+    </div>
+
+    <div class="rx" data-step="3" data-effect="rise">
+      <div><span class="n">$0.33</span><p><b>Verkada:</b> per alert explained; ~4,700 a month, a summary in 139&nbsp;s.</p></div>
+      <div><span class="n warm">25%</span><p><b>Salesforce,</b> first try. A curated knowledge base and evals: <b>60–80%</b>.</p></div>
+    </div>
+    <p class="src">Rungs: Transfix, <i>Progressive Delivery for Trust</i> p9, p17. Verkada: abstract, no deck. Salesforce: <i>1000 Clusters, 1 Smarter Brain</i> p6, p21.</p>
+  </main>
+
+  <aside class="notes">
+    Fenced in is where an agent starts. How does it earn more? The same way a release earns a wave.
+
+    Across the top, five rungs, from Transfix's talk. Shadow mode: the agent decides, but the action is withheld. Then its work is graded against what actually happened. Then an eligibility rule, code that gives the same answer every time, says it's ready. Then a permission pull request, reviewed by people. And the revoke is designed before the grant. Their line: models produce evidence; code decides authority.
+
+    Rung one is a real job with no write path: explaining alerts.
+
+    Click. Payments is crash-looping on aws-1 prod. The agent reads and posts: real, not noise; Argo CD synced payments twelve minutes ago; suggestion, roll back with one revert PR. It doesn't act. Nothing to sandbox, nothing to gate.
+
+    Click. The responder accepts, modifies or rejects, and every choice is logged. That log is the track record the agent needs before it's allowed to open that PR itself.
+
+    Click. Receipts. Verkada runs this on nine clusters: forty-seven hundred alerts a month, thirty-three cents each, a summary in a hundred and thirty-nine seconds. Salesforce's first try was right a quarter of the time; a curated knowledge base and an eval harness took it to sixty to eighty percent. Budget for both, or expect the twenty-five.
+
+    That's our agents. Theirs are already at work on what we run.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/rails.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      const TY = 404;
+      const R = [
+        [220, 'Shadow mode', 'acts on nothing'],
+        [580, 'Graded', 'against outcomes'],
+        [940, 'Eligible', 'by a rule'],
+        [1300, 'Permission PR', 'reviewed, granted'],
+        [1660, 'Revocable', 'designed first'],
+      ];
+      // the zoom: rung one, magnified into the strip below
+      let s = `<g data-step="1"><path class="zoom" d="M190 ${TY + 36}L120 528H1800L250 ${TY + 36}Z"/>`;
+      s += `<path class="zoom-edge" d="M190 ${TY + 36}L120 528M250 ${TY + 36}L1800 528"/></g>`;
+      s += `<g class="rl-lay">${Rails.h({ x1: 120, x2: 400, y: TY })}${Rails.h({ x1: 400, x2: 1800, y: TY, cls: 'quiet' })}</g>`;
+      R.forEach(([x, name, sub], i) => {
+        s += Rails.stop(x, TY, { w: 56, hgt: 70, lit: i === 0, cls: i ? 'quiet-stop' : '' });
+        s += `<text class="rung${i ? '' : ' on'}" x="${x}" y="${TY - 82}">${name}</text>`;
+        s += `<text class="rung-s${i ? '' : ' on'}" x="${x}" y="${TY - 50}">${sub}</text>`;
+      });
+      Peaks.draw('#art', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

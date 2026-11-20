@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1,672 rollouts by hand</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1680px; line-height: 1.02; }
+    .field { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .zone { font: 600 30px var(--font-display); fill: var(--snow); letter-spacing: .01em; }
+    .zone tspan { fill: var(--lichen); font-weight: 500; }
+    .zone.next { fill: var(--lichen); }
+    .zrule { stroke: var(--scree); stroke-width: 2; }
+    .grp { font: 600 32px var(--font-display); fill: var(--snow); }
+    .grp tspan { fill: var(--lichen); font: 400 26px var(--font-body); }
+    .gbar { fill: #1d2c34; }
+    .void { fill: #0d161b; }
+    .tick { fill: var(--haze); }
+    .ghost { fill: none; stroke: var(--haze); stroke-width: 2; stroke-dasharray: 4 4; opacity: .55; }
+    .sum { position: absolute; left: var(--margin); top: 908px; font: 600 50px/1 var(--font-display); color: var(--snow); letter-spacing: -.005em; }
+    .sum b { font-weight: 600; color: var(--haze); }
+    .sum .warm { color: var(--alpenglow); }
+    .sum .who { color: var(--alpenglow); }
+    .model-tag { position: absolute; left: var(--margin); bottom: 44px; max-width: 1680px; }
+    .is-entered .field .row { animation: fade-in 260ms both; animation-delay: calc(250ms + var(--r) * 55ms); }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>By hand, twenty tools on 29 clusters<br>is 1,672 rollouts a year.</h2>
+
+    <svg class="field" id="field" viewBox="0 0 1920 1080" role="img" aria-label="A field of marks. Twenty-nine columns, one per cluster: eight on-prem, fifteen in AWS, six in the second cloud. Twenty rows, one per platform tool: twelve run on every cluster, two on-prem only, two in the cloud only, four on a few. Each install is four small ticks, one per release a year: 418 installs, 1,672 ticks. Three dashed columns at the right are the next clusters."></svg>
+
+    <p class="sum" data-step data-effect="rise"><b>418</b> installs × <b>4</b> releases a year = <span class="warm">1,672 rollouts</span>, by <span class="who">one small team</span>.</p>
+    <p class="model-tag"><b>Illustrative model, not our measurements.</b> Not counted: Kubernetes itself (kubeadm, 54 steps a cluster, three minors a year) or the apps.</p>
+  </main>
+
+  <aside class="notes">
+    Here's what "by hand" adds up to. This is our estate as a field. Every column is a cluster: eight on-prem, fifteen in AWS, six in the second cloud. Every row is a platform tool: Argo CD, Prometheus, the Splunk collector, cert-manager, Kyverno, Velero and the rest. Twelve run everywhere, a few only on-prem or only in the cloud, and four on a handful.
+
+    Every little tick is one rollout: one tool, on one cluster, one release. Four releases a year each.
+
+    Click. Four hundred and eighteen installs, four releases a year: sixteen hundred and seventy-two rollouts, all done by one small team, by hand. And that's an illustrative model, not a measurement; the inputs are in the repo, and we'll swap in real numbers before this goes further.
+
+    It also leaves things out. Kubernetes itself: a kubeadm upgrade is fifty-four steps on one cluster, three minors a year. And every app on top.
+
+    And look at the right edge. The next cluster isn't free. It's another column of ticks, for the same team.
+
+    Peers ten times our size don't do this by hand. They put the change on rails.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      // the toil model's twenty tools (assets/toil-model.json, twenty_tools): where each one runs
+      const ZONES = [
+        { id: 'onprem', name: 'On-prem', n: 8 },
+        { id: 'aws', name: 'AWS', n: 15 },
+        { id: 'cloud2', name: 'Second cloud', n: 6 },
+      ];
+      const GROUPS = [
+        { label: '12', sub: 'on every cluster', n: 12, on: () => true },
+        { label: '2', sub: 'on-prem only', n: 2, on: (z) => z === 'onprem' },
+        { label: '2', sub: 'cloud only', n: 2, on: (z) => z !== 'onprem' },
+        { label: '4', sub: 'on a few', n: 4, few: [
+          [['onprem', 2], ['onprem', 3], ['aws', 0]],
+          [['aws', 0], ['aws', 1], ['aws', 2]],
+          [['onprem', 2], ['aws', 4], ['cloud2', 0]],
+          [['onprem', 3], ['aws', 9], ['aws', 10]],
+        ] },
+      ];
+      const X0 = 486, COLW = 39, CELLW = 33, ZG = 26, GHOSTG = 40;
+      const Y0 = 382, ROWH = 22, CELLH = 16, GG = 18;
+      // column x positions, zone by zone, then three ghost columns
+      const cols = [];
+      let x = X0;
+      for (const z of ZONES) {
+        z.x = x;
+        for (let i = 0; i < z.n; i++) cols.push({ zone: z.id, i, x: x + i * COLW });
+        x += z.n * COLW + ZG;
+      }
+      const ghostX = x - ZG + GHOSTG;
+      let s = '';
+      // zone heads
+      for (const z of ZONES) {
+        s += `<text class="zone" x="${z.x}" y="350">${z.name} <tspan>${z.n}</tspan></text>`;
+      }
+      s += `<text class="zone next" x="${ghostX}" y="350">next</text>`;
+      // rows
+      let y = Y0, r = 0, installs = 0, ticks = 0;
+      GROUPS.forEach((g, gi) => {
+        const gy0 = y;
+        for (let k = 0; k < g.n; k++, r++) {
+          let row = `<g class="row" style="--r:${r}">`;
+          for (const c of cols) {
+            const on = g.few ? g.few[k].some(([z, i]) => z === c.zone && i === c.i) : g.on(c.zone);
+            if (!on) { row += `<rect class="void" x="${c.x}" y="${y}" width="${CELLW}" height="${CELLH}" rx="3"/>`; continue; }
+            installs++;
+            for (let t = 0; t < 4; t++, ticks++) row += `<rect class="tick" x="${c.x + 1 + t * 9}" y="${y}" width="5" height="${CELLH}" rx="1.5"/>`;
+          }
+          // the next clusters: dashed, on the rows that would land on them
+          if (!g.few && gi !== 1) for (let j = 0; j < 3; j++) row += `<rect class="ghost" x="${ghostX + j * COLW}" y="${y}" width="${CELLW}" height="${CELLH}" rx="3"/>`;
+          s += row + '</g>';
+          y += ROWH;
+        }
+        const gy1 = y - (ROWH - CELLH);
+        // group label, left, centred on its rows, with a bar showing its extent
+        s += `<rect class="gbar" x="452" y="${gy0}" width="6" height="${gy1 - gy0}" rx="3"/>`;
+        const mid = (gy0 + gy1) / 2;
+        s += `<text class="grp" x="${120}" y="${mid + 11}" >${g.label} <tspan>${g.sub}</tspan></text>`;
+        y += GG;
+      });
+      console.log('upkeep: installs', installs, 'ticks', ticks); // 418, 1672
+      Peaks.draw('#field', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

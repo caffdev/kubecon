@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinkedIn: 40 days → 7, a week → an hour</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--haze-ink); }
+    h2 { font-size: 80px; max-width: 1680px; line-height: 1.02; }
+    .receipt { top: 300px; width: 800px; }
+    .receipt.r1 { left: var(--margin); }
+    .receipt.r2 { left: 1000px; }
+    .receipt figcaption { font-size: 24px; }
+    .receipt .ring { border-color: var(--alpenglow-ink); box-shadow: none; }
+    .got { position: absolute; top: 826px; width: 800px; display: grid; grid-template-columns: auto 1fr; column-gap: 28px; align-items: center; padding-top: 18px; border-top: 3px solid var(--hairline); }
+    .got.g1 { left: var(--margin); }
+    .got.g2 { left: 1000px; }
+    .got .n { font: 600 84px/1 var(--font-display); color: var(--slate); letter-spacing: -.02em; white-space: nowrap; }
+    .got .n i { font-style: normal; color: var(--haze-ink); }
+    .got p { font-size: 28px; line-height: 1.25; color: var(--slate-quiet); }
+    .got p b { color: var(--slate); font-weight: 600; }
+    .catch { bottom: 40px; }
+  </style>
+</head>
+<body>
+  <main class="slide snow" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>LinkedIn runs 250+ clusters on rails:<br>40 days became 7, and a week became an hour.</h2>
+
+    <figure class="receipt r1">
+      <div class="frame"><img src="../assets/stage/skip-level-upgrades-p02.png" alt="LinkedIn's result slide: v1.31 to v1.34 across production, 250+ clusters, about 500K nodes, on-prem. One minor at a time took six fleet waves and 40 business days; with emulated version, one rollout plus promotion took 7 business days."><span class="ring" style="left:652px;top:118px;width:124px;height:236px"></span></div>
+      <figcaption><b>LinkedIn</b> <i>Binary Version Is Not Behavior</i>, p2 · KubeCon NA 2026</figcaption>
+    </figure>
+    <figure class="receipt r2">
+      <div class="frame"><img src="../assets/stage/canary-namespaces-linkedin-p25.png" alt="LinkedIn's canary pipeline result: from a week of hoping to an hour of proof. Speed went from about one week per release, cluster by cluster, to about one hour, auto-validated. Ten or more potential incidents were caught before prod."><span class="ring" style="left:6px;top:102px;width:784px;height:40px"></span></div>
+      <figcaption><b>LinkedIn</b> <i>Ship Faster, Ship Safer</i>, p25 · KubeCon NA 2026</figcaption>
+    </figure>
+
+    <div class="got g1"><span class="n">40 <i>→</i> 7</span><p>business days for <b>three Kubernetes minors</b>: one rollout and a promotion</p></div>
+    <div class="got g2"><span class="n">1 wk <i>→</i> 1 h</span><p>per release, <b>auto-validated</b>; 10+ potential incidents caught before prod</p></div>
+
+    <p class="catch">The skip-level upgrade ran on LinkedIn’s own tooling: <b>check kubeadm and Cluster API support for emulated versions before we promise it.</b></p>
+  </main>
+
+  <aside class="notes">
+    Here's a peer already running it: LinkedIn, more than two hundred and fifty clusters on their own hardware, roughly ten times our fleet. Two of their slides, two talks, both halves of what we just drew.
+
+    On the left, clusters. They took production from Kubernetes 1.31 to 1.34, three minors. One minor at a time was six fleet waves and forty business days. They did it in one rollout and a promotion: seven. The trick is in the title, binary version is not behaviour. Ship the new binaries pinned to the old behaviour with the emulated-version flag, soak, then raise the version. One promotion instead of three upgrades.
+
+    On the right, releases. Their canary pipeline is the gate we just drew: Argo CD syncs the canary, a PostSync Job decides, exit zero or exit one. A release went from about a week, cluster by cluster, to about an hour, validated automatically. And it caught more than ten potential incidents before production.
+
+    One honest catch. LinkedIn ran the skip-level upgrade with their own control-plane tooling. Before we promise it, we check what kubeadm and Cluster API support. And patches still ship every month, through the waves.
+
+    So that's clusters and tools on rails. Now what it buys the people who write the apps.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

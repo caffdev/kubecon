@@ -290,3 +290,24 @@
 .callouts li b { display: block; font: 500 25px/1.25 var(--font-code); color: var(--path); margin-bottom: 4px; }
 .callouts li.on { border-left-color: var(--alpenglow); }
 .callouts li.on b { color: var(--alpenglow); }
+
+
+/* ================= ten-slide draft additions =================
+   Additive only: new classes and keyframes, no edits to the rules above, because draft
+   main shares this file. The rails (theme/rails.js) are the draft's signature: two mint
+   rails and their sleepers, drawn only where something rides them. */
+.rl-rail { fill: none; stroke: var(--mint); stroke-width: 5; stroke-linecap: round; }
+.rl-sleeper { stroke: var(--mint); stroke-width: 7; stroke-linecap: round; opacity: .38; }
+.rl-stop { fill: var(--bg); stroke: var(--mint); stroke-width: 4; }
+.rl-stop.lit { fill: var(--mint); }
+.rl-track.quiet .rl-rail { stroke: var(--scree); }
+.rl-track.quiet .rl-sleeper { stroke: var(--scree); opacity: .7; }
+.rl-track.warm .rl-rail { stroke: var(--alpenglow); }
+.rl-track.warm .rl-sleeper { stroke: var(--alpenglow); opacity: .4; }
+.is-entered .rl-lay { animation: rl-lay 1400ms 250ms var(--step-ease) both; }
+@keyframes rl-lay { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.is-entered .rl-lay-down { animation: rl-lay-down 1200ms 250ms var(--step-ease) both; }
+@keyframes rl-lay-down { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+
+/* a headline sized for the ten-slide draft: two lines, the picture below */
+.t10-h { font-size: 80px; max-width: 1640px; line-height: 1.02; letter-spacing: -.01em; }

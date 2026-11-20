@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Close the circle</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 80px; max-width: 1640px; line-height: 1.02; }
+
+    .loop { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ring { fill: none; stroke: var(--teal); stroke-width: 4; opacity: .7; }
+    .arrow { fill: var(--mint); }
+    .is-entered .ring-track { animation: fade-in 1200ms 200ms both; }
+    .disc { fill: var(--bg); stroke: var(--scree); stroke-width: 2.5; }
+    .disc.theirs { stroke: var(--alpenglow); }
+    .disc.ours { stroke: var(--teal); }
+    .ag { fill: var(--teal); }
+    .ag.theirs { fill: var(--alpenglow); }
+    .lake { fill: var(--lake); }
+    .wave { fill: none; stroke: var(--mint); stroke-width: 3; }
+    .stn { font: 600 32px var(--font-display); fill: var(--snow); }
+    .ok { fill: none; stroke: var(--snow); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+    .stn.theirs { fill: var(--alpenglow); }
+    .stn-sub { font: 400 25px var(--font-body); fill: var(--lichen); }
+    .mid { font: 600 104px var(--font-display); fill: var(--teal); text-anchor: middle; letter-spacing: -.02em; }
+    .mid-sub { font: 400 28px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .ring { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    .is-entered .ring { animation: draw 1600ms var(--step-ease) both; animation-delay: 300ms; }
+    @keyframes draw { from { stroke-dashoffset: 1; } }
+    .is-entered .st { animation: fade-in 500ms both; animation-delay: calc(300ms + var(--i) * 320ms); }
+
+    .src { max-width: 1200px; }
+    .cc.pr { left: 1250px; top: 330px; width: 560px; }
+    .cc.pr .cc-file b { color: var(--teal); }
+    .pr-note { position: absolute; left: 1250px; top: 284px; font: 400 26px var(--font-body); color: var(--lichen); }
+    .pr-note b { color: var(--snow); font-weight: 600; }
+    .nv { position: absolute; left: 1250px; top: 560px; width: 560px; padding-top: 20px; border-top: 3px solid var(--scree); }
+    .nv-n { font: 600 60px/1 var(--font-display); color: var(--snow); letter-spacing: -.02em; }
+    .nv-n span { color: var(--mint); }
+    .nv-t { margin-top: 16px; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .nv-t b { color: var(--snow); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Close the circle: our agents patch what theirs find,<br>and the waves roll it out.</h2>
+
+    <svg class="loop" id="loop" viewBox="0 0 1920 1080" role="img" aria-label="A loop of five stations. A new hole lands, found by their agent. The lake finds which images and clusters run it. Our agent drafts the fix as a pull request with its own check. The team approves, after policy has checked it. The waves roll it out, and a failed gate stops the wave. Then the loop is ready for the next hole. In the middle: days, from a CVE to every cluster."></svg>
+
+    <p class="pr-note" data-step="1">The diff from the rails, <b>opened by an agent</b>:</p>
+    <figure class="cc pr" data-step="1" data-effect="rise">
+      <figcaption class="cc-file">PR #3121 · opened by <b>patch-agent</b></figcaption>
+      <pre class="cc-body small"><span class="c"># apps/payments/values-prod.yaml</span>
+<span class="del">image: payments@sha256:9f1c…</span>
+<span class="add">image: payments@sha256:4a7e…</span>
+<span class="c"># rebuilt: openssl 3.0.13 → 3.0.15</span></pre>
+    </figure>
+    <div class="nv" data-step data-effect="rise">
+      <p class="nv-n">~5,600 nodes<br><span>in 30 minutes</span></p>
+      <p class="nv-t"><b>NVIDIA:</b> an agent drove a CVE fix across 16 clusters by reading one status field. “The next CVE is a YAML change.”</p>
+    </div>
+    <p class="src">NVIDIA, <i>5,000 Nodes in Minutes, Twice in a Week</i> p6, p7. Transfix, <i>Progressive Delivery for Trust</i> p9, p17. The PR is ours.</p>
+  </main>
+
+  <aside class="notes">
+    That's our agents. Theirs are already at work on what we run: the Metal3 maintainer's AI found two hundred and twenty issues in one project in a year, and his first takeaway was plain. Shorten your upgrade cycle. So we close the circle.
+
+    From the top. A new CVE lands, found by their agent or anyone's. The lake finds it: one query over a read-only copy of the fleet, which clusters run the affected image. Our agent drafts the fix.
+
+    Click. And look at the fix. It's the same one-line diff from the rails: payments moves to a new image digest, rebuilt with the patched OpenSSL. Only this time an agent opened it.
+
+    Then CI runs the same rules as anyone's change, and the team approves. The agent that opens the PR never approves or merges it; that's Transfix's rule. Then the waves roll it out, each step gated on status.
+
+    Click. Is that fast enough? NVIDIA did it on stage: two CVEs days apart, about fifty-six hundred nodes across sixteen clusters, converged in thirty minutes, with an agent driving the rollout by reading one status field and stopping for a human if it ever said erroring or blocked. Their line: the next CVE is a YAML change.
+
+    In the middle of the circle: days, from a CVE to every cluster. Same small team, same rails. The agents just make it go round faster.
+
+    So here's where we start.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script src="../theme/rails.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      const CX = 690, CY = 628, R = 206, D = Math.PI / 180;
+      const at = (deg, r = R) => [CX + Math.cos(deg * D) * r, CY + Math.sin(deg * D) * r];
+      let s = `<g class="ring-track">${Rails.ring({ cx: CX, cy: CY, r: R, gauge: 24, n: 60 })}</g>`;
+      // arrowheads between stations, pointing clockwise
+      const ANG = [-90, -18, 54, 126, 198];
+      ANG.forEach((a) => {
+        const m = a + 36, [x, y] = at(m);
+        s += `<path class="arrow" d="M0 -11L16 0L0 11Z" transform="translate(${x} ${y}) rotate(${m + 90})"/>`;
+      });
+      // stations: icon on the ring, label outside
+      const icon = {
+        hole: (x, y) => `<circle class="disc theirs" cx="${x}" cy="${y}" r="40"/>` + Estate.agent(x, y, 38, 'ag theirs'),
+        lake: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/><ellipse class="lake" cx="${x}" cy="${y + 4}" rx="26" ry="12"/>`,
+        fix: (x, y) => `<circle class="disc ours" cx="${x}" cy="${y}" r="40"/>` + Estate.agent(x, y, 38, 'ag'),
+        team: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/><path class="ok" d="M${x - 16} ${y + 1}L${x - 4} ${y + 13}L${x + 18} ${y - 12}"/>`,
+        waves: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/>` + [10, 19, 28].map((r) => `<path class="wave" d="M${x - 14} ${y - r * 0.8}A${r} ${r} 0 0 1 ${x - 14} ${y + r * 0.8}"/>`).join(''),
+      };
+      const ST = [
+        ['hole', 'a new CVE lands', 'found by their agent', 'top'],
+        ['lake', 'the lake finds it', 'one query: which clusters', 'right'],
+        ['fix', 'our agent drafts the fix', 'a PR: one image digest', 'right'],
+        ['team', 'CI rules, then the team', 'it can’t approve itself', 'left'],
+        ['waves', 'the waves roll it out', 'gated on status', 'left'],
+      ];
+      ST.forEach(([k, name, sub, side], i) => {
+        const [x, y] = at(ANG[i]);
+        let lab = '';
+        const cls = k === 'hole' ? 'stn theirs' : 'stn';
+        if (side === 'top') lab = `<text class="${cls}" x="${x}" y="${y - 62}" text-anchor="middle">${name}<tspan class="stn-sub" dx="14">${sub}</tspan></text>`;
+        if (side === 'right') lab = `<text class="${cls}" x="${x + 62}" y="${y - 2}">${name}</text><text class="stn-sub" x="${x + 62}" y="${y + 30}">${sub}</text>`;
+        if (side === 'left') lab = `<text class="${cls}" x="${x - 62}" y="${y - 2}" text-anchor="end">${name}</text><text class="stn-sub" x="${x - 62}" y="${y + 30}" text-anchor="end">${sub}</text>`;
+        s += `<g class="st" style="--i:${i}">${icon[k](x, y)}${lab}</g>`;
+      });
+      s += `<text class="mid" x="${CX}" y="${CY + 18}">days</text><text class="mid-sub" x="${CX}" y="${CY + 70}">CVE to every cluster</text>`;
+      Peaks.draw('#loop', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

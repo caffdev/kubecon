@@ -1,6 +1,6 @@
 {
   "title": "Rails, not runbooks",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "title",
@@ -37,6 +37,18 @@
       "patch-loop",
       "not-building",
       "the-ask"
+    ],
+    "ten": [
+      "title-ten",
+      "cold-open-ten",
+      "upkeep",
+      "the-rails",
+      "receipts",
+      "failover-ten",
+      "three-ways-ten",
+      "first-job",
+      "close-the-circle",
+      "the-ask-ten"
     ]
   }
 }

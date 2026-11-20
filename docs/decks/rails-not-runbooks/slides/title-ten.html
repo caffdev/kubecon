@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rails, not runbooks</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .kicker { font: 600 34px/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--mint); }
+    .slide h1 { margin-top: 56px; font-size: 176px; line-height: .94; letter-spacing: -0.02em; max-width: 1100px; }
+    h1 .not { color: var(--lichen); }
+    .sub { margin-top: 34px; font: 600 54px/1.08 var(--font-display); color: var(--snow); max-width: 900px; }
+    .byline { margin-top: 36px; font-size: 30px; line-height: 1.4; color: var(--lichen); max-width: 1000px; }
+    .byline b { color: var(--snow); font-weight: 600; }
+
+    .hero { position: absolute; inset: 0; width: 1920px; height: 1080px; z-index: -1; }
+    .hero .pk-word { font: 600 32px var(--font-display); letter-spacing: .05em; }
+    .hero .rail { fill: none; stroke: var(--mint); stroke-width: 5; stroke-linecap: round; }
+    .hero .sleeper { stroke: var(--mint); stroke-linecap: round; opacity: .55; }
+    .hero .stop { fill: var(--night); stroke: var(--mint); stroke-width: 4; }
+    .hero .stop-word { font: 600 30px var(--font-display); letter-spacing: .05em; }
+
+    .is-entered .hero .pk { animation: rise-up 1300ms var(--step-ease) both; }
+    .is-entered .hero #t3 { animation-delay: 80ms; }
+    .is-entered .hero #t1 { animation-delay: 220ms; }
+    .is-entered .hero #t2 { animation-delay: 360ms; }
+    .is-entered .hero .track { animation: lay 1600ms 900ms var(--step-ease) both; }
+    @keyframes rise-up { from { transform: translateY(220px); } }
+    @keyframes lay { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <svg class="hero" id="hero" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <p class="kicker">KubeCon NA 2026, brought home</p>
+    <h1>Rails, <span class="not">not</span> runbooks</h1>
+    <p class="sub">One small team, a fleet that keeps growing, and the AI agents arriving on it.</p>
+    <p class="byline"><b>Evan and Kyle</b> · from four days in Salt Lake City, November 9–12</p>
+  </main>
+
+  <aside class="notes">
+    Rails, not runbooks.
+
+    Behind the title, three peaks. On the left, the fleet: the clusters themselves. In the middle, delivery: how every change reaches them. On the right, agents: the newest kind of user, arriving on all of it.
+
+    Along the foot of the range, the idea that ties them together. Today most change reaches our clusters through a runbook: a person, a checklist, a terminal. At KubeCon, teams ten times our size showed change that runs on rails: one track that every change rides, a person's or an agent's, with the checks built into the track.
+
+    That's the argument. The next fifteen minutes are the evidence, the config it takes, and five pull requests to start. One number first.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    // the corner star only; the range on this slide is the larger hero below
+    Peaks.draw('#range', Range.star());
+    (() => {
+      const P = [
+        { id: 't3', x: 1010, top: 620, hw: 500, cap: 'var(--haze)', word: 'fleet' },
+        { id: 't1', x: 1460, top: 430, hw: 500, cap: 'var(--mint)', word: 'delivery' },
+        { id: 't2', x: 1790, top: 590, hw: 340, cap: 'var(--teal)', word: 'agents' },
+      ];
+      let s = Peaks.disc({ cx: 1460, cy: 520, r: 230 });
+      s += Peaks.far({ y: 840, amp: 60, n: 12, seed: 11 });
+      for (const p of P) s += Peaks.peak({ id: p.id, x: p.x, top: p.top, base: 1290, hw: p.hw, cap: p.cap });
+      // the rails: one track along the foot of the range, a stop under each peak
+      const y1 = 948, y2 = 984;
+      let t = `<g class="track">`;
+      for (let x = 60; x <= 1880; x += 40) t += `<path class="sleeper" style="stroke-width:7" d="M${x} ${y1 - 9}V${y2 + 9}"/>`;
+      t += `<path class="rail" d="M40 ${y1}H1900M40 ${y2}H1900"/>`;
+      for (const p of P) {
+        t += `<rect class="stop" x="${p.x - 26}" y="${y1 - 14}" width="52" height="${y2 - y1 + 28}" rx="10"/>`;
+        t += `<text class="stop-word" x="${p.x}" y="1040" text-anchor="middle" style="fill:${p.cap}">${p.word}</text>`;
+      }
+      t += `</g>`;
+      Peaks.draw('#hero', s, t);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
