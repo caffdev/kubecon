@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Path 1</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 72px; max-width: 800px; }
+    .idea { position: absolute; left: var(--margin); top: 520px; width: 720px; }
+    .more { position: absolute; left: var(--margin); bottom: 72px; font-size: 26px; color: var(--muted); }
+    .more b { color: var(--path); font-weight: 500; }
+    .route { fill: none; stroke: var(--path); stroke-width: 4; }
+    .camp-dot { fill: var(--night); stroke: var(--path); stroke-width: 4; }
+    .camp-txt { font: 600 30px var(--font-display); fill: var(--path); text-anchor: middle; dominant-baseline: central; }
+    .stage { position: absolute; width: 440px; font: 600 34px/1.05 var(--font-display); color: var(--snow); }
+    .stage small { display: block; margin-top: 4px; font: 400 26px/1.2 var(--font-body); color: var(--muted); }
+    .stage small.dated { color: var(--alpenglow); }
+    .stage.warm { color: var(--alpenglow); }
+    .camp-dot.warm { stroke: var(--alpenglow); stroke-width: 7; fill: #1d140c; }
+    .camp-txt.warm { fill: var(--alpenglow); }
+    .gain .camp.warm { --c: var(--alpenglow); }
+    .gain { display: flex; align-items: center; gap: 24px; margin-bottom: 28px; font: 600 44px/1.05 var(--font-display); }
+    .gain .camp { width: 56px; height: 56px; font-size: 30px; }
+    .idea-lead { font-size: 32px; color: var(--muted); margin-bottom: 30px; }
+  </style>
+</head>
+<body>
+  <main class="slide" style="--path: var(--mint);">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Path 1: teams trade the sync button for better change control.</h2>
+    <div class="idea">
+      <p class="gain"><span class="camp warm">B</span>nothing ships during a freeze</p>
+      <p class="gain"><span class="camp warm">B</span>policy fails in CI, not at 2am</p>
+      <p class="gain"><span class="camp">D</span>a bad version rolls itself back</p>
+    </div>
+    <p class="stage" style="left: 1215px; top: 954px;">Argo becomes a control loop<small>January 2027</small></p>
+    <p class="stage warm" style="left: 1255px; top: 794px;">One policy set, CI and admission<small class="dated">Q1 2027: protect it</small></p>
+    <p class="stage" style="left: 1295px; top: 634px;">Promotion by pull request<small>from Q2 2027</small></p>
+    <p class="stage" style="left: 1335px; top: 474px;">The fleet rolls in waves<small>second half of 2027</small></p>
+    <p class="stage" style="left: 1375px; top: 314px;">Onboarding with no ticket<small>2028</small></p>
+  </main>
+
+  <aside class="notes">
+    Path 1 is the one the others are belayed to, so it goes first.
+
+    Teams don't hold on to the sync button because they like clicking. They hold on to it because it's the only change control they have. So the offer is a trade. Give up the button, and in exchange nothing ships during a freeze, a policy violation fails in CI instead of at two in the morning, and a bad version rolls itself back. The letters show which stage delivers each one, and two of the three come from stage B.
+
+    Five stages up the face. A, by January: Argo becomes a control loop in non-prod, with its guardrails in the same change. B, in the first quarter: one policy set, run in CI and at admission. That's the one in orange, the one we're asking you to protect. Then promotion as a pull request, the fleet rolling in waves in the second half of 2027, and in 2028 the summit: a team onboards an app with no platform ticket.
+
+    The full argument is its own deck, Path 1: Deployments as a service. Path 2 is the one everyone is looking at.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    const camps = [[1165, 980, 'A'], [1205, 820, 'B'], [1245, 660, 'C'], [1285, 500, 'D'], [1325, 340, 'E']];
+    const pts = camps.map(c => c[0] + ',' + c[1]).join(' ');
+    Peaks.draw('#range',
+      Peaks.far({ y: 820, amp: 60, n: 9, x0: 820, seed: 5 }),
+      Peaks.peak({ x: 1380, top: 120, base: 1080, hw: 480, cap: 'var(--path)', capScale: 0.5 }),
+      `<polyline class="route" points="${pts}"/>` +
+      camps.map(([x, y, t]) => { const w = t === 'B' ? ' warm' : ''; return `<circle class="camp-dot${w}" cx="${x}" cy="${y}" r="30"/><text class="camp-txt${w}" x="${x}" y="${y}">${t}</text>`; }).join('')
+    );
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

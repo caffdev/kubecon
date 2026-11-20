@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One line</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .line { font: 600 128px/1.06 var(--font-display); letter-spacing: -0.02em; max-width: 1420px; }
+    .line span { display: block; }
+    .line span + span { color: var(--mint); }
+    .why { margin-top: 34px; font-size: 34px; line-height: 1.32; color: var(--muted); max-width: 980px; }
+
+    .route { fill: none; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+    .r-fleet { stroke: var(--haze); }
+    .r-agents { stroke: var(--teal); }
+    .col { fill: var(--alpenglow); stroke: var(--night); stroke-width: 6; }
+    .halo { fill: url(#halo); }
+
+    .force { position: absolute; top: 958px; font: 600 40px/1.05 var(--font-display); }
+    .force small { display: block; margin-top: 4px; font: 400 28px/1.25 var(--font-body); color: var(--snow); opacity: .85; }
+    .fix { position: absolute; left: 790px; top: 838px; width: 620px; text-align: center; font: 600 38px/1.08 var(--font-display); color: var(--alpenglow); }
+
+    :root { --draw-duration: 1500ms; }
+    .is-entered .route { stroke-dasharray: 1; animation: climb 1700ms 300ms var(--step-ease) both; }
+    .is-entered .col, .is-entered .halo { animation: glow-in 700ms 1800ms both; }
+    .is-entered .fix { animation: glow-in 700ms 2000ms both; }
+    @keyframes climb { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+    @keyframes glow-in { from { opacity: 0; } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="ridge" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed>
+      <defs>
+        <radialGradient id="halo">
+          <stop offset="0" stop-color="#f4a261" stop-opacity=".55"/>
+          <stop offset="1" stop-color="#f4a261" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+    </svg>
+
+    <h2 class="line"><span>Let agents propose.</span><span>Let progressive delivery and policy decide.</span></h2>
+    <p class="why">Fleets and agents are one problem: change has to reach a cluster without a human reading every diff.</p>
+
+    <p class="fix">One fix for both: GitOps, policy, progressive delivery</p>
+    <p class="force" style="left: 120px; color: var(--haze);">More clusters than hands<small>still upgraded one at a time</small></p>
+    <p class="force" style="right: 120px; text-align: right; color: var(--teal);">Agents that change infrastructure<small>a new workload and a new user</small></p>
+  </main>
+
+  <aside class="notes">
+    We heard it five different ways, in five different tracks, from people who had already shipped it. Let agents propose. Let progressive delivery and policy decide.
+
+    Pause.
+
+    Here's why that line answers both forces. On the left, the fleet: more clusters than there are hands to upgrade them. On the right, agents: a new kind of workload that needs sandboxing and identity, and a new kind of user that wants to change our infrastructure.
+
+    Follow both routes up and they arrive at the same col. A change has to reach a cluster safely without a person reading every line, whether there are too many clusters for people to keep up, or the author isn't a person at all. The fix for both is the same: GitOps, policy and progressive delivery. Nobody this week argued for a human reading every diff. And nobody argued for an agent with production credentials and no gate.
+
+    So where are we standing when we start, and what ties the climbs together?
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // two summits and the col between them; both routes climb to the col
+    const col = [1100, 786];
+    Peaks.draw('#ridge',
+      Peaks.far({ y: 820, amp: 70, n: 13, seed: 21 }),
+      `<path class="pk-body" d="M0 1080 L0 960 L560 640 L${col[0]} ${col[1]} L1560 600 L1920 900 L1920 1080 Z"/>`,
+      `<path class="pk-shadow" d="M560 640 L${col[0]} ${col[1]} L880 1080 L700 1080 L560 720 Z"/>`,
+      `<path class="pk-shadow" d="M1560 600 L1920 900 L1920 1080 L1760 1080 L1560 690 Z"/>`,
+      `<path class="pk-cap" style="--cap: var(--haze)" d="M560 640 L626 678 L590 686 L656 730 L560 716 Z"/>`,
+      `<path class="pk-cap" style="--cap: var(--teal)" d="M1560 600 L1620 650 L1590 658 L1650 710 L1560 690 Z"/>`,
+      `<circle class="halo" cx="${col[0]}" cy="${col[1]}" r="120"/>`,
+      `<polyline class="route r-fleet" pathLength="1" points="210,940 420,900 380,860 620,830 580,800 860,800 ${col.join(',')}"/>`,
+      `<polyline class="route r-agents" pathLength="1" points="1720,940 1560,890 1610,850 1400,820 1440,790 1230,770 ${col.join(',')}"/>`,
+      `<circle class="col" cx="${col[0]}" cy="${col[1]}" r="20"/>`
+    );
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

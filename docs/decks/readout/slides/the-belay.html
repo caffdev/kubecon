@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The belay</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 100px; line-height: .98; max-width: 820px; }
+
+    /* route: camps on each face */
+    .route { fill: none; stroke-width: 4; }
+    .camp-dot { stroke-width: 4; fill: var(--night); }
+    .camp-txt { font: 600 30px var(--font-display); text-anchor: middle; dominant-baseline: central; }
+    .r1 { stroke: var(--mint); } .t1 { fill: var(--mint); }
+    .r2 { stroke: var(--teal); } .t2 { fill: var(--teal); }
+    .r3 { stroke: var(--haze); } .t3 { fill: var(--haze); }
+    .hit .camp-dot { stroke: var(--alpenglow); stroke-width: 7; fill: #1d140c; }
+    .hit .camp-txt { fill: var(--alpenglow); }
+    .tie .camp-dot { stroke-width: 6; }
+    .cg, .route { transition: opacity 500ms; }
+
+    /* presentation only: when the rope draws, every camp it doesn't touch steps back */
+    .slide.at-1:not(.is-pinned) .cg:not(.hit):not(.tie),
+    .slide.at-1:not(.is-pinned) .route { opacity: .28; }
+    .slide.at-1:not(.at-2):not(.is-pinned) .cg.tie { opacity: .28; }
+
+    .rope-1 { --rope: var(--alpenglow); stroke-width: 7; stroke-dasharray: 16 12; }
+    .rope-casing { fill: none; stroke: var(--night); stroke-width: 19; stroke-linecap: round; }
+    .rope-2 { --rope: var(--haze); stroke-width: 4; stroke-dasharray: 8 10; }
+    .arrow-1 { fill: var(--alpenglow); }
+    .arrow-2 { fill: var(--haze); }
+
+    .cap { position: absolute; font-size: 28px; line-height: 1.22; color: var(--snow); }
+    .cap b { display: block; margin-bottom: 4px; font: 600 40px/1.05 var(--font-display); }
+    .cap.c1 b { color: var(--alpenglow); }
+    .cap.c2 b { color: var(--haze); font-size: 32px; }
+    .cap.c2 { font-size: 26px; color: var(--lichen); }
+
+    .basecamp { position: absolute; left: 0; top: 996px; width: 1920px; height: 84px; background: #0b1115; border-top: 2px solid var(--scree); }
+    .today { position: absolute; top: 1018px; width: 480px; text-align: center; font-size: 28px; line-height: 1.2; color: var(--lichen); }
+    .today b { font: 600 30px/1 var(--font-display); margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+
+    <h2>No agent opens a PR until policy runs in CI.</h2>
+
+    <p class="cap c1" data-step="1" style="left: 1286px; top: 420px; width: 290px;"><b>The belay</b>Policy in CI (B) and promotion as a PR (C) come first.</p>
+    <p class="cap c2" data-step="2" style="left: 560px; top: 476px; width: 270px;"><b>The label rope</b>Cluster labels come before fleet waves.</p>
+
+    <div class="basecamp" aria-hidden="true"></div>
+    <p class="today" style="left: 240px;"><b class="p3">Path 3</b>clusters named by hand</p>
+    <p class="today" style="left: 820px;"><b class="p1">Path 1</b>Argo on manual sync</p>
+    <p class="today" style="left: 1340px;"><b class="p2">Path 2</b>Claude on laptops</p>
+  </main>
+
+  <aside class="notes">
+    So where are we standing? Base camp, along the bottom. Let's say it plainly, because everyone here knows it. Our clusters have names people know by heart and get upgraded one at a time. Argo CD is in every cluster, on manual sync: a dashboard somebody clicks. And Claude runs on laptops, with skills passed round in Slack. None of that is a failure. It's an honest starting point.
+
+    From there, three climbs. Path 1 up the middle: delivery, stages A to E. Path 2 on the right: agents, phases 0 to 3. Path 3 on the left: the fleet, stages 1 to 4. Mostly they're independent, which is why we can staff them in parallel. But two ropes tie them together, and one of them decides what we protect.
+
+    Click. The rope runs from Path 1, stages B and C, across to Path 2, phase 2. Stage B is one policy set, run in CI and at admission. Stage C makes promotion a pull request. Phase 2 is the first time an agent opens a PR. An agent's PR is only safe because the same policy and the same promotion path check it that check a human's. So no agent opens a PR until policy runs in CI. That's the belay.
+
+    Pause on that. The least visible work on Path 1, a policy layer nobody demos, gates the most visible work on Path 2. If one piece of work gets protected headcount, it's stage B.
+
+    Click. The second rope is thinner. Path 3's first stage is a cluster-label vocabulary, and Path 1's stage D rolls changes across the fleet by selecting on those labels. That one's nearly free to start, which is why Path 3 starts now.
+
+    Each climb in one slide, starting with the one the others are belayed to.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // camps: [x, y, label]
+    const p3 = [[330, 930, '1'], [364, 810, '2'], [398, 690, '3'], [432, 570, '4']];
+    const p1 = [[898, 930, 'A'], [933, 790, 'B'], [969, 650, 'C'], [1004, 510, 'D'], [1035, 390, 'E']];
+    const p2 = [[1439, 930, '0'], [1471, 810, '1'], [1503, 690, '2'], [1535, 570, '3']];
+    const hit = new Set(['p1B', 'p1C', 'p2-2']);   // tied by the belay
+    const tie = new Set(['p3-1', 'p1D']);           // tied by the label rope
+    const line = (pts, cls) => `<polyline class="route ${cls}" points="${pts.map(p => p[0] + ',' + p[1]).join(' ')}"/>`;
+    const camps = (pts, n, key) => pts.map(([x, y, t]) => {
+      const k = key + t, cls = hit.has(k) ? ' hit' : tie.has(k) ? ' tie' : '';
+      return `<g class="cg${cls}"><circle class="camp-dot r${n}" cx="${x}" cy="${y}" r="30"/>` +
+        `<text class="camp-txt t${n}" x="${x}" y="${y}">${t}</text></g>`;
+    }).join('');
+
+    Peaks.draw('#range',
+      Peaks.disc({ cx: 1060, cy: 500, r: 200, opacity: 0.78 }),
+      Peaks.far({ y: 760, amp: 80, n: 13, seed: 4 }),
+      Peaks.peak({ x: 480, top: 400, base: 1000, hw: 340, cap: 'var(--haze)' }),
+      Peaks.peak({ x: 1060, top: 290, base: 1000, hw: 360, cap: 'var(--mint)' }),
+      Peaks.peak({ x: 1580, top: 400, base: 1000, hw: 320, cap: 'var(--teal)' }),
+      line(p3, 'r3'), line(p1, 'r1'), line(p2, 'r2'),
+      camps(p3, 3, 'p3-'), camps(p1, 1, 'p1'), camps(p2, 2, 'p2-'),
+      // the ropes draw through masks so the dashes reveal along the curve
+      `<defs>
+        <mask id="m1" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+          <path d="M991 720 C 1150 610, 1330 600, 1476 687" pathLength="1" fill="none" stroke="#fff" stroke-width="60" data-step="1" data-effect="draw"/>
+        </mask>
+        <mask id="m2" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+          <path d="M360 925 C 520 900, 700 650, 978 510" pathLength="1" fill="none" stroke="#fff" stroke-width="36" data-step="2" data-effect="draw"/>
+        </mask>
+      </defs>
+      <g mask="url(#m1)">
+        <path class="rope-casing" d="M991 720 C 1150 610, 1330 600, 1450 672"/>
+        <path class="rope rope-1" d="M991 720 C 1150 610, 1330 600, 1450 672"/>
+        <path class="arrow-1" d="M1476 687 L1442 685 L1457 659 Z"/>
+      </g>
+      <g mask="url(#m2)">
+        <path class="rope-casing" style="stroke-width: 13" d="M360 925 C 520 900, 700 650, 950 524"/>
+        <path class="rope rope-2" d="M360 925 C 520 900, 700 650, 950 524"/>
+        <path class="arrow-2" d="M975 511 L957 533 L947 513 Z"/>
+      </g>`
+    );
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

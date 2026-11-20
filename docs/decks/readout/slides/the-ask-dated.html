@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The ask</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 84px; max-width: 1440px; }
+
+    .lane { position: absolute; left: var(--margin); width: 400px; }
+    .lane .name { font: 600 42px/1 var(--font-display); color: var(--path); }
+    .lane .name span { color: var(--snow); font-weight: 500; margin-left: 8px; }
+    .owner { margin-top: 18px; display: flex; align-items: flex-end; gap: 14px; width: 330px; font-size: 28px; line-height: 1; color: var(--lichen); }
+    .owner i { flex: 1; height: 26px; border-bottom: 3px solid var(--snow); }
+
+    .bar { stroke: none; }
+    .p1f { fill: var(--mint); } .p2f { fill: var(--teal); } .p3f { fill: var(--haze); }
+    .later { fill: none; stroke-width: 3; stroke-dasharray: 10 9; opacity: .8; }
+    .seg-t { font: 600 30px var(--font-display); fill: var(--night); dominant-baseline: central; white-space: pre; }
+    .protect { fill: var(--alpenglow); }
+    .protect-ring { fill: none; stroke: var(--alpenglow); stroke-width: 5; }
+    .axis { stroke: var(--scree); stroke-width: 3; }
+    .tick { stroke: var(--scree); stroke-width: 2; }
+    .yr { font: 600 30px var(--font-display); fill: var(--lichen); }
+    .today { stroke: var(--snow); stroke-width: 3; stroke-dasharray: 4 7; opacity: .7; }
+    .pole { stroke: var(--alpenglow); stroke-width: 4; }
+    .flag { fill: var(--alpenglow); }
+
+    .mark { position: absolute; font: 600 34px/1.05 var(--font-display); color: var(--alpenglow); white-space: nowrap; }
+    .mark small { display: block; margin-top: 2px; font: 400 26px/1.2 var(--font-body); color: var(--snow); }
+    .gated { position: absolute; font-size: 26px; color: var(--lichen); }
+
+    .is-entered .flag, .is-entered .pole { animation: up 600ms var(--step-ease) both; transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .flag { animation-delay: 500ms; }
+    @keyframes up { from { transform: scaleY(0); } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="tl" viewBox="0 0 1920 1080" aria-label="The three paths on a timeline from November 2026 to the end of 2028, with stage B and two dates marked"></svg>
+
+    <h2>Name three owners today, protect stage B, and commit to two dates.</h2>
+
+    <div class="lane" style="top: 404px; --path: var(--mint);"><p class="name">Path 1<span>Deployments</span></p><p class="owner">Owner<i></i></p></div>
+    <div class="lane" style="top: 610px; --path: var(--teal);"><p class="name">Path 2<span>Agents</span></p><p class="owner">Owner<i></i></p></div>
+    <div class="lane" style="top: 816px; --path: var(--haze);"><p class="name">Path 3<span>Fleet</span></p><p class="owner">Owner<i></i></p></div>
+
+    <p class="mark" id="mk-b" style="top: 340px;">Protect stage B</p>
+    <p class="mark" id="mk-1" style="top: 520px;">Alert triage<small>by Q2 2027</small></p>
+    <p class="mark" id="mk-2" style="top: 520px;">Agents open PRs<small>by the end of 2027</small></p>
+    <p class="gated" id="mk-g" style="top: 360px;">Everything dashed: gated, not scheduled</p>
+  </main>
+
+  <aside class="notes">
+    Back to Meta for a second. A hundred clusters and fifteen engineers isn't heroics and it isn't headcount. It's what a finished path looks like: every change takes the same path, through every cluster, and nobody clicks anything along the way. Here's what it takes to start, and it's small enough to say yes to today.
+
+    This is the plan, drawn to scale, from this month to the end of 2028, and the ask is written on it.
+
+    First, three owners, one per path. A name each, not a team. Those are the empty lines on the left.
+
+    Second, protect stage B. It's one policy set, run in CI and at admission. Nobody demos it, so it's the easiest thing to deprioritise, and it gates both Path 1's next stage and Path 2's agent pull requests. If one thing gets protected headcount, it's this.
+
+    Third, commit to two dates on Path 2. Alert triage by Q2 2027, which is safe because triage never writes anything. And agents opening pull requests by the end of 2027, which is a bet, and it's dated after stage B on purpose.
+
+    Path 3's first stage, the label schema, starts now. Everything dashed is gated, not scheduled. If the lower stages land early, the rest starts early. If they slip, the rest slips with them, and nobody has to re-argue the order.
+
+    We'll leave this up for the discussion. Each path has its own deck with the detail.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // to scale: 44px per month, November 2026 at x = 560; each lane ends at its own summit
+    const X0 = 560, PM = 44;
+    const m = (y, mo) => X0 + ((y - 2026) * 12 + mo - 11) * PM;
+    const H = 64;
+    const lanes = { p1: 414, p2: 620, p3: 826 }; // bar tops, level with each lane's name
+    const bar = (cls, x0, x1, y, t) => `<rect class="bar ${cls}" x="${x0}" y="${y}" width="${x1 - x0 - 4}" height="${H}" rx="8"/>` + (t ? `<text class="seg-t" x="${x0 + 14}" y="${y + H / 2}">${t}</text>` : '');
+    const later = (col, x0, x1, y) => `<rect class="later" style="stroke: var(--${col})" x="${x0}" y="${y}" width="${x1 - x0}" height="${H}" rx="8"/>`;
+    const end = m(2029, 1);
+    let s = '';
+    // axis
+    s += `<line class="axis" x1="${X0}" y1="960" x2="${end}" y2="960"/>`;
+    for (let i = 0; i <= 26; i += 3) s += `<line class="tick" x1="${X0 + i * PM}" y1="952" x2="${X0 + i * PM}" y2="968"/>`;
+    s += `<text class="yr" x="${X0 - 22}" y="1010">now</text><text class="yr" x="${m(2027, 1) - 24}" y="1010">2027</text><text class="yr" x="${m(2028, 1) - 24}" y="1010">2028</text>`;
+    s += `<line class="today" x1="${X0}" y1="396" x2="${X0}" y2="960"/>`;
+    // Path 1: A to February, B to April (protected), C and D through 2027, E undated
+    const p1 = lanes.p1;
+    s += bar('p1f', X0, m(2027, 2), p1, 'A');
+    s += `<rect class="bar protect" x="${m(2027, 2)}" y="${p1}" width="${m(2027, 4) - m(2027, 2) - 4}" height="${H}" rx="8"/><text class="seg-t" x="${m(2027, 2) + 14}" y="${p1 + H / 2}">B</text>`;
+    s += `<rect class="protect-ring" x="${m(2027, 2) - 9}" y="${p1 - 9}" width="${m(2027, 4) - m(2027, 2) + 14}" height="${H + 18}" rx="14"/>`;
+    s += bar('p1f', m(2027, 4), m(2028, 1), p1, 'C, D') + later('mint', m(2028, 1), end, p1);
+    s += `<text class="seg-t" style="fill: var(--mint)" x="${m(2028, 1) + 16}" y="${p1 + H / 2}">E</text>`;
+    // Path 2: phase 0 to February, 1 to July (flag), 2 to the end of 2027 (flag), 3 undated
+    const p2 = lanes.p2;
+    s += bar('p2f', X0, m(2027, 2), p2, '0') + bar('p2f', m(2027, 2), m(2027, 7), p2, '1') + bar('p2f', m(2027, 7), m(2028, 1), p2, '2') + later('teal', m(2028, 1), end, p2);
+    s += `<text class="seg-t" style="fill: var(--teal)" x="${m(2028, 1) + 16}" y="${p2 + H / 2}">3</text>`;
+    // a pole at each date, its pennant pointing back along the bar so the label sits clear to the right
+    for (const x of [m(2027, 7), m(2028, 1)]) s += `<line class="pole" x1="${x - 2}" y1="${p2}" x2="${x - 2}" y2="${p2 - 98}"/><path class="flag" d="M${x - 4} ${p2 - 100} L${x - 4} ${p2 - 62} L${x - 52} ${p2 - 81} Z"/>`;
+    // Path 3: stage 1 now, the rest undated
+    const p3 = lanes.p3;
+    s += bar('p3f', X0, m(2027, 4), p3, '1  starts now') + later('haze', m(2027, 4), end, p3);
+    s += `<text class="seg-t" style="fill: var(--haze)" x="${m(2027, 4) + 16}" y="${p3 + H / 2}">2–4</text>`;
+    // the summit at the end of each lane: undated, in the path's own colour
+    for (const [y, cap] of [[p1, 'var(--mint)'], [p2, 'var(--teal)'], [p3, 'var(--haze)']])
+      s += Peaks.peak({ x: end + 50, top: y - 58, base: y + H, hw: 50, cap, capScale: 1.25 });
+    document.getElementById('tl').innerHTML = s;
+    // labels sit on the same scale as the bars
+    const at = (id, x) => { document.getElementById(id).style.left = `${Math.round(x)}px`; };
+    at('mk-b', m(2027, 2) - 8); at('mk-1', m(2027, 7) + 12); at('mk-2', m(2028, 1) + 12); at('mk-g', m(2028, 1) + 4);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "title": "One range, three climbs: KubeCon NA 2026 readout",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "cold-open",
@@ -18,6 +18,18 @@
       "dates",
       "echo",
       "the-ask"
+    ],
+    "ten": [
+      "cold-open",
+      "the-answer",
+      "fleets",
+      "agents-arrive",
+      "one-line",
+      "the-belay",
+      "path-1-ten",
+      "path-2-ten",
+      "path-3-ten",
+      "the-ask-dated"
     ]
   }
 }

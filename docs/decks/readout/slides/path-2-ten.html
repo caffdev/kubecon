@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Path 2</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 72px; max-width: 800px; }
+    .idea { position: absolute; left: var(--margin); top: 500px; width: 720px; }
+    .more { position: absolute; left: var(--margin); bottom: 72px; font-size: 26px; color: var(--muted); }
+    .more b { color: var(--path); font-weight: 500; }
+    .route { fill: none; stroke: var(--path); stroke-width: 4; }
+    .camp-dot { fill: var(--night); stroke: var(--path); stroke-width: 4; }
+    .camp-txt { font: 600 30px var(--font-display); fill: var(--path); text-anchor: middle; dominant-baseline: central; }
+    .stage { position: absolute; width: 540px; font: 600 34px/1.05 var(--font-display); color: var(--snow); }
+    .stage small { display: block; margin-top: 4px; font: 400 26px/1.2 var(--font-body); color: var(--muted); }
+    .stage small.dated { color: var(--alpenglow); }
+    .stage.warm { color: var(--alpenglow); }
+    .camp-dot.warm { stroke: var(--alpenglow); stroke-width: 7; fill: #1d140c; }
+    .camp-txt.warm { fill: var(--alpenglow); }
+    .pod { position: relative; width: 420px; height: 236px; border: 4px dashed var(--teal); border-radius: 22px; padding: 26px 30px; }
+    .pod b { display: block; font: 600 42px/1 var(--font-display); color: var(--teal); margin-bottom: 14px; }
+    .pod p { font-size: 30px; line-height: 1.32; color: var(--snow); }
+    .exit { position: absolute; left: 480px; width: 360px; font: 600 36px/1.05 var(--font-display); color: var(--snow); }
+    .exit small { display: block; margin-top: 4px; font: 400 26px/1.2 var(--font-body); color: var(--muted); }
+    .exit::before { content: ""; position: absolute; left: -64px; top: 18px; width: 52px; height: 4px; background: var(--teal); }
+  </style>
+</head>
+<body>
+  <main class="slide" style="--path: var(--teal);">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Path 2: Claude leaves the laptop for a throwaway pod with an identity, a gateway and a log.</h2>
+    <div class="idea">
+      <div class="pod"><b>A throwaway pod</b><p>Short-lived identity. No static key.</p></div>
+      <p class="exit" style="top: 22px;">Gateway<small>every model and tool call</small></p>
+      <p class="exit" style="top: 146px;">Telemetry<small>a span and cost per call</small></p>
+    </div>
+    <p class="stage" style="left: 1220px; top: 934px;">Laptops: telemetry, one marketplace<small>to January 2027</small></p>
+    <p class="stage warm" style="left: 1265px; top: 754px;">Read-only agents: alert triage<small class="dated">by Q2 2027</small></p>
+    <p class="stage warm" style="left: 1310px; top: 574px;">Agents open pull requests<small class="dated">by the end of 2027</small></p>
+    <p class="stage" style="left: 1355px; top: 394px;">Teams add their own agents<small>2028, to decide</small></p>
+  </main>
+
+  <aside class="notes">
+    Path 2 is the one everyone is looking at, and the main thing to say about it is what it isn't. It isn't an agent platform we build from scratch.
+
+    Claude comes off the laptop and runs headless in a throwaway pod, started by Jenkins, which we already run. The pod gets a short-lived identity and no static key, in one namespace. Its only ways out are a gateway, which every model call and tool call goes through, and telemetry, so every call is a span with a team and a cost on it. After the run, the pod is gone.
+
+    Four phases. Phase 0 is laptops, now: telemetry on, and one shared marketplace for skills and MCP configs. The two in orange are the dates we're asking for. Phase 1, by Q2 2027: read-only agents, starting with alert triage. That one is safe, because triage never writes anything. Phase 2, by the end of 2027: agents open pull requests, and review is unchanged. That one is the bet, and it's dated after Path 1's stage B on purpose, because of the rope. Phase 3 is 2028, and it's a decision we make with real data.
+
+    The detail is its own deck, Path 2: Claude off the laptop, into the pod. And Path 3 is the ground the other two stand on.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    const camps = [[1170, 960, '0'], [1215, 780, '1'], [1260, 600, '2'], [1305, 420, '3']];
+    const pts = camps.map(c => c[0] + ',' + c[1]).join(' ');
+    Peaks.draw('#range',
+      Peaks.far({ y: 820, amp: 60, n: 9, x0: 820, seed: 5 }),
+      Peaks.peak({ x: 1380, top: 120, base: 1080, hw: 480, cap: 'var(--path)', capScale: 0.5 }),
+      `<polyline class="route" points="${pts}"/>` +
+      camps.map(([x, y, t]) => { const w = t === '1' || t === '2' ? ' warm' : ''; return `<circle class="camp-dot${w}" cx="${x}" cy="${y}" r="30"/><text class="camp-txt${w}" x="${x}" y="${y}">${t}</text>`; }).join('')
+    );
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
