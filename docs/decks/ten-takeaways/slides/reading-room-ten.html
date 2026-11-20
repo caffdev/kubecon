@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reading room only</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .t-cat .cat-left { width: 640px; }
+    .t-cat .cat-title { font-size: 148px; line-height: .92; margin-top: 28px; }
+    .t-cat .cat-lede { font-size: 38px; line-height: 1.32; margin-top: 40px; color: #E2E8DD; }
+    .t-cat .cat-card { left: 850px; top: 130px; width: 950px; padding: 40px 56px 64px; background-color: #F6F0DC;
+      background-image: repeating-linear-gradient(180deg, transparent 0 51px, rgba(74, 110, 168, .22) 51px 53px); background-position: 0 128px; }
+    .t-cat .cat-chead { border-bottom-width: 4px; }
+    .t-cat .cat-call { font-size: 30px; }
+    .t-cat .cat-ctitle { font-size: 36px; margin-top: 18px; }
+    .t-cat .cat-row { grid-template-columns: 196px 1fr; gap: 16px; margin-top: 22px; }
+    .t-cat .cat-k { font-size: 26px; line-height: 1.4; }
+    .t-cat .cat-v { font-size: 28px; line-height: 1.4; }
+    .hole { position: absolute; left: 50%; bottom: 22px; width: 40px; height: 40px; margin-left: -20px; border-radius: 50%; background: #1F3A2F; }
+    .t-cat .cat-stamp { left: 1330px; top: 806px; font-size: 64px; border-width: 7px; padding: 8px 28px; letter-spacing: 8px; }
+  </style>
+</head>
+<body>
+  <main class="slide t-cat">
+    <div class="cat-left">
+      <p class="cat-eyebrow">THE READING ROOM: GOALS §7</p>
+      <h2 class="cat-title">Reading room only.</h2>
+      <p class="cat-lede">Agents read a copy of production. They never get the keys to the stacks.</p>
+    </div>
+    <!-- audit off: the card is rotated 1.2°, so its line boxes overlap by geometry, not by layout -->
+    <div class="cat-card" data-audit="off">
+      <div class="cat-chead"><p class="cat-call">K8S 7.01</p><p class="cat-call">REFERENCE</p></div>
+      <p class="cat-ctitle">Production data for AI analysis</p>
+      <div class="cat-row"><p class="cat-k">HOLDINGS</p><p class="cat-v">1. Cluster state, in a database<br>2. Prometheus: query the store<br>3. Narrow, audited live tools</p></div>
+      <div class="cat-row"><p class="cat-k">ACCESS</p><p class="cat-v">Read-only. No production credentials.</p></div>
+      <div class="cat-row"><p class="cat-k">SEE ALSO</p><p class="cat-v">NVIDIA + Upbound: "a queryable audit layer"<br>Mastercard: an LLM on 30 EKS clusters</p></div>
+      <div class="cat-row"><p class="cat-k">FEEDS</p><p class="cat-v">Camp 1, alert triage</p></div>
+      <div class="hole" aria-hidden="true"></div>
+    </div>
+    <p class="cat-stamp" aria-hidden="true">READ ONLY</p>
+  </main>
+
+  <aside class="notes">
+    Rule nine, and the first thing camp one needs: something to read. Reading room only.
+
+    A reference library is the best-known place where you may read everything and take nothing out. That's the access rule for agents. They study a read-only copy of production: cluster state dumped to a database on a schedule, metrics queried from Prometheus, and where freshness matters, a small set of narrow, audited live tools. They get a desk in the reading room, never the keys to the stacks.
+
+    NVIDIA and Upbound showed a queryable audit layer like this. Mastercard argued the other side well, against a stale index, for a narrow tool surface, and they run an LLM across thirty EKS clusters that way.
+
+    Read-only extraction is how we say yes to agent analysis without saying yes to agent credentials in production. And it feeds camp one directly.
+
+    And every page they read goes on the receipt.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

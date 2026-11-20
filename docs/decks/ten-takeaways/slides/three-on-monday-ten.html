@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Three on Monday</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { background: radial-gradient(ellipse 1300px 520px at 960px 1080px, rgba(244, 162, 97, .26), rgba(244, 162, 97, 0) 72%), var(--night); }
+    .slide h2 { font-size: 96px; max-width: 1600px; line-height: .98; letter-spacing: -0.015em; }
+    .monday { position: absolute; left: var(--margin); top: 316px; width: 1680px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px; }
+    .ask { display: grid; grid-template-columns: 64px 1fr; gap: 0 22px; }
+    .ask .camp { --c: var(--alpenglow); grid-row: span 3; font-size: 32px; }
+    .ask .nm { font: 600 42px/1.05 var(--font-display); color: var(--alpenglow); }
+    .ask .td { font: 400 28px/1.25 var(--font-body); color: var(--lichen); margin-top: 6px; }
+    .ask .owner { display: flex; align-items: flex-end; gap: 12px; margin-top: 14px; font: 600 28px/1 var(--font-display); color: var(--lichen); }
+    .ask .owner span { flex: 1; border-bottom: 3px solid var(--scree); height: 28px; }
+    .rlab { position: absolute; width: 172px; text-align: center; font: 600 26px/1.08 var(--font-display); color: var(--lichen); }
+    .rlab b { display: block; font-size: 28px; color: var(--lichen); margin-bottom: 2px; }
+    .rlab.on { color: var(--snow); }
+    .rlab.on b { color: var(--alpenglow); }
+    .is-entered .lit .pk-cap { animation: glow 1400ms ease-out both; animation-delay: 500ms; }
+    @keyframes glow { from { filter: brightness(.35) saturate(.4); } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Ten rules; three of them cost a meeting, not a purchase.</h2>
+
+    <div class="monday">
+      <div class="ask"><span class="camp lit">2</span><p class="nm">Mark the seam</p><p class="td">a diagram with the CDK-to-Crossplane line drawn</p><p class="owner">owner<span></span></p></div>
+      <div class="ask"><span class="camp lit">3</span><p class="nm">Retain, back up, drill</p><p class="td">a reclaim-policy audit and one timed restore</p><p class="owner">owner<span></span></p></div>
+      <div class="ask"><span class="camp lit">10</span><p class="nm">Itemize it</p><p class="td">telemetry on, and a list of what we use AI for</p><p class="owner">owner<span></span></p></div>
+    </div>
+    <div id="labels"></div>
+  </main>
+
+  <aside class="notes">
+    Ten rules. Here's the range again, and now every peak has its name.
+
+    Upgrade like an app. Mark the seam. Restore, or it's a rumor. A signal to leave, whoever's driving. Not a cage, and a pass, not a key. Base camp first. Reading room only. Itemize it.
+
+    None of them is a product. Most need work, and some need decisions. But three of them cost a meeting, not a purchase, so we can start them on Monday. They're the three catching the light.
+
+    Mark the seam: one diagram, with the line drawn between CDK and Crossplane. Retain, back up, drill: audit our reclaim policies and time one restore. Itemize it: turn telemetry on and write down what we actually use AI for.
+
+    Pause. Each of those needs one owner. That's the ask.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // the cold open's range, at dawn: same peaks in the same order, three caught in alpenglow
+    const caps = ['haze', 'haze', 'haze', 'mint', 'mint', 'teal', 'teal', 'teal', 'teal', 'teal'];
+    const tops = [780, 730, 800, 680, 720, 760, 700, 740, 630, 780];
+    const names = ['upgrade like an app', 'mark the seam', 'restore, or it\'s a rumor', 'a signal to leave', 'whoever\'s driving', 'not a cage', 'a pass, not a key', 'base camp first', 'reading room only', 'itemize it'];
+    const on = new Set([1, 2, 9]);
+    const parts = [Peaks.far({ y: 880, amp: 60, n: 16, seed: 21 })];
+    let labs = '';
+    caps.forEach((c, i) => {
+      const x = 170 + i * 176;
+      parts.push(Peaks.peak({ x, top: tops[i], base: 1080, hw: 170, cap: on.has(i) ? 'var(--alpenglow)' : `var(--${c})`, cls: on.has(i) ? 'lit' : '' }));
+      labs += `<p class="rlab${on.has(i) ? ' on' : ''}" style="left:${x - 86}px; top:${tops[i] - 112}px"><b>${i + 1}</b>${names[i]}</p>`;
+    });
+    Peaks.draw('#range', ...parts);
+    document.getElementById('labels').innerHTML = labs;
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

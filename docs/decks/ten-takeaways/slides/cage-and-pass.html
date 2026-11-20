@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A cage and a pass</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide.t-haz { padding: 112px 128px 112px; }
+    .t-haz .haz-grid { grid-template-columns: 700px 1fr; gap: 92px; height: 100%; }
+    .t-haz .haz-title { font-size: 90px; line-height: .98; margin-top: 26px; }
+    .t-haz .haz-levels { align-self: center; }
+    .t-haz .haz-level { grid-template-columns: 88px 1fr 210px; gap: 26px; padding: 20px 0; }
+    .t-haz .haz-num { width: 88px; height: 88px; font-size: 56px; }
+    .t-haz .haz-name { font-size: 40px; line-height: 1.05; }
+    .t-haz .haz-desc { font-size: 28px; line-height: 1.25; margin-top: 6px; }
+    .t-haz .haz-verdict { font-size: 26px; padding: 10px 8px; }
+    /* level 3 is where we'd start: the one row printed in reverse */
+    .t-haz .haz-level.lit { background: #17181A; margin: 0 -24px; padding: 20px 24px; border-top-color: #17181A; }
+    .t-haz .lit .haz-num { background: #F2C12E; color: #17181A; }
+    .t-haz .lit .haz-name, .t-haz .lit .haz-desc { color: #F2C12E; }
+    .t-haz .lit .haz-verdict { background: #F2C12E; color: #17181A; border-color: #F2C12E; }
+    .t-haz .lit + .haz-level { border-top-color: #17181A; }
+
+    /* the entry pass, clipped to the sign */
+    .pass { position: relative; margin-top: auto; width: 700px; background: #FBF9F3; border-radius: 22px; box-shadow: 0 16px 34px rgba(60, 44, 0, .28); overflow: hidden; }
+    .clip { position: absolute; left: 300px; top: -18px; width: 100px; height: 36px; border-radius: 10px; background: #17181A; z-index: 2; }
+    .pband { background: #1D4E89; padding: 24px 34px 18px; display: flex; justify-content: space-between; align-items: baseline; }
+    .pband p { font: 600 28px/1 'Oswald', Arial, sans-serif; letter-spacing: 4px; color: #F6F3EA; }
+    .pband .fine { font: 400 24px/1 'JetBrains Mono', monospace; letter-spacing: 0; color: #C9D6EA; }
+    .pbody { padding: 22px 34px 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px 28px; }
+    .pbody .wide { grid-column: 1 / -1; }
+    .pkey { font: 400 24px/1.2 'JetBrains Mono', monospace; letter-spacing: 1px; color: #6A6455; }
+    .pv { font: 500 36px/1.1 'Oswald', Arial, sans-serif; color: #16233A; margin-top: 4px; }
+    .pid { font: 700 26px/1.2 'JetBrains Mono', monospace; color: #16233A; margin-top: 6px; }
+    .pv.no { color: #A3260F; }
+    .is-entered .pass { animation: slidein 650ms cubic-bezier(.2,.7,.2,1) both; animation-delay: 650ms; }
+  </style>
+</head>
+<body>
+  <main class="slide t-haz">
+    <div class="haz-stripe" aria-hidden="true" style="top:0px"></div>
+    <div class="haz-stripe" aria-hidden="true" style="top:1036px"></div>
+    <div class="haz-grid">
+      <div class="haz-left">
+        <p class="haz-tag">CONTAINMENT NOTICE: GOALS §3, §9</p>
+        <h2 class="haz-title">EVERY AGENT GETS ITS OWN KERNEL AND A PASS THAT EXPIRES.</h2>
+        <div class="pass">
+          <div class="clip" aria-hidden="true"></div>
+          <div class="pband"><p>ENTRY PASS</p><p class="fine">illustrative</p></div>
+          <div class="pbody">
+            <div class="wide"><p class="pkey">IDENTITY</p><p class="pid">spiffe://prod/ns/sre/sa/triage-agent</p></div>
+            <div><p class="pkey">VALID FOR</p><p class="pv">15 minutes</p></div>
+            <div><p class="pkey">ON FILE</p><p class="pv no">No static secret</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="haz-levels">
+        <div class="haz-level rise" style="--i:1"><p class="haz-num">1</p><div><p class="haz-name">CONTAINER</p><p class="haz-desc">Shares the host kernel.</p></div><p class="haz-verdict">NOT A CAGE</p></div>
+        <div class="haz-level rise" style="--i:2"><p class="haz-num">2</p><div><p class="haz-name">GVISOR</p><p class="haz-desc">A user-space kernel in between.</p></div><p class="haz-verdict">TRIAL</p></div>
+        <div class="haz-level lit rise" style="--i:3"><p class="haz-num">3</p><div><p class="haz-name">KATA MICROVM</p><p class="haz-desc">Its own kernel. Snapshots cut the start-up.</p></div><p class="haz-verdict">TRIAL</p></div>
+        <div class="haz-level rise" style="--i:4"><p class="haz-num">4</p><div><p class="haz-name">AGENT SUBSTRATE</p><p class="haz-desc">Identity, sandbox, session and egress as one layer.</p></div><p class="haz-verdict">DECIDE</p></div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Rules six and seven also share a slide, because they're the two walls around one agent: where it runs, and who it is. Every agent gets its own kernel and a pass that expires.
+
+    Where it runs first. Agents run code they wrote a minute ago, and every container on a node shares one kernel. So a container is not a cage. It's drawn as a lab's containment levels. Level one, a plain container: fine for our services, not for agent-written code. Level two, gVisor, a user-space kernel in between. Level three, Kata microVMs: the agent gets its own kernel, and Microsoft's pod snapshots make the start-up cost bearable. That's the row in black, the one we'd trial first. Level four, an agent substrate that bundles identity, sandbox, session and egress into one layer, which Solo.io keynoted with Anthropic and Google; for us it's still a decision, or at least a vocabulary to pick.
+
+    Now who it is: the pass clipped to the door. A house key works forever, for whoever holds it. That's a long-lived secret, and a secret an agent can read is a secret that can leave the building. A pass names who you are, is good for one trip, and is worthless an hour later. This one is illustrative: a SPIFFE identity for a triage agent, valid for fifteen minutes, checked by Cedar or OpenFGA, and no static secret on file. Coinbase, Google and Microsoft, RBC and Veritas Automata all argued some version of it.
+
+    So: a cage, and a pass. Never the house keys.
+
+    How far up the mountain do we let agents go, and when?
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

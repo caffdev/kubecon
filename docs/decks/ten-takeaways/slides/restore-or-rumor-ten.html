@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Restore, or it's a rumor</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide.t-iso { padding: 108px 136px 100px; }
+    .t-iso .iso-top { grid-template-columns: 250px 1fr; gap: 52px; }
+    .t-iso .iso-pict { width: 250px; height: 250px; }
+    .t-iso .iso-title { font-size: 100px; letter-spacing: -2px; line-height: .96; }
+    .why { margin-top: 60px; font: 500 34px/1.35 'Archivo', Arial, sans-serif; color: #F4F1E8; max-width: 1560px; }
+    .why b { font-weight: 900; }
+    .seq { position: absolute; left: 136px; top: 600px; height: 250px; width: 1648px; display: grid; grid-template-columns: 1fr 64px 1fr 64px 1.25fr; align-items: stretch; }
+    .step { background: #F4F1E8; color: #123826; border-radius: 22px; padding: 30px 34px 34px; display: flex; flex-direction: column; gap: 14px; }
+    .step .h { display: flex; align-items: center; gap: 18px; }
+    .step .n { width: 64px; height: 64px; border-radius: 32px; background: #0E6A44; color: #F4F1E8; display: flex; align-items: center; justify-content: center; font: 900 36px/1 'Archivo', Arial, sans-serif; flex: none; }
+    .step .sh { font: 900 44px/1 'Archivo', Arial, sans-serif; letter-spacing: 2px; color: #0E6A44; }
+    .step .sb { font: 500 32px/1.3 'Archivo', Arial, sans-serif; color: #21352B; }
+    .step.drill { background: #08422A; border: 6px solid #F4F1E8; color: #F4F1E8; position: relative; padding-right: 200px; }
+    .step.drill .n { background: #F4F1E8; color: #08422A; }
+    .step.drill .sh, .step.drill .sb { color: #F4F1E8; }
+    .watch { position: absolute; right: 30px; top: 50%; transform: translateY(-50%); }
+    .arrow { display: flex; align-items: center; justify-content: center; }
+    .src { color: #CFE3D7; bottom: 64px; left: 136px; }
+  </style>
+</head>
+<body>
+  <main class="slide t-iso">
+    <div class="iso-frame" aria-hidden="true"></div>
+    <div class="iso-top">
+      <div class="iso-pict"><svg aria-label="Safety pictogram: a database cylinder with a circular restore arrow" width="196" height="196" viewBox="0 0 180 180">
+        <path d="M28 40 V126 A52 16 0 0 0 132 126 V40 Z" fill="#0E6A44"/>
+        <ellipse cx="80" cy="40" rx="52" ry="16" fill="#0E6A44"/>
+        <ellipse cx="80" cy="40" rx="40" ry="9" fill="#F4F1E8" opacity="0.3"/>
+        <path d="M28 70 A52 16 0 0 0 132 70" fill="none" stroke="#F4F1E8" stroke-width="5"/>
+        <path d="M28 98 A52 16 0 0 0 132 98" fill="none" stroke="#F4F1E8" stroke-width="5"/>
+        <circle cx="132" cy="132" r="42" fill="#F4F1E8"/>
+        <path d="M160 132 A28 28 0 1 1 151.8 112.2" fill="none" stroke="#0E6A44" stroke-width="9" stroke-linecap="round"/>
+        <path d="M166 126 L146 121 L161 105 Z" fill="#0E6A44"/>
+      </svg></div>
+      <h2 class="iso-title">BACKUPS ARE A RUMOR UNTIL YOU RESTORE.</h2>
+    </div>
+    <p class="why">When Nutanix needed theirs, the latest Velero snapshot was <b>12 hours old, partial and untested.</b></p>
+
+    <div class="seq">
+      <div class="step rise" style="--i:1"><div class="h"><p class="n">1</p><p class="sh">RETAIN</p></div><p class="sb">Audit every StorageClass. Delete is the default.</p></div>
+      <div class="arrow" aria-hidden="true"><svg width="40" height="56" viewBox="0 0 40 56"><path d="M6 4 L34 28 L6 52" fill="none" stroke="#F4F1E8" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+      <div class="step rise" style="--i:2"><div class="h"><p class="n">2</p><p class="sh">BACK UP</p></div><p class="sb">Velero, on a schedule. Nothing bespoke.</p></div>
+      <div class="arrow" aria-hidden="true"><svg width="40" height="56" viewBox="0 0 40 56"><path d="M6 4 L34 28 L6 52" fill="none" stroke="#F4F1E8" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+      <div class="step drill rise" style="--i:3"><div class="h"><p class="n">3</p><p class="sh">DRILL</p></div><p class="sb">Restore into a scratch cluster, on a calendar. Time it.</p>
+        <svg class="watch" aria-label="Stopwatch pictogram" width="150" height="170" viewBox="0 0 150 170">
+          <rect x="58" y="0" width="34" height="18" rx="4" fill="#F4F1E8"/>
+          <rect x="69" y="14" width="12" height="16" fill="#F4F1E8"/>
+          <circle cx="75" cy="98" r="64" fill="none" stroke="#F4F1E8" stroke-width="10"/>
+          <path d="M75 98 L75 54" stroke="#F4F1E8" stroke-width="10" stroke-linecap="round"/>
+          <path d="M75 98 L106 116" stroke="#F4F1E8" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="75" cy="98" r="8" fill="#F4F1E8"/>
+        </svg>
+      </div>
+    </div>
+    <p class="src">Nutanix, "GitOps Meltdown"; Red Hat, the Velero project update; Broadcom, the Data Protection WG. GOALS §8.</p>
+  </main>
+
+  <aside class="notes">
+    Rule three: backups are a rumor until you restore.
+
+    This is the one item on our whole list where being wrong is unrecoverable, so it gets a safety sign.
+
+    Here's why it's a rumor. Nutanix gave the scariest talk of the week: one commit cascaded into deleting thirty-nine production clusters. When they reached for the backups, the latest Velero snapshot was twelve hours old, partial, and the recovery pipeline had never been tested end to end. Their own line was that a backup strategy is a hypothesis until you've restored from it.
+
+    So three steps, posted like an emergency procedure. Retain: audit every storage class, because Delete is the default reclaim policy and it's the wrong one for data we care about. Back up: Velero on a schedule, and nothing bespoke, because Broadcom's new data protection working group is still standardising the primitives. Drill: restore into a scratch cluster on a calendar, and time it.
+
+    The drill is the point. A cluster we can rebuild is a cluster we're willing to upgrade aggressively, which takes us back to rule one.
+
+    That's the ground. Now the path every change takes across it.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

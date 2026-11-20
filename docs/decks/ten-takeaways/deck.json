@@ -1,6 +1,6 @@
 {
   "title": "Ten takeaways, ten looks",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "cold-open",
@@ -15,6 +15,18 @@
       "reading-room",
       "itemize",
       "three-on-monday"
+    ],
+    "ten": [
+      "cold-open-ten",
+      "upgrade-like-an-app-ten",
+      "mark-the-seam-ten",
+      "restore-or-rumor-ten",
+      "signal-any-driver",
+      "cage-and-pass",
+      "base-camp-first-ten",
+      "reading-room-ten",
+      "itemize-ten",
+      "three-on-monday-ten"
     ]
   }
 }

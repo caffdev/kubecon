@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ten rules</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide h1 { font-size: 132px; max-width: 1480px; line-height: .96; letter-spacing: -0.02em; }
+    .byline { margin-top: 36px; font-size: 32px; color: var(--muted); }
+    .grp { position: absolute; font: 600 34px/1 var(--font-display); letter-spacing: .01em; white-space: nowrap; }
+    .grp.ground { color: var(--haze); } .grp.spine { color: var(--mint); } .grp.agents { color: var(--teal); }
+    .is-entered #range .pk { animation: up 1000ms var(--step-ease) both; animation-delay: calc(var(--i, 0) * 70ms); }
+    .is-entered .brk, .is-entered .grp { animation: fadein 600ms ease-out both; animation-delay: 900ms; }
+    @keyframes up { from { transform: translateY(300px); } }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <svg class="stage-art" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h1>We came home with ten rules, and none of them is a product.</h1>
+    <p class="byline">KubeCon NA 2026, Salt Lake City. Evan and Kyle.</p>
+    <div id="groups"></div>
+  </main>
+
+  <aside class="notes">
+    We spent four days in Salt Lake City and came home with ten things. Here's the promise: every one of them is a rule we can adopt, not a tool we have to buy.
+
+    They come in the order you'd build them. Pause on the range. The first three are the ground the fleet stands on. The next two are the path every change takes across it. The last five are what agents need before we let them in.
+
+    Ten rules in ten slides means two slides carry a pair. I'll say when.
+
+    The first rule is about the thing that gets big whatever we do.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script>
+    // ten peaks in talk order, capped by path: 3 haze (ground), 2 mint (spine), 5 teal (agents)
+    const caps = ['haze', 'haze', 'haze', 'mint', 'mint', 'teal', 'teal', 'teal', 'teal', 'teal'];
+    const tops = [740, 690, 760, 640, 680, 720, 660, 700, 590, 740];
+    const X = (i) => 170 + i * 176;
+    const parts = [Peaks.far({ y: 860, amp: 60, n: 16, seed: 21 })];
+    caps.forEach((c, i) => parts.push(Peaks.peak({ x: X(i), top: tops[i], base: 1080, hw: 170, cap: `var(--${c})` })));
+    // a thin bracket over each group of peaks, in that group's colour
+    const groups = [
+      { name: 'the ground', cls: 'ground', from: 0, to: 2 },
+      { name: 'the spine', cls: 'spine', from: 3, to: 4 },
+      { name: 'the agents', cls: 'agents', from: 5, to: 9 },
+    ];
+    let labels = '';
+    groups.forEach((g) => {
+      const x0 = X(g.from) - 64, x1 = X(g.to) + 64;
+      const y = Math.min(...tops.slice(g.from, g.to + 1)) - 52;
+      parts.push(`<path class="brk" d="M${x0} ${y + 18}V${y}H${x1}V${y + 18}" fill="none" stroke="var(--${g.cls === 'ground' ? 'haze' : g.cls === 'spine' ? 'mint' : 'teal'})" stroke-width="3"/>`);
+      labels += `<p class="grp ${g.cls}" style="left:${x0}px; top:${y - 50}px">${g.name}</p>`;
+    });
+    Peaks.draw('#range', ...parts);
+    document.querySelectorAll('#range .pk').forEach((el, i) => el.style.setProperty('--i', i));
+    document.getElementById('groups').innerHTML = labels;
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

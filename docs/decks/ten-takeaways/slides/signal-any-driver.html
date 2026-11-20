@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A signal, whoever's driving</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide.t-dep { padding: 64px 112px 72px; }
+    .t-dep .dep-title { font-size: 100px; line-height: 1.0; margin-top: 36px; max-width: 1640px; }
+    .t-dep .dep-board { margin-top: 40px; gap: 10px; }
+    .t-dep .dep-row { grid-template-columns: 290px 900px 1fr; gap: 10px; }
+    .t-dep .dep-cell { font-size: 38px; padding: 12px 22px; }
+    .t-dep .dep-h { font-size: 24px; padding: 0 22px; }
+    .t-dep .dep-us .dep-cell { color: #F5B800; background: linear-gradient(180deg, #3A3220 0%, #332C1C 49%, #0B0C0E 49%, #0B0C0E 51%, #2C2618 51%, #262116 100%); box-shadow: inset 0 0 0 2px #F5B800; }
+    .notice { position: absolute; left: 112px; right: 112px; bottom: 72px; display: grid; grid-template-columns: 76px 1fr; gap: 28px; align-items: center; padding: 26px 32px; background: #0B0C0E; border: 2px solid #34363C; border-radius: 6px; }
+    .lamp { width: 76px; height: 76px; border-radius: 50%; background: radial-gradient(circle at 40% 38%, #FFE07A 0%, #F5B800 45%, #8A6700 100%); box-shadow: 0 0 28px rgba(245, 184, 0, .55); }
+    .notice .who { font: 500 24px/1.2 'Oswald', Arial, sans-serif; letter-spacing: 5px; color: #F5B800; }
+    .notice .rule { font: 400 32px/1.3 'Archivo', Arial, sans-serif; color: #F1ECE0; margin-top: 8px; }
+    .is-entered .notice { animation: rise 520ms cubic-bezier(.2,.7,.2,1) both; animation-delay: 700ms; }
+  </style>
+</head>
+<body>
+  <main class="slide t-dep">
+    <div class="dep-top">
+      <p class="dep-word">DEPARTURES</p>
+      <p class="dep-where">PLATFORM ARGO: TO PRODUCTION</p>
+      <div class="dep-clock" aria-hidden="true"><p class="dep-flap">09</p><p class="dep-flap">41</p></div>
+    </div>
+    <h2 class="dep-title">Nothing leaves the station without a signal, whoever's driving.</h2>
+    <div class="dep-board">
+      <div class="dep-row"><p class="dep-h">OPERATOR</p><p class="dep-h">SERVICE</p><p class="dep-h">RESULT</p></div>
+      <div class="dep-row drop" style="--i:1"><p class="dep-cell">LINKEDIN</p><p class="dep-cell">CANARY NAMESPACES, POSTSYNC GATE</p><p class="dep-cell dep-amber">1 WEEK → 1 HOUR</p></div>
+      <div class="dep-row drop" style="--i:2"><p class="dep-cell">TRANSFIX</p><p class="dep-cell">AGENTS EARN THE RIGHT TO MERGE</p><p class="dep-cell dep-amber">SHADOW → GRANT</p></div>
+      <div class="dep-row drop" style="--i:3"><p class="dep-cell">FORD</p><p class="dep-cell">CI UNDER AI-WRITTEN GITOPS</p><p class="dep-cell dep-amber">HUNDREDS OF CLUSTERS</p></div>
+      <div class="dep-row dep-us drop" style="--i:4"><p class="dep-cell">US</p><p class="dep-cell">KARGO OR GITOPS PROMOTER?</p><p class="dep-cell">HELD: 2-WEEK SPIKE</p></div>
+    </div>
+    <div class="notice">
+      <div class="lamp" aria-hidden="true"></div>
+      <div>
+        <p class="who">NOTICE TO ALL DRIVERS, HUMAN OR AGENT</p>
+        <p class="rule">No privileged pods, no host mounts, no unapproved model or tool. Checked in CI, enforced at admission.</p>
+      </div>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Rules four and five share a slide, because they're one idea: nothing leaves the station without a signal, whoever's driving.
+
+    Promotion really is a train leaving one station for the next: dev, stage, prod. And a departure board is a public, timestamped record of what left and when, which is what we want GitOps to be.
+
+    Read the board. LinkedIn: canary namespaces with an Argo CD PostSync gate took a release from a week to an hour. Transfix: agents earn the right to merge, from shadow mode to a granted permission. Ford: CI as the safety net under GitOps that AI wrote, across hundreds of clusters. And our row, in amber: Kargo or GitOps Promoter. That's decision one, and it's held for a two-week spike on one app, not more blog posts.
+
+    Now the bottom of the board, the standing notice. It's the policy rule, and it never names a person or an agent. No privileged pods, no host mounts, no unapproved model or tool, whoever wrote the change. It runs in CI first, so a violation is a failing test an agent can fix, and then at admission in CEL, with no webhook in the path. AT&T, Google, JPMorganChase, Grainger and Nirmata all showed versions of it. Write the rule against the action, not the actor, and agent governance mostly comes free.
+
+    The signal is the pipeline, not a person reading every diff.
+
+    But the drivers that aren't people need more than a rule. They need a boundary.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

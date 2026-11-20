@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mark the seam</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .t-blu .blu-title { font-size: 104px; letter-spacing: 2px; margin-top: 0; max-width: 1664px; white-space: nowrap; }
+    .t-blu .blu-floor { gap: 6px; padding: 14px 26px; justify-content: center; }
+    .t-blu .blu-fname { font-size: 36px; }
+    .t-blu .blu-fdesc { font-size: 28px; }
+    .dims { position: absolute; left: 128px; top: 0; width: 1920px; height: 1080px; }
+    .dimlab { position: absolute; left: 128px; width: 230px; font: 700 26px/1.25 'JetBrains Mono', monospace; letter-spacing: 1px; color: #BFD3E8; text-align: right; }
+    .dimlab.hot { color: #FFB25C; }
+    .seam { position: absolute; left: 128px; top: 584px; width: 1664px; height: 0; border-top: 6px dashed #FFB25C; }
+    .seamlab { position: absolute; left: 1340px; top: 478px; width: 452px; }
+    .seamlab .s { font: 500 52px/1 'Oswald', Arial, sans-serif; letter-spacing: 3px; color: #FFB25C; }
+    .seamlab .w { font: 400 28px/1.3 'JetBrains Mono', monospace; color: #FFD3A0; margin-top: 8px; }
+    .ground { position: absolute; left: 430px; top: 844px; width: 830px; height: 34px; background: repeating-linear-gradient(45deg, #DCE8F4 0px, #DCE8F4 2px, #1C3D6C 2px, #1C3D6C 16px); opacity: 0.5; }
+    .seclab { position: absolute; left: 430px; top: 900px; width: 830px; text-align: center; font: 400 26px/1.2 'JetBrains Mono', monospace; letter-spacing: 3px; color: #8FB0D3; }
+    .tb { position: absolute; left: 1340px; top: 640px; width: 452px; border: 3px solid #DCE8F4; display: flex; flex-direction: column; background: #1C3D6C; }
+    .tb .cell { border-top: 2px solid #DCE8F4; padding: 12px 18px; display: flex; flex-direction: column; gap: 4px; }
+    .tb .cell:first-child { border-top: none; }
+    .tb .k { font: 400 24px/1.2 'JetBrains Mono', monospace; letter-spacing: 2px; color: #8FB0D3; }
+    .tb .v { font: 400 28px/1.3 'JetBrains Mono', monospace; color: #EEF4FA; }
+    .tb .v.hot { color: #FFB25C; font-weight: 700; }
+    .is-entered .seam { animation: wipe-in 700ms cubic-bezier(.2,.7,.2,1) both; animation-delay: 650ms; }
+    @keyframes wipe-in { from { clip-path: inset(0 100% 0 0); } }
+  </style>
+</head>
+<body>
+  <main class="slide t-blu">
+    <svg class="blu-grid" aria-hidden="true" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <defs><pattern id="blugrid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0 H0 V48" fill="none" stroke="#DCE8F4" stroke-opacity="0.10" stroke-width="1.5"/></pattern></defs>
+      <rect width="1920" height="1080" fill="url(#blugrid)"/>
+    </svg>
+    <h2 class="blu-title">MARK THE SEAM BEFORE WE POUR.</h2>
+
+    <!-- dimension arrows: how often each side of the seam changes -->
+    <svg class="dims" aria-hidden="true" width="1920" height="1080" viewBox="0 0 1920 1080" style="left:0">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#BFD3E8"/></marker></defs>
+      <g stroke="#BFD3E8" stroke-width="2.5" fill="none">
+        <line x1="388" y1="330" x2="388" y2="572" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <line x1="388" y1="598" x2="388" y2="832" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <line x1="372" y1="330" x2="404" y2="330"/><line x1="372" y1="832" x2="404" y2="832"/>
+      </g>
+    </svg>
+    <p class="dimlab hot" style="top:418px">CHANGES CONSTANTLY</p>
+    <p class="dimlab" style="top:680px">CHANGES RARELY</p>
+
+    <div class="blu-floor blu-above rise" style="left:510px; top:330px; width:670px; height:110px; --i:4"><p class="blu-fname">APPS AND AGENTS</p></div>
+    <div class="blu-floor blu-above rise" style="left:470px; top:450px; width:750px; height:110px; --i:3"><p class="blu-fname">CROSSPLANE</p><p class="blu-fdesc">S3 first, then APIs agents can call</p></div>
+    <div class="seam" aria-hidden="true"></div>
+    <div class="blu-floor rise" style="left:450px; top:608px; width:790px; height:110px; --i:2"><p class="blu-fname">CDK</p><p class="blu-fdesc">VPCs, EKS clusters, shared services</p></div>
+    <div class="blu-floor rise" style="left:430px; top:726px; width:830px; height:110px; --i:1"><p class="blu-fname">LZA: LANDING ZONE ACCELERATOR</p><p class="blu-fdesc">Accounts and guardrails</p></div>
+    <div class="ground" aria-hidden="true"></div>
+    <p class="seclab">SECTION A–A: OUR AWS STACK</p>
+
+    <div class="seamlab fade" style="--i:7"><p class="s">THE SEAM</p><p class="w">ownership hands off here</p></div>
+
+    <div class="tb">
+      <div class="cell"><p class="k">PROJECT</p><p class="v">AWS strategy, GOALS §10</p></div>
+      <div class="cell"><p class="k">STATUS</p><p class="v hot">DECIDE: decision 3</p></div>
+      <div class="cell"><p class="k">NEEDS</p><p class="v">A diagram with the seam marked</p></div>
+      <div class="cell"><p class="k">SEEN</p><p class="v">AmFam + Upbound; Meta</p></div>
+    </div>
+  </main>
+
+  <aside class="notes">
+    Rule two: mark the seam before we pour.
+
+    This is our AWS stack drawn as a building in section. The foundation is the Landing Zone Accelerator: accounts and guardrails. Then CDK: VPCs, the EKS clusters, shared services. Then the seam, the amber line. Above it, Crossplane, starting with S3 and moving to typed APIs that apps, and agents, can call. Then the apps themselves.
+
+    Read the arrows on the left. Below the seam, things change rarely. Above it, they change constantly. Two tools fighting over one AWS resource always starts with a line nobody drew. And like concrete, once it's poured, moving it is expensive.
+
+    The title block says what it costs: decision three, and what it needs is a diagram with the seam marked. A meeting, not a purchase. American Family Insurance with Upbound showed Crossplane once adoption is real, and Meta showed the move from Terraform on a cron job to GitOps.
+
+    And under the foundation is the one thing we can't get back.
+  </aside>
+
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
