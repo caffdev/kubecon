@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Five first pull requests</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 72px; max-width: 1680px; line-height: 1.03; margin-top: 18px; }
+    .echo { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .sq { fill: var(--haze); }
+    .echo-t { font: 400 27px var(--font-body); fill: var(--lichen); }
+    .echo-t.ink { fill: var(--snow); font-weight: 500; }
+    .echo-rule { stroke: var(--scree); stroke-width: 2; }
+    .echo-n { font: 600 64px var(--font-display); fill: var(--snow); letter-spacing: -.02em; }
+    .echo-n.was { fill: #4b5d66; text-decoration: line-through; }
+    .echo-n.now { fill: var(--mint); font-size: 120px; }
+    .echo-s { font: 400 23px var(--font-body); fill: var(--lichen); font-style: italic; }
+    .asks { position: absolute; left: 680px; top: 300px; width: 1120px; list-style: none; margin: 0; padding: 0; counter-reset: a; }
+    .asks li { counter-increment: a; position: relative; padding: 20px 0 22px 84px; border-top: 2px solid var(--scree); }
+    .asks li:first-child { border-top: 0; }
+    .asks li::before { content: counter(a); position: absolute; left: 0; top: 18px; font: 600 72px/1 var(--font-display); color: var(--c); }
+    .asks .what { font: 600 40px/1.1 var(--font-display); color: var(--snow); }
+    .asks .obj { margin-top: 6px; font: 500 25px/1.35 var(--font-code); color: var(--c); }
+    .asks .obj span { font-family: var(--font-body); font-size: 26px; color: var(--lichen); }
+    .a1 { --c: var(--haze); } .a2 { --c: var(--mint); } .a3 { --c: var(--lake); } .a4 { --c: var(--teal); } .a5 { --c: var(--alpenglow); }
+    .src { bottom: 40px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Same team, same 29 clusters:<br>five first pull requests start it this quarter.</h2>
+
+    <svg class="echo" id="echo" viewBox="0 0 1920 1080" role="img" aria-label="The opening's twenty-nine cluster squares again, and the same small team. Under them: 1,672 hand rollouts a year struck out, replaced by 80 wave approvals, from the illustrative model."></svg>
+
+    <ol class="asks">
+      <li class="a1"><p class="what">No hand-built cluster, ever again</p><p class="obj">clusters/&lt;next&gt;.yaml <span>a CAPI Cluster on-prem, a Region claim in AWS</span></p></li>
+      <li class="a2"><p class="what">splunk-otel-collector through the waves, this quarter</p><p class="obj">wave: on 29 cluster secrets · RollingSync · a gate Job</p></li>
+      <li class="a3"><p class="what">AWS region 2 from one claim, one app live in both</p><p class="obj">regions/aws-2.yaml · placement.yaml <span>on Auto Mode</span></p></li>
+      <li class="a4"><p class="what">Agents fenced in before they touch anything</p><p class="obj">isolated-sandbox · gateway · Pod Identity · CEL rules</p></li>
+      <li class="a5"><p class="what">Explain-only alert triage by Q2 2027</p><p class="obj">accept / modify / reject, <span>logged from day one</span></p></li>
+    </ol>
+    <p class="src">Each line is a pull request someone can open next week. The objects are the ones on the slides: real kinds and fields, our values.</p>
+  </main>
+
+  <aside class="notes">
+    Back to where we started. Meta runs about a hundred clusters with fifteen engineers. We run twenty-nine with a small team. The difference was never headcount. It's what does the work.
+
+    Same team on the left, same twenty-nine clusters. What changes is the job: not sixteen hundred hand rollouts a year, but about eighty wave approvals, and the pipeline does the rest. That's the model, not a measurement, but the shape holds.
+
+    Five first pull requests, each one an object you've already seen.
+
+    One. No hand-built cluster, ever again. The next one is a file: a Cluster API Cluster on-prem, a Region claim in AWS.
+
+    Two. One platform tool through the waves this quarter: the Splunk OTel collector. A wave label on twenty-nine cluster secrets, a RollingSync ApplicationSet, and one gate Job.
+
+    Three. AWS region two from one claim, on Auto Mode, with one app live in both regions, placed by labels.
+
+    Four. Before any agent touches anything: the sandbox runtime class, the gateway, Pod Identity, and the CEL rules.
+
+    Five. Explain-only alert triage by the second quarter of 2027, logging every accept, modify and reject from the first day, because that log is how agents earn the next job.
+
+    Every claim in this talk had a receipt. These are ours to write.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script src="../theme/ten.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      const S = 38, G = 10, PER = 6, X0 = 120, Y0 = 310;
+      let s = '';
+      for (let k = 0; k < 29; k++) s += `<rect class="sq" x="${X0 + (k % PER) * (S + G)}" y="${Y0 + Math.floor(k / PER) * (S + G)}" width="${S}" height="${S}" rx="6"/>`;
+      s += `<text class="echo-t ink" x="${X0}" y="${Y0 + 278}">29 clusters, the same small team</text>`;
+      s += `<line class="echo-rule" x1="${X0}" x2="${X0 + 460}" y1="${Y0 + 318}" y2="${Y0 + 318}"/>`;
+      s += `<text class="echo-n was" x="${X0}" y="${Y0 + 400}">1,672</text><text class="echo-t" x="${X0 + 170}" y="${Y0 + 392}">hand rollouts a year</text>`;
+      s += `<text class="echo-n now" x="${X0}" y="${Y0 + 540}">80</text><text class="echo-t ink" x="${X0 + 150}" y="${Y0 + 500}">wave approvals</text><text class="echo-t ink" x="${X0 + 150}" y="${Y0 + 534}">a year</text>`;
+      s += `<text class="echo-s" x="${X0}" y="${Y0 + 590}">illustrative model</text>`;
+      Peaks.draw('#echo', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

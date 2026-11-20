@@ -290,3 +290,31 @@
 .callouts li b { display: block; font: 500 25px/1.25 var(--font-code); color: var(--path); margin-bottom: 4px; }
 .callouts li.on { border-left-color: var(--alpenglow); }
 .callouts li.on b { color: var(--alpenglow); }
+
+
+/* ================= ten draft additions (additive only; main uses none of these) ================= */
+
+/* the takeaway tag (theme/ten.js Ten.takeaway(n)): which of the three takeaways this slide
+   argues. Three bars in the path colours, this one lit, the takeaway as the label. */
+.tk-tag { position: absolute; left: var(--margin); top: 40px; display: flex; align-items: center; gap: 14px; font: 600 28px/1 var(--font-display); letter-spacing: .02em; color: var(--tk, var(--haze)); }
+.tk-tag .tk-bars { display: inline-flex; gap: 5px; align-items: flex-end; }
+.tk-tag .tk-bars i { display: block; width: 10px; height: 26px; border-radius: 2px; opacity: .25; }
+.tk-tag .tk-bars i.on { opacity: 1; }
+.tk-tag .tk-bars i:nth-child(1) { background: var(--haze); }
+.tk-tag .tk-bars i:nth-child(2) { background: var(--mint); }
+.tk-tag .tk-bars i:nth-child(3) { background: var(--teal); }
+.tk-tag.tk-1 { --tk: var(--haze); }
+.tk-tag.tk-2 { --tk: var(--mint); }
+.tk-tag.tk-3 { --tk: var(--teal); }
+.tk-tag .tk-n { color: var(--lichen); font-weight: 500; margin-right: -4px; }
+
+/* the title line on the cold open: the deck's name, where a group tag would sit */
+.title-line { position: absolute; left: var(--margin); top: 38px; font: 600 32px/1 var(--font-display); letter-spacing: .01em; color: var(--snow); }
+.title-line span { color: var(--lichen); font-weight: 500; margin-left: 14px; }
+
+/* a code chip: one field, inline, on a picture */
+.chip-code { display: inline-block; font: 500 24px/1.2 var(--font-code); color: var(--path, var(--haze)); background: #0b1820; border: 2px solid #22394a; border-radius: 8px; padding: 4px 12px; white-space: nowrap; }
+
+/* a receipt cropped to a window of the lifted slide: set height on .frame, and --y (px) to move */
+.receipt .frame.window { height: var(--h, 300px); }
+.receipt .frame.window img { transform: translateY(calc(var(--y, 0px) * -1)); }

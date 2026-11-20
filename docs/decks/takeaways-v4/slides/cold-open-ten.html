@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meta's fleet, and ours (title)</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 88px; max-width: 1700px; line-height: 1.02; margin-top: 22px; }
+    .bands { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .who { font: 600 52px var(--font-display); fill: var(--snow); letter-spacing: -.01em; }
+    .who.us { fill: var(--alpenglow); }
+    .how { font: 400 28px var(--font-body); fill: var(--lichen); }
+    .sq { fill: #33434b; }
+    .sq.ours { fill: var(--haze); }
+    .ppl .user { fill: #6d8288; }
+    .ratio-n { font: 600 92px var(--font-display); fill: var(--snow); letter-spacing: -.02em; text-anchor: end; }
+    .ratio-n.us { fill: var(--alpenglow); }
+    .ratio-t { font: 400 26px var(--font-body); fill: var(--lichen); text-anchor: end; }
+    .rule { stroke: var(--scree); stroke-width: 2; }
+    .verdict { position: absolute; left: var(--margin); top: 868px; width: 1680px; font: 600 50px/1.15 var(--font-display); color: var(--snow); letter-spacing: -.005em; }
+    .verdict span { color: var(--alpenglow); }
+    .src { bottom: 46px; }
+    .is-entered .bands .sq { animation: fade-in 300ms both; animation-delay: calc(300ms + var(--i) * 9ms); }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <p class="title-line">The fleet outgrows one team, then the agents arrive<span>KubeCon NA 2026, Salt Lake City</span></p>
+    <h1>Meta runs ~100 clusters with ~15 engineers.<br>We run 29 with a small team, by hand.</h1>
+    <svg class="bands" id="bands" viewBox="0 0 1920 1080" role="img" aria-label="Two bands at the same scale. Meta: fifteen engineers and a hundred cluster squares, about seven clusters per engineer. Us: a small team and twenty-nine cluster squares. Then what does the upgrades: code at Meta, people here."></svg>
+    <p class="verdict" data-step data-effect="rise">Fifteen engineers can run a hundred clusters. <span>The difference is what does the upgrades.</span></p>
+    <p class="src">Meta: <i>We Have GitOps at Home</i>, keynote abstract, KubeCon NA 2026.</p>
+  </main>
+
+  <aside class="notes">
+    We went to KubeCon in Salt Lake City. Here's what we brought back, in ten slides.
+
+    One number from the keynote stage to start. Meta runs about a hundred Kubernetes clusters with about fifteen engineers. That's from their own keynote abstract.
+
+    We run twenty-nine: on our own hardware at two exchanges, in two AWS regions, and in a second cloud. And one small team upgrades the clusters and the apps on them, mostly by hand.
+
+    Click. Look at what does the upgrades. At Meta, it's code: GitOps, the title of their talk. Here, it's people. It's us.
+
+    Click. So fifteen engineers can run a hundred clusters. The difference isn't how many of us there are. It's what does the upgrades.
+
+    Three takeaways carry the rest, and you'll see them in the corner of every slide. There's always another cluster. No manual way keeps up. And AI brings problems as it solves them. Every claim comes with a receipt: a company at the show that already does it, and the config it takes.
+
+    None of them got there by hiring. Ours started at four clusters.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      const S = 32, G = 8, PER = 25, X0 = 520;
+      let s = '', i = 0;
+      const band = (y, n, cls) => {
+        for (let k = 0; k < n; k++) {
+          const x = X0 + (k % PER) * (S + G), yy = y + Math.floor(k / PER) * (S + G);
+          s += `<rect class="sq ${cls}" style="--i:${i++}" x="${x}" y="${yy}" width="${S}" height="${S}" rx="5"/>`;
+        }
+      };
+      const people = (x, y, n, per, cls) => {
+        s += '<g class="ppl">';
+        for (let k = 0; k < n; k++) s += Estate.person(x + (k % per) * 44, y + Math.floor(k / per) * 66, 0.78, cls);
+        s += '</g>';
+      };
+      // Meta: 100 clusters, ~15 engineers
+      const MY = 372;
+      s += `<text class="who" x="120" y="${MY + 40}">Meta</text>`;
+      s += `<text class="how" x="120" y="${MY + 80}">~100 clusters, ~15 engineers</text>`;
+      people(140, MY + 158, 15, 8, 'user');
+      band(MY, 100, '');
+      // us: 29 clusters, a small team (not counted: no headcount on this slide)
+      const UY = 672;
+      s += `<line class="rule" x1="120" x2="1800" y1="${UY - 36}" y2="${UY - 36}"/>`;
+      s += `<text class="who us" x="120" y="${UY + 40}">Us</text>`;
+      s += `<text class="how" x="120" y="${UY + 80}">29 clusters, one small team</text>`;
+      band(UY, 29, 'ours');
+      // what does the upgrades (one click)
+      s += `<g data-step data-effect="rise"><text class="ratio-n" x="1800" y="${MY + 120}">code</text><text class="ratio-t" x="1800" y="${MY + 160}">does the upgrades</text>`;
+      s += `<text class="ratio-n us" x="1800" y="${UY + 76}">people</text><text class="ratio-t" x="1800" y="${UY + 116}">do the upgrades</text></g>`;
+      Peaks.draw('#bands', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

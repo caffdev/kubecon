@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An agent is a Job, fenced</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 72px; max-width: 1680px; line-height: 1.03; margin-top: 18px; }
+    .cc { left: var(--margin); top: 300px; width: 860px; }
+    .cc .hl, .cc .mk { position: relative; }
+    .cc .mk { display: inline-block; width: calc(100% + 48px); margin: 0 -24px; padding: 0 24px 0 18px; border-left: 6px solid var(--teal); background: rgba(54, 186, 162, .10); }
+    .pin { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--teal); font: 600 24px/32px var(--font-display); font-style: normal; text-align: center; color: var(--teal); background: #0b1820; }
+    .hl .pin { border-color: var(--alpenglow); color: var(--alpenglow); }
+    .fence { position: absolute; left: 1040px; top: 300px; width: 760px; list-style: none; margin: 0; padding: 0; }
+    .fence li { position: relative; padding: 0 0 30px 64px; }
+    .fence li .pin { left: 0; right: auto; top: 2px; transform: none; }
+    .fence li.on .pin { border-color: var(--alpenglow); color: var(--alpenglow); }
+    .fence h3 { font: 600 40px/1.05 var(--font-display); color: var(--snow); letter-spacing: -.005em; }
+    .fence li.on h3 { color: var(--alpenglow); }
+    .fence p { margin-top: 6px; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .fence p b { color: var(--snow); font-weight: 600; }
+    .denied { position: absolute; left: 1040px; top: 724px; width: 760px; padding: 14px 22px; border-radius: 12px; background: #2a1d14; border-left: 6px solid var(--alpenglow); font: 500 26px/1.35 var(--font-code); color: var(--snow); }
+    .denied span { color: var(--alpenglow); }
+    .denied small { display: block; margin-top: 4px; font: 400 26px/1.3 var(--font-body); color: var(--lichen); }
+    .catch { bottom: 40px; max-width: 1680px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>An agent is a Job: sandboxed, short-lived, and held to the same rules as everyone.</h2>
+
+    <figure class="cc">
+      <figcaption class="cc-file">jenkins → <b>agents/triage-job.yaml</b></figcaption>
+      <pre class="cc-body small"><span class="k">kind:</span> Job
+<span class="k">metadata:</span>
+  <span class="k">generateName:</span> triage-
+  <span class="k">labels:</span> {workload-class: agent}
+<span class="k">spec:</span>
+<span class="mk">  <span class="k">activeDeadlineSeconds:</span> 900<i class="pin">3</i></span>
+  <span class="k">ttlSecondsAfterFinished:</span> 600
+  <span class="k">template:</span>
+    <span class="k">spec:</span>
+<span class="hl">      <span class="k">runtimeClassName:</span> isolated-sandbox<i class="pin">1</i></span>
+<span class="mk">      <span class="k">serviceAccountName:</span> triage-agent<i class="pin">2</i></span>
+      <span class="k">nodeSelector:</span> {karpenter.sh/nodepool: agents}
+      <span class="k">tolerations:</span> [{key: agents, effect: NoSchedule}]
+      <span class="k">containers:</span> [{image: agents/triage:2026.11}]</pre>
+    </figure>
+
+    <ol class="fence">
+      <li class="on"><i class="pin">1</i><h3>Its own kernel</h3><p>A Firecracker microVM per pod: Nitro Sandbox, <b>built into Auto Mode.</b> On-prem, the same line names gVisor or Kata.</p></li>
+      <li><i class="pin">2</i><h3>A short-lived identity</h3><p>Pod Identity hands it a role that expires. <b>No passwords ever enter the agent.</b></p></li>
+      <li><i class="pin">3</i><h3>A deadline</h3><p>Killed at 15 minutes, whatever it’s doing, then cleaned up.</p></li>
+    </ol>
+
+    <p class="denied" data-step data-effect="rise"><span>✕ denied:</span> images come from our registry, by digest.<small>One CEL admission rule. The same reply to a person, the pipeline or this agent.</small></p>
+
+    <p class="catch">Nitro Sandbox needs <b>Kubernetes 1.36+</b> on existing Auto Mode clusters, and has <b>no GPU passthrough</b> yet.</p>
+  </main>
+
+  <aside class="notes">
+    Workloads and users first, because they're the same object. To Kubernetes, an agent is a Job: Jenkins, an alert or a schedule creates it, it does one task, and it's gone.
+
+    Three lines are the fence. One, runtimeClassName isolated-sandbox. A container shares the node's kernel; this gives the agent its own. In EKS Auto Mode that's Nitro Sandbox, a Firecracker microVM per pod, built in. On our own hardware the same line names gVisor or Kata.
+
+    Two, the service account, wired to Pod Identity. When the agent acts as a user, it carries a role that expires. Passwords stay behind a gateway and never enter the agent; for tools over MCP, that gateway is where a Cedar policy decides who may call what.
+
+    Three, a deadline: fifteen minutes, then it's killed and cleaned up. Nobody approves each agent; the spec is the approval.
+
+    Click. And when it changes something, it meets the same rule as everyone: one CEL admission policy, images from our registry, by digest. It never mentions people or agents, so the reply is the same for all three. Write rules against the action, not the actor.
+
+    The catch, from the EKS user guide: Kubernetes 1.36 on existing Auto Mode clusters, and no GPU passthrough yet.
+
+    So, fenced in, what's its first job? Not fixing anything. Explaining.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/ten.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Ten.takeaway(3);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

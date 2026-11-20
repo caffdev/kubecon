@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One alert, triaged</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 68px; max-width: 1680px; line-height: 1.03; margin-top: 18px; }
+    .card { position: absolute; top: 290px; border-radius: 14px; background: #0d1a22; border: 2px solid #22394a; overflow: hidden; }
+    .card h4 { font: 600 26px/1 var(--font-display); letter-spacing: .03em; padding: 14px 22px 12px; background: #0f2230; border-bottom: 2px solid #1c3242; color: var(--lichen); }
+    .card h4 b { color: var(--snow); font-weight: 600; }
+    .alert { left: var(--margin); width: 440px; }
+    .alert h4 { color: var(--alpenglow); }
+    .alert dl { margin: 0; padding: 16px 22px 18px; display: grid; grid-template-columns: 136px 1fr; row-gap: 8px; font: 400 23px/1.3 var(--font-code); }
+    .alert dt { color: var(--lichen); }
+    .alert dd { margin: 0; color: var(--snow); }
+    .agent { left: 610px; width: 760px; border-color: var(--teal); }
+    .agent h4 { color: var(--teal); }
+    .agent ul { list-style: none; margin: 0; padding: 12px 22px 16px; }
+    .agent li { display: grid; grid-template-columns: 150px 1fr auto; column-gap: 14px; padding: 9px 0; border-top: 1px solid #1c3242; font-size: 26px; line-height: 1.28; color: var(--snow); }
+    .agent li:first-child { border-top: 0; }
+    .agent li i { font: 500 23px/1.4 var(--font-body); font-style: normal; color: var(--lichen); }
+    .agent li code { font: 500 23px var(--font-code); color: var(--teal); }
+    .agent li.act { color: var(--alpenglow); }
+    .agent li .tbl { align-self: start; margin-top: 2px; font: 500 22px/1.2 var(--font-code); color: var(--lake); border: 2px solid #23415a; border-radius: 6px; padding: 2px 8px; white-space: nowrap; }
+    .agent .lake-from { padding: 4px 22px 14px; font-size: 24px; color: var(--lichen); }
+    .agent .lake-from b { color: var(--lake); font-weight: 600; }
+    .human { left: 1420px; width: 380px; }
+    .human .btns { padding: 18px 22px 8px; display: grid; gap: 12px; }
+    .human .btn { padding: 12px 18px; border-radius: 10px; border: 2px solid var(--scree); font: 600 30px var(--font-display); color: var(--lichen); }
+    .human .btn.on { border-color: var(--teal); background: #0f2b28; color: var(--snow); }
+    .human p { padding: 10px 22px 18px; font-size: 24px; line-height: 1.3; color: var(--lichen); }
+    .human p b { color: var(--snow); font-weight: 600; }
+    .arrow { position: absolute; top: 420px; font: 600 48px var(--font-display); color: var(--lichen); }
+    .rx { position: absolute; left: var(--margin); top: 818px; width: 1680px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .rx div { display: grid; grid-template-columns: auto 1fr; column-gap: 22px; align-items: center; padding-top: 14px; border-top: 2px solid var(--scree); }
+    .rx .n { font: 600 80px/1 var(--font-display); color: var(--snow); letter-spacing: -.02em; }
+    .rx .n.warm { color: var(--alpenglow); }
+    .rx p { font-size: 26px; line-height: 1.3; color: var(--lichen); }
+    .rx p b { color: var(--snow); font-weight: 600; }
+    .src { bottom: 36px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>The first agent job is explaining alerts: $0.33 each<br>at Verkada, 25% right on Salesforce’s first try.</h2>
+
+    <div class="card alert">
+      <h4>ALERT · <b>firing</b></h4>
+      <dl>
+        <dt>alertname</dt><dd>KubePodCrash­Looping</dd>
+        <dt>cluster</dt><dd>aws-1-prod</dd>
+        <dt>namespace</dt><dd>payments</dd>
+        <dt>pod</dt><dd>payments-7d9f…</dd>
+        <dt>for</dt><dd>6m</dd>
+      </dl>
+    </div>
+    <span class="arrow" style="left:568px">→</span>
+
+    <div class="card agent" data-step data-effect="rise">
+      <h4>THE AGENT · <b>explains, never acts</b></h4>
+      <ul>
+        <li><i>verdict</i>Real. Not noise, no open incident.<span></span></li>
+        <li><i>severity</i>Page: 3 of 6 replicas down in aws-1; aws-2 is carrying it.<code class="tbl">k8s.pods</code></li>
+        <li><i>what changed</i><span>Argo CD synced payments 12 min ago: <code>2026.11.3 → .4</code></span><code class="tbl">argocd.syncs</code></li>
+        <li><i>look here</i>runbook, dashboard, the last 3 firings<code class="tbl">otel.*</code></li>
+        <li class="act"><i>suggests</i>Roll back to 2026.11.3: one revert PR.<span></span></li>
+      </ul>
+      <p class="lake-from">Read from <b>the lake</b>, with a read-only role. No credentials to prod.</p>
+    </div>
+    <span class="arrow" style="left:1380px" data-step="1">→</span>
+
+    <div class="card human" data-step data-effect="rise">
+      <h4>THE RESPONDER</h4>
+      <div class="btns"><span class="btn on">✓ accept</span><span class="btn">modify</span><span class="btn">reject</span></div>
+      <p><b>Every choice is logged:</b> the track record that agent PRs are gated on.</p>
+    </div>
+
+    <div class="rx">
+      <div><span class="n">$0.33</span><p><b>Verkada:</b> ~4,700 alerts a month on nine clusters, 139 s median to a summary.</p></div>
+      <div><span class="n warm">25%</span><p><b>Salesforce:</b> first try. A curated knowledge base and LLM-as-judge evals took it to <b>60–80%</b>.</p></div>
+    </div>
+    <p class="src">Verkada, <i>Triaging 4,700 Alerts/Month at $0.33 Each</i> (abstract; no deck). Salesforce, <i>1000 Clusters, 1 Smarter Brain</i> (deck p6, p21). The alert is our illustration.</p>
+  </main>
+
+  <aside class="notes">
+    The first job isn't fixing anything. It's explaining an alert.
+
+    On the left, a real-shaped alert: payments crash-looping on aws-1 prod for six minutes.
+
+    Click. The agent reads the lake and posts this. The lake is the read-only copy of everything we already collect: pod snapshots, Argo CD syncs, our OTel signals, all stamped with the same cluster and team by one collector config. A verdict: real, not noise. A severity with its basis, so you can disagree: three of six replicas down in aws-1, and aws-2 carrying it; that's the failover slide working. What changed: Argo CD synced payments twelve minutes ago. Where to look. And a suggestion: one revert PR.
+
+    It doesn't act. It has a read-only role and no write path anywhere, which is why it's the first job.
+
+    Click. The responder accepts, modifies or rejects, and every choice is logged. That log is the track record an agent needs before it's allowed to open that PR itself.
+
+    Receipts. Verkada runs this on nine production clusters: forty-seven hundred alerts a month, thirty-three cents each, a summary in a hundred and thirty-nine seconds. And Salesforce's first attempt was right a quarter of the time. A curated knowledge base and an eval harness got them to sixty to eighty percent. Budget for both, or expect the twenty-five.
+
+    That's our agents. Theirs are already at work on what we run.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/ten.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Ten.takeaway(3);
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

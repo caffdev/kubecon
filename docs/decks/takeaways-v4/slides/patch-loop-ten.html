@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Close the circle</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 80px; max-width: 1640px; line-height: 1.02; }
+
+    .loop { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ring { fill: none; stroke: var(--teal); stroke-width: 4; opacity: .7; }
+    .arrow { fill: var(--teal); }
+    .disc { fill: var(--bg); stroke: var(--scree); stroke-width: 2.5; }
+    .disc.theirs { stroke: var(--alpenglow); }
+    .disc.ours { stroke: var(--teal); }
+    .ag { fill: var(--teal); }
+    .ag.theirs { fill: var(--alpenglow); }
+    .lake { fill: var(--lake); }
+    .check { fill: none; stroke: var(--snow); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+    .wave { fill: none; stroke: var(--mint); stroke-width: 3; }
+    .stn { font: 600 30px var(--font-display); fill: var(--snow); }
+    .stn.theirs { fill: var(--alpenglow); }
+    .stn-sub { font: 400 24px var(--font-body); fill: var(--lichen); }
+    .mid { font: 600 104px var(--font-display); fill: var(--teal); text-anchor: middle; letter-spacing: -.02em; }
+    .mid-sub { font: 400 28px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .ring { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    .is-entered .ring { animation: draw 1600ms var(--step-ease) both; animation-delay: 300ms; }
+    @keyframes draw { from { stroke-dashoffset: 1; } }
+    .is-entered .st { animation: fade-in 500ms both; animation-delay: calc(300ms + var(--i) * 320ms); }
+
+    .src { max-width: 1680px; bottom: 40px; }
+    .receipt { left: 1160px; top: 300px; width: 640px; }
+    .proof { left: 1160px; top: 724px; width: 640px; }
+    .proof .row { grid-template-columns: auto 1fr; column-gap: 18px; padding: 8px 0 12px; }
+    .proof .n { font-size: 60px; color: var(--teal); }
+    .proof .t { font-size: 27px; }
+    .yaml { position: absolute; left: 1160px; top: 880px; width: 640px; font: 600 40px/1.1 var(--font-display); color: var(--snow); letter-spacing: -.005em; }
+    .yaml span { color: var(--teal); }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Close the circle: our agents patch what theirs find,<br>and the waves roll it out.</h2>
+
+    <svg class="loop" id="loop" viewBox="0 0 1920 1080" role="img" aria-label="A loop of five stations. A new CVE lands, found by their AI. The lake finds which clusters run the image. Our agent drafts the fix as a pull request: one image digest. CI rules, then the team, approve it; the agent can't approve itself. The waves ship it, gated on status. In the middle: days, from CVE to every cluster."></svg>
+
+    <figure class="receipt" data-step data-effect="rise">
+      <div class="frame"><span class="ring" style="left:181px;top:114px;width:223px;height:78px"></span><img src="../assets/stage/fleet-node-changes-p06.png" alt="NVIDIA's slide: the status enum let an agent drive the rollout. kubectl apply the CR per cluster; the agent polls the status subresource and gates on .status.status. On complete it advances to the next cluster, sixteen clusters, unattended; on erroring or blocked it stops and escalates to a human."></div>
+      <figcaption><b>NVIDIA</b> <i>5,000 Nodes in Minutes, Twice in a Week</i>, deck p06</figcaption>
+    </figure>
+    <div class="proof" data-step="1">
+      <div class="row"><span class="n">~5,600</span><span class="t">nodes on <b>16 clusters in 30 minutes</b>, an agent driving, two CVEs days apart</span></div>
+    </div>
+    <p class="yaml" data-step="1">“The next CVE is <span>a YAML change.</span>”</p>
+    <p class="src">NVIDIA, deck p06, p07. Transfix, <i>Progressive Delivery for Trust</i> (deck p9, p17). The loop’s PR is our illustration.</p>
+  </main>
+
+  <aside class="notes">
+    Now the third way agents arrive: in attackers' hands. They find holes in what we run faster than we've ever had to patch them. The answer isn't more people. It's closing the circle.
+
+    From the top. A new CVE lands, found by their AI or anyone's. The lake finds it: one query, which clusters run the affected image. Our agent drafts the fix as a pull request, a one-line diff to a new image digest. CI runs the same rules as anyone's change, and the team approves; the agent that proposes can't approve its own PR. Transfix put that in six words: models produce evidence, code decides authority. Then the waves from the first half ship it, each step gated on status.
+
+    In the middle: days, from a CVE to every cluster. Same team, same pipeline; the agents make it go round faster.
+
+    Click. And NVIDIA already did the last step at speed. Their slide: an agent drove a patch across sixteen clusters, about fifty-six hundred nodes, in thirty minutes, for two kernel CVEs days apart. Look how little it was trusted with. It applies the change and polls one status field. Complete: next cluster. Erroring or blocked: stop and call a person.
+
+    Their line: the next CVE is a YAML change.
+
+    Five first pull requests get us there.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script src="../theme/ten.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Ten.takeaway(3);
+    (() => {
+      const CX = 600, CY = 636, R = 186, D = Math.PI / 180;
+      const at = (deg, r = R) => [CX + Math.cos(deg * D) * r, CY + Math.sin(deg * D) * r];
+      let s = `<circle class="ring" cx="${CX}" cy="${CY}" r="${R}" pathLength="1" transform="rotate(-90 ${CX} ${CY})"/>`;
+      // arrowheads between stations, pointing clockwise
+      const ANG = [-90, -18, 54, 126, 198];
+      ANG.forEach((a) => {
+        const m = a + 36, [x, y] = at(m);
+        s += `<path class="arrow" d="M0 -11L16 0L0 11Z" transform="translate(${x} ${y}) rotate(${m + 90})"/>`;
+      });
+      // stations: icon on the ring, label outside
+      const icon = {
+        hole: (x, y) => `<circle class="disc theirs" cx="${x}" cy="${y}" r="40"/>` + Estate.agent(x, y, 38, 'ag theirs'),
+        lake: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/><ellipse class="lake" cx="${x}" cy="${y + 4}" rx="26" ry="12"/>`,
+        fix: (x, y) => `<circle class="disc ours" cx="${x}" cy="${y}" r="40"/>` + Estate.agent(x, y, 38, 'ag'),
+        team: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/><path class="check" d="M${x - 17} ${y + 1}L${x - 5} ${y + 13}L${x + 18} ${y - 12}"/>`,
+        waves: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/>` + [10, 19, 28].map((r) => `<path class="wave" d="M${x - 14} ${y - r * 0.8}A${r} ${r} 0 0 1 ${x - 14} ${y + r * 0.8}"/>`).join(''),
+      };
+      const ST = [
+        ['hole', 'a new CVE lands', 'found by their AI', 'top'],
+        ['lake', 'the lake finds it', 'one query: which clusters', 'right'],
+        ['fix', 'our agent drafts the fix', 'a PR: one image digest', 'right'],
+        ['team', 'CI rules, then the team', 'it can’t approve itself', 'left'],
+        ['waves', 'the waves ship it', 'gated on status', 'left'],
+      ];
+      ST.forEach(([k, name, sub, side], i) => {
+        const [x, y] = at(ANG[i]);
+        let lab = '';
+        const cls = k === 'hole' ? 'stn theirs' : 'stn';
+        if (side === 'top') lab = `<text class="${cls}" x="${x + 64}" y="${y - 6}">${name}</text><text class="stn-sub" x="${x + 64}" y="${y + 26}">${sub}</text>`;
+        if (side === 'right') lab = `<text class="${cls}" x="${x + 62}" y="${y - 2}">${name}</text><text class="stn-sub" x="${x + 62}" y="${y + 30}">${sub}</text>`;
+        if (side === 'left') lab = `<text class="${cls}" x="${x - 62}" y="${y - 2}" text-anchor="end">${name}</text><text class="stn-sub" x="${x - 62}" y="${y + 30}" text-anchor="end">${sub}</text>`;
+        s += `<g class="st" style="--i:${i}">${icon[k](x, y)}${lab}</g>`;
+      });
+      s += `<text class="mid" x="${CX}" y="${CY + 18}">days</text><text class="mid-sub" x="${CX}" y="${CY + 70}">CVE to every cluster</text>`;
+      Peaks.draw('#loop', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "title": "Takeaways v4: the fleet outgrows one team, then the agents arrive (with the receipts)",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "cold-open",
@@ -33,6 +33,18 @@
       "ship-the-check",
       "patch-loop",
       "the-ask"
+    ],
+    "ten": [
+      "cold-open-ten",
+      "multiplier-ten",
+      "one-field-ten",
+      "waves-gates-ten",
+      "failover-ten",
+      "three-ways-ten",
+      "agent-job-ten",
+      "triage-ten",
+      "patch-loop-ten",
+      "the-ask-ten"
     ]
   }
 }

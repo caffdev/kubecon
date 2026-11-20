@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An upgrade is one field</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--haze); }
+    h2 { font-size: 74px; max-width: 1640px; line-height: 1.03; margin-top: 18px; }
+    .cc { left: var(--margin); top: 300px; width: 800px; }
+    .rx { position: absolute; left: 1000px; top: 300px; width: 800px; }
+    .rx h3 { font: 600 44px/1.05 var(--font-display); color: var(--snow); letter-spacing: -.005em; }
+    .rx .who { margin-top: 8px; font-size: 27px; line-height: 1.3; color: var(--lichen); }
+    .days { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .d-old { fill: none; stroke: #4b6670; stroke-width: 2.5; }
+    .d-new { fill: var(--haze); }
+    .d-n { font: 600 72px var(--font-display); fill: var(--snow); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+    .d-n.new { fill: var(--haze); }
+    .d-t { font: 500 27px var(--font-body); fill: var(--snow); }
+    .d-s { font: 400 24px var(--font-body); fill: var(--lichen); }
+    .how { position: absolute; left: 1000px; top: 812px; width: 800px; font-size: 27px; line-height: 1.35; color: var(--lichen); }
+    .how .chip-code { margin-right: 6px; }
+    .catch { bottom: 40px; max-width: 1700px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>With Cluster API, an upgrade is one field in a pull request, not 54 steps by hand.</h2>
+
+    <figure class="cc">
+      <figcaption class="cc-file">clusters/<b>ny4.yaml</b></figcaption>
+      <pre class="cc-body small"><span class="k">apiVersion:</span> cluster.x-k8s.io/v1beta1
+<span class="k">kind:</span> Cluster
+<span class="k">metadata:</span>
+  <span class="k">name:</span> ny4
+  <span class="k">labels:</span> {provider: onprem, tier: prod}
+<span class="k">spec:</span>
+  <span class="k">topology:</span>
+    <span class="k">class:</span> onprem-kubeadm
+<span class="del">    <span class="k">version:</span> v1.36.3</span>
+<span class="add">    <span class="k">version:</span> v1.37.1</span>
+    <span class="k">controlPlane:</span> {replicas: 3}
+    <span class="k">workers:</span>
+      <span class="k">machineDeployments:</span>
+      - {class: default, name: md-0, replicas: 6}</pre>
+    </figure>
+
+    <div class="rx" data-step="1">
+      <h3>LinkedIn did three minors in one rollout.</h3>
+      <p class="who">250+ clusters, ~500K nodes, on-prem: v1.31 → v1.34.</p>
+    </div>
+    <svg class="days" id="days" viewBox="0 0 1920 1080" role="img" aria-label="LinkedIn's result, one block per business day at the same scale: forty blocks for one minor at a time in six fleet waves, seven blocks for one rollout and a promotion."></svg>
+    <p class="how" data-step="1"><span class="chip-code">--emulated-version=1.31</span> ship the v1.34 binaries pinned to old behaviour, then raise it. <i>Binary Version Is Not Behavior</i>, LinkedIn, deck p02.</p>
+
+    <p class="catch">On bare metal, Cluster API re-provisions machines: <b>pick Metal3, or vSphere / Nutanix, first.</b> LinkedIn used their own tooling: <b>check emulated-version support in kubeadm and CAPI before we promise it.</b></p>
+  </main>
+
+  <aside class="notes">
+    Here's the admins' fix. kubeadm stays. The hands go.
+
+    On the left is the whole upgrade, as a pull request: a Cluster API Cluster object for ny4, built from a ClusterClass we'd call onprem-kubeadm. The upgrade is one line, version, 1.36 to 1.37. By hand, that's fifty-four steps for this one cluster, nine nodes, six steps each. Cluster API does them: control plane first, a new machine joins, the old one drains and goes, then the workers. In AWS it's the same pull request against a Region claim, and Auto Mode replaces the nodes itself, every twenty-one days at most.
+
+    Click. LinkedIn went further, at ten times our size: two hundred and fifty clusters, half a million nodes, on their own hardware. One minor at a time was six fleet waves and forty business days. They did three minors in one rollout and a promotion: seven. Ship the new binaries pinned to the old behaviour, soak, then raise it.
+
+    Two catches, out loud. On bare metal, replacing a machine means re-provisioning a server, so the provider, Metal3 or vSphere, is the first decision. And LinkedIn used their own tooling, so we check what kubeadm and Cluster API support before we promise it.
+
+    One field per cluster. Now twenty tools on twenty-nine clusters: they need an order, and a way to stop.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/ten.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Ten.takeaway(1);
+    (() => {
+      const X0 = 1000, B = 30, P = 38;
+      let s = '';
+      // one minor at a time: 40 business days, 20 a row
+      let y = 470;
+      s += `<text class="d-n" x="${X0}" y="${y + 52}">40</text><text class="d-t" x="${X0 + 96}" y="${y + 22}">business days, one minor at a time</text><text class="d-s" x="${X0 + 96}" y="${y + 54}">six fleet waves</text>`;
+      for (let i = 0; i < 40; i++) s += `<rect class="d-old" x="${X0 + (i % 20) * P}" y="${y + 84 + Math.floor(i / 20) * P}" width="${B}" height="${B}" rx="4"/>`;
+      // emulated version: 7 business days
+      y = 660;
+      s += `<text class="d-n new" x="${X0}" y="${y + 52}">7</text><text class="d-t" x="${X0 + 96}" y="${y + 22}">business days, one rollout + a promotion</text><text class="d-s" x="${X0 + 96}" y="${y + 54}">three minors at once</text>`;
+      for (let i = 0; i < 7; i++) s += `<rect class="d-new" x="${X0 + i * P}" y="${y + 84}" width="${B}" height="${B}" rx="4"/>`;
+      Peaks.draw('#days', `<g data-step="1">${s}</g>`);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

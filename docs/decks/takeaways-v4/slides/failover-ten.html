@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Failover by layer</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--lake); }
+    h2 { font-size: 74px; max-width: 1640px; line-height: 1.02; margin-top: 18px; }
+    .fo { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .col-h { font: 600 34px var(--font-display); fill: var(--snow); }
+    .col-h.c2 { fill: var(--lichen); }
+    .lay-n { font: 600 36px var(--font-display); fill: var(--snow); }
+    .lay-m { font: 400 23px var(--font-body); fill: var(--lichen); }
+    .lay-m.code { font: 500 22px var(--font-code); fill: var(--lake); }
+    .hatch-line { stroke: var(--alpenglow); stroke-width: 3; opacity: .22; }
+    .down-frame { fill: none; stroke: var(--alpenglow); stroke-width: 3; stroke-dasharray: 10 8; opacity: .8; }
+    .alive { fill: none; stroke: var(--lake); stroke-width: 3; opacity: .9; }
+    .rto-sum { font: 600 30px var(--font-display); fill: var(--alpenglow); text-anchor: end; }
+    .cell { fill: #0d1820; stroke: #1f3341; stroke-width: 2; }
+    .track { fill: #1a2a34; }
+    .fill { fill: var(--lake); }
+    .pct { font: 600 34px var(--font-display); fill: var(--snow); }
+    .pct.mute { fill: var(--lichen); }
+    .rep { fill: var(--mint); }
+    .rep.warm { fill: none; stroke: var(--mint); stroke-width: 2.5; stroke-dasharray: 5 4; }
+    .node { fill: #2c4452; }
+    .node.add { fill: var(--mint); }
+    .db { fill: #1d3442; stroke: var(--lake); stroke-width: 2.5; }
+    .db.w { fill: var(--lake); }
+    .db-t { font: 500 26px var(--font-body); fill: var(--snow); }
+    .db-t.mute { fill: var(--lichen); }
+    .note { font: 400 24px var(--font-body); fill: var(--lichen); }
+    .note b { fill: var(--snow); font-weight: 600; }
+    .cover { fill: #0d1820; }
+    .down-zone { fill: #070b0e; opacity: .74; }
+    .down-zone.soft { opacity: .6; }
+    .rto-h { font: 600 44px var(--font-display); fill: var(--snow); letter-spacing: -.01em; }
+    .rto-seg { fill: #35505f; }
+    .rto-seg.data { fill: var(--alpenglow); }
+    .rto-l { font: 600 30px var(--font-display); fill: var(--snow); }
+    .rto-s { font: 400 23px var(--font-body); fill: var(--lichen); }
+    .c2-note { font: 500 24px var(--font-body); fill: var(--mint); }
+    .src { bottom: 40px; font-size: 22px; }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="5">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Lose a region and the app doesn’t move:<br>traffic, capacity and data do.</h2>
+    <svg class="fo" id="fo" viewBox="0 0 1920 1080" role="img" aria-label="Two AWS regions and a second cloud, in four layers: traffic, delivery, capacity and state. Region 1 fails. Traffic swings to region 2, region 2 scales from three nodes to six, and its database replica is promoted to writer. The app's deployment never changes. The recovery time is the sum of detection, traffic, scale-up and data, with data the longest. If all of AWS fails, the second cloud's warm standby takes the traffic."></svg>
+    <p class="src">GOALS §5.1 B, §5.5. No seconds on purpose: we measure each segment at a game day. Karmada: Bloomberg, <i>Karmada Updates and Use Cases</i> (no deck).</p>
+  </main>
+
+  <aside class="notes">
+    Remember "fingers crossed for AWS". This is what replaces it, and it's where the engineering is.
+
+    Four layers across two AWS regions, and the second cloud on the right. Start with delivery: placement is labels, region in aws-1 or aws-2, so the app already runs in both regions, three replicas each. Nothing gets deployed during an outage.
+
+    Click. Region one goes down. Detection starts the clock: health checks have to fail enough times to be believed.
+
+    Click. Traffic moves: Global Accelerator at the edge, Route 53 behind it, Istio locality failover inside. All of it lands on region two. Nobody redeployed anything.
+
+    Click. Capacity. Region two was sized for half the traffic and just got all of it. The autoscaler doubles the pods and Auto Mode adds nodes: launch, image pull, warm-up. Minutes, and part of our recovery time whether we budget for it or not.
+
+    Click. State. Region two's database replica is promoted to writer. The slowest layer, and not a Kubernetes problem at all.
+
+    So recovery time is a sum, and the data sets it. No seconds on the slide on purpose: we measure each one at a game day. And if all of AWS goes, the second cloud is a warm standby; how data crosses clouds is still undecided, and the slide says so.
+
+    That's the fleet half. Now the show's biggest topic: agents.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/ten.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Ten.takeaway(2);
+    (() => {
+      const LX = 120;
+      const COLS = { r1: { x: 520, w: 400 }, r2: { x: 950, w: 400 }, c2: { x: 1400, w: 400 } };
+      const ROWS = { traffic: 352, delivery: 456, capacity: 560, state: 664 };
+      const RH = 92;
+      let s = '';
+      const g = (step, inner) => `<g data-step="${step}">${inner}</g>`;
+      // column heads
+      s += `<text class="col-h" x="${COLS.r1.x + 20}" y="318">AWS region 1</text>`;
+      s += `<text class="col-h" x="${COLS.r2.x + 20}" y="318">AWS region 2</text>`;
+      s += `<text class="col-h c2" x="${COLS.c2.x + 20}" y="318">Second cloud</text>`;
+      // layer labels + cells
+      const LAY = [
+        ['traffic', 'Traffic', 'Global Accelerator, Route 53, Istio'],
+        ['delivery', 'Delivery', 'region In [aws-1, aws-2]', 'code'],
+        ['capacity', 'Capacity', 'HPA + Auto Mode nodes'],
+        ['state', 'State', 'Aurora Global'],
+      ];
+      for (const [id, n, m, cls = ''] of LAY) {
+        const y = ROWS[id];
+        s += `<text class="lay-n" x="${LX}" y="${y + 40}">${n}</text><text class="lay-m ${cls}" x="${LX}" y="${y + 74}">${m}</text>`;
+        for (const c of Object.values(COLS)) s += `<rect class="cell" x="${c.x}" y="${y}" width="${c.w}" height="${RH}" rx="10"/>`;
+      }
+      // traffic bars
+      const bar = (c, pct, cls = '', hide = false) => {
+        const tx = c.x + 24, tw = 250, y = ROWS.traffic + 34;
+        return `<rect class="track" x="${tx}" y="${y}" width="${tw}" height="24" rx="12"/>`
+          + (pct ? `<rect class="fill" x="${tx}" y="${y}" width="${tw * pct / 100}" height="24" rx="12"/>` : '')
+          + `<text class="pct ${cls}"${hide ? ' aria-hidden="true"' : ''} x="${tx + tw + 22}" y="${y + 24}">${pct}%</text>`;
+      };
+      s += bar(COLS.r1, 50, '', true) + bar(COLS.r2, 50, '', true) + bar(COLS.c2, 0, 'mute');
+      // step 2 for region 1, drawn under the outage overlay
+      s += g(2, `<rect class="cover" x="${COLS.r1.x + 2}" y="${ROWS.traffic + 2}" width="${COLS.r1.w - 4}" height="${RH - 4}" rx="9"/>` + bar(COLS.r1, 0, 'mute'));
+      // replicas: three per AWS region, warm (outlined) in the second cloud
+      const reps = (c, cls) => {
+        let o = '';
+        for (let k = 0; k < 3; k++) o += `<rect class="rep ${cls}" x="${c.x + 24 + k * 62}" y="${ROWS.delivery + 24}" width="44" height="44" rx="8"/>`;
+        return o;
+      };
+      s += reps(COLS.r1, '') + reps(COLS.r2, '') + reps(COLS.c2, 'warm');
+      s += `<text class="note" x="${COLS.r1.x + 222}" y="${ROWS.delivery + 54}">3 each</text>`;
+      s += `<text class="note" x="${COLS.c2.x + 222}" y="${ROWS.delivery + 54}">scaled down</text>`;
+      // capacity: nodes
+      const nodes = (c, n, cls = '', from = 0) => {
+        let o = '';
+        for (let k = from; k < n; k++) o += `<rect class="node ${cls}" x="${c.x + 24 + k * 50}" y="${ROWS.capacity + 28}" width="36" height="36" rx="5"/>`;
+        return o;
+      };
+      s += nodes(COLS.r1, 3) + nodes(COLS.r2, 3);
+      s += `<text class="note" x="${COLS.c2.x + 24}" y="${ROWS.capacity + 54}">minimum nodes</text>`;
+      // state: databases
+      const db = (c, label, cls, tcls = '', hide = false) => {
+        const x = c.x + 24, y = ROWS.state + 22;
+        return `<path class="db ${cls}" d="M${x} ${y + 8}a26 8 0 0 1 52 0v32a26 8 0 0 1 -52 0Z"/>`
+          + `<text class="db-t ${tcls}"${hide ? ' aria-hidden="true"' : ''} x="${x + 74}" y="${y + 33}">${label}</text>`;
+      };
+      s += db(COLS.r1, 'writer', 'w') + db(COLS.r2, 'reader (replica)', '', '', true);
+      s += `<text class="note" x="${COLS.c2.x + 24}" y="${ROWS.state + 55}">cross-cloud copy: undecided</text>`;
+
+      // ---- step 1: region 1 fails
+      {
+        const zx = COLS.r1.x - 8, zy = 282, zw = COLS.r1.w + 16, zh = ROWS.state + RH - 274;
+        let hatch = `<defs><clipPath id="down-clip"><rect x="${zx}" y="${zy}" width="${zw}" height="${zh}" rx="12"/></clipPath></defs><g clip-path="url(#down-clip)">`;
+        for (let k = -zh; k < zw; k += 26) hatch += `<line class="hatch-line" x1="${zx + k}" y1="${zy + zh}" x2="${zx + k + zh}" y2="${zy}"/>`;
+        hatch += '</g>';
+        s += g(1, `<rect class="down-zone" x="${zx}" y="${zy}" width="${zw}" height="${zh}" rx="12"/>${hatch}`
+          + `<rect class="down-frame" x="${zx}" y="${zy}" width="${zw}" height="${zh}" rx="12"/>`
+          + `<text class="down-label" x="${COLS.r1.x + 248}" y="318">✕ down</text>`);
+      }
+      // ---- step 2: traffic swings to region 2
+      s += g(2, `<rect class="alive" x="${COLS.r2.x - 8}" y="282" width="${COLS.r2.w + 16}" height="${ROWS.state + RH - 274}" rx="12"/>`);
+      s += g(2, `<rect class="cover" x="${COLS.r2.x + 2}" y="${ROWS.traffic + 2}" width="${COLS.r2.w - 4}" height="${RH - 4}" rx="9"/>` + bar(COLS.r2, 100));
+      // ---- step 3: region 2 scales
+      s += g(3, nodes(COLS.r2, 6, 'add', 3) + `<text class="note" x="${COLS.r2.x + 330}" y="${ROWS.capacity + 54}">3 → 6</text>`);
+      // ---- step 4: the replica is promoted
+      s += g(4, `<rect class="cover" x="${COLS.r2.x + 2}" y="${ROWS.state + 2}" width="${COLS.r2.w - 4}" height="${RH - 4}" rx="9"/>` + db(COLS.r2, 'writer (promoted)', 'w'));
+
+      // ---- the RTO bar, a segment per step
+      const BX = 520, BY = 806, BW = 1280, BH = 46;
+      s += `<text class="rto-h" x="${LX}" y="${BY + 40}">RTO =</text>`;
+      const SEG = [[1, 'detect', 'health checks', .13], [2, 'traffic', 'edge, DNS caches', .19], [3, 'scale-up', 'nodes, image pull, warm-up', .25], [4, 'data', 'promote the writer', .43]];
+      let x = BX;
+      for (const [st, l, sub, f] of SEG) {
+        const w = BW * f - 6;
+        s += g(st, `<rect class="rto-seg ${l === 'data' ? 'data' : ''}" x="${x}" y="${BY}" width="${w}" height="${BH}" rx="6"/>`
+          + `<text class="rto-l" x="${x + 2}" y="${BY + 84}">${st > 1 ? '+ ' : ''}${l}</text><text class="rto-s" x="${x + 2}" y="${BY + 116}">${sub}</text>`);
+        x += BW * f;
+      }
+      // the second cloud: static; what happens if all of AWS goes, and what's undecided
+      s += `<text class="c2-note" x="${COLS.c2.x + 20}" y="236">if all of AWS goes: warm standby,</text>`;
+      s += `<text class="c2-note" x="${COLS.c2.x + 20}" y="266">or Karmada if the app must move</text>`;
+      Peaks.draw('#fo', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

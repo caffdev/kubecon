@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Every cluster multiplies the work</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--haze); }
+    h2 { font-size: 74px; max-width: 1640px; line-height: 1.03; margin-top: 18px; }
+    .grid { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .tool { font: 500 23px var(--font-body); fill: var(--lichen); text-anchor: end; }
+    .tool.all { fill: var(--snow); }
+    .off { fill: #111c22; }
+    .tick { fill: var(--haze); }
+    .grp-n { font: 600 40px var(--font-display); fill: var(--snow); letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+    .grp-n.last { fill: var(--haze); }
+    .grp-t { font: 500 23px var(--font-body); fill: var(--lichen); }
+    .grp-rule { stroke: var(--scree); stroke-width: 2; }
+    .grp-rule.cloud { stroke: #2a5560; }
+
+    .sum { position: absolute; left: 1556px; top: 330px; width: 250px; }
+    .sum .row { display: block; padding: 10px 0 14px; }
+    .sum b { display: block; font: 600 64px/1 var(--font-display); color: var(--snow); letter-spacing: -.02em; font-variant-numeric: tabular-nums lining-nums; }
+    .sum span { display: block; margin-top: 4px; font-size: 27px; line-height: 1.2; color: var(--lichen); }
+    .sum .total { margin-top: 8px; padding-top: 22px; border-top: 3px solid var(--alpenglow); }
+    .sum .total b { font-size: 112px; line-height: .9; color: var(--alpenglow); }
+    .sum .total span { color: var(--snow); font-size: 29px; margin-top: 16px; }
+    .sum .hours { padding-top: 18px; }
+    .sum .hours b { font-size: 46px; color: var(--lichen); }
+    .src { bottom: 40px; max-width: 1400px; }
+    .src b { color: var(--warm); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Four clusters became 29, and each one multiplies the work: 1,672 hand rollouts a year.</h2>
+
+    <svg class="grid" id="grid" viewBox="0 0 1920 1080" role="img" aria-label="A grid: twenty platform tools as rows, our twenty-nine clusters as columns, grouped by the stage that added them: four on day one, three for EKS dev, four at the second exchange, six for the migration, six for the second region, six for the second cloud. Twelve tools run everywhere, two only on-prem, two only in the cloud, four on a few clusters: 418 installs. Each install holds four ticks, one per release a year: 1,672 rollouts by hand."></svg>
+
+    <div class="sum" data-step="5">
+      <p class="row"><b>418</b><span>installs</span></p>
+      <p class="row"><b>× 4</b><span>releases a year</span></p>
+      <p class="row total"><b>1,672</b><span>rollouts a year, by&nbsp;hand</span></p>
+      <p class="row hours"><b>2,508 h</b><span>of hands-on work</span></p>
+    </div>
+
+    <p class="src"><b>Illustrative model, not our measurements:</b> four releases a year per tool, 1.5 h per install by hand (<code>assets/toil-model.json</code>). Real numbers replace it before this goes beyond the team.</p>
+  </main>
+
+  <aside class="notes">
+    Ours started at four clusters: dev, staging, and production at two exchanges. Those are the four columns on the left. Each row is one of the platform tools that runs on them, Argo CD, Prometheus, the Splunk collector and so on, and each lit cell holds four ticks: four releases a year that somebody rolls out by hand.
+
+    Now watch it grow. Every step was reasonable. Click: EKS for dev, qa and ftb. Click: the second exchange. Click: the migration, six clusters in AWS. Click: a second region, because fingers crossed for AWS isn't a plan. Click: a second cloud.
+
+    Twenty-nine clusters. Twenty tools: most of them everywhere, Ceph and Rook only on our hardware, Karpenter and external-dns only in the cloud, a few on three clusters. That's four hundred and eighteen installs, four releases each: sixteen hundred and seventy-two rollouts a year, by hand. About twenty-five hundred hours.
+
+    It's a model, not a measurement, and the team behind it is the same small team. And that's before a single cluster upgrade, or the apps.
+
+    There's always another cluster. So here's what an upgrade should be.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/ten.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Ten.takeaway(1);
+    (() => {
+      // illustrative: assets/toil-model.json "twenty_tools" (inlined so the slide works from file://)
+      // stages in the order the estate grew; k = on-prem (kubeadm) or cloud (managed)
+      const STAGES = [
+        { n: 4, name: 'day one', k: 'onprem', total: 4 },
+        { n: 3, name: 'EKS dev', k: 'cloud', total: 7 },
+        { n: 4, name: 'exchange 2', k: 'onprem', total: 11 },
+        { n: 6, name: 'migration', k: 'cloud', total: 17 },
+        { n: 6, name: 'region 2', k: 'cloud', total: 23 },
+        { n: 6, name: 'cloud 2', k: 'cloud', total: 29 },
+      ];
+      const ALL = ['argo-cd', 'prometheus', 'splunk-otel', 'external-secrets', 'thanos', 'istio / ALB', 'cert-manager', 'kyverno', 'velero', 'reloader', 'argo-rollouts', 'keda'];
+      const TOOLS = [
+        ...ALL.map((t) => [t, 'all']),
+        ['ceph', 'onprem'], ['rook', 'onprem'], ['karpenter', 'cloud'], ['external-dns', 'cloud'],
+        ['vault-operator', 'few'], ['grafana', 'few'], ['kafka-ui', 'few'], ['file-viewer', 'few'],
+      ];
+      // "a few" = three clusters: ny4, ch4 (day one) and the first migration cluster (illustrative)
+      const FEW = new Set([2, 3, 11]);
+
+      const X0 = 352, Y0 = 344, CW = 32, PITCH = 36, GG = 22, RH = 27, CH = 21;
+      const TW = 5, TG = 3, TH = 15;
+      let col = 0, x = X0;
+      const groups = STAGES.map(() => '');
+      const heads = STAGES.map(() => '');
+      let installs = 0;
+      STAGES.forEach((st, gi) => {
+        const gx = x;
+        for (let c = 0; c < st.n; c++, col++, x += PITCH) {
+          TOOLS.forEach(([, where], r) => {
+            const y = Y0 + r * RH;
+            const on = where === 'all' || where === st.k || (where === 'few' && FEW.has(col));
+            if (!on) { groups[gi] += `<rect class="off" x="${x}" y="${y}" width="${CW}" height="${CH}" rx="3"/>`; return; }
+            installs++;
+            for (let t = 0; t < 4; t++) groups[gi] += `<rect class="tick" x="${x + 2 + t * (TW + TG)}" y="${y + (CH - TH) / 2}" width="${TW}" height="${TH}" rx="1"/>`;
+          });
+        }
+        const gw = x - gx - (PITCH - CW);
+        const yb = Y0 + TOOLS.length * RH + 8;
+        heads[gi] = `<text class="grp-n${gi === STAGES.length - 1 ? ' last' : ''}" x="${gx}" y="${Y0 - 16}">${st.total}</text>`
+          + `<line class="grp-rule${st.k === 'cloud' ? ' cloud' : ''}" x1="${gx}" x2="${gx + gw}" y1="${yb}" y2="${yb}"/>`
+          + `<text class="grp-t" x="${gx}" y="${yb + 34}">${st.name}</text>`;
+        x += GG;
+      });
+      if (installs !== 418) console.warn('installs', installs);
+      let s = '';
+      TOOLS.forEach(([t, where], r) => {
+        s += `<text class="tool${where === 'all' ? ' all' : ''}" x="${X0 - 18}" y="${Y0 + r * RH + 19}">${t}</text>`;
+      });
+      s += `<g>${groups[0]}${heads[0]}</g>`;
+      for (let gi = 1; gi < STAGES.length; gi++) s += `<g data-step="${gi}">${groups[gi]}${heads[gi]}</g>`;
+      Peaks.draw('#grid', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
