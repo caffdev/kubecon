@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Before the bend</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    /* The cover sheet of the set. Merges the-claim, work-outgrows-us and retrofit-tax: one curve
+       (work against the team, toil in the gap), the retrofits as revision deltas at the bend, and
+       the drawing's own revision block top-right, where drawings keep it. Row D is ours, open. */
+    h2.head { width: 1080px; font-size: 84px; }
+    #plot { position: absolute; inset: 0; }
+    .axis { stroke: var(--c-graphite); stroke-width: 3; fill: none; }
+    .work { stroke: var(--c-graphite); stroke-width: 5; fill: none; stroke-linecap: round; }
+    .team { stroke: var(--c-red); stroke-width: 5; fill: none; stroke-linecap: round; }
+    .gap { fill: url(#h-blue); stroke: none; }
+
+    .rev { position: absolute; left: 1240px; top: 96px; width: 560px; }
+    .rev td { height: 104px; vertical-align: middle; }
+    .rev td.n { width: 64px; font: 800 36px var(--font-display); }
+    .rev td b { display: block; font: 800 30px/1.1 var(--font-display); letter-spacing: -.015em; }
+    .rev td span { display: block; margin-top: 4px; text-wrap: balance; font: 400 24px/1.25 var(--font-tech); }
+    .rev td small { font: 400 22px var(--font-tech); color: var(--c-lead); }
+    .rev tr.ours td { color: var(--c-red-ink); }
+    #cl { position: absolute; inset: 0; pointer-events: none; }
+
+    .tblock { position: absolute; left: 1240px; top: 804px; width: 560px; border: 3px solid var(--c-graphite); background: rgb(229 233 226 / .92); }
+    .tblock .t { padding: 14px 18px 12px; border-bottom: 2px solid var(--c-graphite); }
+    .tblock .t b { display: block; font: 800 44px/1.05 var(--font-display); letter-spacing: -.02em; }
+    .tblock .t span { display: block; margin-top: 6px; font: 400 24px/1.3 var(--font-tech); color: var(--c-lead); }
+    .tblock .cells span { display: block; padding: 7px 18px; font: 400 22px/1.3 var(--font-tech); color: var(--c-lead); }
+    .tblock .cells span + span { border-top: 1.5px solid var(--c-graphite); }
+    .tblock .cells b { color: var(--c-graphite); }
+    .src { max-width: 1060px; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2 class="head">We can build from day one<br>what they had to retrofit</h2>
+    <svg id="plot" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <table class="bom rev">
+      <tr><th>Rev</th><th>Retrofitted at the bend</th></tr>
+      <tr data-step="1"><td class="n">A</td><td><b>Coinbase</b><span>homegrown auth → SPIFFE, 4k+ services</span></td></tr>
+      <tr data-step="2"><td class="n">B</td><td><b>Cisco Meraki</b><span>20-year monolith → “a new platform contract” <small>abstract</small></span></td></tr>
+      <tr data-step="3"><td class="n">C</td><td><b>Nutanix</b><span>39 clusters pruned; four days back</span></td></tr>
+      <tr data-step="4" class="ours"><td class="n">D</td><td><b>Us</b><span>not yet drawn</span></td></tr>
+    </table>
+    <svg id="cl" viewBox="0 0 1920 1080" aria-hidden="true" data-step="4"></svg>
+
+    <div class="tblock">
+      <div class="t"><b>Built for the curve</b><span>KubeCon NA 2026, for our move to EKS</span></div>
+      <div class="cells"><span><b>Show</b> Salt Lake City, Nov 9–12</span><span><b>Set</b> 5 sheets, 1 per move</span></div>
+    </div>
+
+    <p class="src">Curves illustrative, not data. Coinbase, Nutanix: posted slides.</p>
+  </main>
+
+  <aside class="notes">
+    Here's the one sentence for the whole talk. We can build, from the first EKS cluster, what the big operators had to retrofit.
+
+    The curves are illustrative. The black line is the work: every cluster, times every release, times every CVE. The red line is the team, and teams grow one hire at a time. The blue gap is toil: somebody does it by hand, or it doesn't get done. LinkedIn put a number on it: three Kubernetes minors across two hundred and fifty clusters, one at a time, is forty business days.
+
+    Click. Everyone we heard from hit the bend first, then rebuilt the platform while it was running. Revision A, Coinbase: a homegrown auth system replaced with SPIFFE across four thousand services.
+
+    Click. B, Cisco Meraki: a twenty-year monolith, moved onto a new contract between platform and app teams.
+
+    Click. C, Nutanix: one deleted object pruned thirty-nine production clusters, and it took four days to come back.
+
+    Click. Revision D is us, and it isn't drawn yet. We're here, before the bend. We get to decide how a cluster, a service and an agent are made before there are a hundred of them.
+
+    So what does "built for it from day one" look like by 2030?
+  </aside>
+
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const x0 = 200, x1 = 1100, yb = 920, yt = 360, k = 3.4;
+      const X = (t) => x0 + (x1 - x0) * t;
+      const yw = (t) => yb - 24 - (yb - yt - 24) * (Math.exp(k * t) - 1) / (Math.exp(k) - 1);
+      const yteam = (t) => yb - 110 - 190 * t;
+      let w = '';
+      for (let i = 0; i <= 120; i++) { const t = i / 120; w += `${i ? 'L' : 'M'}${X(t).toFixed(1)} ${yw(t).toFixed(1)}`; }
+      let tc = 0; for (let i = 0; i <= 1000; i++) { const t = i / 1000; if (yw(t) < yteam(t)) { tc = t; break; } }
+      let gap = `M${X(tc).toFixed(1)} ${yteam(tc).toFixed(1)}`;
+      for (let i = 0; i <= 100; i++) { const t = tc + (1 - tc) * i / 100; gap += `L${X(t).toFixed(1)} ${yw(t).toFixed(1)}`; }
+      gap += `L${X(1)} ${yteam(1)} Z`;
+
+      // revision deltas A, B, C, set just left of the curve at the bend, each on a short leader
+      const at = [0.76, 0.86, 0.945];
+      let deltas = '';
+      at.forEach((t, i) => { deltas += `<g data-step="${i + 1}">${Dwg.delta(X(t), yw(t), 'ABC'[i], { s: 54 })}</g>`; });
+      // we are here: before the bend, on the work line
+      const th = 0.05, hx = X(th), hy = yw(th);
+
+      Dwg.into('#plot', Dwg.defs(),
+        `<path class="gap" d="${gap}"/>`,
+        `<path class="axis" d="M${x0} ${yt - 30} V${yb} H${x1 + 40}"/>`,
+        `<text class="blue-t" x="${x0 - 22}" y="${yt + 60}" text-anchor="end" transform="rotate(-90 ${x0 - 22} ${yt + 60})">hours of work</text>`,
+        `<text class="blue-t" x="${x1 + 40}" y="${yb + 42}" text-anchor="end">scale: clusters × releases × CVEs</text>`,
+        `<path class="team" d="M${X(0)} ${yteam(0)} L${X(1)} ${yteam(1)}"/>`,
+        `<path class="work" d="${w}"/>`,
+        `<text class="lbl big" x="${X(1) - 30}" y="${yw(1) + 10}" text-anchor="end">work</text>`,
+        `<text class="lbl big red" x="${X(1)}" y="${yteam(1) + 54}" text-anchor="end">team</text>`,
+        `<text class="lbl big" style="fill:#2b5c9e" x="${X(0.955) + 8}" y="${(yw(0.955) + yteam(0.955)) / 2 + 30}" text-anchor="middle">toil</text>`,
+        deltas,
+        `<circle cx="${hx}" cy="${hy}" r="14" fill="#d0293a"/>`,
+        `<line class="wire red" style="stroke-width:2.5" x1="${hx + 10}" y1="${hy - 12}" x2="${hx + 56}" y2="${yt + 300}"/>`,
+        `<text class="red-t" x="${hx + 66}" y="${yt + 292}">we are here, before the bend</text>`
+      );
+
+      // revision cloud around our row D (row geometry read from layout; heights are fixed in CSS)
+      const tbl = document.querySelector('.rev'), row = tbl.querySelector('tr.ours');
+      const y = tbl.offsetTop + row.offsetTop, h = row.offsetHeight;
+      Dwg.into('#cl', Dwg.cloud(tbl.offsetLeft - 12, y - 6, tbl.offsetWidth + 24, h + 12, { r: 18 }));
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -148,3 +148,16 @@
   color: var(--muted);
   max-width: 1680px;
 }
+
+/* ---- Added for the ten-slide draft (2026-11-20). Additive only: new classes, no existing rule
+   changed, so the main draft renders exactly as before. ---- */
+
+/* revision delta: the triangle a drawing uses to mark where a revision was made (Dwg.delta) */
+.delta { fill: var(--c-film); stroke: var(--c-graphite); stroke-width: 3; stroke-linejoin: round; }
+.delta.red { stroke: var(--c-red); stroke-dasharray: 7 5; }
+.delta-n { font: 700 24px var(--font-tech); fill: var(--c-graphite); text-anchor: middle; dominant-baseline: central; }
+.delta-n.red { fill: var(--c-red-ink); }
+
+/* a "catch" line: what is unverified or still open, said out loud on the slide */
+.catch { font: 400 24px/1.35 var(--font-tech); color: var(--c-graphite); }
+.catch b { font-weight: 700; }

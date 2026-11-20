@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ten lines, two gates</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    /* Sheet 2 of the set. Merges ten-line-contract and ci-is-the-gate into one drawing: the
+       ten lines an app team writes (LinkedIn's real spec) are the part that enters the pipe, and
+       the pipe's only two valves are CI before merge and a PostSync check after sync. Evidence is
+       called out at the valve it proves. */
+    h2.head { width: 1240px; }
+    #pipe { position: absolute; inset: 0; }
+    .frame { position: absolute; left: 200px; top: 330px; width: 440px; height: 460px; padding: 22px 26px; border: 3px solid var(--c-graphite); background: rgb(229 233 226 / .92); }
+    .frame .cap { position: absolute; left: -3px; top: -44px; font: 700 26px var(--font-tech); white-space: nowrap; }
+    .frame .code { font-size: 28px; }
+    .under { position: absolute; left: 200px; top: 806px; width: 440px; font: 400 24px/1.3 var(--font-tech); color: var(--c-lead); }
+    .rc { position: absolute; width: 520px; padding-top: 14px; border-top: 3px solid var(--c-graphite); }
+    .rc b { font: 800 32px/1.1 var(--font-display); letter-spacing: -.015em; }
+    .rc p { margin-top: 6px; font: 400 28px/1.3 var(--font-body); }
+    .rc small { font: 400 22px var(--font-tech); color: var(--c-lead); margin-left: 8px; }
+    .rc1 { left: 700px; top: 640px; } .rc2 { left: 1280px; top: 640px; }
+    .ours { position: absolute; left: 700px; top: 880px; width: 1100px; font: 400 32px/1.3 var(--font-body); }
+    .ours b { font-weight: 800; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2 class="head">App teams write ten lines;<br>CI and one hook are the gates</h2>
+    <div class="sheet"><b>2</b><span><em>Apps on a contract</em>sheet 2 of 5</span></div>
+
+    <div class="frame"><span class="cap">The app team writes</span><div class="code"><span class="k">kind:</span> LiDeployment
+<span class="k">metadata:</span>
+  <span class="k">name:</span> checkout
+<span class="k">spec:</span>
+  <span class="k">replicas:</span> 3
+  <span class="k">versions:</span>
+    <span class="k">app:</span> 2.2.5
+  <span class="k">resources:</span>
+    <span class="k">cpu:</span> 10
+    <span class="k">memory:</span> 32Gi</div></div>
+    <p class="under">LinkedIn’s real spec; 5M+ pods behind it.</p>
+
+    <svg id="pipe" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <div class="rc rc1" data-step="1"><b>Ford</b><small>posted slides</small><p>One CI for PRs from people, AI and bots.</p></div>
+    <div class="rc rc2" data-step="2"><b>LinkedIn</b><small>posted slides</small><p>From a week of hoping to an hour of proof.</p></div>
+
+    <p class="ours" data-step="3"><b>Ours:</b> one golden Helm chart and a short values file. Apps move to EKS on it, or they don’t move yet.</p>
+  </main>
+
+  <aside class="notes">
+    Sheet two: apps on a contract.
+
+    On the left is LinkedIn's real deployment spec. That's all an app team writes: a name, replicas, a version, CPU and memory. About ten lines. The platform owns everything else: pod shape, injected containers, security, placement.
+
+    Then there's one road to production. We're keeping Argo CD basic, with no promotion tools and no progressive sync, so safety comes from two boring gates.
+
+    Click. Gate one is CI before merge: render, schema, policy. Ford runs hundreds of clusters this way, with pull requests from people, AI and bots, and reviewers read the content, not the syntax.
+
+    Click. Gate two is after the sync: a PostSync hook, which is just a Job with one annotation. It smoke-tests what just deployed. Pass, and the next wave goes. Fail, and a person gets paged; that's the red branch. LinkedIn went from a week of hoping to an hour of proof.
+
+    Click. Ours: one golden Helm chart and a short values file. The move to EKS is the moment to impose it. An app moves on the contract, or it doesn't move yet.
+
+    Now the pods are running. Who are they, and what are they allowed to touch?
+  </aside>
+
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      const y = 470;
+      const pipe = (x1, x2) => `<line class="wire" x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"/>`;
+      const box = (x, w, t) => `<rect class="paper" x="${x}" y="${y - 40}" width="${w}" height="80" stroke="#22272b" stroke-width="3"/>`
+        + `<text class="lbl" x="${x + w / 2}" y="${y + 10}" text-anchor="middle">${t}</text>`;
+      let s = Dwg.defs();
+      // the ten lines, dimensioned
+      s += Dwg.vdim(160, 330, 796, '~10 lines', { side: -1 });
+      // the part enters the pipe
+      s += pipe(646, 702) + Dwg.valve(730, y, 28) + pipe(758, 800);
+      s += `<text class="lbl big" x="730" y="${y - 54}" text-anchor="middle">CI</text>`;
+      s += `<text class="blue-t" x="730" y="${y + 70}" text-anchor="middle">render, schema, policy</text>`;
+      s += box(800, 150, 'merge') + pipe(950, 1000);
+      s += box(1000, 250, 'Argo CD sync') + pipe(1250, 1312);
+      s += Dwg.valve(1340, y, 28);
+      s += `<text class="lbl big" x="1340" y="${y - 54}" text-anchor="middle">PostSync</text>`;
+      s += `<text x="1340" y="${y + 72}" text-anchor="middle" style="font:400 24px var(--font-code);fill:#2b5c9e">hook: PostSync</text>`;
+      // branch: pass -> next wave; fail -> stop and page (red: a person)
+      s += `<path class="wire" d="M1368 ${y} H1450 V${y - 80} H1530" marker-end="url(#ar)"/>`;
+      s += `<path class="wire red" d="M1450 ${y} V${y + 80} H1530" marker-end="url(#ar-red)"/>`;
+      s += `<text class="lbl" x="1546" y="${y - 70}">next wave</text>`;
+      s += `<text class="lbl red" x="1546" y="${y + 90}">stop, page</text><text class="lbl red" x="1546" y="${y + 126}">a person</text>`;
+      // callout leaders from each valve down to its receipt
+      s += `<g data-step="1"><line class="ext" x1="730" y1="${y + 90}" x2="730" y2="640"/></g>`;
+      s += `<g data-step="2"><line class="ext" x1="1340" y1="${y + 92}" x2="1340" y2="640"/></g>`;
+      Dwg.into('#pipe', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

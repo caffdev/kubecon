@@ -101,3 +101,16 @@
 
   window.Dwg = { defs, hdim, vdim, balloon, cloud, brk, valve, units, into, esc };
 })();
+
+/* Added for the ten-slide draft (2026-11-20). Additive only: a new helper on Dwg; nothing above
+   changed. */
+(() => {
+  'use strict';
+  /** Revision delta at cx,cy: an equilateral triangle with the revision letter. red = ours, dashed. */
+  function delta(cx, cy, letter, { s = 48, red = false } = {}) {
+    const h = s * 0.866, r = red ? ' red' : '';
+    const d = `M${cx} ${cy - h * 2 / 3} L${cx + s / 2} ${cy + h / 3} L${cx - s / 2} ${cy + h / 3} Z`;
+    return `<path class="delta${r}" d="${d}"/><text class="delta-n${r}" x="${cx}" y="${cy + 3}">${Dwg.esc(letter)}</text>`;
+  }
+  window.Dwg.delta = delta;
+})();

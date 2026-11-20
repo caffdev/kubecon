@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One pipeline, to scale</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    /* Sheet 4 of the set. Merges one-pipeline, mesh-on-a-budget and every-dollar-has-an-owner into
+       one drawing to scale: the band's height is Yahoo's active metric series (1px = ~6,900 series).
+       It enters the OTel agent at 2.06M and leaves the gateway at 280K, so the reducer through the
+       two stages IS the −86%. Their open problem is said on the slide, as a catch. */
+    h2.head { width: 1240px; }
+    #pl { position: absolute; inset: 0; }
+    .big86 { position: absolute; left: 1340px; top: 400px; width: 460px; }
+    .big86 b { display: block; font: 800 96px/1 var(--font-display); letter-spacing: -.04em; }
+    .big86 span { display: block; margin-top: 8px; font: 400 28px/1.3 var(--font-tech); }
+    .catch { position: absolute; left: 120px; top: 900px; width: 1480px; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2 class="head">One pipeline feeds the backends we keep, and sets what they cost</h2>
+    <div class="sheet"><b>4</b><span><em>One telemetry pipeline</em>sheet 4 of 5</span></div>
+
+    <svg id="pl" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <div class="big86" data-step="1"><b>−86%</b><span>~$140K a year, one cluster</span></div>
+
+    <p class="catch" data-step="2"><b>Catch:</b> sent to a second backend, Yahoo’s aggregated data read 2.79× low (one-second timestamps). Not closed yet.</p>
+    <p class="src">Yahoo, “Two-Stage OTel Aggregation”, posted slides. Band height to scale.</p>
+  </main>
+
+  <aside class="notes">
+    Sheet four: one telemetry pipeline. We keep Prometheus, Grafana and Splunk. We add one OpenTelemetry tier in front: an agent on every node, a gateway per cluster.
+
+    This drawing is to scale. The band's height is Yahoo's Istio metric series on one production cluster: twenty-four thousand pods, two point oh six million active series. They collapsed it in two stages inside the cluster, per node and then across the cluster, and only the merged series leave. Two hundred and eighty thousand. Same traffic.
+
+    Click. Eighty-six percent fewer series, about a hundred and forty thousand dollars a year back, on one cluster. And once every signal goes through the gateway, a backend is just exporter config. Nobody redeploys a service to change where data goes.
+
+    Click. And the catch, because they said it out loud: sent to a second backend, the data read almost three times low, because several gateway pods wrote the same series in the same second. It isn't fixed yet. We'd test for that before we trust a dashboard.
+
+    The same gateway is where every dollar gets an owner, with a team label on every pod, enforced at admission. With that in place, we can afford the next workload: the agents.
+  </aside>
+
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      // scale: the band's height is active metric series. 2.06M -> 300px, so 280K -> ~40.8px.
+      const k = 300 / 2060000, Hin = 2060000 * k, Hout = 280000 * k, yc = 600;
+      const xs = 330, xa = 640, xaw = 200, xg = 980, xgw = 200, xo = xg + xgw, xb = 1500;
+      const tIn = yc - Hin / 2, bIn = yc + Hin / 2, tOut = yc - Hout / 2, bOut = yc + Hout / 2;
+      let s = Dwg.defs();
+      // the source
+      s += `<text class="lbl" x="120" y="${tIn - 44}">Istio, 24,000 pods</text>`;
+      // band in (to scale), then the reducer through agent and gateway, then the band out
+      s += `<path class="hatch-ink" d="M${xs} ${tIn} H${xa} L${xo} ${tOut} H${xb} V${bOut} H${xo} L${xa} ${bIn} H${xs} Z"/>`;
+      // stage boxes: drawn over the band as fittings, open in the middle
+      const stage = (x, w, t1, t2) =>
+        `<rect x="${x}" y="${tIn - 40}" width="${w}" height="${Hin + 80}" fill="none" stroke="#22272b" stroke-width="3.5"/>`
+        + `<text class="lbl" x="${x + w / 2}" y="${tIn - 98}" text-anchor="middle">${t1}</text>`
+        + `<text class="blue-t" x="${x + w / 2}" y="${tIn - 62}" text-anchor="middle">${t2}</text>`;
+      s += stage(xa, xaw, 'OTel agent', 'stage 1, per node') + stage(xg, xgw, 'OTel gateway', 'stage 2, per cluster');
+      // dimensions: 2.06M in, 280K out
+      s += Dwg.vdim(xs - 40, tIn, bIn, '2.06M series', { side: -1 });
+      s += `<line class="ext" x1="${xs - 52}" y1="${tIn}" x2="${xs}" y2="${tIn}"/><line class="ext" x1="${xs - 52}" y1="${bIn}" x2="${xs}" y2="${bIn}"/>`;
+      s += `<text class="dim-t" style="font-weight:700" x="${xo + 20}" y="${bOut + 44}">280K out</text>`;
+      // the backends we keep
+      s += `<rect class="paper" x="${xb}" y="${yc - 50}" width="300" height="100" stroke="#22272b" stroke-width="3"/><text class="lbl" x="${xb + 150}" y="${yc - 6}" text-anchor="middle">Prometheus,</text><text class="lbl" x="${xb + 150}" y="${yc + 30}" text-anchor="middle">Grafana</text>`;
+      s += `<path class="wire thin" d="M${xo} ${bIn - 20} H${xb - 6}" marker-end="url(#ar)"/>`;
+      s += `<rect class="paper" x="${xb}" y="${bIn - 64}" width="300" height="88" stroke="#22272b" stroke-width="3"/><text class="lbl" x="${xb + 150}" y="${bIn - 26}" text-anchor="middle">Splunk</text><text class="dim-t" x="${xb + 150}" y="${bIn + 8}" text-anchor="middle">logs, traces</text>`;
+      s += `<text class="blue-t" x="1800" y="${bIn + 70}" text-anchor="end">a backend is exporter config, no redeploy</text>`;
+      Dwg.into('#pl', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

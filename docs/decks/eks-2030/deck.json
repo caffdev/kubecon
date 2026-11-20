@@ -1,6 +1,6 @@
 {
   "title": "Built for the curve: KubeCon 2026 takeaways for our move to EKS, and our 2030",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "cold-open",
@@ -25,6 +25,18 @@
       "the-road",
       "not-building",
       "the-ask"
+    ],
+    "ten": [
+      "cold-open",
+      "before-the-bend",
+      "spec-for-2030",
+      "guard-the-deletes-ten",
+      "ten-lines-two-gates",
+      "identity-not-secrets-ten",
+      "one-pipeline-to-scale",
+      "agent-in-a-box",
+      "the-loop-ten",
+      "the-ask-ten"
     ]
   }
 }

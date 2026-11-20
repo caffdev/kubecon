@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An agent in a box</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    /* Sheet 5 of the set. Merges agent-is-a-workload and sandbox-per-session into one exploded
+       assembly: the agent-session pod in the centre, events in from the top, exactly one way out at
+       the bottom (merge requests), and five parts pulled out on blue construction leaders. */
+    h2.head { width: 1240px; }
+    #ex { position: absolute; inset: 0; }
+    .part { position: absolute; width: 520px; }
+    .part h3 { margin: 0; display: flex; gap: 16px; align-items: center; font: 800 36px/1.1 var(--font-display); letter-spacing: -.02em; }
+    .part h3 i { flex: none; width: 54px; height: 54px; border-radius: 50%; border: 3px solid var(--c-graphite); display: grid; place-items: center; font: 700 26px var(--font-tech); font-style: normal; }
+    .part p { margin: 8px 0 0 70px; font: 400 28px/1.3 var(--font-body); }
+    .part .code { margin: 8px 0 0 70px; font-size: 26px; }
+    .p1 { left: 120px; top: 340px; } .p2 { left: 120px; top: 580px; }
+    .p3 { left: 1300px; top: 340px; } .p4 { left: 1300px; top: 580px; }
+    .p5 { left: 1300px; top: 800px; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <h2 class="head">An agent is a workload: its own pod, kernel, keys and exits</h2>
+    <div class="sheet"><b>5</b><span><em>Agents are workloads</em>sheet 5 of 5</span></div>
+
+    <svg id="ex" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+    <div class="part p1" data-step="1"><h3><i>1</i>Its own kernel</h3><div class="code">runtimeClassName</div><p>a microVM or gVisor</p></div>
+    <div class="part p2" data-step="2"><h3><i>2</i>Its own identity</h3><p>a ServiceAccount per agent</p></div>
+    <div class="part p3" data-step="3"><h3><i>3</i>Keys it never sees</h3><p>Vault brokers them on the way out</p></div>
+    <div class="part p4" data-step="4"><h3><i>4</i>An exit list</h3><p>Istio egress allowlist</p></div>
+    <div class="part p5" data-step="5"><h3><i>5</i>Limits and an off switch</h3><p>CPU, token and time caps</p></div>
+
+    <p class="src">Infisical, AWS, Bancolombia: session abstracts.</p>
+  </main>
+
+  <aside class="notes">
+    Sheet five: agents. An agent isn't a tool on someone's laptop. It's a workload, and a strange one: it runs for minutes, costs tokens, gives a different answer each time, and runs code nobody reviewed.
+
+    So here's one agent session, exploded. In the middle, the Claude Agent SDK harness, in our own image, one pod per session. Events come in at the top: an alert, a webhook, a schedule. And there's exactly one way out, at the bottom: it writes merge requests. Nothing else.
+
+    Click. One: its own kernel, a microVM or gVisor, picked with one field on the pod spec; AWS demoed microVM pods on EKS. Click. Two: its own identity, a service account per agent, so Istio can say which agent may call which tool; Bancolombia showed that. Click. Three: keys it never sees; Vault puts them on its outbound calls. Click. Four: an exit list through Istio. Click. Five: caps on CPU, tokens and time, and an off switch: delete the pod.
+
+    Those five are from Infisical's demo, and every one is Vault, Istio or plain Kubernetes. As IBM put it: you probably don't need an agent platform; you already run the parts.
+
+    So what do the agents do first? The thing that's eating us: toil.
+  </aside>
+
+  <script src="../theme/draw.js"></script>
+  <script>
+    (() => {
+      let s = Dwg.defs();
+      const cx = 960, cy = 610, w = 440, h = 260, L = cx - w / 2, R = cx + w / 2, T = cy - h / 2, B = cy + h / 2;
+      // the pod, in section: hatched wall, the harness inside
+      s += `<rect class="hatch-ink" x="${L}" y="${T}" width="${w}" height="${h}"/>`;
+      s += `<rect class="paper" x="${L + 22}" y="${T + 22}" width="${w - 44}" height="${h - 44}" stroke="#22272b" stroke-width="2"/>`;
+      s += `<text class="lbl big" x="${cx}" y="${cy - 22}" text-anchor="middle">Claude Agent SDK</text>`;
+      s += `<text class="dim-t" x="${cx}" y="${cy + 18}" text-anchor="middle">harness, in our image</text>`;
+      s += `<text class="blue-t" x="${cx}" y="${cy + 56}" text-anchor="middle">one pod per session</text>`;
+      // events in, from the top
+      s += `<text class="dim-t" x="${cx}" y="${T - 132}" text-anchor="middle">alert, webhook, schedule</text>`;
+      s += `<path class="wire thin" d="M${cx} ${T - 116} V${T - 6}" marker-end="url(#ar)"/>`;
+      // the one way out
+      s += `<path class="wire" style="stroke-width:6" d="M${cx} ${B} V${B + 112}" marker-end="url(#ar)"/>`;
+      s += `<text class="lbl big" x="${cx}" y="${B + 168}" text-anchor="middle">writes: merge requests only</text>`;
+      // construction leaders from each part to the pod
+      const leader = (x1, y1, x2, y2, n) => `<g data-step="${n}"><path class="ext" d="M${x1} ${y1} L${x2} ${y2}"/><circle cx="${x2}" cy="${y2}" r="7" fill="#6c9bd8"/></g>`;
+      s += leader(560, 372, L, T + 40, 1);
+      s += leader(560, 612, L, B - 50, 2);
+      s += leader(1290, 372, R, T + 40, 3);
+      s += leader(1290, 612, R, B - 50, 4);
+      s += leader(1290, 832, R - 50, B, 5);
+      Dwg.into('#ex', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
