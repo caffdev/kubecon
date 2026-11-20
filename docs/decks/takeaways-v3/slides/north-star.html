@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>North star: three takeaways</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h1 { font-size: 136px; line-height: .95; letter-spacing: -0.022em; max-width: 1500px; }
+    .sub { margin-top: 22px; font: 500 40px/1.15 var(--font-display); color: var(--lichen); letter-spacing: .005em; }
+
+    .hero { position: absolute; inset: 0; width: 1920px; height: 1080px; z-index: -1; overflow: visible; }
+    .hero .pk-body { fill: #15232c; }
+    .hero .pk-shadow { fill: #10202b; }
+    .hero .pk-cap { opacity: .92; }
+    .hero .pk-far { fill: #0c1418; }
+    .trail { fill: none; stroke: var(--you); stroke-width: 4.5; stroke-dasharray: 2 13; stroke-linecap: round; }
+    .trail-end { fill: var(--you); }
+
+    .truth { position: absolute; top: 404px; width: 500px; }
+    .truth.t1 { left: 120px; } .truth.t2 { left: 712px; } .truth.t3 { left: 1300px; }
+    .truth .k { display: flex; align-items: center; gap: 14px; font: 600 30px/1 var(--font-display); letter-spacing: .04em; color: var(--c); }
+    .truth .k i { font-style: normal; display: inline-grid; place-items: center; width: 50px; height: 50px; border: 3.5px solid var(--c); border-radius: 50%; font-size: 30px; }
+    .truth h3 { margin-top: 16px; font: 600 60px/1.0 var(--font-display); color: var(--ink); letter-spacing: -.012em; text-wrap: balance; }
+    .t1 { --c: var(--haze); } .t2 { --c: var(--mint); } .t3 { --c: var(--teal); }
+
+    .is-entered .hero .pk { animation: rise-up 1300ms var(--step-ease) both; }
+    .is-entered .hero #n3 { animation-delay: 60ms; }
+    .is-entered .hero #n1 { animation-delay: 200ms; }
+    .is-entered .hero #n2 { animation-delay: 340ms; }
+    .is-entered .trail { animation: walk 2600ms var(--step-ease) 900ms both; }
+    @keyframes rise-up { from { transform: translateY(240px); } }
+    @keyframes walk { from { clip-path: inset(0 100% 0 0); } }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <svg class="hero" id="hero" viewBox="0 0 1920 1080" role="img" aria-label="Three mountains drawn large: fleet, delivery and agents. Each summit carries one takeaway. The team's dotted trail climbs over all three toward the north star in the corner." data-bleed></svg>
+
+    <h1>KubeCon 2027 north star</h1>
+    <p class="sub">Three takeaways from four days in Salt Lake City</p>
+
+    <div class="truth t1" data-step="1" data-effect="rise">
+      <p class="k"><i>1</i>fleet</p>
+      <h3>There’s always another cluster.</h3>
+    </div>
+    <div class="truth t2" data-step="2" data-effect="rise">
+      <p class="k"><i>2</i>delivery</p>
+      <h3>No manual way<br>keeps up.</h3>
+    </div>
+    <div class="truth t3" data-step="3" data-effect="rise">
+      <p class="k"><i>3</i>agents</p>
+      <h3>AI brings problems as it solves them.</h3>
+    </div>
+  </main>
+
+  <aside class="notes">
+    This is where we think the fleet should be heading in 2027: a north star, built from four days and five hundred talks at KubeCon in Salt Lake City. We brought back three takeaways, one per mountain.
+
+    Click. One, the fleet. There's always another cluster: another environment, another exchange, another region, another cloud. So the next cluster has to be the rule, not the exception: built, upgraded and placed from code.
+
+    Click. Two, delivery. No manual way keeps up. Twenty platform tools, dozens of apps, a new Kubernetes minor three times a year. If a person has to touch each one, we lose. So every change rides one pipeline.
+
+    Click. Three, agents. AI brings problems as it solves them. Agents will do real work for us, and they also run on our nodes, use our tools, and in attackers' hands find new holes in what we run. So we fence ours in first, then use them to fight back.
+
+    The orange trail is our team, the same small team the whole way. The star in the corner is where it's heading; it burns brighter on the slides that matter most.
+
+    The first takeaway is about us. It started at four clusters.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    // the corner star only; the range on this slide is the larger hero
+    Peaks.draw('#range', Range.star());
+    (() => {
+      const P = [
+        { id: 'n3', x: 370,  top: 738, hw: 420, H: 640, cap: 'var(--haze)' },
+        { id: 'n1', x: 962,  top: 690, hw: 460, H: 700, cap: 'var(--mint)' },
+        { id: 'n2', x: 1550, top: 738, hw: 400, H: 640, cap: 'var(--teal)' },
+      ];
+      let s = Peaks.disc({ cx: 962, cy: 780, r: 196, opacity: .9 });
+      s += Peaks.far({ y: 940, amp: 56, n: 13, seed: 11 });
+      for (const p of P) s += Peaks.peak({ id: p.id, x: p.x, top: p.top, base: p.top + p.H, hw: p.hw, cap: p.cap, capScale: .55 });
+      // the team's trail: up the fleet, over delivery, over agents, on toward the star
+      const [a, b, c] = P;
+      const d = `M210 1060C262 990 320 820 ${a.x} ${a.top}`
+        + `C440 790 560 950 668 950C780 950 880 740 ${b.x} ${b.top}`
+        + `C1040 740 1150 950 1258 950C1370 950 1470 790 ${c.x} ${c.top}`
+        + `C1640 700 1730 560 1800 430`;
+      s += `<path class="trail" d="${d}"/>`;
+      s += `<path class="trail-end" d="M0 -13L20 0L0 13Z" transform="translate(1803 424) rotate(-62)"/>`;
+      s += Estate.team(104, 1050, 0.78);
+      Peaks.draw('#hero', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

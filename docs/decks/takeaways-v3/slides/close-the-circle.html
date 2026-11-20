@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Close the circle</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--teal); }
+    h2 { font-size: 80px; max-width: 1640px; line-height: 1.02; }
+
+    .loop { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .ring { fill: none; stroke: var(--teal); stroke-width: 4; opacity: .7; }
+    .arrow { fill: var(--teal); }
+    .disc { fill: var(--bg); stroke: var(--scree); stroke-width: 2.5; }
+    .disc.theirs { stroke: var(--alpenglow); }
+    .disc.ours { stroke: var(--teal); }
+    .ag { fill: var(--teal); }
+    .ag.theirs { fill: var(--alpenglow); }
+    .lake { fill: var(--lake); }
+    .wave { fill: none; stroke: var(--mint); stroke-width: 3; }
+    .stn { font: 600 32px var(--font-display); fill: var(--snow); }
+    .stn.theirs { fill: var(--alpenglow); }
+    .stn-sub { font: 400 25px var(--font-body); fill: var(--lichen); }
+    .mid { font: 600 104px var(--font-display); fill: var(--teal); text-anchor: middle; letter-spacing: -.02em; }
+    .mid-sub { font: 400 28px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .ring { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    .is-entered .ring { animation: draw 1600ms var(--step-ease) both; animation-delay: 300ms; }
+    @keyframes draw { from { stroke-dashoffset: 1; } }
+    .is-entered .st { animation: fade-in 500ms both; animation-delay: calc(300ms + var(--i) * 320ms); }
+
+    .proof { position: absolute; left: 1400px; top: 350px; width: 420px; }
+    .proof .p + .p { margin-top: 48px; }
+    .proof b { display: block; font: 600 104px/.92 var(--font-display); color: var(--teal); letter-spacing: -.02em; }
+    .proof .clock b { color: var(--you); }
+    .proof h3 { font: 600 40px/1.05 var(--font-display); color: var(--snow); }
+    .proof p { margin-top: 8px; font-size: 28px; line-height: 1.32; color: var(--lichen); }
+    .proof p strong { color: var(--snow); font-weight: 600; }
+    .src { max-width: 1200px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Close the circle: our agents patch what theirs find, and the waves roll it out in days.</h2>
+
+    <svg class="loop" id="loop" viewBox="0 0 1920 1080" role="img" aria-label="A loop of five stations. A new hole lands, found by their agent. The lake finds which images and clusters run it. Our agent drafts the fix as a pull request with its own check. The team approves, after policy has checked it. The waves roll it out, and a failed gate stops it. Then the loop is ready for the next hole. In the middle: days, not months."></svg>
+
+    <div class="proof">
+      <div class="p clock">
+        <b>98 days</b>
+        <p>from Metal3’s advisory to the last Ericsson release with the fix. <strong>We’re the last hop.</strong></p>
+      </div>
+      <div class="p" data-step>
+        <b>30 min</b>
+        <p>for NVIDIA to patch <strong>~5,600 nodes</strong> for two kernel CVEs, agent-driven.</p>
+      </div>
+    </div>
+    <p class="src"><i>AI Found a 0-Day in Metal3</i> (Ericsson); <i>5,000 Nodes in Minutes, Twice in a Week</i> (NVIDIA).</p>
+  </main>
+
+  <aside class="notes">
+    Here's the race. Metal3's security lead at Ericsson said on stage that his own AI pipeline found two hundred and twenty issues in one small project this year, twenty-two of them real security bugs. Attackers run the same models at the same code.
+
+    And finding the hole is the fast part. He traced one fix downstream: advisory out on May eighteenth, the last Ericsson release with the fix on August twenty-fourth. Ninety-eight days, every hop on its own clock. We're the last hop, and today our clock is a person with a runbook.
+
+    So close the circle. A new hole lands. The lake tells us which images carry it and which clusters run them: a query, not a war room. Our agent drafts the fix, a pull request with the check that fails without it. Policy checks it, the team approves, and the waves from the first half roll it out, each ring behind its gate. Days, not months, because the waves still respect the windows.
+
+    Click. And it can be fast. NVIDIA patched about fifty-six hundred nodes for two kernel CVEs in thirty minutes, with an agent driving the rollout.
+
+    Same small team, same pipeline. The agents just make it go round faster. Five things get us there.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p2'] });
+    (() => {
+      const CX = 730, CY = 646, R = 222, D = Math.PI / 180;
+      const at = (deg, r = R) => [CX + Math.cos(deg * D) * r, CY + Math.sin(deg * D) * r];
+      let s = `<circle class="ring" cx="${CX}" cy="${CY}" r="${R}" pathLength="1" transform="rotate(-90 ${CX} ${CY})"/>`;
+      // arrowheads between stations, pointing clockwise
+      const ANG = [-90, -18, 54, 126, 198];
+      ANG.forEach((a) => {
+        const m = a + 36, [x, y] = at(m);
+        s += `<path class="arrow" d="M0 -11L16 0L0 11Z" transform="translate(${x} ${y}) rotate(${m + 90})"/>`;
+      });
+      // stations: icon on the ring, label outside
+      const icon = {
+        hole: (x, y) => `<circle class="disc theirs" cx="${x}" cy="${y}" r="40"/>` + Estate.agent(x, y, 38, 'ag theirs'),
+        lake: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/><ellipse class="lake" cx="${x}" cy="${y + 4}" rx="26" ry="12"/>`,
+        fix: (x, y) => `<circle class="disc ours" cx="${x}" cy="${y}" r="40"/>` + Estate.agent(x, y, 38, 'ag'),
+        team: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/>` + Estate.team(x - 20, y + 16, 0.46),
+        waves: (x, y) => `<circle class="disc" cx="${x}" cy="${y}" r="40"/>` + [10, 19, 28].map((r) => `<path class="wave" d="M${x - 14} ${y - r * 0.8}A${r} ${r} 0 0 1 ${x - 14} ${y + r * 0.8}"/>`).join(''),
+      };
+      const ST = [
+        ['hole', 'a new hole lands', 'found by their agent', 'top'],
+        ['lake', 'the lake finds it', 'which images, which clusters', 'right'],
+        ['fix', 'our agent drafts the fix', 'a PR, with its own check', 'right'],
+        ['team', 'the team approves', 'after policy checks it', 'left'],
+        ['waves', 'the waves roll it out', 'a failed gate stops it', 'left'],
+      ];
+      ST.forEach(([k, name, sub, side], i) => {
+        const [x, y] = at(ANG[i]);
+        let lab = '';
+        const cls = k === 'hole' ? 'stn theirs' : 'stn';
+        if (side === 'top') lab = `<text class="${cls}" x="${x + 64}" y="${y - 6}">${name}</text><text class="stn-sub" x="${x + 64}" y="${y + 26}">${sub}</text>`;
+        if (side === 'right') lab = `<text class="${cls}" x="${x + 62}" y="${y - 2}">${name}</text><text class="stn-sub" x="${x + 62}" y="${y + 30}">${sub}</text>`;
+        if (side === 'left') lab = `<text class="${cls}" x="${x - 62}" y="${y - 2}" text-anchor="end">${name}</text><text class="stn-sub" x="${x - 62}" y="${y + 30}" text-anchor="end">${sub}</text>`;
+        s += `<g class="st" style="--i:${i}">${icon[k](x, y)}${lab}</g>`;
+      });
+      s += `<text class="mid" x="${CX}" y="${CY + 18}">days</text><text class="mid-sub" x="${CX}" y="${CY + 70}">not months</text>`;
+      Peaks.draw('#loop', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

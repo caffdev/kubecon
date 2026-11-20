@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The upgrades outrun the team</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 82px; max-width: 1560px; line-height: 1.02; }
+    .chart { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .seg-c { fill: var(--haze); }
+    .seg-t { fill: var(--mint); }
+    .seg-a { fill: var(--lake); }
+    .base { stroke: var(--scree); stroke-width: 2.5; }
+    .total { font: 600 34px var(--font-display); fill: var(--snow); text-anchor: middle; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--bg); stroke-width: 14px; stroke-linejoin: round; }
+    .total.over { font-size: 54px; fill: var(--you); }
+    .n { font: 600 30px var(--font-display); fill: var(--snow); text-anchor: middle; }
+    .st { font: 400 24px var(--font-body); fill: var(--lichen); text-anchor: middle; }
+    .line { stroke: var(--you); stroke-width: 5; }
+    .line-name { font: 600 34px var(--font-display); fill: var(--you); }
+    .over-box { fill: none; stroke: var(--you); stroke-width: 4; stroke-dasharray: 10 7; }
+    .ghost { fill: none; stroke: var(--lichen); stroke-width: 3; stroke-dasharray: 10 8; }
+    .key { font: 400 28px var(--font-body); fill: var(--snow); }
+    .bar { transform-box: fill-box; transform-origin: 50% 100%; }
+    .is-entered .bar { animation: grow 700ms var(--step-ease) both; animation-delay: calc(250ms + var(--i) * 110ms); }
+    @keyframes grow { from { transform: scaleY(0); } }
+    .model-tag { position: absolute; left: var(--margin); bottom: 40px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="4">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>No manual way keeps up: by the second cloud, the upgrades alone outrun the team’s year.</h2>
+    <svg class="chart" id="chart" viewBox="0 0 1920 1080" role="img" aria-label="Hours a year of upgrades done by hand, by growth stage, stacked as cluster, tool and app upgrades: 480 on day one, 786, 1,170, 1,728, 2,250, then 2,862 at the second cloud, which crosses the line of the team's year. With AI, 4,056. Illustrative."></svg>
+    <p class="model-tag"><b>Illustrative model, not our measurements.</b> Upgrade hours a year, by hand.</p>
+  </main>
+
+  <aside class="notes">
+    Here's what keeping that current costs, done the way we do it today.
+
+    Three kinds of upgrade, stacked. At the bottom, the clusters: kubeadm goes one node and one minor at a time, about fifty steps a cluster, three minors a year. In the middle, the platform tools, four of them in this model. On top, and biggest, the apps: every app on every cluster it runs on, several times a year.
+
+    The orange line is the team's year: the hours a small team can actually spend on upgrades.
+
+    Every step adds to the bar. By the second region we're just under the line. At the second cloud we're over it, and that's upgrades alone: no features, no incidents, no on-call.
+
+    Click. And that's before AI. The AI clusters and the tools that come with agents put us at about four thousand hours.
+
+    It's a model, not a measurement; the inputs are in the repo for anyone who wants to argue with them. But argue with the slope: the work grows with every cluster, and the team doesn't.
+
+    Each band has a fix. The clusters first.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      // illustrative: assets/toil-model.json "team_model" (inlined so the slide works from file://)
+      const S = [
+        ['day one', 4, 144, 96, 240],
+        ['EKS dev', 7, 198, 168, 420],
+        ['2nd exchange', 11, 342, 264, 564],
+        ['migration', 17, 450, 408, 870],
+        ['2nd region', 23, 558, 552, 1140],
+        ['2nd cloud', 29, 666, 696, 1500],
+        ['with AI', 32, 720, 1536, 1800],
+      ];
+      const YEAR = 2550, MAX = 4200, BASE = 880, H = 540, X0 = 120, SLOT = 240, BW = 140;
+      const y = (v) => BASE - v / MAX * H;
+      let s = '';
+      // the key, in the empty sky above the small bars
+      [['seg-c', 'clusters'], ['seg-t', 'tools'], ['seg-a', 'apps']].reverse().forEach(([c, k], i) => {
+        const ky = 372 + i * 46;
+        s += `<rect class="${c}" x="${X0}" y="${ky - 22}" width="26" height="26" rx="4"/><text class="key" x="${X0 + 42}" y="${ky}">${k}</text>`;
+      });
+      S.forEach(([st, n, c, t, a], i) => {
+        const cx = X0 + SLOT / 2 + i * SLOT, bx = cx - BW / 2, total = c + t + a;
+        if (i === 6) {
+          s += `<g data-step="1"><rect class="ghost" x="${bx}" y="${y(total)}" width="${BW}" height="${BASE - y(total)}" rx="6"/>`
+            + `<text class="total" x="${cx}" y="${y(total) - 16}">${total.toLocaleString('en-US')}</text>`
+            + `<text class="n" x="${cx}" y="${BASE + 42}">${n} clusters</text><text class="st" x="${cx}" y="${BASE + 74}">${st}</text></g>`;
+          return;
+        }
+        let acc = 0, g = '';
+        [['seg-c', c], ['seg-t', t], ['seg-a', a]].forEach(([cls, v], j) => {
+          const y1 = y(acc + v), y0 = y(acc) - (j ? 3 : 0);
+          g += j === 2
+            ? `<path class="${cls}" d="M${bx} ${y0}V${y1 + 6}q0 -6 6 -6H${bx + BW - 6}q6 0 6 6V${y0}Z"/>`
+            : `<rect class="${cls}" x="${bx}" y="${y1}" width="${BW}" height="${y0 - y1}"/>`;
+          acc += v;
+        });
+        s += `<g class="bar" style="--i:${i}">${g}</g>`;
+        const over = total > YEAR;
+        if (over) s += `<rect class="over-box" x="${bx - 10}" y="${y(total) - 10}" width="${BW + 20}" height="${y(YEAR) - y(total) + 10}" rx="8"/>`;
+        s += `<text class="total${over ? ' over' : ''}" x="${cx}" y="${y(total) - (over ? 26 : 16)}">${total.toLocaleString('en-US')}${over ? ' h' : ''}</text>`;
+        s += `<text class="n" x="${cx}" y="${BASE + 42}">${n} clusters</text><text class="st" x="${cx}" y="${BASE + 74}">${st}</text>`;
+      });
+      s += `<line class="base" x1="${X0}" x2="${X0 + 7 * SLOT}" y1="${BASE}" y2="${BASE}"/>`;
+      s += `<line class="line" x1="${X0}" x2="${X0 + 7 * SLOT}" y1="${y(YEAR)}" y2="${y(YEAR)}"/>`;
+      s += `<text class="line-name" x="${X0}" y="${y(YEAR) - 18}">the team’s year</text>`;
+      Peaks.draw('#chart', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

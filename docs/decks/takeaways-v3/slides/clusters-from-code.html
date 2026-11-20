@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clusters from code</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 82px; max-width: 1580px; line-height: 1.02; }
+
+    .card { position: absolute; left: var(--margin); width: 620px; padding: 22px 32px; border-radius: 16px; background: #fff; border: 2px solid var(--hairline); }
+    .card .code { font-size: 28px; line-height: 1.45; color: var(--slate); }
+    .card .c { color: var(--slate-quiet); }
+    .card .k { color: var(--haze-ink); font-weight: 500; }
+    .card .m { color: #8a3b2e; }
+    .card .p { color: var(--haze-ink); font-weight: 500; }
+    .claim { top: 330px; }
+    .diff { top: 772px; }
+    .api { position: absolute; left: var(--margin); top: 714px; font-size: 24px; color: var(--slate-quiet); }
+
+    .flow { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .wire { fill: none; stroke: var(--haze-ink); stroke-width: 4; stroke-linecap: round; }
+    .head { fill: var(--haze-ink); }
+    .xp { fill: #fff; stroke: var(--haze-ink); stroke-width: 3; }
+    .xp-name { font: 600 34px var(--font-display); fill: var(--slate); text-anchor: middle; }
+    .region { fill: #fff; stroke: var(--haze-ink); stroke-width: 3.5; }
+    .region-t { font: 600 36px var(--font-display); fill: var(--haze-ink); }
+    .region-s { font: 400 26px var(--font-body); fill: var(--slate-quiet); }
+    .eks { fill: var(--haze-ink); }
+    .tagline { font: 500 24px var(--font-body); fill: var(--slate-quiet); text-anchor: middle; }
+
+    .how { position: absolute; left: 820px; top: 790px; width: 560px; }
+    .how p { font-size: 30px; line-height: 1.3; color: var(--slate); }
+    .how p + p { margin-top: 18px; }
+    .how b { font-weight: 600; color: var(--haze-ink); }
+
+    .peer { position: absolute; left: 1440px; top: 760px; width: 360px; }
+    .peer b { display: block; font: 600 96px/.9 var(--font-display); color: var(--slate); letter-spacing: -.02em; }
+    .peer p { margin-top: 10px; font-size: 28px; line-height: 1.25; color: var(--slate-quiet); }
+    .peer p strong { color: var(--slate); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="slide snow" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>So every cluster comes from code: a new region is one claim, an upgrade one field.</h2>
+
+    <div class="card claim"><p class="code"><span class="c"># region 2, as a pull request</span>
+<span class="k">kind:</span> Region
+<span class="k">metadata:</span>
+  name: aws-region-2
+<span class="k">spec:</span>
+  mirror:   aws-region-1
+  clusters: 6
+  nodes:    eks-auto-mode</p></div>
+    <p class="api">Illustrative: our own Crossplane API, not built yet.</p>
+
+    <svg class="flow" id="flow" viewBox="0 0 1920 1080" role="img" aria-label="The Region claim goes through Crossplane and comes out as a region of six EKS clusters on Auto Mode, with the network, IAM and DNS built, each cluster registered with Argo CD and labelled."></svg>
+
+    <div class="card diff" data-step="1"><p class="code"><span class="c"># an upgrade, as a pull request</span>
+<span class="m">-  version: v1.36.4</span>
+<span class="p">+  version: v1.37.2</span></p></div>
+    <div class="how" data-step="1">
+      <p><b>On-prem:</b> Cluster API, kubeadm underneath.</p>
+      <p><b>AWS:</b> Auto Mode replaces every node within 21 days.</p>
+    </div>
+
+    <div class="peer" data-step="2">
+      <b>~100</b>
+      <p>clusters at Meta, run by <strong>~15 engineers</strong>.</p>
+    </div>
+  </main>
+
+  <aside class="notes">
+    So the first fix is for the clusters themselves. If there's always another cluster, the next one can't be a project.
+
+    On the left is all an admin writes for a whole new AWS region: a Region, mirroring region one, six clusters on Auto Mode. That's our own API, a Crossplane composite we'd build. Crossplane builds everything behind it: network, IAM, six EKS clusters, DNS. And it registers each cluster with Argo CD, already labelled with its region and tier. Remember the labels; the next two slides depend on them.
+
+    Click. An upgrade is one field in a pull request. On-prem, Cluster API does the fifty steps; kubeadm stays underneath, the hands go. In AWS, Auto Mode upgrades the control plane and replaces every node within twenty-one days, so the OS patches itself too.
+
+    Click. Small teams run big fleets this way. Meta's keynote: about fifteen engineers run about a hundred clusters. LinkedIn runs more than two hundred and fifty, and took three Kubernetes minors in one wave.
+
+    That takes the cluster band off the chart. The bigger bands are the tools and the apps.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      const MY = 510;                                  // the claim card's middle
+      const XP = { x: 810, w: 200, h: 92 };
+      const RB = { x: 1090, y: 330, w: 710, h: 360 };
+      let s = '';
+      s += `<path class="wire" d="M744 ${MY}H${XP.x - 16}"/><path class="head" d="M${XP.x - 20} ${MY - 12}L${XP.x} ${MY}L${XP.x - 20} ${MY + 12}Z"/>`;
+      s += `<rect class="xp" x="${XP.x}" y="${MY - XP.h / 2}" width="${XP.w}" height="${XP.h}" rx="14"/>`;
+      s += `<text class="xp-name" x="${XP.x + XP.w / 2}" y="${MY + 12}">Crossplane</text>`;
+      s += `<path class="wire" d="M${XP.x + XP.w} ${MY}H${RB.x - 16}"/><path class="head" d="M${RB.x - 20} ${MY - 12}L${RB.x} ${MY}L${RB.x - 20} ${MY + 12}Z"/>`;
+      // what comes out: a region of six EKS clusters, labelled and registered
+      s += `<rect class="region" x="${RB.x}" y="${RB.y}" width="${RB.w}" height="${RB.h}" rx="18"/>`;
+      s += `<text class="region-t" x="${RB.x + 36}" y="${RB.y + 58}">aws-region-2</text>`;
+      for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) {
+        const x = RB.x + 140 + c * 215, y = RB.y + 160 + r * 112;
+        s += Peaks.glyph({ x, y, w: 96, h: 80, cls: 'eks' });
+      }
+      s += `<text class="tagline" x="${RB.x + RB.w / 2}" y="${RB.y + RB.h + 44}">network, IAM, DNS; each registered with Argo CD, labelled</text>`;
+      Peaks.draw('#flow', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Another cluster, six times</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 82px; max-width: 1500px; line-height: 1.02; }
+
+    /* the growth rail: one count per step, set larger as the count grows */
+    .rail { position: absolute; left: var(--margin); top: 290px; width: 1680px; height: 250px; display: grid; grid-template-columns: repeat(6, 1fr); align-items: end; }
+    .rail li { list-style: none; position: relative; padding-top: 14px; }
+    .rail b { display: block; font: 600 var(--n) / 1 var(--font-display); color: var(--haze); letter-spacing: -.03em; font-variant-numeric: tabular-nums lining-nums; }
+    .rail li:not(:last-child) b { color: #4f8f9b; }
+    .rail span { display: block; margin-top: 22px; font-size: 26px; line-height: 1.2; color: var(--lichen); }
+    .rail li:last-child span { color: var(--snow); }
+    .rail li::before { content: ""; position: absolute; left: 0; right: 24px; bottom: -18px; height: 3px; background: var(--scree); }
+    .rail li:last-child::before { background: var(--haze); }
+
+    .map { position: absolute; left: var(--margin); top: 576px; width: 1680px; height: 480px; overflow: visible; }
+    .map .zone-box { stroke: #33454e; }
+    .map .zone-name { font-size: 34px; }
+    .map .zone-how { font-size: 25px; }
+    .map .cl { fill: var(--haze); }
+    .map .cl-name { fill: var(--snow); font-size: 24px; }
+    .map .crossed { fill: var(--lichen); font-style: italic; }
+    .map .tie { opacity: .8; }
+    .map .you-label { font-size: 30px; }
+  </style>
+</head>
+<body>
+  <main class="slide" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>There’s always another cluster: our four became twenty-nine in six reasonable steps.</h2>
+
+    <ol class="rail" id="rail"></ol>
+    <svg class="map" id="map" viewBox="0 0 1680 480" role="img" aria-label="Our estate, built up in six steps. On-prem: dev, staging, ny4 and ch4 as its DR, then a second exchange's four. AWS: EKS for dev, qa and ftb, then the migration's six, then a second region of six. Then a second cloud of six, fingers crossed. Twenty-nine clusters, one small team."></svg>
+  </main>
+
+  <aside class="notes">
+    Here's ours. Day one: four clusters on our own hardware. Dev, staging, ny4, and ch4 as ny4's DR. One small team upgrading the clusters and the apps on them.
+
+    Click. EKS arrives for dev, qa and ftb. Seven, and now two ways to upgrade.
+
+    Click. A second exchange. Eleven.
+
+    Click. The cloud migration starts, and AWS clusters arrive in chunks. Seventeen.
+
+    Click. Anything that matters in one region needs a second. Twenty-three.
+
+    Click. And two regions of one provider is still one provider. Hoping AWS never has a bad day isn't a plan, so a second cloud joins. Fingers crossed. Twenty-nine.
+
+    Every step made sense on the day. None of them was a decision to run a fleet, but that's what this is: three kinds of place, sixty-five apps, four thousand pods, and the same small team in orange.
+
+    And it won't stop at twenty-nine. LinkedIn runs more than two hundred and fifty clusters, Salesforce about a thousand. There's always another one.
+
+    Hold on to "fingers crossed"; we'll come back to it. First, what keeping all twenty-nine current costs, by hand.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    (() => {
+      // the six steps: [stage, clusters after it, what happened]
+      const STEPS = [
+        [1, 4, 'day one'],
+        [2, 7, 'EKS: dev, qa, ftb'],
+        [3, 11, 'a second exchange'],
+        [4, 17, 'the migration'],
+        [5, 23, 'a second AWS region'],
+        [6, 29, 'a second cloud'],
+      ];
+      const size = (n) => Math.round(44 + (n - 4) / 25 * 112);   // 4 → 44px, 29 → 156px
+      document.getElementById('rail').innerHTML = STEPS.map(([st, n, what]) =>
+        `<li${st > 1 ? ` data-step="${st - 1}" data-effect="rise"` : ''} style="--n:${size(n)}px"><b>${n}</b><span>${what}</span></li>`).join('');
+
+      // the map, built so each step's clusters appear with its count
+      const Z = Object.fromEntries(Estate.ZONES.map((z) => [z.id, z]));
+      const cs = Estate.at().filter((c) => c.stage <= 6);
+      const HOW = { onprem: 'our hardware, built with kubeadm', aws: 'EKS', cloud2: '' };
+      const zone = (z) => `<rect class="zone-box" x="${z.x}" y="0" width="${z.w}" height="420" rx="14"/>`
+        + `<text class="zone-name" x="${z.x + 28}" y="50">${z.name}</text>`
+        + (HOW[z.id] ? `<text class="zone-how" x="${z.x + 28}" y="86">${HOW[z.id]}</text>`
+                     : `<text class="zone-how crossed" x="${z.x + 28}" y="86">fingers crossed</text>`);
+      const glyph = (c) => Peaks.glyph({ x: c.x, y: c.y, w: 64, h: 54, cls: 'cl' })
+        + (c.name ? `<text class="cl-name" x="${c.x}" y="${c.y + 58}">${c.name}</text>` : '');
+      const tie = (a, b, below) => `<path class="tie" d="M${a.x + 36} ${a.y + 4}H${b.x - 36}"/>`
+        + `<text class="tie-label" x="${(a.x + b.x) / 2}" y="${below ? a.y + 58 : a.y - 32}">DR</text>`;
+      const aws = Z.aws, rx = aws.x + aws.x0 + 2.5 * aws.dx;
+
+      const parts = { 1: '', 2: '', 3: '', 4: '', 5: '', 6: '' };
+      parts[1] += zone(Z.onprem) + tie(cs[2], cs[3], false);
+      parts[2] += zone(aws);
+      parts[3] += tie(cs[6], cs[7], true);
+      parts[5] += `<line class="region-rule new" x1="${rx}" x2="${rx}" y1="112" y2="406"/>`
+        + `<text class="region-name" x="${aws.x + aws.x0 + aws.dx}" y="406" text-anchor="middle">region 1</text>`
+        + `<text class="region-name" x="${aws.x + aws.x0 + 4 * aws.dx}" y="406" text-anchor="middle">region 2</text>`;
+      parts[6] += zone(Z.cloud2);
+      for (const c of cs) parts[c.stage] += glyph(c);
+
+      let s = parts[1];
+      for (let st = 2; st <= 6; st++) s += `<g data-step="${st - 1}" data-effect="rise">${parts[st]}</g>`;
+      // the one small team, at the foot of the map
+      s += Estate.team(26, 478, 0.86) + `<text class="you-label" x="150" y="470">one small team</text>`;
+      Peaks.draw('#map', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

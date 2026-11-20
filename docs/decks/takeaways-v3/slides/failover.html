@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lose a region, traffic fails over</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    .slide { --path: var(--mint); }
+    h2 { font-size: 82px; max-width: 1620px; line-height: 1.02; }
+
+    .kmap { position: absolute; left: var(--margin); top: 302px; width: 1596px; height: 408px; overflow: visible; }
+    .kmap .zone-box { stroke: #3a5463; }
+    .kmap .zone-name { font-size: 36px; }
+    .kmap .zone-how { display: none; }
+    .kmap .region-name { font-size: 28px; }
+    .kmap .pk-glyph { fill: #2e4250; }
+    .kmap .chip { stroke-width: 5; filter: drop-shadow(0 0 10px rgba(156, 240, 225, .6)); }
+    .kmap .hop { fill: none; stroke: var(--mint); stroke-width: 6; stroke-dasharray: 14 10; stroke-linecap: round; }
+    .kmap .hop-head { fill: var(--mint); }
+    .kmap .down-mark { font-size: 64px; }
+    .kmap .down-label { font-size: 64px; }
+    .kmap .down-zone { opacity: .86; }
+    .kmap .lit-zone { fill: rgba(156, 240, 225, .06); stroke: var(--mint); stroke-width: 4; filter: drop-shadow(0 0 14px rgba(156, 240, 225, .35)); }
+
+    .writes { position: absolute; left: var(--margin); top: 742px; font: 600 32px/1 var(--font-display); color: var(--mint); letter-spacing: .01em; }
+    .yaml-card { position: absolute; left: var(--margin); top: 788px; width: 900px; padding: 20px 30px; border-radius: 16px; background: #0b1820; border: 2px solid #2e4654; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .yaml-card .code { font-size: 27px; line-height: 1.42; color: var(--snow); }
+    .yaml-card .c { color: var(--lichen); }
+    .yaml-card .k { color: var(--mint); }
+
+    .log { position: absolute; left: 1080px; top: 752px; width: 740px; }
+    .log li { list-style: none; display: grid; grid-template-columns: 52px 1fr; align-items: baseline; margin-bottom: 18px; font-size: 28px; line-height: 1.25; color: var(--lichen); }
+    .log i { font: 700 40px/1 var(--font-display); font-style: normal; color: var(--you); }
+    .log b { font: 600 38px/1.1 var(--font-display); color: var(--snow); }
+    .log .ok i, .log .ok b { color: var(--mint); }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="5">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Lose a region, or all of AWS, and traffic fails over to wherever the constraints still hold.</h2>
+
+    <svg class="kmap" id="kmap" viewBox="0 0 1680 430" role="img" aria-label="The estate map. Six replicas start spread across AWS region 1 and region 2. Region 1 fails: traffic shifts to region 2, which scales to six. Then AWS fails, and traffic goes to six replicas in the second cloud. The developer's constraints never change."></svg>
+
+    <p class="writes">All a developer writes. No cluster names.</p>
+    <div class="yaml-card"><p class="code"><span class="c"># unchanged, start to finish</span>
+<span class="k">constraints:</span>
+  provider:   cloud
+  compliance: pci
+  residency:  us</p><p class="code">
+<span class="k">asks:</span>
+  replicas: 6
+  spread:   2 regions
+  fallback: second cloud</p></div>
+
+    <ol class="log">
+      <li data-step="1"><i>✗</i><span><b>Region 1 fails.</b> Region 2 scales to six on Auto Mode.</span></li>
+      <li data-step="2"><i>✗</i><span><b>AWS fails.</b> The second cloud’s warm standby takes the traffic.</span></li>
+      <li class="ok" data-step="3"><i>✓</i><span><b>Nobody edited a file.</b> Fingers uncrossed.</span></li>
+    </ol>
+  </main>
+
+  <aside class="notes">
+    Remember "fingers crossed"? Here's the day it matters.
+
+    At the bottom is all a developer writes: the cloud, PCI, US; six replicas over two regions, and a fallback. No cluster names. The platform matches them against cluster labels, the labels the region claim handed out. So the app runs in both AWS regions, three and three, both live.
+
+    Click. Region one goes down. Region two already runs half the app, so traffic shifts there and Auto Mode adds the nodes for the rest.
+
+    Click. Now AWS itself has the bad day. The constraints say fall back to the second cloud, so a warm standby there, placed by the same labels, scales up and takes the traffic.
+
+    Click. And nobody edited a file. Nobody rewrote a list of clusters at two in the morning. Fingers uncrossed.
+
+    To be straight about how. Nothing moves: traffic, capacity and data fail over. Both regions live and placed by labels is Argo CD ApplicationSets; we can do that now. The second cloud needs a warm standby, or something that moves work on its own. Karmada is that option, Bloomberg runs on it, and it earns its place with a spike, not a mandate. And traffic moves in seconds, data doesn't: our recovery time is the sum of noticing, moving traffic, scaling up and promoting the database, so the slowest layer sets it.
+
+    That's the fleet. Now the takeaway half the show was talking about.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: [] });
+    Estate.draw('#kmap', 6, { quiet: true, people: false, you: false, names: false });
+    (() => {
+      const cs = Estate.at();
+      const pick = (zone, col, row) => cs.find((c) => c.zone === zone && c.col === col && c.row === row);
+      const chip = (g) => `<circle class="chip" cx="${g.x + 26}" cy="${g.y - 22}" r="23"/>`;
+      const aws = Estate.ZONES.find((z) => z.id === 'aws');
+      const r1w = aws.x0 + 2.5 * aws.dx;
+      const hop = (d, hx, hy, rot) => `<path class="hop" d="${d}"/><path class="hop-head" d="M-14 -14L12 0L-14 14Z" transform="translate(${hx} ${hy}) rotate(${rot})"/>`;
+      const R1 = [['aws', 0, 1], ['aws', 1, 1], ['aws', 2, 2]], R2 = [['aws', 3, 0], ['aws', 4, 1], ['aws', 5, 1]];
+      let s = '';
+      // before: three replicas in each region
+      for (const p of [...R1, ...R2]) s += chip(pick(...p));
+      // 1: region 1 goes dark; traffic shifts and region 2 scales to six
+      const R2b = [['aws', 3, 1], ['aws', 4, 0], ['aws', 5, 0]];
+      s += `<g data-step="1"><rect class="down-zone" x="${aws.x + 4}" y="100" width="${r1w - 4}" height="316"/>`
+        + `<text class="down-mark" x="${aws.x + 30}" y="178">✗</text>`
+        + R2b.map((p) => chip(pick(...p))).join('')
+        + hop(`M${aws.x + 170} 310Q${aws.x + 320} 220 ${aws.x + 398} 252`, aws.x + 404, 255, 20) + `</g>`;
+      // 2: AWS goes dark; the warm standby in the second cloud scales up and takes the traffic
+      const c2 = [['cloud2', 0, 0], ['cloud2', 1, 0], ['cloud2', 2, 0], ['cloud2', 0, 1], ['cloud2', 1, 1], ['cloud2', 2, 1]];
+      const c2z = Estate.ZONES.find((z) => z.id === 'cloud2');
+      s += `<g data-step="2"><rect class="lit-zone" x="${c2z.x}" y="0" width="${c2z.w}" height="420" rx="14"/><rect class="down-zone" x="${aws.x + 4}" y="4" width="${aws.w - 8}" height="412" rx="12"/>`
+        + `<text class="down-label" x="${aws.x + aws.w / 2}" y="250" text-anchor="middle">AWS down</text>`
+        + c2.map((p) => chip(pick(...p))).join('')
+        + hop(`M${aws.x + aws.w - 70} 190Q${aws.x + aws.w + 20} 100 ${aws.x + aws.w + 96} 140`, aws.x + aws.w + 102, 144, 28) + `</g>`;
+      Peaks.draw('#kmap', s);
+    })();
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>

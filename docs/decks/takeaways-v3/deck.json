@@ -1,6 +1,6 @@
 {
   "title": "Takeaways v3: the fleet outgrows one team, then the agents arrive",
-  "draft": "main",
+  "draft": "ten",
   "drafts": {
     "main": [
       "title",
@@ -39,6 +39,18 @@
       "patch-loop",
       "same-person",
       "the-ask"
+    ],
+    "ten": [
+      "north-star",
+      "another-cluster",
+      "outruns-the-team",
+      "clusters-from-code",
+      "one-pipeline",
+      "failover",
+      "show-agents-ten",
+      "three-fences",
+      "close-the-circle",
+      "the-ask-ten"
     ]
   }
 }

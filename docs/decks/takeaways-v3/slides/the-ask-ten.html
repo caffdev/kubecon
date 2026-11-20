@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The ask</title>
+  <link rel="stylesheet" href="../../_kit/runtime/slide.css">
+  <link rel="stylesheet" href="../theme/theme.css">
+  <style>
+    h2 { font-size: 80px; max-width: 1640px; line-height: 1.02; }
+    .echo { position: absolute; left: var(--margin); top: 290px; display: flex; align-items: center; gap: 18px; font: 600 38px/1 var(--font-display); color: var(--you); letter-spacing: .005em; }
+    .echo svg { width: 112px; height: 64px; overflow: visible; }
+    .asks { position: absolute; left: var(--margin); top: 386px; width: 1600px; }
+    .asks li { list-style: none; display: grid; grid-template-columns: 92px 1fr; align-items: start; margin-bottom: 16px; }
+    .asks .camp { margin-top: 2px; }
+    .asks b { display: block; font: 600 44px/1.06 var(--font-display); color: var(--snow); }
+    .asks .sub { margin-top: 2px; font-size: 28px; line-height: 1.3; color: var(--lichen); }
+    .asks .when { color: var(--you); font-weight: 600; }
+    .asks .today b::after { content: "today"; margin-left: 18px; padding: 3px 10px 4px; border-radius: 6px; font: 600 24px/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--bg); background: var(--you); vertical-align: 8px; }
+    .c3 { --path: var(--haze); }
+    .c1 { --path: var(--mint); }
+    .c2 { --path: var(--teal); }
+  </style>
+</head>
+<body>
+  <main class="slide dusk" data-energy="3">
+    <svg class="range" id="range" viewBox="0 0 1920 1080" aria-hidden="true" data-bleed></svg>
+    <h2>Stop building clusters by hand, pipeline one tool this quarter, and gate agents before they scale.</h2>
+    <p class="echo"><svg id="team" viewBox="0 0 112 64" aria-hidden="true"></svg>Same small team, eight times the clusters.</p>
+
+    <ol class="asks">
+      <li class="c3 today"><span class="camp lit">1</span><div><b>No new hand-built clusters</b><p class="sub">Auto Mode in AWS, Cluster API on-prem: the runbook retires.</p></div></li>
+      <li class="c1 today"><span class="camp lit">2</span><div><b>splunk-otel-collector through the pipeline first</b><p class="sub">Waves and gates, <span class="when">this quarter</span>. Then the other nineteen.</p></div></li>
+      <li class="c3"><span class="camp">3</span><div><b>AWS region 2 from one claim</b><p class="sub">Crossplane builds it on Auto Mode; one app runs in both regions, placed by labels.</p></div></li>
+      <li class="c2"><span class="camp">4</span><div><b>Agents get a cage, a gate, a pass and a fence</b><p class="sub">A microVM, one MCP gateway, short-lived identity and Kyverno, before they triage one alert.</p></div></li>
+      <li class="c2"><span class="camp">5</span><div><b>Alert triage, explain-only</b><p class="sub">By <span class="when">Q2 2027</span>, reading the OTel plane and the lake.</p></div></li>
+    </ol>
+  </main>
+
+  <aside class="notes">
+    We started with four clusters and one small team. At the end of this road it's the same small team with eight times the clusters, and agents working beside it. What changes is what the team does: it approves waves, and the pipeline, the policy and the telemetry do the rest. Five things get us there; the first two are what I'm asking for today.
+
+    One: no new hand-built clusters. Auto Mode in AWS, Cluster API on-prem. kubeadm stays underneath; the runbook retires.
+
+    Two: one tool through the pipeline this quarter, and I'd start with the Splunk OTel collector. It's on every cluster, and Splunk tells us whether its data arrives, so its gate is easy to write. Then the other nineteen.
+
+    Three: AWS region two from one Crossplane claim, with one app running in both regions, placed by labels. That tests the cluster path and the failover path at once.
+
+    Four: before any agent triages its first alert, it gets a cage, a gate, a pass and a fence: a microVM, one MCP gateway, short-lived identity, and Kyverno.
+
+    Five: explain-only alert triage by the second quarter of 2027, reading the OTel plane and the lake.
+
+    The fleet will keep growing whatever we decide, and the agents are already on their way. The question is whether the team keeps up by working harder, or by building the rails. Thanks.
+  </aside>
+
+  <script src="../../_shared/peaks.js"></script>
+  <script src="../theme/range.js"></script>
+  <script src="../theme/estate.js"></script>
+  <script>
+    Range.draw('#range', { touch: ['p3', 'p1', 'p2'], survey: true, fence: true });
+    Peaks.draw('#team', Estate.team(14, 62, 0.9));
+  </script>
+  <script src="../../_kit/runtime/slide.js"></script>
+</body>
+</html>
